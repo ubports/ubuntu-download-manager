@@ -6,10 +6,28 @@
     <method name="resume" />
     <method name="cancel" />
 
+    <signal name="started">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="paused">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="resumed">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="canceled">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
     <signal name="finished" />
+
     <signal name="error">
         <arg name="error" type="s" direction="out"/>
     </signal>
+
     <signal name="progress">
         <arg name="received" type="u" direction="out"/>
         <arg name="total" type="u" direction="out"/>

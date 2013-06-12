@@ -1,6 +1,8 @@
-#include "downloader.h"
+#include <QUuid>
+#include <QRegExp>
 #include <QNetworkAccessManager>
 #include <QSignalMapper>
+#include "downloader.h"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -16,63 +18,43 @@ public:
     QSharedPointer<AppDownload> getApplication(QUrl url, QByteArray* hash);
 
 private:
+    QString buildDownloadPath();
+
+private:
+    static QString BASE_ACCOUNT_URL;
+
     Downloader* q_ptr;
     QNetworkAccessManager* _nam;
-    QSignalMapper* _mapper;
 
 };
 
+QString DownloaderPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
+
 DownloaderPrivate::DownloaderPrivate(Downloader* parent):
-    q_ptr(parent),
-    _nam(),
-    _mapper()
+    q_ptr(parent)
 {
+    _nam = new QNetworkAccessManager();
+}
+
+QString DownloaderPrivate::buildDownloadPath()
+{
+    // use a uuid to uniquely identify the downloader
+    QUuid uuid = QUuid::createUuid();
+    QString uuidString = uuid.toString().replace(QRegExp("[-{}]"), "");
+    return DownloaderPrivate::BASE_ACCOUNT_URL.arg(uuidString);
 }
 
 QSharedPointer<AppDownload> DownloaderPrivate::getApplication(QUrl url)
 {
-    Q_Q(Downloader);
-
-    QSharedPointer<AppDownload> appDown = QSharedPointer<AppDownload>(new AppDownload());
-    QNetworkReply* reply = _nam->get(QNetworkRequest(url));
-
-    // signals should take care or calling deleteLater on the QNetworkReply object
-    q->connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
-            appDown.data(), SLOT(onDownloadProgress(qint64, qint64)));
-    q->connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            appDown.data(), SLOT(onError(QNetworkReply::NetworkError)));
-    q->connect(reply, SIGNAL(finished()),
-            appDown.data(), SLOT(onFinished()));
-    q->connect(reply, SIGNAL(sslErrors ( const QList<QSslError>&)),
-            appDown.data(), SLOT(onSslErrors(const QList<QSslError>&)));
-
+    QString path = buildDownloadPath();
+    QSharedPointer<AppDownload> appDown = QSharedPointer<AppDownload>(new AppDownload(path, url, _nam));
     return appDown;
-
 }
 
 QSharedPointer<AppDownload> DownloaderPrivate::getApplication(QUrl url, QByteArray* hash)
 {
-    Q_Q(Downloader);
-    QSharedPointer<AppDownload> appDown = QSharedPointer<AppDownload>(new AppDownload());
-    QNetworkReply* reply = _nam->get(QNetworkRequest(url));
-
-    q->connect(reply, SIGNAL(downloadProgress(qint64, qint64)),
-        appDown.data(), SLOT(onDownloadProgress(qint64, qint64)));
-    q->connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-        appDown.data(), SLOT(onError(QNetworkReply::NetworkError)));
-    q->connect(reply, SIGNAL(sslErrors ( const QList<QSslError>&)),
-        appDown.data(), SLOT(onSslErrors(const QList<QSslError>&)));
-
-    // use the mapper so that we can pass the hash to the finished signal
-    q->connect(reply, SIGNAL(finished()), _mapper, SLOT(map()));
-
-    // use QBuffer because signal mapper is 'stupid' and needs to take QObjects
-    _mapper->setMapping(reply, new QBuffer(hash));
-
-    q->connect(_mapper, SIGNAL(mapper(QObject*)),
-        appDown.data(), SIGNAL());
-
-
+    QString path = buildDownloadPath();
+    QSharedPointer<AppDownload> appDown = QSharedPointer<AppDownload>(new AppDownload(path, url, hash, _nam));
     return appDown;
 }
 

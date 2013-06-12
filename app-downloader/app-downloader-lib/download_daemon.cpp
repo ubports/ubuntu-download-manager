@@ -28,7 +28,7 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent):
     q_ptr(parent),
     _conn(QDBusConnection::sessionBus())
 {
-    _downInterface = new DownloaderDBusInterface(q_ptr);
+    _downInterface = new DownloaderDBusInterface(_conn, q_ptr);
 }
 
 bool DownloadDaemonPrivate::start()

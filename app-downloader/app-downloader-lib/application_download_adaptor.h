@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef APPLICATION_DOWNLOAD_ADAPTOR_H_1371035997
-#define APPLICATION_DOWNLOAD_ADAPTOR_H_1371035997
+#ifndef APPLICATION_DOWNLOAD_ADAPTOR_H_1371055277
+#define APPLICATION_DOWNLOAD_ADAPTOR_H_1371055277
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -36,6 +36,18 @@ class ApplicationDownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"pause\"/>\n"
 "    <method name=\"resume\"/>\n"
 "    <method name=\"cancel\"/>\n"
+"    <signal name=\"started\">\n"
+"      <arg direction=\"out\" type=\"b\" name=\"success\"/>\n"
+"    </signal>\n"
+"    <signal name=\"paused\">\n"
+"      <arg direction=\"out\" type=\"b\" name=\"success\"/>\n"
+"    </signal>\n"
+"    <signal name=\"resumed\">\n"
+"      <arg direction=\"out\" type=\"b\" name=\"success\"/>\n"
+"    </signal>\n"
+"    <signal name=\"canceled\">\n"
+"      <arg direction=\"out\" type=\"b\" name=\"success\"/>\n"
+"    </signal>\n"
 "    <signal name=\"finished\"/>\n"
 "    <signal name=\"error\">\n"
 "      <arg direction=\"out\" type=\"s\" name=\"error\"/>\n"
@@ -57,9 +69,13 @@ public Q_SLOTS: // METHODS
     void resume();
     void start();
 Q_SIGNALS: // SIGNALS
+    void canceled(bool success);
     void error(const QString &error);
     void finished();
+    void paused(bool success);
     void progress(uint received, uint total);
+    void resumed(bool success);
+    void started(bool success);
 };
 
 #endif
