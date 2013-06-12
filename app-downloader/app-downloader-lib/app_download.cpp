@@ -81,7 +81,7 @@ void AppDownloadPrivate::cancel()
     if (_reply == NULL)
     {
         // cannot run because it is not running
-        q->canceled(false);
+        emit q->canceled(false);
     }
 
     qDebug() << "Canceling download for " << _url;
@@ -98,7 +98,7 @@ void AppDownloadPrivate::pause()
     if (_reply == NULL)
     {
         // cannot pause because is not running
-        q->paused(false);
+        emit q->paused(false);
     }
 
     qDebug() << "Pausing download for " << _url;
@@ -111,7 +111,7 @@ void AppDownloadPrivate::resume()
     if (_reply != NULL)
     {
         // cannot resume because it is already running
-        q->resumed(false);
+        emit q->resumed(false);
     }
 
     qDebug() << "Resuming download for " << _url;
@@ -124,7 +124,7 @@ void AppDownloadPrivate::start()
     if (_reply != NULL)
     {
         // the download was already started, lets say that we did it
-        q->started(true);
+        emit q->started(true);
     }
 
     qDebug() << "START:" << _url;
@@ -146,7 +146,14 @@ void AppDownloadPrivate::start()
 
 void AppDownloadPrivate::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
 {
-    qDebug() << _url << "PROGRESS: " << bytesReceived << "/" << bytesTotal;
+    Q_Q(AppDownload);
+
+    // ignore the case of 0 or when we do not know yet the size
+    if (!bytesTotal >= 0)
+    {
+        qDebug() << _url << "PROGRESS: " << bytesReceived << "/" << bytesTotal;
+        emit q->progress(bytesReceived, bytesTotal);
+    }
 }
 
 void AppDownloadPrivate::onError(QNetworkReply::NetworkError code)
@@ -163,7 +170,7 @@ void AppDownloadPrivate::onFinished()
     if (_hash)
     {
     }
-    q->finished();
+    emit q->finished();
 
 }
 
