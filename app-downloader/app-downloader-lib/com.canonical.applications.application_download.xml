@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.canonical.Applications.ApplicationDownload">
+  <interface name="com.canonical.applications.ApplicationDownload">
 
     <method name="start" />
     <method name="pause" />

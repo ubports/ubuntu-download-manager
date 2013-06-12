@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOADER_ADAPTOR_H_1371034975
-#define DOWNLOADER_ADAPTOR_H_1371034975
+#ifndef DOWNLOADER_ADAPTOR_H_1371035997
+#define DOWNLOADER_ADAPTOR_H_1371035997
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -24,14 +24,14 @@ class QVariant;
 QT_END_NAMESPACE
 
 /*
- * Adaptor class for interface com.canonical.Applications.Downloader
+ * Adaptor class for interface com.canonical.applications.Downloader
  */
 class DownloaderAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.Applications.Downloader")
+    Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.Downloader")
     Q_CLASSINFO("D-Bus Introspection", ""
-"  <interface name=\"com.canonical.Applications.Downloader\">\n"
+"  <interface name=\"com.canonical.applications.Downloader\">\n"
 "    <method name=\"createDownload\">\n"
 "      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"

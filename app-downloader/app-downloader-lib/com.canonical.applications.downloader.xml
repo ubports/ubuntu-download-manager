@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.canonical.Applications.Downloader">
+  <interface name="com.canonical.applications.Downloader">
     <method name="createDownload">
         <arg name="url" type="s" direction="in"/>
         <arg name="download" type="o" direction="out" />

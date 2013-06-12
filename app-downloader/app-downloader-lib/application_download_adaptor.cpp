@@ -35,25 +35,25 @@ ApplicationDownloadAdaptor::~ApplicationDownloadAdaptor()
 
 void ApplicationDownloadAdaptor::cancel()
 {
-    // handle method call com.canonical.Applications.ApplicationDownload.cancel
+    // handle method call com.canonical.applications.ApplicationDownload.cancel
     QMetaObject::invokeMethod(parent(), "cancel");
 }
 
 void ApplicationDownloadAdaptor::pause()
 {
-    // handle method call com.canonical.Applications.ApplicationDownload.pause
+    // handle method call com.canonical.applications.ApplicationDownload.pause
     QMetaObject::invokeMethod(parent(), "pause");
 }
 
 void ApplicationDownloadAdaptor::resume()
 {
-    // handle method call com.canonical.Applications.ApplicationDownload.resume
+    // handle method call com.canonical.applications.ApplicationDownload.resume
     QMetaObject::invokeMethod(parent(), "resume");
 }
 
 void ApplicationDownloadAdaptor::start()
 {
-    // handle method call com.canonical.Applications.ApplicationDownload.start
+    // handle method call com.canonical.applications.ApplicationDownload.start
     QMetaObject::invokeMethod(parent(), "start");
 }
 

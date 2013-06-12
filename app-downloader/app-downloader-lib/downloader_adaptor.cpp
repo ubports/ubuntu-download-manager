@@ -35,7 +35,7 @@ DownloaderAdaptor::~DownloaderAdaptor()
 
 QDBusObjectPath DownloaderAdaptor::createDownload(const QString &url)
 {
-    // handle method call com.canonical.Applications.Downloader.createDownload
+    // handle method call com.canonical.applications.Downloader.createDownload
     QDBusObjectPath download;
     QMetaObject::invokeMethod(parent(), "createDownload", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url));
     return download;

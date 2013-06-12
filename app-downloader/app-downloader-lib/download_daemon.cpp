@@ -35,11 +35,11 @@ bool DownloadDaemonPrivate::start()
 {
     qDebug() << "Starting daemon";
     _downAdaptor = new DownloaderAdaptor(_downInterface);
-    bool ret = _conn.registerService("com.canonical.Applications.Downloader");
+    bool ret = _conn.registerService("com.canonical.applications.Downloader");
     if (ret)
     {
-        qDebug() << "Service registered to com.canonical.Applications.Downloader";
-        ret = _conn.registerObject("/", _downAdaptor);
+        qDebug() << "Service registered to com.canonical.applications.Downloader";
+        ret = _conn.registerObject("/", _downInterface);
         qDebug() << ret;
         return ret;
     }
