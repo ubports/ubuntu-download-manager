@@ -1,0 +1,19 @@
+<node>
+  <interface name="com.canonical.Applications.ApplicationDownload">
+
+    <method name="start" />
+    <method name="pause" />
+    <method name="resume" />
+    <method name="cancel" />
+
+    <signal name="finished" />
+    <signal name="error">
+        <arg name="error" type="s" direction="out"/>
+    </signal>
+    <signal name="progress">
+        <arg name="received" type="u" direction="out"/>
+        <arg name="total" type="u" direction="out"/>
+    </signal>
+
+ </interface>
+</node>
