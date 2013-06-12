@@ -13,14 +13,22 @@ TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
 
-SOURCES += downloader_daemon.cpp \
+SOURCES += \
     downloader_adaptor.cpp \
-    application_download_adaptor.cpp
+    application_download_adaptor.cpp \
+    downloader.cpp \
+    app_download.cpp \
+    downloader_dbusinterface.cpp \
+    download_daemon.cpp
 
-HEADERS += downloader_daemon.h\
+HEADERS +=\
         app-downloader-lib_global.h \
     downloader_adaptor.h \
-    application_download_adaptor.h
+    application_download_adaptor.h \
+    downloader.h \
+    app_download.h \
+    downloader_dbusinterface.h \
+    download_daemon.h
 
 OTHER_FILES += \
     com.canonical.applications.application_download.xml \
