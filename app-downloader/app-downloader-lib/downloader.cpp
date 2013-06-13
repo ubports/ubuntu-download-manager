@@ -75,8 +75,9 @@ QDBusObjectPath DownloaderPrivate::createDownload(const QString &url)
     qDebug() << "New DBus object registered to " << appDownload->path() << ret;
 
     // emit that the download was created. Usefull in case other processes are interested in them
-    emit q->downloadCreated(appDownload->path());
-    return QDBusObjectPath(appDownload->path());
+    QDBusObjectPath objectPath(appDownload->path());
+    emit q->downloadCreated(objectPath);
+    return objectPath;
 }
 
 /**
