@@ -16,7 +16,8 @@ class AppDownloadPrivate
     Q_DECLARE_PUBLIC(AppDownload)
 public:
     explicit AppDownloadPrivate(QString path, QUrl url, QNetworkAccessManager* nam, AppDownload* parent);
-    explicit AppDownloadPrivate(QString path, QUrl url, QByteArray* hash, QNetworkAccessManager* nam, AppDownload* parent);
+    explicit AppDownloadPrivate(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+        QNetworkAccessManager* nam, AppDownload* parent);
 
     // public methods
     QString path();
@@ -41,7 +42,8 @@ private:
 private:
     QString _path;
     QUrl _url;
-    QByteArray* _hash;
+    QString _hash;
+    QCryptographicHash::Algorithm _algo;
     QNetworkAccessManager* _nam;
     QNetworkReply* _reply;
     QTemporaryFile* _currentData;
@@ -52,20 +54,22 @@ private:
 AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QNetworkAccessManager* nam, AppDownload* parent):
     _path(path),
     _url(url),
+    _hash(""),
     _nam(nam),
     q_ptr(parent)
 {
-    _hash = NULL;
     _reply = NULL;
     _currentData = NULL;
 }
 
-AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QByteArray* hash, QNetworkAccessManager* nam, AppDownload* parent):
-    _path(path),
-    _url(url),
-    _hash(hash),
-    _nam(nam),
-    q_ptr(parent)
+AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+    QNetworkAccessManager* nam, AppDownload* parent):
+        _path(path),
+        _url(url),
+        _hash(hash),
+        _algo(algo),
+        _nam(nam),
+        q_ptr(parent)
 {
     _reply = NULL;
     _currentData = NULL;
@@ -241,9 +245,23 @@ void AppDownloadPrivate::onFinished()
     Q_Q(AppDownload);
 
     qDebug() << _url << "FINIHSED";
+    _currentData->reset();
+    QByteArray data = _currentData->readAll();
+
     // if the hash is present we check it
-    if (_hash)
+    if (!_hash.isEmpty())
     {
+        // do calculate the hash of the file so far and ensure that they are the same
+        QCryptographicHash hash(_algo);
+        hash.addData(data);
+        QByteArray fileSig = hash.result();
+        QByteArray originalSig = QByteArray::fromHex(_hash.toLatin1());
+        if (fileSig != originalSig)
+        {
+            qDebug() << "HASH ERROR:" << fileSig << "!=" << originalSig;
+            emit q->error("HASH ERROR");
+            return;
+        }
     }
     emit q->finished();
     _reply->deleteLater();
@@ -266,9 +284,10 @@ AppDownload::AppDownload(QString path, QUrl url, QNetworkAccessManager* nam, QOb
 {
 }
 
-AppDownload::AppDownload(QString path, QUrl url, QByteArray* hash, QNetworkAccessManager* nam, QObject* parent):
-    QObject(parent),
-    d_ptr(new AppDownloadPrivate(path, url, hash, nam, this))
+AppDownload::AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+    QNetworkAccessManager* nam, QObject* parent):
+        QObject(parent),
+        d_ptr(new AppDownloadPrivate(path, url, hash, algo, nam, this))
 {
 }
 

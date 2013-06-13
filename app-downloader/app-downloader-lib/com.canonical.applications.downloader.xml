@@ -5,8 +5,58 @@
         <arg name="download" type="o" direction="out" />
     </method>
 
+    <method name="createDownloadMd4">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadMd5">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadSha1">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadSha224">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadSha256">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadSha384">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="createDownloadSha512">
+        <arg name="url" type="s" direction="in"/>
+        <arg name="hash" type="s" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
+    <method name="getAllDownloads">
+        <arg name="downloads" type="ao" direction="out" />
+    </method>
+
     <signal name="downloadCreated">
         <arg name="path" type="o" direction="out"/>
+    </signal>
+
+    <signal name="downloads">
+        <arg name="downloads" type="ao" direction="out" />
     </signal>
 
  </interface>

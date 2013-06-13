@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QUrl>
@@ -16,7 +17,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT AppDownload : public QObject
     Q_DECLARE_PRIVATE(AppDownload)
 public:
     explicit AppDownload(QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent=0);
-    explicit AppDownload(QString path, QUrl url, QByteArray* hash, QNetworkAccessManager* nam, QObject* parent=0);
+    explicit AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+        QNetworkAccessManager* nam, QObject* parent=0);
 
     QString path();
     QUrl url();

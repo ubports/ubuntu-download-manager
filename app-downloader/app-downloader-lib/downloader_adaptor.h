@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOADER_ADAPTOR_H_1371119027
-#define DOWNLOADER_ADAPTOR_H_1371119027
+#ifndef DOWNLOADER_ADAPTOR_H_1371127042
+#define DOWNLOADER_ADAPTOR_H_1371127042
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -36,8 +36,49 @@ class DownloaderAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
 "    </method>\n"
+"    <method name=\"createDownloadMd4\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadMd5\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadSha1\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadSha224\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadSha256\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadSha384\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"createDownloadSha512\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
+"    <method name=\"getAllDownloads\">\n"
+"      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
+"    </method>\n"
 "    <signal name=\"downloadCreated\">\n"
 "      <arg direction=\"out\" type=\"o\" name=\"path\"/>\n"
+"    </signal>\n"
+"    <signal name=\"downloads\">\n"
+"      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </signal>\n"
 "  </interface>\n"
         "")
@@ -48,8 +89,17 @@ public:
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
     QDBusObjectPath createDownload(const QString &url);
+    QDBusObjectPath createDownloadMd4(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadMd5(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadSha1(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadSha224(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadSha256(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadSha384(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadSha512(const QString &url, const QString &hash);
+    QList<QDBusObjectPath> getAllDownloads();
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
+    void downloads(const QList<QDBusObjectPath> &downloads);
 };
 
 #endif
