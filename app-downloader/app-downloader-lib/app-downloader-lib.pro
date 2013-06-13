@@ -18,7 +18,6 @@ SOURCES += \
     application_download_adaptor.cpp \
     downloader.cpp \
     app_download.cpp \
-    downloader_dbusinterface.cpp \
     download_daemon.cpp
 
 HEADERS +=\
@@ -27,7 +26,6 @@ HEADERS +=\
     application_download_adaptor.h \
     downloader.h \
     app_download.h \
-    downloader_dbusinterface.h \
     download_daemon.h
 
 OTHER_FILES += \

@@ -1,6 +1,6 @@
 #include <QtDBus/QDBusConnection>
 #include <QDebug>
-#include "downloader_dbusinterface.h"
+#include "downloader.h"
 #include "downloader_adaptor.h"
 #include "download_daemon.h"
 
@@ -19,7 +19,7 @@ public:
 private:
     DownloadDaemon* q_ptr;
     QDBusConnection _conn;
-    DownloaderDBusInterface* _downInterface;
+    Downloader* _downInterface;
     DownloaderAdaptor* _downAdaptor;
 
 };
@@ -28,7 +28,7 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent):
     q_ptr(parent),
     _conn(QDBusConnection::sessionBus())
 {
-    _downInterface = new DownloaderDBusInterface(_conn, q_ptr);
+    _downInterface = new Downloader(_conn, q_ptr);
 }
 
 bool DownloadDaemonPrivate::start()

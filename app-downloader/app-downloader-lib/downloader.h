@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include <QByteArray>
-#include <QSharedPointer>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusObjectPath>
 #include "app_download.h"
 
 class DownloaderPrivate;
@@ -12,10 +13,12 @@ class Downloader : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(Downloader)
 public:
-    explicit Downloader(QObject *parent = 0);
+    explicit Downloader(QDBusConnection connection, QObject *parent = 0);
 
-    QSharedPointer<AppDownload> getApplication(QUrl url);
-    QSharedPointer<AppDownload> getApplication(QUrl url, QByteArray* hash);
+
+public slots:
+
+    QDBusObjectPath createDownload(const QString &url);
 
 private:
     // use pimpl so that we can mantains ABI compatibility
