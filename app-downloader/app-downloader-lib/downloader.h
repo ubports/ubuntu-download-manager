@@ -17,8 +17,10 @@ public:
 
 
 public slots:
-
     QDBusObjectPath createDownload(const QString &url);
+
+Q_SIGNALS:
+    void downloadCreated(const QDBusObjectPath &path);
 
 private:
     // use pimpl so that we can mantains ABI compatibility

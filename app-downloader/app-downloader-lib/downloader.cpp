@@ -64,6 +64,7 @@ AppDownload* DownloaderPrivate::getApplication(QUrl url, QByteArray* hash)
 
 QDBusObjectPath DownloaderPrivate::createDownload(const QString &url)
 {
+    Q_Q(Downloader);
     qDebug() << "Creating AppDownload object for " << url;
     AppDownload* appDownload = getApplication(url);
     ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
@@ -71,9 +72,10 @@ QDBusObjectPath DownloaderPrivate::createDownload(const QString &url)
     // we need to store the ref of both objects, else the mem management will delete them
     _downloads[appDownload->path()] = QPair<AppDownload*, ApplicationDownloadAdaptor*>(appDownload, adaptor);
     bool ret = _conn.registerObject(appDownload->path(), appDownload);
-
     qDebug() << "New DBus object registered to " << appDownload->path() << ret;
 
+    // emit that the download was created. Usefull in case other processes are interested in them
+    emit q->downloadCreated(appDownload->path());
     return QDBusObjectPath(appDownload->path());
 }
 
