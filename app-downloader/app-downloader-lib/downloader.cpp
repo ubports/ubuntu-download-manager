@@ -87,7 +87,7 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &url, co
 {
     Q_Q(Downloader);
     qDebug() << "Creating AppDownload object for " << url << "hash" << hash << "algo" << algo;
-    AppDownload* appDownload = getApplication(url);
+    AppDownload* appDownload = getApplication(url, hash, algo);
     ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
 
     // we need to store the ref of both objects, else the mem management will delete them
