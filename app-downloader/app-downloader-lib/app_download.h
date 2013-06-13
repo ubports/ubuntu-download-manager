@@ -16,6 +16,13 @@ class APPDOWNLOADERLIBSHARED_EXPORT AppDownload : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(AppDownload)
 public:
+    enum State
+    {
+        DOWNLOADING,
+        PAUSED,
+        FINISHED
+    };
+
     explicit AppDownload(QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent=0);
     explicit AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
         QNetworkAccessManager* nam, QObject* parent=0);
@@ -24,12 +31,14 @@ public:
     QUrl url();
 
 public slots:
+    // slots that are exposed via dbus
     void cancel();
     void pause();
     void resume();
     void start();
 
 Q_SIGNALS:
+    // signals that are exposed via dbus
     void canceled(bool success);
     void error(const QString &error);
     void finished();
@@ -37,6 +46,8 @@ Q_SIGNALS:
     void progress(uint received, uint total);
     void resumed(bool success);
     void started(bool success);
+    // internal signals used for the download queue
+    void stateChanged();
 
 private:
     // private slots used to keep track of the qnetwork reply state
