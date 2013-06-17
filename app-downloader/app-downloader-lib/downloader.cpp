@@ -238,46 +238,44 @@ QDBusObjectPath Downloader::createDownload(const QString &url)
     return d->createDownload(url);
 }
 
-QDBusObjectPath Downloader::createDownloadMd4(const QString &url, const QString &hash)
+QDBusObjectPath Downloader::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash)
 {
     Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Md4);
-}
-
-QDBusObjectPath Downloader::createDownloadMd5(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Md5);
-}
-
-QDBusObjectPath Downloader::createDownloadSha1(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha1);
-}
-
-QDBusObjectPath Downloader::createDownloadSha224(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha224);
-}
-
-QDBusObjectPath Downloader::createDownloadSha256(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha256);
-}
-
-QDBusObjectPath Downloader::createDownloadSha384(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha384);
-}
-
-QDBusObjectPath Downloader::createDownloadSha512(const QString &url, const QString &hash)
-{
-    Q_D(Downloader);
-    return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha512);
+    // lowercase the algorithm just in case
+    QString algoLower = algorithm.toLower();
+    if (algoLower == "md4")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Md4);
+    }
+    else if (algoLower == "md5")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Md5);
+    }
+    else if (algoLower == "sha1")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha1);
+    }
+    else if (algoLower == "sha224")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha224);
+    }
+    else if (algoLower == "sha256")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha256);
+    }
+    else if (algoLower == "sha384")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha384);
+    }
+    else if (algoLower == "sha512")
+    {
+        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha512);
+    }
+    else
+    {
+        // TODO: what do do here?
+        return d->createDownload(url);
+    }
 }
 
 QList<QDBusObjectPath> Downloader::getAllDownloads()

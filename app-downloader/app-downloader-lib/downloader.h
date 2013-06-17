@@ -18,13 +18,7 @@ public:
 
 public slots:
     QDBusObjectPath createDownload(const QString &url);
-    QDBusObjectPath createDownloadMd4(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadMd5(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadSha1(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadSha224(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadSha256(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadSha384(const QString &url, const QString &hash);
-    QDBusObjectPath createDownloadSha512(const QString &url, const QString &hash);
+    QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash);
     QList<QDBusObjectPath> getAllDownloads();
 
 Q_SIGNALS:

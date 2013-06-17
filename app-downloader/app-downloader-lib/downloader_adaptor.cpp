@@ -41,59 +41,11 @@ QDBusObjectPath DownloaderAdaptor::createDownload(const QString &url)
     return download;
 }
 
-QDBusObjectPath DownloaderAdaptor::createDownloadMd4(const QString &url, const QString &hash)
+QDBusObjectPath DownloaderAdaptor::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash)
 {
-    // handle method call com.canonical.applications.Downloader.createDownloadMd4
+    // handle method call com.canonical.applications.Downloader.createDownloadWithHash
     QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadMd4", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadMd5(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadMd5
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadMd5", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadSha1(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadSha1
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadSha1", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadSha224(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadSha224
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadSha224", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadSha256(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadSha256
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadSha256", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadSha384(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadSha384
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadSha384", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
-    return download;
-}
-
-QDBusObjectPath DownloaderAdaptor::createDownloadSha512(const QString &url, const QString &hash)
-{
-    // handle method call com.canonical.applications.Downloader.createDownloadSha512
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadSha512", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, hash));
+    QMetaObject::invokeMethod(parent(), "createDownloadWithHash", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, algorithm), Q_ARG(QString, hash));
     return download;
 }
 
