@@ -16,10 +16,14 @@ class APPDOWNLOADERLIBSHARED_EXPORT AppDownload : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(AppDownload)
 public:
+
     enum State
     {
-        DOWNLOADING,
+        IDLE,
+        STARTED,
         PAUSED,
+        RESUMED,
+        CANCELED,
         FINISHED
     };
 
@@ -27,11 +31,21 @@ public:
     explicit AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
         QNetworkAccessManager* nam, QObject* parent=0);
 
+    // gets for internal state
     QString path();
     QUrl url();
+    AppDownload::State state();
+
+    // methods that do perform the download
+    void cancelDownload();
+    void pauseDownload();
+    void resumeDownload();
+    void startDownload();
+
 
 public slots:
-    // slots that are exposed via dbus
+    // slots that are exposed via dbus, they just change the state, the downloader
+    // takes care of the actual download operations
     void cancel();
     void pause();
     void resume();
@@ -46,6 +60,7 @@ Q_SIGNALS:
     void progress(uint received, uint total);
     void resumed(bool success);
     void started(bool success);
+
     // internal signals used for the download queue
     void stateChanged();
 

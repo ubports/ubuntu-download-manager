@@ -32,6 +32,9 @@ Q_SIGNALS:
     void downloads(const QList<QDBusObjectPath> &downloads);
 
 private:
+    Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
+
+private:
     // use pimpl so that we can mantains ABI compatibility
     DownloaderPrivate* d_ptr;
 };

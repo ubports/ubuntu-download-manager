@@ -22,6 +22,13 @@ public:
     // public methods
     QString path();
     QUrl url();
+    AppDownload::State state();
+
+    // methods that do really perform the actions
+    void cancelDownload();
+    void pauseDownload();
+    void resumeDownload();
+    void startDownload();
 
     // plublic slots used by public implementation
     void cancel();
@@ -40,6 +47,7 @@ private:
     void disconnectFromReplySignals();
 
 private:
+    AppDownload::State _state;
     QString _path;
     QUrl _url;
     QString _hash;
@@ -52,6 +60,7 @@ private:
 };
 
 AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QNetworkAccessManager* nam, AppDownload* parent):
+    _state(AppDownload::IDLE),
     _path(path),
     _url(url),
     _hash(""),
@@ -64,6 +73,7 @@ AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QNetworkAccessMan
 
 AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
     QNetworkAccessManager* nam, AppDownload* parent):
+        _state(AppDownload::IDLE),
         _path(path),
         _url(url),
         _hash(hash),
@@ -117,7 +127,12 @@ QUrl AppDownloadPrivate::url()
     return _url;
 }
 
-void AppDownloadPrivate::cancel()
+AppDownload::State AppDownloadPrivate::state()
+{
+    return _state;
+}
+
+void AppDownloadPrivate::cancelDownload()
 {
     Q_Q(AppDownload);
 
@@ -143,7 +158,7 @@ void AppDownloadPrivate::cancel()
     emit q->canceled(true);
 }
 
-void AppDownloadPrivate::pause()
+void AppDownloadPrivate::pauseDownload()
 {
     Q_Q(AppDownload);
 
@@ -168,7 +183,7 @@ void AppDownloadPrivate::pause()
     emit q->paused(true);
 }
 
-void AppDownloadPrivate::resume()
+void AppDownloadPrivate::resumeDownload()
 {
     Q_Q(AppDownload);
 
@@ -192,7 +207,7 @@ void AppDownloadPrivate::resume()
     emit q->resumed(true);
 }
 
-void AppDownloadPrivate::start()
+void AppDownloadPrivate::startDownload()
 {
     Q_Q(AppDownload);
 
@@ -213,6 +228,38 @@ void AppDownloadPrivate::start()
     _reply = _nam->get(QNetworkRequest(_url));
     connetToReplySignals();
     emit q->started(true);
+}
+
+void AppDownloadPrivate::cancel()
+{
+    Q_Q(AppDownload);
+    qDebug() << "CANCELED:" << _url;
+    _state = AppDownload::CANCELED;
+    emit q->stateChanged();
+}
+
+void AppDownloadPrivate::pause()
+{
+    Q_Q(AppDownload);
+    qDebug() << "PAUSED:" << _url;
+    _state = AppDownload::PAUSED;
+    emit q->stateChanged();
+}
+
+void AppDownloadPrivate::resume()
+{
+    Q_Q(AppDownload);
+    qDebug() << "RESUMED:" << _url;
+    _state = AppDownload::RESUMED;
+    emit q->stateChanged();
+}
+
+void AppDownloadPrivate::start()
+{
+    Q_Q(AppDownload);
+    qDebug() << "STARTED:" << _url;
+    _state = AppDownload::STARTED;
+    emit q->stateChanged();
 }
 
 void AppDownloadPrivate::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -301,6 +348,36 @@ QUrl AppDownload::url()
 {
     Q_D(AppDownload);
     return d->url();
+}
+
+AppDownload::State AppDownload::state()
+{
+    Q_D(AppDownload);
+    return d->state();
+}
+
+void AppDownload::cancelDownload()
+{
+    Q_D(AppDownload);
+    d->cancelDownload();
+}
+
+void AppDownload::pauseDownload()
+{
+    Q_D(AppDownload);
+    d->pauseDownload();
+}
+
+void AppDownload::resumeDownload()
+{
+    Q_D(AppDownload);
+    d->resumeDownload();
+}
+
+void AppDownload::startDownload()
+{
+    Q_D(AppDownload);
+    d->startDownload();
 }
 
 void AppDownload::cancel()
