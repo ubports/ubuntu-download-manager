@@ -87,7 +87,10 @@ void DownloaderPrivate::updateCurrentDownload()
             // clean resources
             _conn.unregisterObject(_current->path());
             _downloads.removeOne(_current);
+            ApplicationDownloadAdaptor* adaptor = _adaptors[_current->path()];
             _adaptors.remove(_current->path());
+            adaptor->deleteLater();
+            _current->deleteLater();
             _current = NULL;
 
         }
