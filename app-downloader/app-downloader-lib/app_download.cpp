@@ -21,8 +21,8 @@ public:
         QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent);
 
     // public methods
-    QString path();
-    QUrl url();
+    QString path() const;
+    QUrl url() const;
     AppDownload::State state();
 
     // methods that do really perform the actions
@@ -32,8 +32,8 @@ public:
     void startDownload();
 
     // plublic slots used by public implementation
-    QString applicationId();
-    QString applicationName();
+    QString applicationId() const;
+    QString applicationName() const;
     QVariantMap metadata();
     uint progress();
     uint totalSize();
@@ -133,12 +133,12 @@ void AppDownloadPrivate::disconnectFromReplySignals()
     }
 }
 
-QString AppDownloadPrivate::path()
+QString AppDownloadPrivate::path() const
 {
     return _path;
 }
 
-QUrl AppDownloadPrivate::url()
+QUrl AppDownloadPrivate::url() const
 {
     return _url;
 }
@@ -246,12 +246,12 @@ void AppDownloadPrivate::startDownload()
     emit q->started(true);
 }
 
-QString AppDownloadPrivate::applicationId()
+QString AppDownloadPrivate::applicationId() const
 {
     return _appId;
 }
 
-QString AppDownloadPrivate::applicationName()
+QString AppDownloadPrivate::applicationName() const
 {
     return _appName;
 }
@@ -312,7 +312,7 @@ void AppDownloadPrivate::start()
     emit q->stateChanged();
 }
 
-void AppDownloadPrivate::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
+void AppDownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
 {
     Q_Q(AppDownload);
 
