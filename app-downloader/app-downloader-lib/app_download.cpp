@@ -2,7 +2,9 @@
 #include <QDebug>
 #include <QNetworkReply>
 #include <QSignalMapper>
-#include <QTemporaryFile>
+#include <QStringList>
+#include <QFile>
+#include "xdg_basedir.h"
 #include "app_download.h"
 
 
@@ -63,7 +65,7 @@ private:
     QCryptographicHash::Algorithm _algo;
     QNetworkAccessManager* _nam;
     QNetworkReply* _reply;
-    QTemporaryFile* _currentData;
+    QFile* _currentData;
     AppDownload* q_ptr;
 
 };
@@ -235,10 +237,16 @@ void AppDownloadPrivate::startDownload()
     }
 
     qDebug() << "START:" << _url;
+
     // create temp file that will be used to mantain the state of the download when resumed.
-    _currentData = new QTemporaryFile();
-    _currentData->open();
-    qDebug() << "Tempp IO Device created in " << _currentData->fileName();
+    QStringList pathComponents;
+    pathComponents << "application_downloader" << _appId;
+
+    QString path = XDGBasedir::saveDataPath(pathComponents);
+    // TODO: Use a better name
+    _currentData = new QFile(path + "/" + "data");
+    _currentData->open(QIODevice::ReadWrite);
+    qDebug() << "Tempp IO Device created in " << path;
 
     // signals should take care or calling deleteLater on the QNetworkReply object
     _reply = _nam->get(QNetworkRequest(_url));

@@ -154,7 +154,7 @@ QString XDGBasedir::saveConfigPath(QList<QString> resources)
         QDir dir(home);
         QStringList child;
         child.append(resources);
-        bool created = dir.mkdir(child.join(QDir::separator()));
+        bool created = dir.mkpath(child.join(QDir::separator()));
         if (!created)
         {
             qCritical() << "Could not create path:" << child.join(QDir::separator());
@@ -173,13 +173,14 @@ QString XDGBasedir::saveDataPath(QList<QString> resources)
     pathComponents.append(home);
     pathComponents.append(resources);
     QString path = pathComponents.join(QDir::separator());
+    qDebug() << "Path is" << path;
     QFileInfo info = QFileInfo(path);
     if (!info.exists() || !info.isDir())
     {
         QDir dir(home);
         QStringList child;
         child.append(resources);
-        bool created = dir.mkdir(child.join(QDir::separator()));
+        bool created = dir.mkpath(child.join(QDir::separator()));
         if (!created)
         {
             qCritical() << "Could not create path:" << child.join(QDir::separator());
