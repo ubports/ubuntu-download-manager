@@ -33,19 +33,19 @@ DownloaderAdaptor::~DownloaderAdaptor()
     // destructor
 }
 
-QDBusObjectPath DownloaderAdaptor::createDownload(const QString &url)
+QDBusObjectPath DownloaderAdaptor::createDownload(const QString &id, const QString &name, const QString &url)
 {
     // handle method call com.canonical.applications.Downloader.createDownload
     QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownload", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url));
+    QMetaObject::invokeMethod(parent(), "createDownload", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, id), Q_ARG(QString, name), Q_ARG(QString, url));
     return download;
 }
 
-QDBusObjectPath DownloaderAdaptor::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash)
+QDBusObjectPath DownloaderAdaptor::createDownloadWithHash(const QString &id, const QString &name, const QString &url, const QString &algorithm, const QString &hash)
 {
     // handle method call com.canonical.applications.Downloader.createDownloadWithHash
     QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadWithHash", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, algorithm), Q_ARG(QString, hash));
+    QMetaObject::invokeMethod(parent(), "createDownloadWithHash", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, id), Q_ARG(QString, name), Q_ARG(QString, url), Q_ARG(QString, algorithm), Q_ARG(QString, hash));
     return download;
 }
 

@@ -1,7 +1,4 @@
-#include <QUuid>
-#include <QRegExp>
 #include <QNetworkAccessManager>
-#include <QSignalMapper>
 #include "application_download_adaptor.h"
 #include "downloader.h"
 
@@ -16,14 +13,15 @@ public:
     explicit DownloaderPrivate(QDBusConnection connection, Downloader* parent);
 
 private:
-    QString buildDownloadPath();
-    AppDownload* getApplication(QUrl url);
-    AppDownload* getApplication(QUrl url, QString hash, QCryptographicHash::Algorithm algo);
+    AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url);
+    AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url, const QString &hash,
+        QCryptographicHash::Algorithm algo);
     void updateCurrentDownload();
     void onDownloadStateChanged();
 
-    QDBusObjectPath createDownload(const QString &url);
-    QDBusObjectPath createDownloadWithHash(const QString &url, const QString &hash, QCryptographicHash::Algorithm algo);
+    QDBusObjectPath createDownload(const QString &appId, const QString &appName, const QString &url);
+    QDBusObjectPath createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
+        const QString &hash, QCryptographicHash::Algorithm algo);
     QList<QDBusObjectPath> getAllDownloads();
 
 private:
@@ -47,29 +45,22 @@ DownloaderPrivate::DownloaderPrivate(QDBusConnection connection, Downloader* par
     _current = NULL;
 }
 
-QString DownloaderPrivate::buildDownloadPath()
-{
-    // use a uuid to uniquely identify the downloader
-    QUuid uuid = QUuid::createUuid();
-    QString uuidString = uuid.toString().replace(QRegExp("[-{}]"), "");
-    return DownloaderPrivate::BASE_ACCOUNT_URL.arg(uuidString);
-}
-
-AppDownload* DownloaderPrivate::getApplication(QUrl url)
+AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QString &appName, const QUrl &url)
 {
     Q_Q(Downloader);
-    QString path = buildDownloadPath();
-    AppDownload* appDown = new AppDownload("", "", path, url, _nam);
+    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
+    AppDownload* appDown = new AppDownload(appId, appName, path, url, _nam);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
 }
 
-AppDownload* DownloaderPrivate::getApplication(QUrl url, QString hash, QCryptographicHash::Algorithm algo)
+AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QString &appName, const QUrl &url,
+    const QString &hash, QCryptographicHash::Algorithm algo)
 {
     Q_Q(Downloader);
-    QString path = buildDownloadPath();
-    AppDownload* appDown = new AppDownload("", "", path, url, hash, algo, _nam);
+    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
+    AppDownload* appDown = new AppDownload(appId, appName, path, url, hash, algo, _nam);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
@@ -170,40 +161,50 @@ void DownloaderPrivate::onDownloadStateChanged()
     }
 }
 
-QDBusObjectPath DownloaderPrivate::createDownload(const QString &url)
+QDBusObjectPath DownloaderPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
 {
-    Q_Q(Downloader);
-    qDebug() << "Creating AppDownload object for " << url;
-    AppDownload* appDownload = getApplication(url);
-    ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
-
-    // we need to store the ref of both objects, else the mem management will delete them
-    _downloads.append(appDownload);
-    _adaptors[appDownload->path()] = adaptor;
-    bool ret = _conn.registerObject(appDownload->path(), appDownload);
-    qDebug() << "New DBus object registered to " << appDownload->path() << ret;
-
-    // emit that the download was created. Usefull in case other processes are interested in them
-    QDBusObjectPath objectPath(appDownload->path());
-    emit q->downloadCreated(objectPath);
-    return objectPath;
+    return createDownloadWithHash(appId, appName, url, "", QCryptographicHash::Md5);
 }
 
-QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &url, const QString &hash, QCryptographicHash::Algorithm algo)
+QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
+    const QString &hash, QCryptographicHash::Algorithm algo)
 {
     Q_Q(Downloader);
-    qDebug() << "Creating AppDownload object for " << url << "hash" << hash << "algo" << algo;
-    AppDownload* appDownload = getApplication(url, hash, algo);
-    ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
 
-    // we need to store the ref of both objects, else the mem management will delete them
-    _downloads.append(appDownload);
-    _adaptors[appDownload->path()] = adaptor;
-    bool ret = _conn.registerObject(appDownload->path(), appDownload);
-    qDebug() << "New DBus object registered to " << appDownload->path() << ret;
+    // only create a download if the application is not already being downloaded
+    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
+    QDBusObjectPath objectPath;
+
+    if (_adaptors.contains(path))
+    {
+        qDebug() << "Download for app id" << appId << "is already present";
+        objectPath = QDBusObjectPath(path);
+    }
+    else
+    {
+        AppDownload* appDownload;
+        if (hash.isEmpty())
+        {
+            qDebug() << "Creating AppDownload object for" << appId;
+            appDownload = getApplication(appId, appName, url);
+        }
+        else
+        {
+            qDebug() << "Creating AppDownload object for " << url << "hash" << hash << "algo" << algo;
+            appDownload = getApplication(appId, appName, url, hash, algo);
+        }
+
+        ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
+
+        // we need to store the ref of both objects, else the mem management will delete them
+        _downloads.append(appDownload);
+        _adaptors[appDownload->path()] = adaptor;
+        bool ret = _conn.registerObject(appDownload->path(), appDownload);
+        qDebug() << "New DBus object registered to " << appDownload->path() << ret;
+        objectPath = QDBusObjectPath(appDownload->path());
+    }
 
     // emit that the download was created. Usefull in case other processes are interested in them
-    QDBusObjectPath objectPath(appDownload->path());
     emit q->downloadCreated(objectPath);
     return objectPath;
 }
@@ -227,49 +228,50 @@ Downloader::Downloader(QDBusConnection connection, QObject *parent) :
 {
 }
 
-QDBusObjectPath Downloader::createDownload(const QString &url)
+QDBusObjectPath Downloader::createDownload(const QString &appId, const QString &appName, const QString &url)
 {
     Q_D(Downloader);
-    return d->createDownload(url);
+    return d->createDownload(appId, appName, url);
 }
 
-QDBusObjectPath Downloader::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash)
+QDBusObjectPath Downloader::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
+    const QString &algorithm, const QString &hash)
 {
     Q_D(Downloader);
     // lowercase the algorithm just in case
     QString algoLower = algorithm.toLower();
     if (algoLower == "md4")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Md4);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Md4);
     }
     else if (algoLower == "md5")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Md5);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Md5);
     }
     else if (algoLower == "sha1")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha1);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha1);
     }
     else if (algoLower == "sha224")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha224);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha224);
     }
     else if (algoLower == "sha256")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha256);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha256);
     }
     else if (algoLower == "sha384")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha384);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha384);
     }
     else if (algoLower == "sha512")
     {
-        return d->createDownloadWithHash(url, hash, QCryptographicHash::Sha512);
+        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha512);
     }
     else
     {
         // TODO: what do do here?
-        return d->createDownload(url);
+        return d->createDownload(appId, appName, url);
     }
 }
 

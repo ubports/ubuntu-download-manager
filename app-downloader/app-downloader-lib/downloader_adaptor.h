@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOADER_ADAPTOR_H_1371550421
-#define DOWNLOADER_ADAPTOR_H_1371550421
+#ifndef DOWNLOADER_ADAPTOR_H_1371552392
+#define DOWNLOADER_ADAPTOR_H_1371552392
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -33,10 +33,14 @@ class DownloaderAdaptor: public QDBusAbstractAdaptor
     Q_CLASSINFO("D-Bus Introspection", ""
 "  <interface name=\"com.canonical.applications.Downloader\">\n"
 "    <method name=\"createDownload\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"id\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
 "    </method>\n"
 "    <method name=\"createDownloadWithHash\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"id\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"algorithm\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"hash\"/>\n"
@@ -56,8 +60,8 @@ public:
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
-    QDBusObjectPath createDownload(const QString &url);
-    QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash);
+    QDBusObjectPath createDownload(const QString &id, const QString &name, const QString &url);
+    QDBusObjectPath createDownloadWithHash(const QString &id, const QString &name, const QString &url, const QString &algorithm, const QString &hash);
     QList<QDBusObjectPath> getAllDownloads();
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
