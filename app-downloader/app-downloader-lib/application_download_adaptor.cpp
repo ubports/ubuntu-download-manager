@@ -33,16 +33,48 @@ ApplicationDownloadAdaptor::~ApplicationDownloadAdaptor()
     // destructor
 }
 
+QString ApplicationDownloadAdaptor::applicationId()
+{
+    // handle method call com.canonical.applications.ApplicationDownload.applicationId
+    QString id;
+    QMetaObject::invokeMethod(parent(), "applicationId", Q_RETURN_ARG(QString, id));
+    return id;
+}
+
+QString ApplicationDownloadAdaptor::applicationName()
+{
+    // handle method call com.canonical.applications.ApplicationDownload.applicationName
+    QString name;
+    QMetaObject::invokeMethod(parent(), "applicationName", Q_RETURN_ARG(QString, name));
+    return name;
+}
+
 void ApplicationDownloadAdaptor::cancel()
 {
     // handle method call com.canonical.applications.ApplicationDownload.cancel
     QMetaObject::invokeMethod(parent(), "cancel");
 }
 
+QVariantMap ApplicationDownloadAdaptor::metadata()
+{
+    // handle method call com.canonical.applications.ApplicationDownload.metadata
+    QVariantMap data;
+    QMetaObject::invokeMethod(parent(), "metadata", Q_RETURN_ARG(QVariantMap, data));
+    return data;
+}
+
 void ApplicationDownloadAdaptor::pause()
 {
     // handle method call com.canonical.applications.ApplicationDownload.pause
     QMetaObject::invokeMethod(parent(), "pause");
+}
+
+uint ApplicationDownloadAdaptor::progress()
+{
+    // handle method call com.canonical.applications.ApplicationDownload.progress
+    uint received;
+    QMetaObject::invokeMethod(parent(), "progress", Q_RETURN_ARG(uint, received));
+    return received;
 }
 
 void ApplicationDownloadAdaptor::resume()
@@ -55,5 +87,13 @@ void ApplicationDownloadAdaptor::start()
 {
     // handle method call com.canonical.applications.ApplicationDownload.start
     QMetaObject::invokeMethod(parent(), "start");
+}
+
+uint ApplicationDownloadAdaptor::totalSize()
+{
+    // handle method call com.canonical.applications.ApplicationDownload.totalSize
+    uint total;
+    QMetaObject::invokeMethod(parent(), "totalSize", Q_RETURN_ARG(uint, total));
+    return total;
 }
 

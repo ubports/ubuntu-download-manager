@@ -59,7 +59,7 @@ AppDownload* DownloaderPrivate::getApplication(QUrl url)
 {
     Q_Q(Downloader);
     QString path = buildDownloadPath();
-    AppDownload* appDown = new AppDownload(path, url, _nam);
+    AppDownload* appDown = new AppDownload("", "", path, url, _nam);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
@@ -69,7 +69,7 @@ AppDownload* DownloaderPrivate::getApplication(QUrl url, QString hash, QCryptogr
 {
     Q_Q(Downloader);
     QString path = buildDownloadPath();
-    AppDownload* appDown = new AppDownload(path, url, hash, algo, _nam);
+    AppDownload* appDown = new AppDownload("", "", path, url, hash, algo, _nam);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
@@ -210,15 +210,10 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &url, co
 
 QList<QDBusObjectPath> DownloaderPrivate::getAllDownloads()
 {
-    Q_Q(Downloader);
     qDebug() << "Getting all object paths.";
-
     QList<QDBusObjectPath> paths;
     foreach(AppDownload* appDownload, _downloads)
         paths << QDBusObjectPath(appDownload->path());
-
-    // emit the signal in case any other process is interested
-    emit q->downloads(paths);
     return paths;
 }
 

@@ -23,7 +23,6 @@ public slots:
 
 Q_SIGNALS:
     void downloadCreated(const QDBusObjectPath &path);
-    void downloads(const QList<QDBusObjectPath> &downloads);
 
 private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())

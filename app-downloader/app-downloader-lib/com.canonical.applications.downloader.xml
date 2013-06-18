@@ -19,10 +19,5 @@
     <signal name="downloadCreated">
         <arg name="path" type="o" direction="out"/>
     </signal>
-
-    <signal name="downloads">
-        <arg name="downloads" type="ao" direction="out" />
-    </signal>
-
  </interface>
 </node>

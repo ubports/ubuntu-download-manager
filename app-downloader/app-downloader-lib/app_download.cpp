@@ -15,9 +15,10 @@ class AppDownloadPrivate
 {
     Q_DECLARE_PUBLIC(AppDownload)
 public:
-    explicit AppDownloadPrivate(QString path, QUrl url, QNetworkAccessManager* nam, AppDownload* parent);
-    explicit AppDownloadPrivate(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-        QNetworkAccessManager* nam, AppDownload* parent);
+    explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam,
+        AppDownload* parent);
+    explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
+        QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent);
 
     // public methods
     QString path();
@@ -31,6 +32,11 @@ public:
     void startDownload();
 
     // plublic slots used by public implementation
+    QString applicationId();
+    QString applicationName();
+    QVariantMap metadata();
+    uint progress();
+    uint totalSize();
     void cancel();
     void pause();
     void resume();
@@ -47,6 +53,9 @@ private:
     void disconnectFromReplySignals();
 
 private:
+    QString _appId;
+    QString _appName;
+    uint _totalSize;
     AppDownload::State _state;
     QString _path;
     QUrl _url;
@@ -59,20 +68,27 @@ private:
 
 };
 
-AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QNetworkAccessManager* nam, AppDownload* parent):
-    _state(AppDownload::IDLE),
-    _path(path),
-    _url(url),
-    _hash(""),
-    _nam(nam),
-    q_ptr(parent)
+AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam,
+    AppDownload* parent):
+        _appId(appId),
+        _appName(appName),
+        _totalSize(0),
+        _state(AppDownload::IDLE),
+        _path(path),
+        _url(url),
+        _hash(""),
+        _nam(nam),
+        q_ptr(parent)
 {
     _reply = NULL;
     _currentData = NULL;
 }
 
-AppDownloadPrivate::AppDownloadPrivate(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-    QNetworkAccessManager* nam, AppDownload* parent):
+AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
+    QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent):
+        _appId(appId),
+        _appName(appName),
+        _totalSize(0),
         _state(AppDownload::IDLE),
         _path(path),
         _url(url),
@@ -230,6 +246,40 @@ void AppDownloadPrivate::startDownload()
     emit q->started(true);
 }
 
+QString AppDownloadPrivate::applicationId()
+{
+    return _appId;
+}
+
+QString AppDownloadPrivate::applicationName()
+{
+    return _appName;
+}
+
+QVariantMap AppDownloadPrivate::metadata()
+{
+    // create a QVarianMap with the required data
+    QVariantMap metadata;
+    metadata["id"] = _appId;
+    metadata["name"] = _appName;
+    metadata["size"] = _totalSize;
+    if (_currentData == NULL)
+        metadata["progress"] = -1;
+    else
+        metadata["progress"] = _currentData->size();
+    return metadata;
+}
+
+uint AppDownloadPrivate::progress()
+{
+    return (_currentData == NULL)?-1:_currentData->size();
+}
+
+uint AppDownloadPrivate::totalSize()
+{
+    return _totalSize;
+}
+
 void AppDownloadPrivate::cancel()
 {
     Q_Q(AppDownload);
@@ -272,8 +322,17 @@ void AppDownloadPrivate::onDownloadProgress(qint64 bytesReceived, qint64 bytesTo
     // ignore the case of 0 or when we do not know yet the size
     if (!bytesTotal >= 0)
     {
-        qDebug() << _url << "PROGRESS: " << bytesReceived << "/" << bytesTotal;
-        emit q->progress(bytesReceived, bytesTotal);
+        if (_totalSize == 0)
+        {
+            // bytesTotal is different when we have resumed because we are not counting the size that
+            // we already downloaded, therefore we only do this once
+            qDebug() << "Setting total size to " << _totalSize;
+            _totalSize = bytesTotal;
+        }
+        qint64 received = _currentData->size();
+
+        qDebug() << _url << "PROGRESS: " << received << "/" << bytesTotal;
+        emit q->progress(received, _totalSize);
     }
 }
 
@@ -325,16 +384,16 @@ void AppDownloadPrivate::onSslErrors(const QList<QSslError>& errors)
  * PUBLIC IMPLEMENTATION
  */
 
-AppDownload::AppDownload(QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent):
+AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent):
     QObject(parent),
-    d_ptr(new AppDownloadPrivate(path, url, nam, this))
+    d_ptr(new AppDownloadPrivate(appId, appName, path, url, nam, this))
 {
 }
 
-AppDownload::AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
     QNetworkAccessManager* nam, QObject* parent):
         QObject(parent),
-        d_ptr(new AppDownloadPrivate(path, url, hash, algo, nam, this))
+        d_ptr(new AppDownloadPrivate(appId, appName, path, url, hash, algo, nam, this))
 {
 }
 
@@ -378,6 +437,36 @@ void AppDownload::startDownload()
 {
     Q_D(AppDownload);
     d->startDownload();
+}
+
+QString AppDownload::applicationId()
+{
+    Q_D(AppDownload);
+    return d->applicationId();
+}
+
+QString AppDownload::applicationName()
+{
+    Q_D(AppDownload);
+    return d->applicationName();
+}
+
+QVariantMap AppDownload::metadata()
+{
+    Q_D(AppDownload);
+    return d->metadata();
+}
+
+uint AppDownload::progress()
+{
+    Q_D(AppDownload);
+    return d->progress();
+}
+
+uint AppDownload::totalSize()
+{
+    Q_D(AppDownload);
+    return d->totalSize();
 }
 
 void AppDownload::cancel()

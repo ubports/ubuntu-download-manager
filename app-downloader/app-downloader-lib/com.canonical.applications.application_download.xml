@@ -1,6 +1,27 @@
 <node>
   <interface name="com.canonical.applications.ApplicationDownload">
 
+    <method name="applicationId">
+        <arg name="id" type="s" direction="out"/>
+    </method>
+
+    <method name="applicationName">
+        <arg name="name" type="s" direction="out"/>
+    </method>
+
+    <method name="totalSize">
+        <arg name="total" type="u" direction="out"/>
+    </method>
+
+    <method name="progress">
+        <arg name="received" type="u" direction="out"/>
+    </method>
+
+    <method name="metadata">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+        <arg name="data" type="a{sv}" direction="out" />
+    </method>
+
     <method name="start" />
     <method name="pause" />
     <method name="resume" />

@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef APPLICATION_DOWNLOAD_ADAPTOR_H_1371483787
-#define APPLICATION_DOWNLOAD_ADAPTOR_H_1371483787
+#ifndef APPLICATION_DOWNLOAD_ADAPTOR_H_1371550421
+#define APPLICATION_DOWNLOAD_ADAPTOR_H_1371550421
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -32,6 +32,22 @@ class ApplicationDownloadAdaptor: public QDBusAbstractAdaptor
     Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.ApplicationDownload")
     Q_CLASSINFO("D-Bus Introspection", ""
 "  <interface name=\"com.canonical.applications.ApplicationDownload\">\n"
+"    <method name=\"applicationId\">\n"
+"      <arg direction=\"out\" type=\"s\" name=\"id\"/>\n"
+"    </method>\n"
+"    <method name=\"applicationName\">\n"
+"      <arg direction=\"out\" type=\"s\" name=\"name\"/>\n"
+"    </method>\n"
+"    <method name=\"totalSize\">\n"
+"      <arg direction=\"out\" type=\"u\" name=\"total\"/>\n"
+"    </method>\n"
+"    <method name=\"progress\">\n"
+"      <arg direction=\"out\" type=\"u\" name=\"received\"/>\n"
+"    </method>\n"
+"    <method name=\"metadata\">\n"
+"      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+"      <arg direction=\"out\" type=\"a{sv}\" name=\"data\"/>\n"
+"    </method>\n"
 "    <method name=\"start\"/>\n"
 "    <method name=\"pause\"/>\n"
 "    <method name=\"resume\"/>\n"
@@ -64,10 +80,15 @@ public:
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
+    QString applicationId();
+    QString applicationName();
     void cancel();
+    QVariantMap metadata();
     void pause();
+    uint progress();
     void resume();
     void start();
+    uint totalSize();
 Q_SIGNALS: // SIGNALS
     void canceled(bool success);
     void error(const QString &error);

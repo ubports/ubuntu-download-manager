@@ -27,8 +27,8 @@ public:
         FINISHED
     };
 
-    explicit AppDownload(QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent=0);
-    explicit AppDownload(QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent=0);
+    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
         QNetworkAccessManager* nam, QObject* parent=0);
 
     // gets for internal state
@@ -46,6 +46,11 @@ public:
 public slots:
     // slots that are exposed via dbus, they just change the state, the downloader
     // takes care of the actual download operations
+    QString applicationId();
+    QString applicationName();
+    QVariantMap metadata();
+    uint progress();
+    uint totalSize();
     void cancel();
     void pause();
     void resume();

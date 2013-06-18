@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOADER_ADAPTOR_H_1371483787
-#define DOWNLOADER_ADAPTOR_H_1371483787
+#ifndef DOWNLOADER_ADAPTOR_H_1371550421
+#define DOWNLOADER_ADAPTOR_H_1371550421
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -48,9 +48,6 @@ class DownloaderAdaptor: public QDBusAbstractAdaptor
 "    <signal name=\"downloadCreated\">\n"
 "      <arg direction=\"out\" type=\"o\" name=\"path\"/>\n"
 "    </signal>\n"
-"    <signal name=\"downloads\">\n"
-"      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
-"    </signal>\n"
 "  </interface>\n"
         "")
 public:
@@ -64,7 +61,6 @@ public Q_SLOTS: // METHODS
     QList<QDBusObjectPath> getAllDownloads();
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
-    void downloads(const QList<QDBusObjectPath> &downloads);
 };
 
 #endif
