@@ -1,5 +1,7 @@
 #include <QBuffer>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QNetworkReply>
 #include <QSignalMapper>
 #include <QStringList>
@@ -7,6 +9,16 @@
 #include "xdg_basedir.h"
 #include "app_download.h"
 
+// metadata keys definitions
+#define ID "id"
+#define NAME "name"
+#define SIZE "size"
+#define PROGRESS "progress"
+#define STATE "state"
+#define DBUS_PATH "dbus_path"
+#define URL "url"
+#define HASH "hash"
+#define ALGO "algo"
 
 
 /**
@@ -21,6 +33,7 @@ public:
         AppDownload* parent);
     explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
         QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent);
+    ~AppDownloadPrivate();
 
     // public methods
     QString path() const;
@@ -51,15 +64,18 @@ public:
     void onSslErrors(const QList<QSslError>& errors);
 
 private:
+    void init();
     void connetToReplySignals();
     void disconnectFromReplySignals();
+    void storeMetadata();
 
 private:
     QString _appId;
     QString _appName;
     uint _totalSize;
     AppDownload::State _state;
-    QString _path;
+    QString _dbusPath;
+    QString _localPath;
     QUrl _url;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
@@ -76,14 +92,13 @@ AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString p
         _appName(appName),
         _totalSize(0),
         _state(AppDownload::IDLE),
-        _path(path),
+        _dbusPath(path),
         _url(url),
         _hash(""),
         _nam(nam),
         q_ptr(parent)
 {
-    _reply = NULL;
-    _currentData = NULL;
+    init();
 }
 
 AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
@@ -92,15 +107,39 @@ AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString p
         _appName(appName),
         _totalSize(0),
         _state(AppDownload::IDLE),
-        _path(path),
+        _dbusPath(path),
         _url(url),
         _hash(hash),
         _algo(algo),
         _nam(nam),
         q_ptr(parent)
 {
+    init();
+}
+
+AppDownloadPrivate::~AppDownloadPrivate()
+{
+    if (_currentData != NULL)
+    {
+        qDebug() << "Closing current data file.";
+        _currentData->close();
+        delete _currentData;
+    }
+    if (_reply != NULL)
+        delete _reply;
+}
+
+void AppDownloadPrivate::init()
+{
+    QStringList pathComponents;
+    pathComponents << "application_downloader" << _appId;
+    _localPath = XDGBasedir::saveDataPath(pathComponents);
+
     _reply = NULL;
     _currentData = NULL;
+
+    // store metadata in case we crash or are stopped
+    storeMetadata();
 }
 
 void AppDownloadPrivate::connetToReplySignals()
@@ -135,9 +174,34 @@ void AppDownloadPrivate::disconnectFromReplySignals()
     }
 }
 
+void AppDownloadPrivate::storeMetadata()
+{
+    // data might be already be present, therefore we will delete it (due to the total size being wrong)
+    QString metadataPath = _localPath + "/metadata";
+    qDebug() << "Storing metadata in" << metadataPath << "for app" << _appName;
+
+    QVariantMap app_metadata = metadata();
+    // update the metadata with extra info
+    app_metadata[STATE] = _state;
+    app_metadata[DBUS_PATH] = _dbusPath;
+    app_metadata[URL] = _url.toString();
+    app_metadata[HASH] = _hash;
+    app_metadata[ALGO] = _algo;
+
+    // remove redundant info like the progress (we know the file)
+    app_metadata.remove(PROGRESS);
+
+    QJsonDocument* data = new QJsonDocument(QJsonObject::fromVariantMap(app_metadata));
+    QFile* file = new QFile(metadataPath);
+    // truncate will remove the content of the file if it exists
+    file->open(QIODevice::ReadWrite | QIODevice::Truncate);
+    file->write(data->toJson());
+    file->close();
+}
+
 QString AppDownloadPrivate::path() const
 {
-    return _path;
+    return _dbusPath;
 }
 
 QUrl AppDownloadPrivate::url() const
@@ -238,15 +302,11 @@ void AppDownloadPrivate::startDownload()
 
     qDebug() << "START:" << _url;
 
-    // create temp file that will be used to mantain the state of the download when resumed.
-    QStringList pathComponents;
-    pathComponents << "application_downloader" << _appId;
-
-    QString path = XDGBasedir::saveDataPath(pathComponents);
+    // create file that will be used to mantain the state of the download when resumed.
     // TODO: Use a better name
-    _currentData = new QFile(path + "/" + "data");
+    _currentData = new QFile(_localPath + "/data");
     _currentData->open(QIODevice::ReadWrite);
-    qDebug() << "Tempp IO Device created in " << path;
+    qDebug() << "Tempp IO Device created in " << _currentData->fileName();
 
     // signals should take care or calling deleteLater on the QNetworkReply object
     _reply = _nam->get(QNetworkRequest(_url));
@@ -268,13 +328,13 @@ QVariantMap AppDownloadPrivate::metadata()
 {
     // create a QVarianMap with the required data
     QVariantMap metadata;
-    metadata["id"] = _appId;
-    metadata["name"] = _appName;
-    metadata["size"] = _totalSize;
+    metadata[ID] = _appId;
+    metadata[NAME] = _appName;
+    metadata[SIZE] = _totalSize;
     if (_currentData == NULL)
-        metadata["progress"] = -1;
+        metadata[PROGRESS] = -1;
     else
-        metadata["progress"] = _currentData->size();
+        metadata[PROGRESS] = _currentData->size();
     return metadata;
 }
 
@@ -293,6 +353,7 @@ void AppDownloadPrivate::cancel()
     Q_Q(AppDownload);
     qDebug() << "CANCELED:" << _url;
     _state = AppDownload::CANCELED;
+    storeMetadata();
     emit q->stateChanged();
 }
 
@@ -301,6 +362,7 @@ void AppDownloadPrivate::pause()
     Q_Q(AppDownload);
     qDebug() << "PAUSED:" << _url;
     _state = AppDownload::PAUSED;
+    storeMetadata();
     emit q->stateChanged();
 }
 
@@ -309,6 +371,7 @@ void AppDownloadPrivate::resume()
     Q_Q(AppDownload);
     qDebug() << "RESUMED:" << _url;
     _state = AppDownload::RESUMED;
+    storeMetadata();
     emit q->stateChanged();
 }
 
@@ -317,6 +380,7 @@ void AppDownloadPrivate::start()
     Q_Q(AppDownload);
     qDebug() << "STARTED:" << _url;
     _state = AppDownload::STARTED;
+    storeMetadata();
     emit q->stateChanged();
 }
 
@@ -336,6 +400,8 @@ void AppDownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
             // we already downloaded, therefore we only do this once
             qDebug() << "Setting total size to " << _totalSize;
             _totalSize = bytesTotal;
+            // update the metadata
+            storeMetadata();
         }
         qint64 received = _currentData->size();
 
