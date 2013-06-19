@@ -41,6 +41,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
+    static AppDownload* fromMetadata(QString path, QNetworkAccessManager* nam);
 
 
 public slots:
@@ -70,6 +71,7 @@ Q_SIGNALS:
     void stateChanged();
 
 private:
+    explicit AppDownload();
     // private slots used to keep track of the qnetwork reply state
 
     Q_PRIVATE_SLOT(d_func(), void onDownloadProgress(qint64, qint64))

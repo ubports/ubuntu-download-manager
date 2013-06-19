@@ -6,6 +6,7 @@
 #include <QSignalMapper>
 #include <QStringList>
 #include <QFile>
+#include <QFileInfo>
 #include "xdg_basedir.h"
 #include "app_download.h"
 
@@ -19,6 +20,8 @@
 #define URL "url"
 #define HASH "hash"
 #define ALGO "algo"
+#define DATA_FILE_NAME "data"
+#define METADATA_FILE_NAME "metadata"
 
 
 /**
@@ -45,6 +48,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
+    static AppDownloadPrivate* fromMetadata(QString path, QNetworkAccessManager* nam, AppDownload* parent);
 
     // plublic slots used by public implementation
     QString applicationId() const;
@@ -177,7 +181,7 @@ void AppDownloadPrivate::disconnectFromReplySignals()
 void AppDownloadPrivate::storeMetadata()
 {
     // data might be already be present, therefore we will delete it (due to the total size being wrong)
-    QString metadataPath = _localPath + "/metadata";
+    QString metadataPath = _localPath + "/" + METADATA_FILE_NAME;
     qDebug() << "Storing metadata in" << metadataPath << "for app" << _appName;
 
     QVariantMap app_metadata = metadata();
@@ -304,14 +308,125 @@ void AppDownloadPrivate::startDownload()
 
     // create file that will be used to mantain the state of the download when resumed.
     // TODO: Use a better name
-    _currentData = new QFile(_localPath + "/data");
-    _currentData->open(QIODevice::ReadWrite);
+    _currentData = new QFile(_localPath + "/" + DATA_FILE_NAME);
+    _currentData->open(QIODevice::ReadWrite | QFile::Append);
     qDebug() << "Tempp IO Device created in " << _currentData->fileName();
 
     // signals should take care or calling deleteLater on the QNetworkReply object
     _reply = _nam->get(QNetworkRequest(_url));
     connetToReplySignals();
     emit q->started(true);
+}
+
+AppDownloadPrivate* AppDownloadPrivate::fromMetadata(QString path, QNetworkAccessManager* nam, AppDownload* parent)
+{
+    qDebug() << "Loading app download from metadata";
+
+    QString metadataPath = path + "/" + METADATA_FILE_NAME;
+    QFileInfo metadataInfo(path);
+
+    // we at least most have the metadata path
+    if (!metadataInfo.exists())
+    {
+        qDebug() << "ERROR: File " << metadataPath << "does not exist.";
+        return NULL;
+    }
+
+    // try to read the metadata so that is loaded in a QJsonDocument and we can retrieve the
+    // required info
+    QFile* metadataFile = new QFile(metadataPath);
+    metadataFile->open(QIODevice::ReadOnly);
+    QByteArray metadata = metadataFile->readAll();
+    metadataFile->close();
+    QJsonObject metadataJson = QJsonDocument::fromBinaryData(metadata).object();
+    if (metadataJson.empty())
+    {
+        qDebug() << "ERROR: Metadata could not be validated.";
+        return NULL;
+    }
+
+    // assert tha the json object has all the required keys
+    QString appId;
+    if (metadataJson.contains(ID))
+        appId = metadataJson[ID].toString();
+    else
+    {
+        qDebug() << "ERROR: ID is missing from json.";
+        return NULL;
+    }
+
+    QString appName;
+    if (metadataJson.contains(NAME))
+        appName = metadataJson[NAME].toString();
+    else
+    {
+        qDebug() << "ERROR: NAME is missing from json.";
+        return NULL;
+    }
+
+    QString dbusPath;
+    if (metadataJson.contains(DBUS_PATH))
+    {
+        dbusPath = metadataJson[DBUS_PATH].toString();
+    }
+    else
+    {
+        qDebug() << "ERROR: DBUS_PATH missing from json.";
+    }
+
+    uint totalSize = 0;
+    if (metadataJson.contains(SIZE))
+    {
+        totalSize = metadataJson.value(SIZE).toVariant().toUInt();
+    }
+
+    AppDownload::State state = AppDownload::IDLE;
+    if (metadataJson.contains(STATE))
+    {
+        state = (AppDownload::State)metadataJson.value(STATE).toVariant().toInt();
+    }
+
+    QUrl url;
+    if (metadataJson.contains(URL))
+    {
+        url = QUrl(metadataJson[URL].toString());
+    }
+    else
+    {
+       qDebug() << "ERROR: URL missing form json.";
+       return NULL;
+    }
+
+    QString hash = "";
+    if (metadataJson.contains(HASH))
+        hash = metadataJson[HASH].toString();
+
+    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+    if (metadataJson.contains(ALGO))
+        algo = (QCryptographicHash::Algorithm)metadataJson.value(ALGO).toVariant().toInt();
+
+    AppDownloadPrivate* appDownload;
+    if (hash.isEmpty())
+    {
+        appDownload = new AppDownloadPrivate(appId, appName, dbusPath, url, nam, parent);
+    }
+    else
+    {
+        appDownload = new AppDownloadPrivate(appId, appName, dbusPath, url, hash,
+            algo, nam, parent);
+    }
+    appDownload->_totalSize = totalSize;
+    appDownload->_state = state;
+
+    QString dataPath = path + "/" + DATA_FILE_NAME;
+    QFileInfo dataInfo(dataPath);
+    if (dataInfo.exists())
+    {
+        // create the file and set it
+        appDownload->_currentData = new QFile(dataPath);
+        appDownload->_currentData->open(QIODevice::ReadWrite | QFile::Append);
+    }
+    return appDownload;
 }
 
 QString AppDownloadPrivate::applicationId() const
@@ -471,6 +586,11 @@ AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url,
 {
 }
 
+AppDownload::AppDownload() :
+    d_ptr(NULL)
+{
+}
+
 QString AppDownload::path()
 {
     Q_D(AppDownload);
@@ -511,6 +631,18 @@ void AppDownload::startDownload()
 {
     Q_D(AppDownload);
     d->startDownload();
+}
+
+AppDownload* AppDownload::fromMetadata(QString path, QNetworkAccessManager* nam)
+{
+    AppDownload* appDownload = new AppDownload();
+    AppDownloadPrivate* priv = AppDownloadPrivate::fromMetadata(path, nam, appDownload);
+    if (priv != NULL)
+    {
+        appDownload->d_ptr = priv;
+        return appDownload;
+    }
+    return NULL;
 }
 
 QString AppDownload::applicationId()
