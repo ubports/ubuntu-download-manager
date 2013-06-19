@@ -48,7 +48,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
-    static AppDownloadPrivate* fromMetadata(QString path, QNetworkAccessManager* nam, AppDownload* parent);
+    static AppDownloadPrivate* fromMetadata(const QString &path, QNetworkAccessManager* nam, AppDownload* parent);
 
     // plublic slots used by public implementation
     QString applicationId() const;
@@ -99,6 +99,7 @@ AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString p
         _dbusPath(path),
         _url(url),
         _hash(""),
+        _algo(QCryptographicHash::Md5),
         _nam(nam),
         q_ptr(parent)
 {
@@ -201,6 +202,8 @@ void AppDownloadPrivate::storeMetadata()
     file->open(QIODevice::ReadWrite | QIODevice::Truncate);
     file->write(data->toJson());
     file->close();
+    delete data;
+    delete file;
 }
 
 QString AppDownloadPrivate::path() const
@@ -318,7 +321,7 @@ void AppDownloadPrivate::startDownload()
     emit q->started(true);
 }
 
-AppDownloadPrivate* AppDownloadPrivate::fromMetadata(QString path, QNetworkAccessManager* nam, AppDownload* parent)
+AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, QNetworkAccessManager* nam, AppDownload* parent)
 {
     qDebug() << "Loading app download from metadata";
 
@@ -633,7 +636,7 @@ void AppDownload::startDownload()
     d->startDownload();
 }
 
-AppDownload* AppDownload::fromMetadata(QString path, QNetworkAccessManager* nam)
+AppDownload* AppDownload::fromMetadata(const QString &path, QNetworkAccessManager* nam)
 {
     AppDownload* appDownload = new AppDownload();
     AppDownloadPrivate* priv = AppDownloadPrivate::fromMetadata(path, nam, appDownload);

@@ -16,8 +16,10 @@ private:
     AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url);
     AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url, const QString &hash,
         QCryptographicHash::Algorithm algo);
+    void addDownload(AppDownload* download);
     void updateCurrentDownload();
     void onDownloadStateChanged();
+    void loadPreviewsDownloads(QString path);
 
     QDBusObjectPath createDownload(const QString &appId, const QString &appName, const QString &url);
     QDBusObjectPath createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
@@ -64,6 +66,11 @@ AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QStri
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
+}
+
+void DownloaderPrivate::addDownload(AppDownload* download)
+{
+    // TODO
 }
 
 void DownloaderPrivate::updateCurrentDownload()
@@ -137,7 +144,7 @@ void DownloaderPrivate::onDownloadStateChanged()
             break;
         case AppDownload::PAUSED:
             sender->pauseDownload();
-            if (_current->path() == sender->path())
+            if (_current != NULL && _current->path() == sender->path())
                 updateCurrentDownload();
             break;
         case AppDownload::RESUMED:
@@ -147,18 +154,25 @@ void DownloaderPrivate::onDownloadStateChanged()
         case AppDownload::CANCELED:
             // cancel and remove the download
             sender->cancelDownload();
-            if (_current->path() == sender->path())
+            if (_current != NULL && _current->path() == sender->path())
                 updateCurrentDownload();
             break;
         case AppDownload::FINISHED:
             // remove the registered object in dbus, remove the download and the adapter from the list
-            if (_current->path() == sender->path())
+            if (_current != NULL && _current->path() == sender->path())
                 updateCurrentDownload();
             break;
         default:
             // do nothing
             break;
     }
+}
+
+void DownloaderPrivate::loadPreviewsDownloads(QString path)
+{
+    // TODO
+    // list the dirs of the different downloads that we can find, loop and create each of them
+
 }
 
 QDBusObjectPath DownloaderPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
@@ -226,6 +240,12 @@ Downloader::Downloader(QDBusConnection connection, QObject *parent) :
     QObject(parent),
     d_ptr(new DownloaderPrivate(connection, this))
 {
+}
+
+void Downloader::loadPreviewsDownloads(const QString &path)
+{
+    Q_D(Downloader);
+    d->loadPreviewsDownloads(path);
 }
 
 QDBusObjectPath Downloader::createDownload(const QString &appId, const QString &appName, const QString &url)

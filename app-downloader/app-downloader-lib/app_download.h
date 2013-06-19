@@ -41,7 +41,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
-    static AppDownload* fromMetadata(QString path, QNetworkAccessManager* nam);
+    static AppDownload* fromMetadata(const QString &path, QNetworkAccessManager* nam);
 
 
 public slots:

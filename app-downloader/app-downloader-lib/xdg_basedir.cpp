@@ -4,25 +4,26 @@
 #include <QFile>
 #include <stdlib.h>
 
-QString XDGBasedir::DEFAULT_CACHE_HOME = ".cache";
-QString XDGBasedir::DEFAULT_CONFIG_PATH = "/etc/xdg";
-QString XDGBasedir::DEFAULT_CONFIG_HOME =  ".config";
-QString XDGBasedir::DEFAULT_DATA_PATH = "/usr/local/share:/usr/share";
-QString XDGBasedir::DEFAULT_DATA_HOME = ".local/share";
-std::string XDGBasedir::XDG_CACHE_HOME = "XDG_CACHE_HOME";
-std::string XDGBasedir::XDG_CONFIG_HOME = "XDG_CONFIG_HOME";
-std::string XDGBasedir::XDG_DATA_HOME = "XDG_DATA_HOME";
-std::string XDGBasedir::XDG_CONFIG_DIRS = "XDG_CONFIG_DIRS";
-std::string XDGBasedir::XDG_DATA_DIRS = "XDG_DATA_DIRS";
+// definitions of defaults
+#define DEFAULT_CACHE_HOME ".cache"
+#define DEFAULT_CONFIG_PATH "/etc/xdg"
+#define DEFAULT_CONFIG_HOME ".config"
+#define DEFAULT_DATA_PATH "/usr/local/share:/usr/share"
+#define DEFAULT_DATA_HOME ".local/share"
+#define XDG_CACHE_HOME "XDG_CACHE_HOME"
+#define XDG_CONFIG_HOME "XDG_CONFIG_HOME"
+#define XDG_DATA_HOME "XDG_DATA_HOME"
+#define XDG_CONFIG_DIRS "XDG_CONFIG_DIRS"
+#define XDG_DATA_DIRS "XDG_DATA_DIRS"
 
 QString XDGBasedir::cacheHome()
 {
     qDebug() << "XDGBasedir::cacheHome()";
-    QString env_path = QString::fromUtf8(getenv(XDG_CACHE_HOME.c_str())).trimmed();
+    QString env_path = QString::fromUtf8(getenv(XDG_CACHE_HOME)).trimmed();
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_CACHE_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDGBasedir::XDG_CACHE_HOME) << "Returning default" << defaultValue;
+        qDebug() << "NULL" << QString::fromStdString(XDG_CACHE_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;
@@ -31,11 +32,11 @@ QString XDGBasedir::cacheHome()
 QString XDGBasedir::configHome()
 {
     qDebug() << "XDGBasedir::configHome()";
-    QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_HOME.c_str())).trimmed();
+    QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_HOME)).trimmed();
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_CONFIG_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDGBasedir::XDG_CONFIG_HOME) << "Returning default" << defaultValue;
+        qDebug() << "NULL" << QString::fromStdString(XDG_CONFIG_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;
@@ -44,11 +45,11 @@ QString XDGBasedir::configHome()
 QString XDGBasedir::dataHome()
 {
     qDebug() << "XDGBasedir::dataHome()";
-    QString env_path = QString::fromUtf8(getenv(XDG_DATA_HOME.c_str())).trimmed();
+    QString env_path = QString::fromUtf8(getenv(XDG_DATA_HOME)).trimmed();
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_DATA_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDGBasedir::XDG_DATA_HOME) << "Returning default" << defaultValue;
+        qDebug() << "NULL" << QString::fromStdString(XDG_DATA_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;
@@ -60,10 +61,10 @@ QList<QString> XDGBasedir::configDirs()
     QList<QString> result;
     result.append(XDGBasedir::configHome());
 
-    QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_DIRS.c_str())).trimmed();
+    QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_DIRS)).trimmed();
     if (env_path.isEmpty())
     {
-        qDebug() << "NULL" << QString::fromStdString(XDGBasedir::XDG_CONFIG_DIRS);
+        qDebug() << "NULL" << QString::fromStdString(XDG_CONFIG_DIRS);
         return result;
     }
 
@@ -79,10 +80,10 @@ QList<QString> XDGBasedir::dataDirs()
     QList<QString> result;
     result.append(XDGBasedir::dataHome());
 
-    QString env_path = QString::fromUtf8(getenv(XDG_DATA_DIRS.c_str())).trimmed();
+    QString env_path = QString::fromUtf8(getenv(XDG_DATA_DIRS)).trimmed();
     if (env_path.isEmpty())
     {
-        qDebug() << "NULL" << QString::fromStdString(XDGBasedir::XDG_DATA_DIRS);
+        qDebug() << "NULL" << QString::fromStdString(XDG_DATA_DIRS);
         return result;
     }
 

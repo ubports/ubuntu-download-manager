@@ -14,11 +14,12 @@ class Downloader : public QObject
     Q_DECLARE_PRIVATE(Downloader)
 public:
     explicit Downloader(QDBusConnection connection, QObject *parent = 0);
-
+    void loadPreviewsDownloads(const QString &path);
 
 public slots:
     QDBusObjectPath createDownload(const QString &id, const QString &name, const QString &url);
-    QDBusObjectPath createDownloadWithHash(const QString &id, const QString &name, const QString &url, const QString &algorithm, const QString &hash);
+    QDBusObjectPath createDownloadWithHash(const QString &id, const QString &name, const QString &url,
+        const QString &algorithm, const QString &hash);
     QList<QDBusObjectPath> getAllDownloads();
 
 Q_SIGNALS:
