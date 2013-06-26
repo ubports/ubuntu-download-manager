@@ -18,9 +18,24 @@ private slots:
     void init();
     void cleanup();
 
-    // constrictors tests
+    // constructors tests
     void testNoHashConstructor();
     void testHashConstructor();
+
+    // data function to be used for the accessor tests
+    void testPath_data();
+    void testUrl_data();
+    void testApplicationId_data();
+    void testApplicationName_data();
+
+    // accessor methods
+    void testPath();
+    void testUrl();
+    void testApplicationId();
+    void testApplicationName();
+    void testMetadata();
+    void testProgress();
+    void testTotalSize();
 
     // dbus method tests
     void testCancel();
@@ -33,6 +48,13 @@ private slots:
     void testPauseDownload();
     void testResumeDownload();
     void testStartDownload();
+
+private:
+    QString _appId;
+    QString _appName;
+    QString _path;
+    QUrl _url;
+    QNetworkAccessManager* _nam;
 
 };
 
