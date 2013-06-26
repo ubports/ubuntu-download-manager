@@ -1,8 +1,8 @@
 #include "test_xdg_basedir.h"
 
-#include "test_xdg_basedir.h"
 #include <stdlib.h>
 #include <functional>
+#include <QDebug>
 #include <QDir>
 
 
