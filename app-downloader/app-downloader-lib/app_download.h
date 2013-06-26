@@ -35,6 +35,7 @@ public:
     QString path();
     QUrl url();
     AppDownload::State state();
+    QString filePath();
 
     // methods that do perform the download
     void cancelDownload();

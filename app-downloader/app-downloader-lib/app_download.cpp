@@ -1,4 +1,5 @@
 #include <QBuffer>
+#include <QDir>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -42,6 +43,7 @@ public:
     QString path() const;
     QUrl url() const;
     AppDownload::State state();
+    QString filePath();
 
     // methods that do really perform the actions
     void cancelDownload();
@@ -71,7 +73,10 @@ private:
     void init();
     void connetToReplySignals();
     void disconnectFromReplySignals();
+    QString saveFileName();
+    QString saveMetadataName();
     void storeMetadata();
+    void cleanUpCurrentData();
 
 private:
     QString _appId;
@@ -179,10 +184,26 @@ void AppDownloadPrivate::disconnectFromReplySignals()
     }
 }
 
+QString AppDownloadPrivate::saveFileName()
+{
+    QString path = _url.path();
+    QString basename = QFileInfo(path).fileName();
+
+    if (basename.isEmpty())
+        basename = DATA_FILE_NAME;
+
+    return _localPath + "/" + saveFileName();
+}
+
+QString AppDownloadPrivate::saveMetadataName()
+{
+    return _localPath + "/" + METADATA_FILE_NAME;
+}
+
 void AppDownloadPrivate::storeMetadata()
 {
     // data might be already be present, therefore we will delete it (due to the total size being wrong)
-    QString metadataPath = _localPath + "/" + METADATA_FILE_NAME;
+    QString metadataPath = saveMetadataName();
     qDebug() << "Storing metadata in" << metadataPath << "for app" << _appName;
 
     QVariantMap app_metadata = metadata();
@@ -206,6 +227,56 @@ void AppDownloadPrivate::storeMetadata()
     delete file;
 }
 
+void AppDownloadPrivate::cleanUpCurrentData()
+{
+    bool success;
+    QString fileName;
+    if (_currentData)
+    {
+        // delete the current data, we did cancel.
+        fileName = _currentData->fileName();
+        qDebug() << "Removing file" << fileName;
+        success = _currentData->remove();
+        _currentData->deleteLater();
+        _currentData = NULL;
+        if (!success)
+            qWarning() << "Error removing" << fileName;
+    }
+    else
+    {
+        fileName = saveFileName();
+        // check if the file is present and remove it
+        QFileInfo fileInfo = QFileInfo(fileName);
+
+        if (fileInfo.exists())
+        {
+            qDebug() << "Removing file" << fileName;
+            success = QFile::remove(fileInfo.absoluteFilePath());
+            if (!success)
+                qWarning() << "Error removing" << fileName;
+        }
+    }
+    // remove metadata and dir
+    fileName = saveMetadataName();
+    QFileInfo metadataInfo = QFileInfo(fileName);
+
+    if (metadataInfo.exists())
+    {
+        qDebug() << "Removing file" << fileName;
+        success = QFile::remove(metadataInfo.absoluteFilePath());
+        if (!success)
+            qWarning() << "Error removing" << fileName;
+    }
+
+    QDir dir(_localPath);
+    if (dir.exists())
+    {
+        success = dir.remove(_localPath);
+        if (!success)
+            qWarning() << "Error removing" << _localPath;
+    }
+}
+
 QString AppDownloadPrivate::path() const
 {
     return _dbusPath;
@@ -221,29 +292,30 @@ AppDownload::State AppDownloadPrivate::state()
     return _state;
 }
 
+QString AppDownloadPrivate::filePath()
+{
+    if (_currentData)
+        return _currentData->fileName();
+    return "";
+}
+
 void AppDownloadPrivate::cancelDownload()
 {
     Q_Q(AppDownload);
 
-    if (_reply == NULL)
-    {
-        // cannot run because it is not running
-        emit q->canceled(false);
-        return;
-    }
-
     qDebug() << "Canceling download for " << _url;
 
-    // disconnect so that we do not get useless signals and rremove the reply
-    disconnectFromReplySignals();
-    _reply->abort();
-    _reply->deleteLater();
-    _reply = NULL;
+    if (_reply != NULL)
+    {
+        // disconnect so that we do not get useless signals and remove the reply
+        disconnectFromReplySignals();
+        _reply->abort();
+        _reply->deleteLater();
+        _reply = NULL;
+    }
 
-    // delete the current data, we did cancel.
-    _currentData->deleteLater();
-    _currentData = NULL;
-
+    // remove current data and metadata
+    cleanUpCurrentData();
     emit q->canceled(true);
 }
 
@@ -311,9 +383,9 @@ void AppDownloadPrivate::startDownload()
 
     // create file that will be used to mantain the state of the download when resumed.
     // TODO: Use a better name
-    _currentData = new QFile(_localPath + "/" + DATA_FILE_NAME);
+    _currentData = new QFile(saveFileName());
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
-    qDebug() << "Tempp IO Device created in " << _currentData->fileName();
+    qDebug() << "IO Device created in " << _currentData->fileName();
 
     // signals should take care or calling deleteLater on the QNetworkReply object
     _reply = _nam->get(QNetworkRequest(_url));
@@ -471,7 +543,6 @@ void AppDownloadPrivate::cancel()
     Q_Q(AppDownload);
     qDebug() << "CANCELED:" << _url;
     _state = AppDownload::CANCELED;
-    storeMetadata();
     emit q->stateChanged();
 }
 
@@ -531,11 +602,14 @@ void AppDownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
 void AppDownloadPrivate::onError(QNetworkReply::NetworkError code)
 {
     qDebug() << _url << "ERROR:" << ":" << code;
-    // get the error data, disconnect and remove the reply
+    // get the error data, disconnect and remove the reply and data
 
     disconnectFromReplySignals();
     _reply->deleteLater();
     _reply = NULL;
+    cleanUpCurrentData();
+
+    // TODO: emit error signal
 }
 
 void AppDownloadPrivate::onFinished()
@@ -570,6 +644,7 @@ void AppDownloadPrivate::onFinished()
 void AppDownloadPrivate::onSslErrors(const QList<QSslError>& errors)
 {
     qDebug() << _url << "SLL ERRORS:" << errors.count();
+    // TODO: emit ssl errors signal?
 }
 
 /**
@@ -610,6 +685,12 @@ AppDownload::State AppDownload::state()
 {
     Q_D(AppDownload);
     return d->state();
+}
+
+QString AppDownload::filePath()
+{
+    Q_D(AppDownload);
+    return d->filePath();
 }
 
 void AppDownload::cancelDownload()
