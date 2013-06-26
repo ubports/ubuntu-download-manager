@@ -33,10 +33,10 @@ class AppDownloadPrivate
 {
     Q_DECLARE_PUBLIC(AppDownload)
 public:
-    explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam,
+    explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam,
         AppDownload* parent);
     explicit AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
-        QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent);
+        QCryptographicHash::Algorithm algo, RequestFactory* nam, AppDownload* parent);
     ~AppDownloadPrivate();
 
     // public methods
@@ -50,7 +50,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
-    static AppDownloadPrivate* fromMetadata(const QString &path, QNetworkAccessManager* nam, AppDownload* parent);
+    static AppDownloadPrivate* fromMetadata(const QString &path, RequestFactory* nam, AppDownload* parent);
 
     // plublic slots used by public implementation
     QString applicationId() const;
@@ -88,14 +88,14 @@ private:
     QUrl _url;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
-    QNetworkAccessManager* _nam;
+    RequestFactory* _requestFactory;
     QNetworkReply* _reply;
     QFile* _currentData;
     AppDownload* q_ptr;
 
 };
 
-AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam,
+AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam,
     AppDownload* parent):
         _appId(appId),
         _appName(appName),
@@ -105,14 +105,14 @@ AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString p
         _url(url),
         _hash(""),
         _algo(QCryptographicHash::Md5),
-        _nam(nam),
+        _requestFactory(nam),
         q_ptr(parent)
 {
     init();
 }
 
 AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
-    QCryptographicHash::Algorithm algo, QNetworkAccessManager* nam, AppDownload* parent):
+    QCryptographicHash::Algorithm algo, RequestFactory* nam, AppDownload* parent):
         _appId(appId),
         _appName(appName),
         _totalSize(0),
@@ -121,7 +121,7 @@ AppDownloadPrivate::AppDownloadPrivate(QString appId, QString appName, QString p
         _url(url),
         _hash(hash),
         _algo(algo),
-        _nam(nam),
+        _requestFactory(nam),
         q_ptr(parent)
 {
     init();
@@ -192,12 +192,14 @@ QString AppDownloadPrivate::saveFileName()
     if (basename.isEmpty())
         basename = DATA_FILE_NAME;
 
-    return _localPath + "/" + saveFileName();
+    QString final_path = _localPath + QDir::separator() + basename;
+    qDebug() << "Save path name is" << final_path;
+    return final_path;
 }
 
 QString AppDownloadPrivate::saveMetadataName()
 {
-    return _localPath + "/" + METADATA_FILE_NAME;
+    return _localPath + QDir::separator() + METADATA_FILE_NAME;
 }
 
 void AppDownloadPrivate::storeMetadata()
@@ -361,8 +363,8 @@ void AppDownloadPrivate::resumeDownload()
     QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(currentDataSize) + "-";
     QNetworkRequest request = QNetworkRequest(_url);
     request.setRawHeader("Range",rangeHeaderValue);
+    _reply = _requestFactory->get(request);
 
-    _reply = _nam->get(request);
     connetToReplySignals();
 
     emit q->resumed(true);
@@ -388,12 +390,12 @@ void AppDownloadPrivate::startDownload()
     qDebug() << "IO Device created in " << _currentData->fileName();
 
     // signals should take care or calling deleteLater on the QNetworkReply object
-    _reply = _nam->get(QNetworkRequest(_url));
+    _reply = _requestFactory->get(QNetworkRequest(_url));
     connetToReplySignals();
     emit q->started(true);
 }
 
-AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, QNetworkAccessManager* nam, AppDownload* parent)
+AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, RequestFactory* nam, AppDownload* parent)
 {
     qDebug() << "Loading app download from metadata";
 
@@ -651,14 +653,14 @@ void AppDownloadPrivate::onSslErrors(const QList<QSslError>& errors)
  * PUBLIC IMPLEMENTATION
  */
 
-AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent):
+AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent):
     QObject(parent),
     d_ptr(new AppDownloadPrivate(appId, appName, path, url, nam, this))
 {
 }
 
 AppDownload::AppDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-    QNetworkAccessManager* nam, QObject* parent):
+    RequestFactory* nam, QObject* parent):
         QObject(parent),
         d_ptr(new AppDownloadPrivate(appId, appName, path, url, hash, algo, nam, this))
 {
@@ -717,10 +719,10 @@ void AppDownload::startDownload()
     d->startDownload();
 }
 
-AppDownload* AppDownload::fromMetadata(const QString &path, QNetworkAccessManager* nam)
+AppDownload* AppDownload::fromMetadata(const QString &path, RequestFactory* reqFactory)
 {
     AppDownload* appDownload = new AppDownload();
-    AppDownloadPrivate* priv = AppDownloadPrivate::fromMetadata(path, nam, appDownload);
+    AppDownloadPrivate* priv = AppDownloadPrivate::fromMetadata(path, reqFactory, appDownload);
     if (priv != NULL)
     {
         appDownload->d_ptr = priv;

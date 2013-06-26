@@ -9,6 +9,7 @@ QT       += network dbus
 QT       -= gui
 
 TARGET = app-downloader-lib
+QMAKE_CXXFLAGS += -std=c++0x
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
@@ -19,7 +20,8 @@ SOURCES += \
     downloader.cpp \
     app_download.cpp \
     download_daemon.cpp \
-    xdg_basedir.cpp
+    xdg_basedir.cpp \
+    request_factory.cpp
 
 HEADERS +=\
         app-downloader-lib_global.h \
@@ -28,7 +30,8 @@ HEADERS +=\
     downloader.h \
     app_download.h \
     download_daemon.h \
-    xdg_basedir.h
+    xdg_basedir.h \
+    request_factory.h
 
 OTHER_FILES += \
     com.canonical.applications.application_download.xml \

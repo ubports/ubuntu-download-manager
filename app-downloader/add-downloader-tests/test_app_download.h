@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <app_download.h>
+#include "fake_request_factory.h"
 #include "test_runner.h"
 
 class TestAppDownload: public QObject
@@ -45,6 +46,7 @@ private slots:
 
     // network related tests
     void testCancelDownload();
+    void testCancelDownloadNotStarted();
     void testPauseDownload();
     void testResumeDownload();
     void testStartDownload();
@@ -54,7 +56,7 @@ private:
     QString _appName;
     QString _path;
     QUrl _url;
-    QNetworkAccessManager* _nam;
+    FakeRequestFactory* _reqFactory;
 
 };
 

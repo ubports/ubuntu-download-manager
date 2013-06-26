@@ -1,5 +1,6 @@
+#include <QDebug>
 #include "fake_qnetwork_reply.h"
-#include "fake_qnetwork_access_manager.h"
+#include "fake_request_factory.h"
 
 RequestWrapper::RequestWrapper(const QNetworkRequest& request, QObject* parent)
     : QObject(parent),
@@ -12,16 +13,17 @@ QNetworkRequest RequestWrapper::request()
     return _request;
 }
 
-FakeQNetworkAccessManager::FakeQNetworkAccessManager(QObject *parent) :
-    QNetworkAccessManager(parent),
+FakeRequestFactory::FakeRequestFactory(QObject *parent) :
+    RequestFactory(parent),
     Fake()
 {
 }
 
-QNetworkReply* FakeQNetworkAccessManager::get(const QNetworkRequest& request)
+QNetworkReply* FakeRequestFactory::get(const QNetworkRequest& request)
 {
     // return a FakeQNetworkReply
     FakeQNetworkReply* reply = new FakeQNetworkReply();
+
     if (_recording)
     {
         QList<QObject*> inParams;

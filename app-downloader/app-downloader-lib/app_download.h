@@ -1,14 +1,14 @@
 #ifndef APP_DOWNLOADER_LIB_APP_DOWNLOAD_H
 #define APP_DOWNLOADER_LIB_APP_DOWNLOAD_H
 
-#include "app-downloader-lib_global.h"
 #include <QObject>
 #include <QByteArray>
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QNetworkReply>
-#include <QNetworkAccessManager>
 #include <QUrl>
+#include "request_factory.h"
+#include "app-downloader-lib_global.h"
 
 class AppDownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT AppDownload : public QObject
@@ -27,9 +27,9 @@ public:
         FINISHED
     };
 
-    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, QNetworkAccessManager* nam, QObject* parent=0);
+    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent=0);
     explicit AppDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-        QNetworkAccessManager* nam, QObject* parent=0);
+        RequestFactory* nam, QObject* parent=0);
 
     // gets for internal state
     QString path();
@@ -42,7 +42,7 @@ public:
     void pauseDownload();
     void resumeDownload();
     void startDownload();
-    static AppDownload* fromMetadata(const QString &path, QNetworkAccessManager* nam);
+    static AppDownload* fromMetadata(const QString &path, RequestFactory* nam);
 
 
 public slots:

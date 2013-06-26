@@ -1,4 +1,4 @@
-#include <QNetworkAccessManager>
+#include "request_factory.h"
 #include "application_download_adaptor.h"
 #include "downloader.h"
 
@@ -33,7 +33,7 @@ private:
     QHash<QString, ApplicationDownloadAdaptor*> _adaptors;
     QDBusConnection _conn;
     Downloader* q_ptr;
-    QNetworkAccessManager* _nam;
+    RequestFactory* _reqFactory;
     AppDownload* _current;
 };
 
@@ -43,7 +43,7 @@ DownloaderPrivate::DownloaderPrivate(QDBusConnection connection, Downloader* par
     _conn(connection),
     q_ptr(parent)
 {
-    _nam = new QNetworkAccessManager();
+    _reqFactory = new RequestFactory();
     _current = NULL;
 }
 
@@ -51,7 +51,7 @@ AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QStri
 {
     Q_Q(Downloader);
     QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
-    AppDownload* appDown = new AppDownload(appId, appName, path, url, _nam);
+    AppDownload* appDown = new AppDownload(appId, appName, path, url, _reqFactory);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;
@@ -62,7 +62,7 @@ AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QStri
 {
     Q_Q(Downloader);
     QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
-    AppDownload* appDown = new AppDownload(appId, appName, path, url, hash, algo, _nam);
+    AppDownload* appDown = new AppDownload(appId, appName, path, url, hash, algo, _reqFactory);
     q->connect(appDown, SIGNAL(stateChanged()),
         q, SLOT(onDownloadStateChanged()));
     return appDown;

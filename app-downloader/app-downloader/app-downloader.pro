@@ -9,6 +9,7 @@ QT       += core
 QT       -= gui
 
 TARGET = app-downloader
+QMAKE_CXXFLAGS += -std=c++0x
 CONFIG   += console
 CONFIG   -= app_bundle
 
