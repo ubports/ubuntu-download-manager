@@ -27,7 +27,7 @@ void TestXDGBasedir::init()
         }
         _envData[var] = QString(env_path);
         // clean the data
-        setenv(var.toStdString().c_str(), NULL, 1);
+        unsetenv(var.toStdString().c_str());
     }
 }
 
@@ -40,7 +40,7 @@ void TestXDGBasedir::cleanup()
         QString data = _envData[key];
         if (data == "NULL")
         {
-            setenv(key.toStdString().c_str(), NULL, 1);
+            unsetenv(key.toStdString().c_str());
         }
         else
         {
@@ -51,7 +51,7 @@ void TestXDGBasedir::cleanup()
 
 void TestXDGBasedir::testDefault(QString envVar, std::function<QString(void)> callBack, QString expected)
 {
-    setenv(envVar.toStdString().c_str(), NULL, 1);
+    unsetenv(envVar.toStdString().c_str());
     QString result = callBack();
     QCOMPARE(expected, result);
 }
@@ -108,7 +108,7 @@ void TestXDGBasedir::testDataHomeEnv()
 void TestXDGBasedir::testCollectionDefault(QString envVar, std::function<QList<QString>()> cb,
     QString expected)
 {
-    setenv(envVar.toStdString().c_str(), NULL, 1);
+    unsetenv(envVar.toStdString().c_str());
     QList<QString> dirs = cb();
     QVERIFY(1 == dirs.length());
     qDebug() << expected;

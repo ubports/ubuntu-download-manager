@@ -9,7 +9,7 @@ QT       += network dbus
 QT       -= gui
 
 TARGET = app-downloader-lib
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -Werror
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY

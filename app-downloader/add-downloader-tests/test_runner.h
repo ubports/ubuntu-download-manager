@@ -45,7 +45,7 @@ class TestRunner
 
 // Use this macro after your test declaration
 #define DECLARE_TEST(className)\
-    static char test_##className = TestRunner::Instance().RegisterTest<className>(#className);
+    static char test_##className = TestRunner::Instance().RegisterTest<className>(const_cast<char *>(#className));
 
 // Use this macro to execute all tests
 #define RUN_ALL_QTESTS(argc, argv)\

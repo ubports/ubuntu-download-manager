@@ -70,6 +70,7 @@ AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QStri
 
 void DownloaderPrivate::addDownload(AppDownload* download)
 {
+    Q_UNUSED(download);
     // TODO
 }
 
@@ -172,7 +173,7 @@ void DownloaderPrivate::loadPreviewsDownloads(QString path)
 {
     // TODO
     // list the dirs of the different downloads that we can find, loop and create each of them
-
+    Q_UNUSED(path);
 }
 
 QDBusObjectPath DownloaderPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)

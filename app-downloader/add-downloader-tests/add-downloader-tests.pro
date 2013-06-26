@@ -9,7 +9,7 @@ QT       += network core testlib
 QT       -= gui
 
 TARGET = add-downloader-tests
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -Werror
 CONFIG   += console
 CONFIG   -= app_bundle
 
