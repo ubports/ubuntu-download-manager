@@ -131,7 +131,6 @@ AppDownloadPrivate::~AppDownloadPrivate()
 {
     if (_currentData != NULL)
     {
-        qDebug() << "Closing current data file.";
         _currentData->close();
         delete _currentData;
     }
@@ -193,7 +192,6 @@ QString AppDownloadPrivate::saveFileName()
         basename = DATA_FILE_NAME;
 
     QString final_path = _localPath + QDir::separator() + basename;
-    qDebug() << "Save path name is" << final_path;
     return final_path;
 }
 
@@ -206,7 +204,6 @@ void AppDownloadPrivate::storeMetadata()
 {
     // data might be already be present, therefore we will delete it (due to the total size being wrong)
     QString metadataPath = saveMetadataName();
-    qDebug() << "Storing metadata in" << metadataPath << "for app" << _appName;
 
     QVariantMap app_metadata = metadata();
     // update the metadata with extra info
@@ -237,7 +234,6 @@ void AppDownloadPrivate::cleanUpCurrentData()
     {
         // delete the current data, we did cancel.
         fileName = _currentData->fileName();
-        qDebug() << "Removing file" << fileName;
         success = _currentData->remove();
         _currentData->deleteLater();
         _currentData = NULL;
@@ -252,7 +248,6 @@ void AppDownloadPrivate::cleanUpCurrentData()
 
         if (fileInfo.exists())
         {
-            qDebug() << "Removing file" << fileName;
             success = QFile::remove(fileInfo.absoluteFilePath());
             if (!success)
                 qWarning() << "Error removing" << fileName;
@@ -264,7 +259,6 @@ void AppDownloadPrivate::cleanUpCurrentData()
 
     if (metadataInfo.exists())
     {
-        qDebug() << "Removing file" << fileName;
         success = QFile::remove(metadataInfo.absoluteFilePath());
         if (!success)
             qWarning() << "Error removing" << fileName;
@@ -305,8 +299,6 @@ void AppDownloadPrivate::cancelDownload()
 {
     Q_Q(AppDownload);
 
-    qDebug() << "Canceling download for " << _url;
-
     if (_reply != NULL)
     {
         // disconnect so that we do not get useless signals and remove the reply
@@ -332,7 +324,6 @@ void AppDownloadPrivate::pauseDownload()
         return;
     }
 
-    qDebug() << "Pausing download for " << _url;
     // we need to disconnect the signals to ensure that they are not emitted due
     // to the operation we are going to perform. We read the data in the reply and
     // store it in a file
@@ -358,7 +349,6 @@ void AppDownloadPrivate::resumeDownload()
     }
 
     qint64 currentDataSize = _currentData->size();
-    qDebug() << "Resuming download for " << _url << "at" << currentDataSize;
 
     QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(currentDataSize) + "-";
     QNetworkRequest request = QNetworkRequest(_url);
@@ -381,13 +371,10 @@ void AppDownloadPrivate::startDownload()
         return;
     }
 
-    qDebug() << "START:" << _url;
-
     // create file that will be used to mantain the state of the download when resumed.
     // TODO: Use a better name
     _currentData = new QFile(saveFileName());
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
-    qDebug() << "IO Device created in " << _currentData->fileName();
 
     // signals should take care or calling deleteLater on the QNetworkReply object
     _reply = _requestFactory->get(QNetworkRequest(_url));
@@ -397,7 +384,6 @@ void AppDownloadPrivate::startDownload()
 
 AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, RequestFactory* nam, AppDownload* parent)
 {
-    qDebug() << "Loading app download from metadata";
 
     QString metadataPath = path + "/" + METADATA_FILE_NAME;
     QFileInfo metadataInfo(path);
@@ -405,7 +391,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
     // we at least most have the metadata path
     if (!metadataInfo.exists())
     {
-        qDebug() << "ERROR: File " << metadataPath << "does not exist.";
+        qCritical() << "ERROR: File " << metadataPath << "does not exist.";
         return NULL;
     }
 
@@ -418,7 +404,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
     QJsonObject metadataJson = QJsonDocument::fromBinaryData(metadata).object();
     if (metadataJson.empty())
     {
-        qDebug() << "ERROR: Metadata could not be validated.";
+        qCritical() << "ERROR: Metadata could not be validated.";
         return NULL;
     }
 
@@ -428,7 +414,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
         appId = metadataJson[ID].toString();
     else
     {
-        qDebug() << "ERROR: ID is missing from json.";
+        qCritical() << "ERROR: ID is missing from json.";
         return NULL;
     }
 
@@ -437,7 +423,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
         appName = metadataJson[NAME].toString();
     else
     {
-        qDebug() << "ERROR: NAME is missing from json.";
+        qCritical() << "ERROR: NAME is missing from json.";
         return NULL;
     }
 
@@ -448,7 +434,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
     }
     else
     {
-        qDebug() << "ERROR: DBUS_PATH missing from json.";
+        qCritical() << "ERROR: DBUS_PATH missing from json.";
     }
 
     uint totalSize = 0;
@@ -470,7 +456,7 @@ AppDownloadPrivate* AppDownloadPrivate::fromMetadata(const QString &path, Reques
     }
     else
     {
-       qDebug() << "ERROR: URL missing form json.";
+       qCritical() << "ERROR: URL missing form json.";
        return NULL;
     }
 
@@ -543,7 +529,6 @@ uint AppDownloadPrivate::totalSize()
 void AppDownloadPrivate::cancel()
 {
     Q_Q(AppDownload);
-    qDebug() << "CANCELED:" << _url;
     _state = AppDownload::CANCELED;
     emit q->stateChanged();
 }
@@ -551,7 +536,6 @@ void AppDownloadPrivate::cancel()
 void AppDownloadPrivate::pause()
 {
     Q_Q(AppDownload);
-    qDebug() << "PAUSED:" << _url;
     _state = AppDownload::PAUSED;
     storeMetadata();
     emit q->stateChanged();
@@ -560,7 +544,6 @@ void AppDownloadPrivate::pause()
 void AppDownloadPrivate::resume()
 {
     Q_Q(AppDownload);
-    qDebug() << "RESUMED:" << _url;
     _state = AppDownload::RESUMED;
     storeMetadata();
     emit q->stateChanged();
@@ -569,7 +552,6 @@ void AppDownloadPrivate::resume()
 void AppDownloadPrivate::start()
 {
     Q_Q(AppDownload);
-    qDebug() << "STARTED:" << _url;
     _state = AppDownload::STARTED;
     storeMetadata();
     emit q->stateChanged();
@@ -589,21 +571,19 @@ void AppDownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
         {
             // bytesTotal is different when we have resumed because we are not counting the size that
             // we already downloaded, therefore we only do this once
-            qDebug() << "Setting total size to " << _totalSize;
             _totalSize = bytesTotal;
             // update the metadata
             storeMetadata();
         }
         qint64 received = _currentData->size();
 
-        qDebug() << _url << "PROGRESS: " << received << "/" << bytesTotal;
         emit q->progress(received, _totalSize);
     }
 }
 
 void AppDownloadPrivate::onError(QNetworkReply::NetworkError code)
 {
-    qDebug() << _url << "ERROR:" << ":" << code;
+    qCritical() << _url << "ERROR:" << ":" << code;
     // get the error data, disconnect and remove the reply and data
 
     disconnectFromReplySignals();
@@ -618,7 +598,6 @@ void AppDownloadPrivate::onFinished()
 {
     Q_Q(AppDownload);
 
-    qDebug() << _url << "FINIHSED";
     _currentData->reset();
     QByteArray data = _currentData->readAll();
 
@@ -632,7 +611,7 @@ void AppDownloadPrivate::onFinished()
         QByteArray originalSig = QByteArray::fromHex(_hash.toLatin1());
         if (fileSig != originalSig)
         {
-            qDebug() << "HASH ERROR:" << fileSig << "!=" << originalSig;
+            qCritical() << "HASH ERROR:" << fileSig << "!=" << originalSig;
             emit q->error("HASH ERROR");
             return;
         }
@@ -645,8 +624,8 @@ void AppDownloadPrivate::onFinished()
 
 void AppDownloadPrivate::onSslErrors(const QList<QSslError>& errors)
 {
-    qDebug() << _url << "SLL ERRORS:" << errors.count();
     // TODO: emit ssl errors signal?
+    Q_UNUSED(errors);
 }
 
 /**

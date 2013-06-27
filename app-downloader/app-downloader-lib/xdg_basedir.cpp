@@ -18,7 +18,6 @@
 
 QString XDGBasedir::cacheHome()
 {
-    qDebug() << "XDGBasedir::cacheHome()";
     QString env_path = QString::fromUtf8(getenv(XDG_CACHE_HOME)).trimmed();
     if (env_path.isEmpty())
     {
@@ -31,7 +30,6 @@ QString XDGBasedir::cacheHome()
 
 QString XDGBasedir::configHome()
 {
-    qDebug() << "XDGBasedir::configHome()";
     QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_HOME)).trimmed();
     if (env_path.isEmpty())
     {
@@ -44,7 +42,6 @@ QString XDGBasedir::configHome()
 
 QString XDGBasedir::dataHome()
 {
-    qDebug() << "XDGBasedir::dataHome()";
     QString env_path = QString::fromUtf8(getenv(XDG_DATA_HOME)).trimmed();
     if (env_path.isEmpty())
     {
@@ -57,14 +54,12 @@ QString XDGBasedir::dataHome()
 
 QList<QString> XDGBasedir::configDirs()
 {
-    qDebug() << "XDGBasedir::configDirs()";
     QList<QString> result;
     result.append(XDGBasedir::configHome());
 
     QString env_path = QString::fromUtf8(getenv(XDG_CONFIG_DIRS)).trimmed();
     if (env_path.isEmpty())
     {
-        qDebug() << "NULL" << QString::fromStdString(XDG_CONFIG_DIRS);
         return result;
     }
 
@@ -76,14 +71,12 @@ QList<QString> XDGBasedir::configDirs()
 
 QList<QString> XDGBasedir::dataDirs()
 {
-    qDebug() << "XDGBasedir::dataDirs()";
     QList<QString> result;
     result.append(XDGBasedir::dataHome());
 
     QString env_path = QString::fromUtf8(getenv(XDG_DATA_DIRS)).trimmed();
     if (env_path.isEmpty())
     {
-        qDebug() << "NULL" << QString::fromStdString(XDG_DATA_DIRS);
         return result;
     }
 
@@ -94,7 +87,6 @@ QList<QString> XDGBasedir::dataDirs()
 
 QList<QString> XDGBasedir::configPaths(QList<QString> resources)
 {
-    qDebug() << "XDGBasedir::configPaths";
     QList<QString> result;
     QList<QString> configDirs = XDGBasedir::configDirs();
     foreach (QString configDir, configDirs)
@@ -105,7 +97,6 @@ QList<QString> XDGBasedir::configPaths(QList<QString> resources)
         QString path = pathComponents.join(QDir::separator());
         if (QFile::exists(path))
         {
-            qDebug() << "Adding new path:" << path;
             result.append(path);
         }
     }
@@ -115,7 +106,6 @@ QList<QString> XDGBasedir::configPaths(QList<QString> resources)
 
 QList<QString> XDGBasedir::dataPaths(QList<QString> resources)
 {
-    qDebug() << "XDGBasedir::dataPaths";
     QList<QString> result;
     QList<QString> dataDirs = XDGBasedir::dataDirs();
     foreach (QString dataDir, dataDirs)
@@ -126,7 +116,6 @@ QList<QString> XDGBasedir::dataPaths(QList<QString> resources)
         QString path = pathComponents.join(QDir::separator());
         if (QFile::exists(path))
         {
-            qDebug() << "Adding new path:" << path;
             result.append(path);
         }
     }
@@ -135,15 +124,12 @@ QList<QString> XDGBasedir::dataPaths(QList<QString> resources)
 
 QString XDGBasedir::loadFirstConfig(QList<QString> resource)
 {
-    qDebug() << "XDGBasedir::loadFirstConfig()";
     QList<QString> configPaths = XDGBasedir::configPaths(resource);
-    qDebug() << "Config paths length" << configPaths.length();
     return configPaths.at(0);
 }
 
 QString XDGBasedir::saveConfigPath(QList<QString> resources)
 {
-    qDebug() << "XDGBasedir::saveConfigPath()";
     QString home = XDGBasedir::configHome();
     QStringList pathComponents;
     pathComponents.append(home);
@@ -162,19 +148,16 @@ QString XDGBasedir::saveConfigPath(QList<QString> resources)
             return QString("");
         }
     }
-    qDebug() << "Path returned" << path;
     return path;
 }
 
 QString XDGBasedir::saveDataPath(QList<QString> resources)
 {
-    qDebug() << "XDGBasedir::saveDataPath()";
     QString home = XDGBasedir::dataHome();
     QStringList pathComponents;
     pathComponents.append(home);
     pathComponents.append(resources);
     QString path = pathComponents.join(QDir::separator());
-    qDebug() << "Path is" << path;
     QFileInfo info = QFileInfo(path);
     if (!info.exists() || !info.isDir())
     {
@@ -188,6 +171,5 @@ QString XDGBasedir::saveDataPath(QList<QString> resources)
             return QString("");
         }
     }
-    qDebug() << "Path returned" << path;
     return path;
 }

@@ -39,7 +39,7 @@ class TestRunner
         }
 
     private:
-        QHash<QString, QSharedPointer<QObject> > _tests;
+        QMap<QString, QSharedPointer<QObject> > _tests;
 };
 
 
