@@ -1,7 +1,8 @@
 #include "fake_qnetwork_reply.h"
 
-FakeQNetworkReply::FakeQNetworkReply(QObject* parent)
-    : QNetworkReply(parent)
+FakeQNetworkReply::FakeQNetworkReply(QObject* parent) :
+    QNetworkReply(parent),
+    Fake()
 {
 }
 

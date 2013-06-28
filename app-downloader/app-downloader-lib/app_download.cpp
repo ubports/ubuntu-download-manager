@@ -3,11 +3,11 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QNetworkReply>
 #include <QSignalMapper>
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
+#include "network_reply.h"
 #include "xdg_basedir.h"
 #include "app_download.h"
 
@@ -73,7 +73,7 @@ public:
 
 private:
     void init();
-    void connetToReplySignals();
+    void connectToReplySignals();
     void disconnectFromReplySignals();
     QString saveFileName();
     QString saveMetadataName();
@@ -92,7 +92,7 @@ private:
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     RequestFactory* _requestFactory;
-    QNetworkReply* _reply;
+    NetworkReply* _reply;
     QFile* _currentData;
     AppDownload* q_ptr;
 
@@ -154,7 +154,7 @@ void AppDownloadPrivate::init()
     storeMetadata();
 }
 
-void AppDownloadPrivate::connetToReplySignals()
+void AppDownloadPrivate::connectToReplySignals()
 {
     Q_Q(AppDownload);
     if (_reply != NULL)
@@ -366,7 +366,7 @@ void AppDownloadPrivate::resumeDownload()
     request.setRawHeader("Range",rangeHeaderValue);
     _reply = _requestFactory->get(request);
 
-    connetToReplySignals();
+    connectToReplySignals();
 
     emit q->resumed(true);
 }
@@ -387,9 +387,9 @@ void AppDownloadPrivate::startDownload()
     _currentData = new QFile(saveFileName());
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
-    // signals should take care or calling deleteLater on the QNetworkReply object
+    // signals should take care or calling deleteLater on the NetworkReply object
     _reply = _requestFactory->get(QNetworkRequest(_url));
-    connetToReplySignals();
+    connectToReplySignals();
     emit q->started(true);
 }
 

@@ -21,7 +21,8 @@ SOURCES += \
     app_download.cpp \
     download_daemon.cpp \
     xdg_basedir.cpp \
-    request_factory.cpp
+    request_factory.cpp \
+    network_reply.cpp
 
 HEADERS +=\
         app-downloader-lib_global.h \
@@ -31,7 +32,8 @@ HEADERS +=\
     app_download.h \
     download_daemon.h \
     xdg_basedir.h \
-    request_factory.h
+    request_factory.h \
+    network_reply.h
 
 OTHER_FILES += \
     com.canonical.applications.application_download.xml \

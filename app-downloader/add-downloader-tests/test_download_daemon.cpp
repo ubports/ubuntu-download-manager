@@ -15,4 +15,5 @@ void TestDownloadDaemon::cleanup()
 
 void TestDownloadDaemon::testStart()
 {
+    QFAIL("Not implemented.");
 }

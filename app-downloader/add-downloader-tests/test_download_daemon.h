@@ -10,7 +10,7 @@ class TestDownloadDaemon : public QObject
 public:
     explicit TestDownloadDaemon(QObject *parent = 0);
     
-public slots:
+private slots:
 
     void init();
     void cleanup();

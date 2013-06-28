@@ -12,7 +12,7 @@ class RequestFactoryPrivate
 public:
     explicit RequestFactoryPrivate(RequestFactory* parent);
 
-    QNetworkReply* get(const QNetworkRequest& request);
+    NetworkReply* get(const QNetworkRequest& request);
 private:
     QNetworkAccessManager* _nam;
     RequestFactory* q_ptr;
@@ -25,9 +25,9 @@ RequestFactoryPrivate::RequestFactoryPrivate(RequestFactory* parent) :
     _nam = new QNetworkAccessManager();
 }
 
-QNetworkReply* RequestFactoryPrivate::get(const QNetworkRequest& request)
+NetworkReply* RequestFactoryPrivate::get(const QNetworkRequest& request)
 {
-    return _nam->get(request);
+    return new NetworkReply(_nam->get(request));
 }
 
 /*
@@ -40,7 +40,7 @@ RequestFactory::RequestFactory(QObject *parent) :
 {
 }
 
-QNetworkReply* RequestFactory::get(const QNetworkRequest& request)
+NetworkReply* RequestFactory::get(const QNetworkRequest& request)
 {
     Q_D(RequestFactory);
     return d->get(request);

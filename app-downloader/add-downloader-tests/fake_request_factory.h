@@ -29,7 +29,7 @@ public:
     explicit FakeRequestFactory(QObject* parent = 0);
 
     // overriden methods used to fake the nam
-    QNetworkReply* get(const QNetworkRequest& request);
+    NetworkReply* get(const QNetworkRequest& request);
 };
 
 #endif // FAKE_QNETWORK_ACCESS_MANAGER_H

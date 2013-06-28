@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <QSignalSpy>
-#include "fake_qnetwork_reply.h"
+#include "fake_network_reply.h"
 #include "test_app_download.h"
 
 TestAppDownload::TestAppDownload(QObject* parent) :
@@ -273,19 +273,13 @@ void TestAppDownload::testProgress()
     AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(progress(uint, uint)));
 
-    // write data in the file
-    QFile* file = new QFile(download->filePath());
-    file->open(QIODevice::ReadWrite | QFile::Append);
-    file->write(fileData);
-    file->close();
-    delete file;
-
     // start the download so that we do have access to the reply
     download->start();  // change state
     download->startDownload();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
-    FakeQNetworkReply* reply = (FakeQNetworkReply*) calledMethods[0].params().outParams()[0];
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(fileData);
     emit reply->downloadProgress(received, total);
 
     // assert that the total is set and tha the signals is emited
@@ -313,7 +307,7 @@ void TestAppDownload::testTotalSize()
     download->startDownload();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
-    FakeQNetworkReply* reply = (FakeQNetworkReply*) calledMethods[0].params().outParams()[0];
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
 
     emit reply->downloadProgress(received, total);
     emit reply->downloadProgress(received, 2*total);
@@ -389,7 +383,7 @@ void TestAppDownload::testCancelDownload()
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    FakeQNetworkReply* reply = (FakeQNetworkReply*) calledMethods[0].params().outParams()[0];
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
@@ -426,7 +420,37 @@ void TestAppDownload::testCancelDownloadNotStarted()
 
 void TestAppDownload::testPauseDownload()
 {
-    QFAIL("Test not implemented");
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(paused(bool)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(QByteArray(900, 's'));
+
+    download->pause(); // change state
+    download->pauseDownload();  // method under test
+
+    // assert that the reply was aborted and deleted via deleteLater
+    calledMethods = reply->calledMethods();
+    QCOMPARE(2, calledMethods.count());  // abort + readAll
+
+    QCOMPARE(QString("abort"), calledMethods[0].methodName());
+    QCOMPARE(QString("readAll"), calledMethods[1].methodName());
+
+    // assert current size is correct (progress)
+    QCOMPARE(download->progress(), (uint)reply->data().size());
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(arguments.at(0).toBool());
+
+    delete download;
 }
 
 void TestAppDownload::testPauseDownloadNotStarted()

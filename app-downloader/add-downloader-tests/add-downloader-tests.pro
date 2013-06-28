@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     fake_qnetwork_reply.cpp \
     fake.cpp \
     fake_request_factory.cpp \
-    test_xdg_basedir.cpp
+    test_xdg_basedir.cpp \
+    test_network_reply.cpp \
+    fake_network_reply.cpp
 
 HEADERS += \
     test_runner.h \
@@ -33,7 +35,9 @@ HEADERS += \
     fake_qnetwork_reply.h \
     fake.h \
     fake_request_factory.h \
-    test_xdg_basedir.h
+    test_xdg_basedir.h \
+    test_network_reply.h \
+    fake_network_reply.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/release/ -lapp-downloader-lib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/debug/ -lapp-downloader-lib

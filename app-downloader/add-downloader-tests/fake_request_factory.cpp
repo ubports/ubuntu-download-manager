@@ -1,5 +1,5 @@
 #include <QDebug>
-#include "fake_qnetwork_reply.h"
+#include "fake_network_reply.h"
 #include "fake_request_factory.h"
 
 RequestWrapper::RequestWrapper(const QNetworkRequest& request, QObject* parent)
@@ -19,10 +19,10 @@ FakeRequestFactory::FakeRequestFactory(QObject *parent) :
 {
 }
 
-QNetworkReply* FakeRequestFactory::get(const QNetworkRequest& request)
+NetworkReply* FakeRequestFactory::get(const QNetworkRequest& request)
 {
     // return a FakeQNetworkReply
-    FakeQNetworkReply* reply = new FakeQNetworkReply();
+    FakeNetworkReply* reply = new FakeNetworkReply();
 
     if (_recording)
     {
