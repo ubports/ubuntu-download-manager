@@ -44,6 +44,8 @@ public:
     QUrl url() const;
     AppDownload::State state();
     QString filePath();
+    QString hash();
+    QCryptographicHash::Algorithm hashAlgorithm();
 
     // methods that do really perform the actions
     void cancelDownload();
@@ -76,6 +78,7 @@ private:
     QString saveFileName();
     QString saveMetadataName();
     void storeMetadata();
+    bool removeDir(const QString& dirName);
     void cleanUpCurrentData();
 
 private:
@@ -226,6 +229,31 @@ void AppDownloadPrivate::storeMetadata()
     delete file;
 }
 
+bool AppDownloadPrivate::removeDir(const QString& dirName)
+{
+    bool result = true;
+    QDir dir(dirName);
+
+    QFlags<QDir::Filter> filter =  QDir::NoDotAndDotDot | QDir::System | QDir::Hidden  | QDir::AllDirs | QDir::Files;
+    if (dir.exists(dirName)) {
+        foreach(QFileInfo info, dir.entryInfoList(filter, QDir::DirsFirst)) {
+            if (info.isDir()) {
+            result = removeDir(info.absoluteFilePath());
+            }
+            else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+
+    return result;
+}
+
 void AppDownloadPrivate::cleanUpCurrentData()
 {
     bool success;
@@ -240,37 +268,10 @@ void AppDownloadPrivate::cleanUpCurrentData()
         if (!success)
             qWarning() << "Error removing" << fileName;
     }
-    else
-    {
-        fileName = saveFileName();
-        // check if the file is present and remove it
-        QFileInfo fileInfo = QFileInfo(fileName);
+    success = removeDir(_localPath);
+    if (!success)
+        qWarning() << "Error removing" << _localPath;
 
-        if (fileInfo.exists())
-        {
-            success = QFile::remove(fileInfo.absoluteFilePath());
-            if (!success)
-                qWarning() << "Error removing" << fileName;
-        }
-    }
-    // remove metadata and dir
-    fileName = saveMetadataName();
-    QFileInfo metadataInfo = QFileInfo(fileName);
-
-    if (metadataInfo.exists())
-    {
-        success = QFile::remove(metadataInfo.absoluteFilePath());
-        if (!success)
-            qWarning() << "Error removing" << fileName;
-    }
-
-    QDir dir(_localPath);
-    if (dir.exists())
-    {
-        success = dir.remove(_localPath);
-        if (!success)
-            qWarning() << "Error removing" << _localPath;
-    }
 }
 
 QString AppDownloadPrivate::path() const
@@ -292,7 +293,17 @@ QString AppDownloadPrivate::filePath()
 {
     if (_currentData)
         return _currentData->fileName();
-    return "";
+    return saveFileName();
+}
+
+QString AppDownloadPrivate::hash()
+{
+    return _hash;
+}
+
+QCryptographicHash::Algorithm AppDownloadPrivate::hashAlgorithm()
+{
+    return _algo;
 }
 
 void AppDownloadPrivate::cancelDownload()
@@ -518,7 +529,7 @@ QVariantMap AppDownloadPrivate::metadata()
 
 uint AppDownloadPrivate::progress()
 {
-    return (_currentData == NULL)?-1:_currentData->size();
+    return (_currentData == NULL)?0:_currentData->size();
 }
 
 uint AppDownloadPrivate::totalSize()
@@ -672,6 +683,18 @@ QString AppDownload::filePath()
 {
     Q_D(AppDownload);
     return d->filePath();
+}
+
+QString AppDownload::hash()
+{
+    Q_D(AppDownload);
+    return d->hash();
+}
+
+QCryptographicHash::Algorithm AppDownload::hashAlgorithm()
+{
+    Q_D(AppDownload);
+    return d->hashAlgorithm();
 }
 
 void AppDownload::cancelDownload()

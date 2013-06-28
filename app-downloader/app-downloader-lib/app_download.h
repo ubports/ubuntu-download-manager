@@ -36,6 +36,8 @@ public:
     QUrl url();
     AppDownload::State state();
     QString filePath();
+    QString hash();
+    QCryptographicHash::Algorithm hashAlgorithm();
 
     // methods that do perform the download
     void cancelDownload();

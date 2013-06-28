@@ -1,8 +1,7 @@
 #ifndef TEST_APP_DOWNLOAD_H
 #define TEST_APP_DOWNLOAD_H
 
-#include <QObject>
-
+#include <QDir>
 #include <QObject>
 #include <app_download.h>
 #include "fake_request_factory.h"
@@ -24,10 +23,14 @@ private slots:
     void testHashConstructor();
 
     // data function to be used for the accessor tests
+    void testNoHashConstructor_data();
+    void testHashConstructor_data();
     void testPath_data();
     void testUrl_data();
     void testApplicationId_data();
     void testApplicationName_data();
+    void testProgress_data();
+    void testMetadata_data();
 
     // accessor methods
     void testPath();
@@ -37,6 +40,7 @@ private slots:
     void testMetadata();
     void testProgress();
     void testTotalSize();
+    void testTotalSizeNoProgress();
 
     // dbus method tests
     void testCancel();
@@ -48,10 +52,20 @@ private slots:
     void testCancelDownload();
     void testCancelDownloadNotStarted();
     void testPauseDownload();
+    void testPauseDownloadNotStarted();
     void testResumeDownload();
     void testStartDownload();
+    void testStartDownloadAlreadyStarted();
+    void testOnSuccessNoHash();
+    void testOnSuccessHashError();
+    void testOnSuccessHash();
+    void testOnHttpError();
 
 private:
+    bool removeDir(const QString& dirName);
+
+private:
+    QDir _testDir;
     QString _appId;
     QString _appName;
     QString _path;
