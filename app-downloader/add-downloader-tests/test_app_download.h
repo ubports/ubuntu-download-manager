@@ -31,6 +31,7 @@ private slots:
     void testApplicationName_data();
     void testProgress_data();
     void testMetadata_data();
+    void testOnSuccessHash_data();
 
     // accessor methods
     void testPath();
@@ -53,6 +54,7 @@ private slots:
     void testCancelDownloadNotStarted();
     void testPauseDownload();
     void testPauseDownloadNotStarted();
+    void testResumeRunning();
     void testResumeDownload();
     void testStartDownload();
     void testStartDownloadAlreadyStarted();
@@ -70,6 +72,7 @@ private:
     QString _appName;
     QString _path;
     QUrl _url;
+    QCryptographicHash::Algorithm _algo;
     FakeRequestFactory* _reqFactory;
 
 };

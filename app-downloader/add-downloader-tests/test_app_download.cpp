@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <QNetworkRequest>
 #include <QSignalSpy>
+#include <QSslError>
 #include "fake_network_reply.h"
 #include "test_app_download.h"
 
@@ -50,6 +52,7 @@ void TestAppDownload::init()
     _appName = "my super app";
     _path = "random path to dbus";
     _url = QUrl("http://ubuntu.com");
+    _algo = QCryptographicHash::Sha256;
     _reqFactory = new FakeRequestFactory();
 }
 
@@ -468,9 +471,54 @@ void TestAppDownload::testPauseDownloadNotStarted()
     delete download;
 }
 
+void TestAppDownload::testResumeRunning()
+{
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(resumed(bool)));
+
+    download->start();
+    download->startDownload();
+    download->resume();
+    download->resumeDownload();
+
+    QCOMPARE(spy.count(), 1);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QVERIFY(!arguments.at(0).toBool());
+    delete download;
+}
+
 void TestAppDownload::testResumeDownload()
 {
-    QFAIL("Test not implemented");
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(paused(bool)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(QByteArray(900, 's'));
+
+    download->pause(); // change state
+    download->pauseDownload();  // method under test
+
+    // clear the called methods from the reqFactory
+    _reqFactory->clear();
+    download->resume();
+    download->resumeDownload();
+
+    // get the info for the second created request
+    calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    QNetworkRequest request = ((RequestWrapper*)calledMethods[0].params().inParams()[0])->request();
+    // assert that the request has the correct headers set
+    QVERIFY(request.hasRawHeader("Range"));
+    QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(reply->data().size()) + "-";
+    QCOMPARE(rangeHeaderValue, request.rawHeader("Range"));
 }
 
 void TestAppDownload::testStartDownload()
@@ -516,21 +564,129 @@ void TestAppDownload::testStartDownloadAlreadyStarted()
 
 void TestAppDownload::testOnSuccessNoHash()
 {
-    QFAIL("Not implemented.");
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(finished()));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+
+    // emit the finish signal and expect it to be raised
+    emit reply->finished();
+    QCOMPARE(spy.count(), 1);
 }
 
 void TestAppDownload::testOnSuccessHashError()
 {
-    QFAIL("Not implemented.");
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, "imposible-hash-is-not-hex", _algo, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(QByteArray(200, 'f'));
+
+    download->pause();
+    download->pauseDownload();   // trick to write the data in the internal storage
+
+    // clear the called methods from the reqFactory
+    _reqFactory->clear();
+    download->resume();
+    download->resumeDownload();
+
+    calledMethods = _reqFactory->calledMethods();
+    reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    emit reply->finished();
+
+    // the has is a random string so we should get an error signal
+    QCOMPARE(spy.count(), 1);
+
+    delete download;
+}
+
+void TestAppDownload::testOnSuccessHash_data()
+{
+    QTest::addColumn<QByteArray>("data");
+    QTest::addColumn<QString>("hash");
+
+    QByteArray firstData(0, 'f');
+    QByteArray secondData(200, 's');
+    QByteArray thirdData(300, 't');
+    QByteArray lastData(400, 'l');
+
+    QTest::newRow("First row") << firstData
+        << QString(QCryptographicHash::hash(firstData, _algo).toHex());
+    QTest::newRow("Second row") << secondData
+        << QString(QCryptographicHash::hash(secondData, _algo).toHex());
+    QTest::newRow("Third row") << thirdData
+        << QString(QCryptographicHash::hash(thirdData, _algo).toHex());
+    QTest::newRow("Last row") << lastData
+        << QString(QCryptographicHash::hash(lastData, _algo).toHex());
 }
 
 void TestAppDownload::testOnSuccessHash()
 {
-    QFAIL("Not implemented.");
+    QFETCH(QByteArray, data);
+    QFETCH(QString, hash);
+
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, hash, _algo, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(finished()));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(data);
+
+    download->pause();
+    download->pauseDownload();   // trick to write the data in the internal storage
+
+    // clear the called methods from the reqFactory
+    _reqFactory->clear();
+    download->resume();
+    download->resumeDownload();
+
+    calledMethods = _reqFactory->calledMethods();
+    reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    emit reply->finished();
+
+    // the hash should be correct and we should get the finish signal
+    QCOMPARE(spy.count(), 1);
+
+    delete download;
 }
 
 void TestAppDownload::testOnHttpError()
 {
-    QFAIL("Not implemented.");
+    _reqFactory->record();
+    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    QSignalSpy spy(download , SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+
+    QList<QSslError> errors;
+    emit reply->sslErrors(errors);
+    QCOMPARE(spy.count(), 1);
+
+    delete download;
 }
 

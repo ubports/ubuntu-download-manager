@@ -363,7 +363,7 @@ void AppDownloadPrivate::resumeDownload()
 
     QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(currentDataSize) + "-";
     QNetworkRequest request = QNetworkRequest(_url);
-    request.setRawHeader("Range",rangeHeaderValue);
+    request.setRawHeader("Range", rangeHeaderValue);
     _reply = _requestFactory->get(request);
 
     connectToReplySignals();
@@ -609,20 +609,16 @@ void AppDownloadPrivate::onFinished()
 {
     Q_Q(AppDownload);
 
-    _currentData->reset();
-    QByteArray data = _currentData->readAll();
-
     // if the hash is present we check it
     if (!_hash.isEmpty())
     {
+        _currentData->reset();
+        QByteArray data = _currentData->readAll();
         // do calculate the hash of the file so far and ensure that they are the same
-        QCryptographicHash hash(_algo);
-        hash.addData(data);
-        QByteArray fileSig = hash.result();
-        QByteArray originalSig = QByteArray::fromHex(_hash.toLatin1());
-        if (fileSig != originalSig)
+        QString fileSig = QString(QCryptographicHash::hash(data, _algo).toHex());
+        if (fileSig != _hash)
         {
-            qCritical() << "HASH ERROR:" << fileSig << "!=" << originalSig;
+            qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
             emit q->error("HASH ERROR");
             return;
         }
@@ -637,6 +633,8 @@ void AppDownloadPrivate::onSslErrors(const QList<QSslError>& errors)
 {
     // TODO: emit ssl errors signal?
     Q_UNUSED(errors);
+    Q_Q(AppDownload);
+    emit q->error("SSL ERROR");
 }
 
 /**

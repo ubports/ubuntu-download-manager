@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOADER_ADAPTOR_H_1372420727
-#define DOWNLOADER_ADAPTOR_H_1372420727
+#ifndef DOWNLOADER_ADAPTOR_H_1372433303
+#define DOWNLOADER_ADAPTOR_H_1372433303
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>

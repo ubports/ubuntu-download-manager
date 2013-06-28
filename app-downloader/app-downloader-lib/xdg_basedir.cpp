@@ -1,8 +1,8 @@
-#include "xdg_basedir.h"
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <stdlib.h>
+#include "xdg_basedir.h"
 
 // definitions of defaults
 #define DEFAULT_CACHE_HOME ".cache"
