@@ -25,13 +25,58 @@ TestDownloadDaemon::TestDownloadDaemon(QObject *parent) :
 
 void TestDownloadDaemon::init()
 {
+    _conn = new FakeDBusConnection();
+    _daemon = new DownloadDaemon(_conn);
 }
 
 void TestDownloadDaemon::cleanup()
 {
+    if (_conn != NULL)
+        delete _conn;
+    if (_daemon != NULL)
+        delete _daemon;
 }
 
 void TestDownloadDaemon::testStart()
 {
-    QFAIL("Not implemented.");
+    _conn->setRegisterServiceResult(true);
+    _conn->setRegisterObjectResult(true);
+    _conn->record();
+
+    QVERIFY(_daemon->start());
+
+    QList<MethodData> calledMethods = _conn->calledMethods();
+
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+    QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
+}
+
+void TestDownloadDaemon::testStartFailServiceRegister()
+{
+    _conn->setRegisterServiceResult(false);
+    _conn->setRegisterObjectResult(true);
+    _conn->record();
+
+    QVERIFY(!_daemon->start());
+
+    QList<MethodData> calledMethods = _conn->calledMethods();
+
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+}
+
+void TestDownloadDaemon::testStartFailObjectRegister()
+{
+    _conn->setRegisterServiceResult(true);
+    _conn->setRegisterObjectResult(false);
+    _conn->record();
+
+    QVERIFY(!_daemon->start());
+
+    QList<MethodData> calledMethods = _conn->calledMethods();
+
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+    QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
 }

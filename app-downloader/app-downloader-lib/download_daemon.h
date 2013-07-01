@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include "app-downloader-lib_global.h"
+#include "dbus_connection.h"
 
 class DownloadDaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject
@@ -29,6 +30,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject
     Q_OBJECT
 public:
     explicit DownloadDaemon(QObject *parent = 0);
+    explicit DownloadDaemon(DBusConnection* conn, QObject *parent = 0);
 
     bool start();
 

@@ -18,6 +18,46 @@
 
 #include "fake.h"
 
+/*
+ * BOOL WRAPPER
+ */
+
+
+BoolWrapper::BoolWrapper(bool value, QObject* parent):
+    QObject(parent),
+    _value(value)
+{
+}
+
+bool BoolWrapper::value()
+{
+    return _value;
+}
+
+void BoolWrapper::setValue(bool value)
+{
+    _value = value;
+}
+
+/*
+ * STRING WRAPPER
+ */
+
+StringWrapper::StringWrapper(const QString& string, QObject* parent):
+    QObject(parent),
+    _value(string)
+{
+}
+
+QString StringWrapper::value()
+{
+    return _value;
+}
+
+void StringWrapper::setValue(const QString& value)
+{
+    _value = value;
+}
 
 /*
  * METHOD PARAMS

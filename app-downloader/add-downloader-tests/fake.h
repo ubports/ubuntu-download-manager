@@ -24,6 +24,33 @@
 #include <QPair>
 
 
+class BoolWrapper : public QObject
+{
+    Q_OBJECT
+public:
+    BoolWrapper(bool value, QObject* parent=0);
+
+    bool value();
+    void setValue(bool value);
+
+private:
+    bool _value;
+};
+
+class StringWrapper : public QObject
+{
+    Q_OBJECT
+
+public:
+    StringWrapper(const QString& string, QObject* parent=0);
+
+    QString value();
+    void setValue(const QString& value);
+
+private:
+    QString _value;
+};
+
 class MethodParams : public QPair<QList<QObject*>, QList<QObject*> >
 {
 

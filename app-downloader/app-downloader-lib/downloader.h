@@ -21,8 +21,8 @@
 
 #include <QObject>
 #include <QByteArray>
-#include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusObjectPath>
+#include "dbus_connection.h"
 #include "app_download.h"
 
 class DownloaderPrivate;
@@ -31,7 +31,7 @@ class Downloader : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(Downloader)
 public:
-    explicit Downloader(QDBusConnection connection, QObject *parent = 0);
+    explicit Downloader(DBusConnection* connection, QObject *parent = 0);
     void loadPreviewsDownloads(const QString &path);
 
 public slots:

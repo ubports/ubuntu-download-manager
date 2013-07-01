@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,33 +16,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_DOWNLOAD_DAEMON_H
-#define TEST_DOWNLOAD_DAEMON_H
+#ifndef APP_DOWNLOADER_LIB_DBUS_CONNECTION_H
+#define APP_DOWNLOADER_LIB_DBUS_CONNECTION_H
 
 #include <QObject>
-#include <download_daemon.h>
-#include "fake_dbus_connection.h"
-#include "test_runner.h"
+#include <QtDBus/QDBusConnection>
 
-class TestDownloadDaemon : public QObject
+class DBusConnectionPrivate;
+class DBusConnection : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(DBusConnection)
 public:
-    explicit TestDownloadDaemon(QObject *parent = 0);
-    
-private slots:
+    explicit DBusConnection(QObject *parent = 0);
 
-    void init();
-    void cleanup();
-    void testStart();
-    void testStartFailServiceRegister();
-    void testStartFailObjectRegister();
+    virtual bool registerService(const QString& serviceName);
+    virtual bool registerObject(const QString& path, QObject* object,
+        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);
+    virtual void unregisterObject(const QString& path,
+        QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
 
 private:
-    FakeDBusConnection* _conn;
-    DownloadDaemon* _daemon;
+    DBusConnectionPrivate* d_ptr;
 };
 
-DECLARE_TEST(TestDownloadDaemon)
-
-#endif // TEST_DOWNLOAD_DAEMON_H
+#endif // DBUS_CONNECTION_H

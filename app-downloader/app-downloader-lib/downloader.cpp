@@ -28,7 +28,7 @@ class DownloaderPrivate
 {
     Q_DECLARE_PUBLIC(Downloader)
 public:
-    explicit DownloaderPrivate(QDBusConnection connection, Downloader* parent);
+    explicit DownloaderPrivate(DBusConnection* connection, Downloader* parent);
 
 private:
     AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url);
@@ -49,7 +49,7 @@ private:
 
     QList<AppDownload*> _downloads;
     QHash<QString, ApplicationDownloadAdaptor*> _adaptors;
-    QDBusConnection _conn;
+    DBusConnection* _conn;
     Downloader* q_ptr;
     RequestFactory* _reqFactory;
     AppDownload* _current;
@@ -57,7 +57,7 @@ private:
 
 QString DownloaderPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
 
-DownloaderPrivate::DownloaderPrivate(QDBusConnection connection, Downloader* parent):
+DownloaderPrivate::DownloaderPrivate(DBusConnection* connection, Downloader* parent):
     _conn(connection),
     q_ptr(parent)
 {
@@ -102,7 +102,7 @@ void DownloaderPrivate::updateCurrentDownload()
         {
             qDebug() << "Current was CANCELED or FINISHED";
             // clean resources
-            _conn.unregisterObject(_current->path());
+            _conn->unregisterObject(_current->path());
             _downloads.removeOne(_current);
             ApplicationDownloadAdaptor* adaptor = _adaptors[_current->path()];
             _adaptors.remove(_current->path());
@@ -232,7 +232,7 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, 
         // we need to store the ref of both objects, else the mem management will delete them
         _downloads.append(appDownload);
         _adaptors[appDownload->path()] = adaptor;
-        bool ret = _conn.registerObject(appDownload->path(), appDownload);
+        bool ret = _conn->registerObject(appDownload->path(), appDownload);
         qDebug() << "New DBus object registered to " << appDownload->path() << ret;
         objectPath = QDBusObjectPath(appDownload->path());
     }
@@ -255,7 +255,7 @@ QList<QDBusObjectPath> DownloaderPrivate::getAllDownloads()
  * PUBLIC IMPLEMENTATION
  */
 
-Downloader::Downloader(QDBusConnection connection, QObject *parent) :
+Downloader::Downloader(DBusConnection* connection, QObject *parent) :
     QObject(parent),
     d_ptr(new DownloaderPrivate(connection, this))
 {

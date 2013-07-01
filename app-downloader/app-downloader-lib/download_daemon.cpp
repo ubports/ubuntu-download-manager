@@ -31,20 +31,28 @@ class DownloadDaemonPrivate
     Q_DECLARE_PUBLIC(DownloadDaemon)
 public:
     explicit DownloadDaemonPrivate(DownloadDaemon* parent);
+    explicit DownloadDaemonPrivate(DBusConnection* conn, DownloadDaemon* parent);
 
     bool start();
 
 private:
-    DownloadDaemon* q_ptr;
-    QDBusConnection _conn;
+    DBusConnection* _conn;
     Downloader* _downInterface;
     DownloaderAdaptor* _downAdaptor;
+    DownloadDaemon* q_ptr;
 
 };
 
 DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent):
-    q_ptr(parent),
-    _conn(QDBusConnection::sessionBus())
+    q_ptr(parent)
+{
+    _conn = new DBusConnection();
+    _downInterface = new Downloader(_conn, q_ptr);
+}
+
+DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn, DownloadDaemon* parent):
+    _conn(conn),
+    q_ptr(parent)
 {
     _downInterface = new Downloader(_conn, q_ptr);
 }
@@ -53,11 +61,11 @@ bool DownloadDaemonPrivate::start()
 {
     qDebug() << "Starting daemon";
     _downAdaptor = new DownloaderAdaptor(_downInterface);
-    bool ret = _conn.registerService("com.canonical.applications.Downloader");
+    bool ret = _conn->registerService("com.canonical.applications.Downloader");
     if (ret)
     {
         qDebug() << "Service registered to com.canonical.applications.Downloader";
-        ret = _conn.registerObject("/", _downInterface);
+        ret = _conn->registerObject("/", _downInterface);
         qDebug() << ret;
         return ret;
     }
@@ -72,6 +80,12 @@ bool DownloadDaemonPrivate::start()
 DownloadDaemon::DownloadDaemon(QObject *parent) :
     QObject(parent),
     d_ptr(new DownloadDaemonPrivate(this))
+{
+}
+
+DownloadDaemon::DownloadDaemon(DBusConnection* conn, QObject *parent):
+    QObject(parent),
+    d_ptr(new DownloadDaemonPrivate(conn, this))
 {
 }
 
