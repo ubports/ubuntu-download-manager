@@ -321,3 +321,20 @@ void TestDownloadQueue::testCancelDownloadOtherReady()
     QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
 }
 
+void TestDownloadQueue::testCancelDownloadNotStarted()
+{
+    // cancel not started and ensure that it is removed
+    _first->record();
+    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
+    _q->add(_first, _firstAdaptor);
+
+    QVERIFY(_q->currentDownload().isEmpty());
+
+    _first->cancel();
+    QVERIFY(_q->currentDownload().isEmpty());
+
+    QCOMPARE(removedSpy.count(), 1);
+
+    QList<QVariant> arguments = removedSpy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), _first->path());
+}

@@ -44,7 +44,7 @@ Q_SIGNALS:
     void downloadCreated(const QDBusObjectPath &path);
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
+    Q_PRIVATE_SLOT(d_func(), void onDownloadRemoved(QString))
 
 private:
     // use pimpl so that we can mantains ABI compatibility

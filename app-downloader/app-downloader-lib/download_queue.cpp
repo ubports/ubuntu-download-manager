@@ -31,8 +31,10 @@ public:
 
     void add(AppDownload* download, ApplicationDownloadAdaptor* adaptor);
     void add(const QPair<AppDownload*, ApplicationDownloadAdaptor*>& value);
+    void remove(const QString& path);
 
     QString currentDownload();
+    QStringList paths();
 
 private:
     void onDownloadStateChanged();
@@ -70,9 +72,27 @@ void DownloadQueuePrivate::add(const QPair<AppDownload*, ApplicationDownloadAdap
     emit q->downloadAdded(path);
 }
 
+void DownloadQueuePrivate::remove(const QString& path)
+{
+    Q_Q(DownloadQueue);
+    QPair<AppDownload*, ApplicationDownloadAdaptor*> pair = _downloads[path];
+    pair.first->deleteLater();
+    pair.second->deleteLater();
+    _sortedPaths.removeOne(path);
+    _downloads.remove(path);
+
+    // emit the signal that it was removed
+    emit q->downloadRemoved(path);
+}
+
 QString DownloadQueuePrivate::currentDownload()
 {
     return _current;
+}
+
+QStringList DownloadQueuePrivate::paths()
+{
+    return _sortedPaths;
 }
 
 void DownloadQueuePrivate::onDownloadStateChanged()
@@ -102,6 +122,8 @@ void DownloadQueuePrivate::onDownloadStateChanged()
             sender->cancelDownload();
             if (!_current.isEmpty() && _current == sender->path())
                 updateCurrentDownload();
+            else
+                remove(sender->path());
             break;
         case AppDownload::FINISHED:
             // remove the registered object in dbus, remove the download and the adapter from the list
@@ -124,14 +146,7 @@ void DownloadQueuePrivate::updateCurrentDownload()
         AppDownload::State state = currentDownload->state();
         if (state == AppDownload::CANCELED || state == AppDownload::FINISHED)
         {
-            QPair<AppDownload*, ApplicationDownloadAdaptor*> pair = _downloads[_current];
-            pair.first->deleteLater();
-            pair.second->deleteLater();
-            _sortedPaths.removeOne(_current);
-            _downloads.remove(_current);
-
-            // emit the signal that it was removed
-            emit q->downloadRemoved(_current);
+            remove(_current);
             _current = "";
         }
         else
@@ -140,7 +155,7 @@ void DownloadQueuePrivate::updateCurrentDownload()
     }
 
     // loop via the downloads and choose the first that is started or resumed
-    foreach(const QString&path, _sortedPaths)
+    foreach(const QString& path, _sortedPaths)
     {
         QPair<AppDownload*, ApplicationDownloadAdaptor*> pair = _downloads[path];
         AppDownload::State state = pair.first->state();
@@ -153,7 +168,7 @@ void DownloadQueuePrivate::updateCurrentDownload()
                 pair.first->resumeDownload();
 
             break;
-        } // is started or resumed
+        }
     }
 
     emit q->currentChanged(_current);
@@ -186,5 +201,12 @@ QString DownloadQueue::currentDownload()
     Q_D(DownloadQueue);
     return d->currentDownload();
 }
+
+QStringList DownloadQueue::paths()
+{
+    Q_D(DownloadQueue);
+    return d->paths();
+}
+
 
 #include "moc_download_queue.cpp"

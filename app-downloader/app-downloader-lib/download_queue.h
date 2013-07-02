@@ -37,6 +37,7 @@ public:
 
     // accessors for useful info
     QString currentDownload();
+    QStringList paths();
 
 Q_SIGNALS:
     // signals raised when things happens within the q

@@ -18,6 +18,7 @@
 
 #include "request_factory.h"
 #include "application_download_adaptor.h"
+#include "download_queue.h"
 #include "downloader.h"
 
 /**
@@ -31,13 +32,10 @@ public:
     explicit DownloaderPrivate(DBusConnection* connection, Downloader* parent);
 
 private:
-    AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url);
-    AppDownload* getApplication(const QString &appId, const QString &appName, const QUrl &url, const QString &hash,
-        QCryptographicHash::Algorithm algo);
+
     void addDownload(AppDownload* download);
-    void updateCurrentDownload();
-    void onDownloadStateChanged();
     void loadPreviewsDownloads(QString path);
+    void onDownloadRemoved(QString path);
 
     QDBusObjectPath createDownload(const QString &appId, const QString &appName, const QString &url);
     QDBusObjectPath createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
@@ -47,12 +45,11 @@ private:
 private:
     static QString BASE_ACCOUNT_URL;
 
-    QList<AppDownload*> _downloads;
-    QHash<QString, ApplicationDownloadAdaptor*> _adaptors;
+    DownloadQueue* _downloads;
     DBusConnection* _conn;
-    Downloader* q_ptr;
     RequestFactory* _reqFactory;
     AppDownload* _current;
+    Downloader* q_ptr;
 };
 
 QString DownloaderPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
@@ -61,29 +58,14 @@ DownloaderPrivate::DownloaderPrivate(DBusConnection* connection, Downloader* par
     _conn(connection),
     q_ptr(parent)
 {
+    Q_Q(Downloader);
+
+    _downloads = new DownloadQueue();
+    q->connect(_downloads, SIGNAL(downloadRemoved(QString)),
+        q, SLOT(onDownloadRemoved(QString)));
+
     _reqFactory = new RequestFactory();
     _current = NULL;
-}
-
-AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QString &appName, const QUrl &url)
-{
-    Q_Q(Downloader);
-    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
-    AppDownload* appDown = new AppDownload(appId, appName, path, url, _reqFactory);
-    q->connect(appDown, SIGNAL(stateChanged()),
-        q, SLOT(onDownloadStateChanged()));
-    return appDown;
-}
-
-AppDownload* DownloaderPrivate::getApplication(const QString &appId, const QString &appName, const QUrl &url,
-    const QString &hash, QCryptographicHash::Algorithm algo)
-{
-    Q_Q(Downloader);
-    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
-    AppDownload* appDown = new AppDownload(appId, appName, path, url, hash, algo, _reqFactory);
-    q->connect(appDown, SIGNAL(stateChanged()),
-        q, SLOT(onDownloadStateChanged()));
-    return appDown;
 }
 
 void DownloaderPrivate::addDownload(AppDownload* download)
@@ -92,106 +74,16 @@ void DownloaderPrivate::addDownload(AppDownload* download)
     // TODO
 }
 
-void DownloaderPrivate::updateCurrentDownload()
-{
-    qDebug() << "Updating CURRENT DOWNLOAD.";
-    if (_current != NULL)
-    {
-        AppDownload::State state = _current->state();
-        if (state == AppDownload::CANCELED || state == AppDownload::FINISHED)
-        {
-            qDebug() << "Current was CANCELED or FINISHED";
-            // clean resources
-            _conn->unregisterObject(_current->path());
-            _downloads.removeOne(_current);
-            ApplicationDownloadAdaptor* adaptor = _adaptors[_current->path()];
-            _adaptors.remove(_current->path());
-            adaptor->deleteLater();
-            _current->deleteLater();
-            _current = NULL;
-
-        }
-        else
-        {
-            qDebug() << "Current was not deleted or canceled but paused.";
-            _current = NULL;
-            return;
-        }
-    }
-
-    qDebug() << "Updating current download.";
-    // loop via the downloads and choose the first that is started or resumed
-    for(int index = 0; index < _downloads.count(); index++)
-    {
-        AppDownload* appDownload = _downloads[index];
-        AppDownload::State state = appDownload->state();
-        if(state == AppDownload::STARTED || state == AppDownload::RESUMED)
-        {
-            qDebug() << "Found downlad ready for " << appDownload->url();
-            // found the first instance that can be downloaded set it to be first
-            _downloads.removeAt(index);
-            _downloads.prepend(appDownload);
-            _current = appDownload;
-
-            if (state == AppDownload::STARTED)
-            {
-                qDebug() << "Starting download for" << appDownload->url();
-                appDownload->startDownload();
-            }
-            else
-            {
-                qDebug() << "Resuming download for " << appDownload->url();
-                appDownload->resumeDownload();
-            }
-
-            break;
-        } // is started or resumed
-    } // for
-}
-
-void DownloaderPrivate::onDownloadStateChanged()
-{
-    Q_Q(Downloader);
-    // get the appdownload that emited the signal and decide what to do with it
-    AppDownload* sender = qobject_cast<AppDownload*>(q->sender());
-    switch(sender->state())
-    {
-        case AppDownload::STARTED:
-            // only start the download in the update method
-            if (_current == NULL)
-                updateCurrentDownload();
-            break;
-        case AppDownload::PAUSED:
-            sender->pauseDownload();
-            if (_current != NULL && _current->path() == sender->path())
-                updateCurrentDownload();
-            break;
-        case AppDownload::RESUMED:
-            // only resume the download in the update method
-            updateCurrentDownload();
-            break;
-        case AppDownload::CANCELED:
-            // cancel and remove the download
-            sender->cancelDownload();
-            if (_current != NULL && _current->path() == sender->path())
-                updateCurrentDownload();
-            break;
-        case AppDownload::FINISHED:
-            // remove the registered object in dbus, remove the download and the adapter from the list
-            if (_current != NULL && _current->path() == sender->path())
-                updateCurrentDownload();
-            break;
-        default:
-            // do nothing
-            break;
-    }
-}
-
 void DownloaderPrivate::loadPreviewsDownloads(QString path)
 {
     // TODO
     // list the dirs of the different downloads that we can find, loop and create each of them
     Q_UNUSED(path);
+}
+
+void DownloaderPrivate::onDownloadRemoved(QString path)
+{
+    _conn->unregisterObject(path);
 }
 
 QDBusObjectPath DownloaderPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
@@ -208,32 +100,21 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, 
     QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
     QDBusObjectPath objectPath;
 
-    if (_adaptors.contains(path))
-    {
-        qDebug() << "Download for app id" << appId << "is already present";
+    if (_downloads->paths().contains(path))
         objectPath = QDBusObjectPath(path);
-    }
     else
     {
         AppDownload* appDownload;
         if (hash.isEmpty())
-        {
-            qDebug() << "Creating AppDownload object for" << appId;
-            appDownload = getApplication(appId, appName, url);
-        }
+            appDownload = new AppDownload(appId, appName, path, url, _reqFactory);
         else
-        {
-            qDebug() << "Creating AppDownload object for " << url << "hash" << hash << "algo" << algo;
-            appDownload = getApplication(appId, appName, url, hash, algo);
-        }
+            appDownload = new AppDownload(appId, appName, path, url, hash, algo, _reqFactory);
 
         ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
 
         // we need to store the ref of both objects, else the mem management will delete them
-        _downloads.append(appDownload);
-        _adaptors[appDownload->path()] = adaptor;
-        bool ret = _conn->registerObject(appDownload->path(), appDownload);
-        qDebug() << "New DBus object registered to " << appDownload->path() << ret;
+        _downloads->add(appDownload, adaptor);
+        _conn->registerObject(appDownload->path(), appDownload);
         objectPath = QDBusObjectPath(appDownload->path());
     }
 
@@ -246,8 +127,8 @@ QList<QDBusObjectPath> DownloaderPrivate::getAllDownloads()
 {
     qDebug() << "Getting all object paths.";
     QList<QDBusObjectPath> paths;
-    foreach(AppDownload* appDownload, _downloads)
-        paths << QDBusObjectPath(appDownload->path());
+    foreach(const QString& path, _downloads->paths())
+        paths << QDBusObjectPath(path);
     return paths;
 }
 
