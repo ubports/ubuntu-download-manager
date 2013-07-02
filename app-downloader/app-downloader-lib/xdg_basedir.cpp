@@ -40,7 +40,6 @@ QString XDGBasedir::cacheHome()
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_CACHE_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDG_CACHE_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;
@@ -52,7 +51,6 @@ QString XDGBasedir::configHome()
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_CONFIG_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDG_CONFIG_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;
@@ -64,7 +62,6 @@ QString XDGBasedir::dataHome()
     if (env_path.isEmpty())
     {
         QString defaultValue = QDir(QDir::homePath()).filePath(DEFAULT_DATA_HOME);
-        qDebug() << "NULL" << QString::fromStdString(XDG_DATA_HOME) << "Returning default" << defaultValue;
         return defaultValue;
     }
     return env_path;

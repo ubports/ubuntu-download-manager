@@ -637,10 +637,14 @@ void AppDownloadPrivate::onFinished()
         if (fileSig != _hash)
         {
             qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
+            _state = AppDownload::FINISHED;
+            emit q->stateChanged();
             emit q->error("HASH ERROR");
             return;
         }
     }
+    _state = AppDownload::FINISHED;
+    emit q->stateChanged();
     emit q->finished();
     _reply->deleteLater();
     _reply = NULL;

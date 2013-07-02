@@ -20,7 +20,6 @@
 
 #include <stdlib.h>
 #include <functional>
-#include <QDebug>
 #include <QDir>
 
 
@@ -129,8 +128,6 @@ void TestXDGBasedir::testCollectionDefault(QString envVar, std::function<QList<Q
     unsetenv(envVar.toStdString().c_str());
     QList<QString> dirs = cb();
     QVERIFY(1 == dirs.length());
-    qDebug() << expected;
-    qDebug() << dirs;
     QVERIFY(dirs.contains(expected));
 }
 

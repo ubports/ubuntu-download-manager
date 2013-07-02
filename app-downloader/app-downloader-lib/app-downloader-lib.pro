@@ -20,18 +20,20 @@ SOURCES += \
     downloader.cpp \
     app_download.cpp \
     download_daemon.cpp \
+    download_queue.cpp \
     xdg_basedir.cpp \
     request_factory.cpp \
     network_reply.cpp \
-    dbus_connection.cpp
+    dbus_connection.cpp \
 
 HEADERS +=\
-        app-downloader-lib_global.h \
+    app-downloader-lib_global.h \
     downloader_adaptor.h \
     application_download_adaptor.h \
     downloader.h \
     app_download.h \
     download_daemon.h \
+    download_queue.h \
     xdg_basedir.h \
     request_factory.h \
     network_reply.h \

@@ -596,6 +596,7 @@ void TestAppDownload::testOnSuccessNoHash()
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(download->state(), AppDownload::FINISHED);
 }
 
 void TestAppDownload::testOnSuccessHashError()
@@ -627,6 +628,7 @@ void TestAppDownload::testOnSuccessHashError()
 
     // the has is a random string so we should get an error signal
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(download->state(), AppDownload::FINISHED);
 
     delete download;
 }
@@ -683,6 +685,7 @@ void TestAppDownload::testOnSuccessHash()
 
     // the hash should be correct and we should get the finish signal
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(download->state(), AppDownload::FINISHED);
 
     delete download;
 }

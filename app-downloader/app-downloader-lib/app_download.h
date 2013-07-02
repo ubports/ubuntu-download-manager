@@ -58,10 +58,10 @@ public:
     QCryptographicHash::Algorithm hashAlgorithm();
 
     // methods that do perform the download
-    void cancelDownload();
-    void pauseDownload();
-    void resumeDownload();
-    void startDownload();
+    virtual void cancelDownload();
+    virtual void pauseDownload();
+    virtual void resumeDownload();
+    virtual void startDownload();
     static AppDownload* fromMetadata(const QString &path, RequestFactory* nam);
 
 
