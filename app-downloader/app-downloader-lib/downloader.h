@@ -23,7 +23,7 @@
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
 #include "dbus_connection.h"
-#include "app_download.h"
+#include "download.h"
 
 class DownloaderPrivate;
 class Downloader : public QObject

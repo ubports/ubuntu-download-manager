@@ -21,7 +21,7 @@
 
 #include <QList>
 #include <QPair>
-#include "app_download.h"
+#include "download.h"
 #include "application_download_adaptor.h"
 
 class DownloadQueuePrivate;
@@ -32,8 +32,8 @@ class DownloadQueue : public QObject
 public:
     explicit DownloadQueue(QObject* parent=0);
     
-    virtual void add(AppDownload* download, ApplicationDownloadAdaptor* adaptor);
-    virtual void add(const QPair<AppDownload*, ApplicationDownloadAdaptor*>& value);
+    virtual void add(Download* download, ApplicationDownloadAdaptor* adaptor);
+    virtual void add(const QPair<Download*, ApplicationDownloadAdaptor*>& value);
 
     // accessors for useful info
     QString currentDownload();

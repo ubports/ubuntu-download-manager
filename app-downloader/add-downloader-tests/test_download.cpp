@@ -21,14 +21,14 @@
 #include <QSignalSpy>
 #include <QSslError>
 #include "fake_network_reply.h"
-#include "test_app_download.h"
+#include "test_download.h"
 
-TestAppDownload::TestAppDownload(QObject* parent) :
+TestDownload::TestDownload(QObject* parent) :
     QObject(parent)
 {
 }
 
-bool TestAppDownload::removeDir(const QString& dirName)
+bool TestDownload::removeDir(const QString& dirName)
 {
     bool result = true;
     QDir dir(dirName);
@@ -53,7 +53,7 @@ bool TestAppDownload::removeDir(const QString& dirName)
     return result;
 }
 
-void TestAppDownload::init()
+void TestDownload::init()
 {
     // set the xdg path so that we have control over it
     _testDir = QDir("./tests");
@@ -74,7 +74,7 @@ void TestAppDownload::init()
     _reqFactory = new FakeRequestFactory();
 }
 
-void TestAppDownload::cleanup()
+void TestDownload::cleanup()
 {
     if (_reqFactory)
         delete _reqFactory;
@@ -84,7 +84,7 @@ void TestAppDownload::cleanup()
     unsetenv("XDG_DATA_HOME");
 }
 
-void TestAppDownload::testNoHashConstructor_data()
+void TestDownload::testNoHashConstructor_data()
 {
     QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("appName");
@@ -101,14 +101,14 @@ void TestAppDownload::testNoHashConstructor_data()
         << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
 }
 
-void TestAppDownload::testNoHashConstructor()
+void TestDownload::testNoHashConstructor()
 {
     QFETCH(QString, appId);
     QFETCH(QString, appName);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
-    AppDownload* download = new AppDownload(appId, appName, path, url, _reqFactory);
+    Download* download = new Download(appId, appName, path, url, _reqFactory);
 
     // assert that we did set the intial state correctly
     // gets for internal state
@@ -117,14 +117,14 @@ void TestAppDownload::testNoHashConstructor()
     QCOMPARE(download->applicationName(), appName);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
-    QCOMPARE(download->state(), AppDownload::IDLE);
+    QCOMPARE(download->state(), Download::IDLE);
     QCOMPARE(download->progress(), 0u);
     QCOMPARE(download->totalSize(), 0u);
 
     delete download;
 }
 
-void TestAppDownload::testHashConstructor_data()
+void TestDownload::testHashConstructor_data()
 {
     QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("appName");
@@ -143,7 +143,7 @@ void TestAppDownload::testHashConstructor_data()
         << "/path/to/last/app" << QUrl("http://ubuntu.com/phone") << "my-last-hash" << (int) QCryptographicHash::Sha256;
 }
 
-void TestAppDownload::testHashConstructor()
+void TestDownload::testHashConstructor()
 {
     QFETCH(QString, appId);
     QFETCH(QString, appName);
@@ -152,7 +152,7 @@ void TestAppDownload::testHashConstructor()
     QFETCH(QString, hash);
     QFETCH(int, algo);
 
-    AppDownload* download = new AppDownload(appId, appName, path, url, hash, (QCryptographicHash::Algorithm)algo, _reqFactory);
+    Download* download = new Download(appId, appName, path, url, hash, (QCryptographicHash::Algorithm)algo, _reqFactory);
 
     QCOMPARE(download->applicationId(), appId);
     QCOMPARE(download->applicationName(), appName);
@@ -160,14 +160,14 @@ void TestAppDownload::testHashConstructor()
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
     QCOMPARE((int)download->hashAlgorithm(), algo);
-    QCOMPARE(download->state(), AppDownload::IDLE);
+    QCOMPARE(download->state(), Download::IDLE);
     QCOMPARE(download->progress(), 0u);
     QCOMPARE(download->totalSize(), 0u);
 
     delete download;
 }
 
-void TestAppDownload::testPath_data()
+void TestDownload::testPath_data()
 {
     // create a number of rows with a diff path to ensure that
     // the accesor does return the correct one
@@ -178,15 +178,15 @@ void TestAppDownload::testPath_data()
     QTest::newRow("Last row") << "/last/random/path";
 }
 
-void TestAppDownload::testPath()
+void TestDownload::testPath()
 {
     // create an app download and assert that the returned data is correct
     QFETCH(QString, path);
-    AppDownload* download = new AppDownload(_appId, _appName, path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, path, _url, _reqFactory);
     QCOMPARE(download->path(), path);
 }
 
-void TestAppDownload::testUrl_data()
+void TestDownload::testUrl_data()
 {
     // create a number of rows with a diff url to ensure that
     // the accesor does return the correct one
@@ -197,16 +197,16 @@ void TestAppDownload::testUrl_data()
     QTest::newRow("Last row") << QUrl("http://ubuntu.com/tablet");
 }
 
-void TestAppDownload::testUrl()
+void TestDownload::testUrl()
 {
     // create an app download and assert that the returned data is correct
     QFETCH(QUrl, url);
-    AppDownload* download = new AppDownload(_appId, _appName, _path, url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, url, _reqFactory);
     QCOMPARE(download->url(), url);
     delete download;
 }
 
-void TestAppDownload::testApplicationId_data()
+void TestDownload::testApplicationId_data()
 {
     // create a number of rows with a diff app id to ensure that
     // the accessor does return the correct one
@@ -217,15 +217,15 @@ void TestAppDownload::testApplicationId_data()
     QTest::newRow("Last row") << "my-last-app-id";
 }
 
-void TestAppDownload::testApplicationId()
+void TestDownload::testApplicationId()
 {
     QFETCH(QString, appId);
-    AppDownload* download = new AppDownload(appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(appId, _appName, _path, _url, _reqFactory);
     QCOMPARE(download->applicationId(), appId);
     delete download;
 }
 
-void TestAppDownload::testApplicationName_data()
+void TestDownload::testApplicationName_data()
 {
     // create a number of rows with a diff app name to ensure that
     // the accessor does return the correct one
@@ -236,15 +236,15 @@ void TestAppDownload::testApplicationName_data()
     QTest::newRow("Last row") << "my-last-app-name";
 }
 
-void TestAppDownload::testApplicationName()
+void TestDownload::testApplicationName()
 {
     QFETCH(QString, appName);
-    AppDownload* download = new AppDownload(_appId, appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, appName, _path, _url, _reqFactory);
     QCOMPARE(download->applicationName(), appName);
     delete download;
 }
 
-void TestAppDownload::testMetadata_data()
+void TestDownload::testMetadata_data()
 {
     QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("appName");
@@ -255,12 +255,12 @@ void TestAppDownload::testMetadata_data()
 
 }
 
-void TestAppDownload::testMetadata()
+void TestDownload::testMetadata()
 {
     QFETCH(QString, appId);
     QFETCH(QString, appName);
 
-    AppDownload* download = new AppDownload(appId, appName, _path, _url, _reqFactory);
+    Download* download = new Download(appId, appName, _path, _url, _reqFactory);
     QVariantMap metadata = download->metadata();
 
     // assert that keys are present and data is correct
@@ -272,7 +272,7 @@ void TestAppDownload::testMetadata()
     QVERIFY(metadata.contains("progress"));
 }
 
-void TestAppDownload::testProgress_data()
+void TestDownload::testProgress_data()
 {
     QTest::addColumn<QByteArray>("fileData");
     QTest::addColumn<uint>("received");
@@ -284,14 +284,14 @@ void TestAppDownload::testProgress_data()
     QTest::newRow("Last row") << QByteArray(400, 'l') << 3434u << 2323u;
 }
 
-void TestAppDownload::testProgress()
+void TestDownload::testProgress()
 {
     QFETCH(QByteArray, fileData);
     QFETCH(uint, received);
     QFETCH(uint, total);
 
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(progress(uint, uint)));
 
     // start the download so that we do have access to the reply
@@ -313,14 +313,14 @@ void TestAppDownload::testProgress()
     delete download;
 }
 
-void TestAppDownload::testTotalSize()
+void TestDownload::testTotalSize()
 {
     uint received = 30u;
     uint total = 200u;
 
     // assert that the total size is just set once by emitting two signals with diff sizes
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(progress(uint, uint)));
 
     // start the download so that we do have access to the reply
@@ -337,63 +337,63 @@ void TestAppDownload::testTotalSize()
     QCOMPARE(spy.count(), 2);
 }
 
-void TestAppDownload::testTotalSizeNoProgress()
+void TestDownload::testTotalSizeNoProgress()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QCOMPARE(0u, download->totalSize());
     delete download;
 }
 
-void TestAppDownload::testCancel()
+void TestDownload::testCancel()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->cancel();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::CANCELED);
+    QCOMPARE(download->state(), Download::CANCELED);
     delete download;
 }
 
-void TestAppDownload::testPause()
+void TestDownload::testPause()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->pause();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::PAUSED);
+    QCOMPARE(download->state(), Download::PAUSED);
     delete download;
 }
 
-void TestAppDownload::testResume()
+void TestDownload::testResume()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->resume();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::RESUMED);
+    QCOMPARE(download->state(), Download::RESUMED);
     delete download;
 }
 
-void TestAppDownload::testStart()
+void TestDownload::testStart()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->start();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::STARTED);
+    QCOMPARE(download->state(), Download::STARTED);
     delete download;
 }
 
-void TestAppDownload::testCancelDownload()
+void TestDownload::testCancelDownload()
 {
     // tell the fake nam to record so that we can access the reply
 
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(canceled(bool)));
 
     download->start();  // change state
@@ -420,10 +420,10 @@ void TestAppDownload::testCancelDownload()
 
 }
 
-void TestAppDownload::testCancelDownloadNotStarted()
+void TestDownload::testCancelDownloadNotStarted()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(canceled(bool)));
 
     download->cancel(); // change state
@@ -439,10 +439,10 @@ void TestAppDownload::testCancelDownloadNotStarted()
     delete download;
 }
 
-void TestAppDownload::testPauseDownload()
+void TestDownload::testPauseDownload()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool)));
 
     download->start();  // change state
@@ -474,9 +474,9 @@ void TestAppDownload::testPauseDownload()
     delete download;
 }
 
-void TestAppDownload::testPauseDownloadNotStarted()
+void TestDownload::testPauseDownloadNotStarted()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool)));
 
     download->pause();
@@ -489,9 +489,9 @@ void TestAppDownload::testPauseDownloadNotStarted()
     delete download;
 }
 
-void TestAppDownload::testResumeRunning()
+void TestDownload::testResumeRunning()
 {
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(resumed(bool)));
 
     download->start();
@@ -506,10 +506,10 @@ void TestAppDownload::testResumeRunning()
     delete download;
 }
 
-void TestAppDownload::testResumeDownload()
+void TestDownload::testResumeDownload()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool)));
 
     download->start();  // change state
@@ -539,10 +539,10 @@ void TestAppDownload::testResumeDownload()
     QCOMPARE(rangeHeaderValue, request.rawHeader("Range"));
 }
 
-void TestAppDownload::testStartDownload()
+void TestDownload::testStartDownload()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(started(bool)));
 
     download->start();  // change state
@@ -559,10 +559,10 @@ void TestAppDownload::testStartDownload()
     delete download;
 }
 
-void TestAppDownload::testStartDownloadAlreadyStarted()
+void TestDownload::testStartDownloadAlreadyStarted()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(started(bool)));
 
     download->start();  // change state
@@ -580,10 +580,10 @@ void TestAppDownload::testStartDownloadAlreadyStarted()
     delete download;
 }
 
-void TestAppDownload::testOnSuccessNoHash()
+void TestDownload::testOnSuccessNoHash()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(finished()));
 
     download->start();  // change state
@@ -596,13 +596,13 @@ void TestAppDownload::testOnSuccessNoHash()
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::FINISHED);
+    QCOMPARE(download->state(), Download::FINISHED);
 }
 
-void TestAppDownload::testOnSuccessHashError()
+void TestDownload::testOnSuccessHashError()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, "imposible-hash-is-not-hex", _algo, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, "imposible-hash-is-not-hex", _algo, _reqFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
 
     download->start();  // change state
@@ -628,12 +628,12 @@ void TestAppDownload::testOnSuccessHashError()
 
     // the has is a random string so we should get an error signal
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::FINISHED);
+    QCOMPARE(download->state(), Download::FINISHED);
 
     delete download;
 }
 
-void TestAppDownload::testOnSuccessHash_data()
+void TestDownload::testOnSuccessHash_data()
 {
     QTest::addColumn<QByteArray>("data");
     QTest::addColumn<QString>("hash");
@@ -653,13 +653,13 @@ void TestAppDownload::testOnSuccessHash_data()
         << QString(QCryptographicHash::hash(lastData, _algo).toHex());
 }
 
-void TestAppDownload::testOnSuccessHash()
+void TestDownload::testOnSuccessHash()
 {
     QFETCH(QByteArray, data);
     QFETCH(QString, hash);
 
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, hash, _algo, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, hash, _algo, _reqFactory);
     QSignalSpy spy(download , SIGNAL(finished()));
 
     download->start();  // change state
@@ -685,15 +685,15 @@ void TestAppDownload::testOnSuccessHash()
 
     // the hash should be correct and we should get the finish signal
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), AppDownload::FINISHED);
+    QCOMPARE(download->state(), Download::FINISHED);
 
     delete download;
 }
 
-void TestAppDownload::testOnHttpError()
+void TestDownload::testOnHttpError()
 {
     _reqFactory->record();
-    AppDownload* download = new AppDownload(_appId, _appName, _path, _url, _reqFactory);
+    Download* download = new Download(_appId, _appName, _path, _url, _reqFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
 
     download->start();  // change state

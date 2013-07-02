@@ -18,10 +18,10 @@
 
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
-#include <app_download.h>
+#include <download.h>
 #include "fake.h"
 
-class FakeDownload : public AppDownload, public Fake
+class FakeDownload : public Download, public Fake
 {
     Q_OBJECT
 public:

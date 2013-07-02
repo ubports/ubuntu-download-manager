@@ -21,15 +21,15 @@
 
 #include <QDir>
 #include <QObject>
-#include <app_download.h>
+#include <download.h>
 #include "fake_request_factory.h"
 #include "test_runner.h"
 
-class TestAppDownload: public QObject
+class TestDownload: public QObject
 {
     Q_OBJECT
 public:
-    explicit TestAppDownload(QObject *parent = 0);
+    explicit TestDownload(QObject *parent = 0);
 
 private slots:
 
@@ -95,6 +95,6 @@ private:
 
 };
 
-DECLARE_TEST(TestAppDownload)
+DECLARE_TEST(TestDownload)
 
 #endif // TEST_APP_DOWNLOAD_H

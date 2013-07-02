@@ -33,7 +33,7 @@ public:
 
 private:
 
-    void addDownload(AppDownload* download);
+    void addDownload(Download* download);
     void loadPreviewsDownloads(QString path);
     void onDownloadRemoved(QString path);
 
@@ -48,7 +48,7 @@ private:
     DownloadQueue* _downloads;
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
-    AppDownload* _current;
+    Download* _current;
     Downloader* q_ptr;
 };
 
@@ -68,7 +68,7 @@ DownloaderPrivate::DownloaderPrivate(DBusConnection* connection, Downloader* par
     _current = NULL;
 }
 
-void DownloaderPrivate::addDownload(AppDownload* download)
+void DownloaderPrivate::addDownload(Download* download)
 {
     Q_UNUSED(download);
     // TODO
@@ -104,11 +104,11 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, 
         objectPath = QDBusObjectPath(path);
     else
     {
-        AppDownload* appDownload;
+        Download* appDownload;
         if (hash.isEmpty())
-            appDownload = new AppDownload(appId, appName, path, url, _reqFactory);
+            appDownload = new Download(appId, appName, path, url, _reqFactory);
         else
-            appDownload = new AppDownload(appId, appName, path, url, hash, algo, _reqFactory);
+            appDownload = new Download(appId, appName, path, url, hash, algo, _reqFactory);
 
         ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
 

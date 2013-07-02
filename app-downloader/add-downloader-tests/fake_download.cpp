@@ -19,13 +19,13 @@
 #include "fake_download.h"
 
 FakeDownload::FakeDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent):
-    AppDownload(appId, appName, path, url, nam, parent)
+    Download(appId, appName, path, url, nam, parent)
 {
 }
 
 FakeDownload::FakeDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
     RequestFactory* nam, QObject* parent):
-        AppDownload(appId, appName, path, url, hash, algo, nam, parent)
+        Download(appId, appName, path, url, hash, algo, nam, parent)
 {
 }
 

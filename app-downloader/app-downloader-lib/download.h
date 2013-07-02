@@ -28,11 +28,11 @@
 #include "request_factory.h"
 #include "app-downloader-lib_global.h"
 
-class AppDownloadPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT AppDownload : public QObject
+class DownloadPrivate;
+class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(AppDownload)
+    Q_DECLARE_PRIVATE(Download)
 public:
 
     enum State
@@ -45,14 +45,14 @@ public:
         FINISHED
     };
 
-    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent=0);
-    explicit AppDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+    explicit Download(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent=0);
+    explicit Download(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
         RequestFactory* nam, QObject* parent=0);
 
     // gets for internal state
     QString path();
     QUrl url();
-    AppDownload::State state();
+    Download::State state();
     QString filePath();
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();
@@ -62,7 +62,7 @@ public:
     virtual void pauseDownload();
     virtual void resumeDownload();
     virtual void startDownload();
-    static AppDownload* fromMetadata(const QString &path, RequestFactory* nam);
+    static Download* fromMetadata(const QString &path, RequestFactory* nam);
 
 
 public slots:
@@ -92,7 +92,7 @@ Q_SIGNALS:
     void stateChanged();
 
 private:
-    explicit AppDownload();
+    explicit Download();
     // private slots used to keep track of the qnetwork reply state
 
     Q_PRIVATE_SLOT(d_func(), void onDownloadProgress(qint64, qint64))
@@ -102,7 +102,7 @@ private:
 
 private:
     // use pimpl so that we can mantains ABI compatibility
-    AppDownloadPrivate* d_ptr;
+    DownloadPrivate* d_ptr;
 };
 
 #endif // APP_DOWNLOAD_H

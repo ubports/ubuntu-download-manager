@@ -17,7 +17,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    test_app_download.cpp \
     test_download_daemon.cpp \
     test_downloader.cpp \
     fake_qnetwork_reply.cpp \
@@ -28,11 +27,11 @@ SOURCES += main.cpp \
     fake_network_reply.cpp \
     fake_dbus_connection.cpp \
     test_download_queue.cpp \
-    fake_download.cpp
+    fake_download.cpp \
+    test_download.cpp
 
 HEADERS += \
     test_runner.h \
-    test_app_download.h \
     test_download_daemon.h \
     test_downloader.h \
     fake_qnetwork_reply.h \
@@ -43,7 +42,8 @@ HEADERS += \
     fake_network_reply.h \
     fake_dbus_connection.h \
     test_download_queue.h \
-    fake_download.h
+    fake_download.h \
+    test_download.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/release/ -lapp-downloader-lib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/debug/ -lapp-downloader-lib
