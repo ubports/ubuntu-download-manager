@@ -22,15 +22,15 @@
  * PRIVATE IMPLEMENTATION
  */
 
-typedef QHash<QString, QPair<Download*, ApplicationDownloadAdaptor*> > DownloadList;
+typedef QHash<QString, QPair<Download*, DownloadAdaptor*> > DownloadList;
 class DownloadQueuePrivate
 {
     Q_DECLARE_PUBLIC(DownloadQueue)
 public:
     explicit DownloadQueuePrivate(DownloadQueue* parent);
 
-    void add(Download* download, ApplicationDownloadAdaptor* adaptor);
-    void add(const QPair<Download*, ApplicationDownloadAdaptor*>& value);
+    void add(Download* download, DownloadAdaptor* adaptor);
+    void add(const QPair<Download*, DownloadAdaptor*>& value);
     void remove(const QString& path);
 
     QString currentDownload();
@@ -53,13 +53,13 @@ DownloadQueuePrivate::DownloadQueuePrivate(DownloadQueue* parent):
 {
 }
 
-void DownloadQueuePrivate::add(Download* download, ApplicationDownloadAdaptor* adaptor)
+void DownloadQueuePrivate::add(Download* download, DownloadAdaptor* adaptor)
 {
-    QPair<Download*, ApplicationDownloadAdaptor*> pair(download, adaptor);
+    QPair<Download*, DownloadAdaptor*> pair(download, adaptor);
     add(pair);
 }
 
-void DownloadQueuePrivate::add(const QPair<Download*, ApplicationDownloadAdaptor*>& value)
+void DownloadQueuePrivate::add(const QPair<Download*, DownloadAdaptor*>& value)
 {
     Q_Q(DownloadQueue);
     // connect to the signals and append to the list
@@ -75,7 +75,7 @@ void DownloadQueuePrivate::add(const QPair<Download*, ApplicationDownloadAdaptor
 void DownloadQueuePrivate::remove(const QString& path)
 {
     Q_Q(DownloadQueue);
-    QPair<Download*, ApplicationDownloadAdaptor*> pair = _downloads[path];
+    QPair<Download*, DownloadAdaptor*> pair = _downloads[path];
     pair.first->deleteLater();
     pair.second->deleteLater();
     _sortedPaths.removeOne(path);
@@ -157,7 +157,7 @@ void DownloadQueuePrivate::updateCurrentDownload()
     // loop via the downloads and choose the first that is started or resumed
     foreach(const QString& path, _sortedPaths)
     {
-        QPair<Download*, ApplicationDownloadAdaptor*> pair = _downloads[path];
+        QPair<Download*, DownloadAdaptor*> pair = _downloads[path];
         Download::State state = pair.first->state();
         if(state == Download::STARTED || state == Download::RESUMED)
         {
@@ -184,13 +184,13 @@ DownloadQueue::DownloadQueue(QObject* parent) :
 {
 }
 
-void DownloadQueue::add(Download* download, ApplicationDownloadAdaptor* adaptor)
+void DownloadQueue::add(Download* download, DownloadAdaptor* adaptor)
 {
     Q_D(DownloadQueue);
     d->add(download, adaptor);
 }
 
-void DownloadQueue::add(const QPair<Download*, ApplicationDownloadAdaptor*>& value)
+void DownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value)
 {
     Q_D(DownloadQueue);
     d->add(value);

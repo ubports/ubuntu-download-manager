@@ -19,7 +19,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QDebug>
 #include "download_manager.h"
-#include "downloader_adaptor.h"
+#include "download_manager_adaptor.h"
 #include "download_daemon.h"
 
 /**
@@ -38,7 +38,7 @@ public:
 private:
     DBusConnection* _conn;
     DownloadManager* _downInterface;
-    DownloaderAdaptor* _downAdaptor;
+    DownloadManagerAdaptor* _downAdaptor;
     DownloadDaemon* q_ptr;
 
 };
@@ -60,7 +60,7 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn, DownloadDaemo
 bool DownloadDaemonPrivate::start()
 {
     qDebug() << "Starting daemon";
-    _downAdaptor = new DownloaderAdaptor(_downInterface);
+    _downAdaptor = new DownloadManagerAdaptor(_downInterface);
     bool ret = _conn->registerService("com.canonical.applications.Downloader");
     if (ret)
     {

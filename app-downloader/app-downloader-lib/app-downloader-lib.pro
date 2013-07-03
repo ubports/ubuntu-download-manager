@@ -15,8 +15,6 @@ TEMPLATE = lib
 DEFINES += APPDOWNLOADERLIB_LIBRARY
 
 SOURCES += \
-    downloader_adaptor.cpp \
-    application_download_adaptor.cpp \
     download.cpp \
     download_daemon.cpp \
     download_manager.cpp \
@@ -24,12 +22,12 @@ SOURCES += \
     xdg_basedir.cpp \
     request_factory.cpp \
     network_reply.cpp \
-    dbus_connection.cpp
+    dbus_connection.cpp \
+    download_adaptor.cpp \
+    download_manager_adaptor.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
-    downloader_adaptor.h \
-    application_download_adaptor.h \
     download.h \
     download_daemon.h \
     download_manager.h \
@@ -37,7 +35,9 @@ HEADERS +=\
     xdg_basedir.h \
     request_factory.h \
     network_reply.h \
-    dbus_connection.h
+    dbus_connection.h \
+    download_adaptor.h \
+    download_manager_adaptor.h
 
 OTHER_FILES += \
     com.canonical.applications.application_download.xml \

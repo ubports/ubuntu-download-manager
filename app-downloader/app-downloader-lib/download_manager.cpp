@@ -17,7 +17,7 @@
  */
 
 #include "request_factory.h"
-#include "application_download_adaptor.h"
+#include "download_adaptor.h"
 #include "download_queue.h"
 #include "download_manager.h"
 
@@ -110,7 +110,7 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString &ap
         else
             appDownload = new Download(appId, appName, path, url, hash, algo, _reqFactory);
 
-        ApplicationDownloadAdaptor* adaptor = new ApplicationDownloadAdaptor(appDownload);
+        DownloadAdaptor* adaptor = new DownloadAdaptor(appDownload);
 
         // we need to store the ref of both objects, else the mem management will delete them
         _downloads->add(appDownload, adaptor);

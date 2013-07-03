@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_QUEUE_H
 
 #include <QObject>
-#include <application_download_adaptor.h>
+#include <download_adaptor.h>
 #include <download_queue.h>
 #include "test_runner.h"
 #include "fake_download.h"
@@ -51,9 +51,9 @@ private slots:
 private:
     FakeRequestFactory* _reqFactory;
     FakeDownload* _first;
-    ApplicationDownloadAdaptor* _firstAdaptor;
+    DownloadAdaptor* _firstAdaptor;
     FakeDownload* _second;
-    ApplicationDownloadAdaptor* _secondAdaptor;
+    DownloadAdaptor* _secondAdaptor;
     DownloadQueue* _q;
 };
 

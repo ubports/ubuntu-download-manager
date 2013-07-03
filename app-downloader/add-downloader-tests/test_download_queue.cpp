@@ -28,9 +28,9 @@ void TestDownloadQueue::init()
 {
     _reqFactory = new FakeRequestFactory();
     _first = new FakeDownload("first-id", "first-name", "first-path", QUrl(), _reqFactory);
-    _firstAdaptor = new ApplicationDownloadAdaptor(_first);
+    _firstAdaptor = new DownloadAdaptor(_first);
     _second = new FakeDownload("second-id", "second-name", "second-path", QUrl(), _reqFactory);
-    _secondAdaptor = new ApplicationDownloadAdaptor(_second);
+    _secondAdaptor = new DownloadAdaptor(_second);
     _q = new DownloadQueue();
 }
 
