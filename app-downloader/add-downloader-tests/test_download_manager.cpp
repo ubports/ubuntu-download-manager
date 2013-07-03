@@ -16,62 +16,62 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "test_downloader.h"
+#include "test_download_manager.h"
 
-TestDownloader::TestDownloader(QObject *parent) :
+TestDownloadManager::TestDownloadManager(QObject *parent) :
     QObject(parent)
 {
 }
 
-void TestDownloader::init()
+void TestDownloadManager::init()
 {
 }
 
-void TestDownloader::cleanup()
+void TestDownloadManager::cleanup()
 {
 }
 
-void TestDownloader::testCreateDownload()
-{
-    QFAIL("Not implemented.");
-}
-
-void TestDownloader::testCreateDownloadWithHash()
+void TestDownloadManager::testCreateDownload()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testGetAllDownloads()
+void TestDownloadManager::testCreateDownloadWithHash()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testStartNoCurrent()
+void TestDownloadManager::testGetAllDownloads()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testStartCurrent()
+void TestDownloadManager::testStartNoCurrent()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testPauseCurrent()
+void TestDownloadManager::testStartCurrent()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testPauseNotCurrent()
+void TestDownloadManager::testPauseCurrent()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testResumeCurrent()
+void TestDownloadManager::testPauseNotCurrent()
 {
     QFAIL("Not implemented.");
 }
 
-void TestDownloader::testResumeNoCurrent()
+void TestDownloadManager::testResumeCurrent()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownloadManager::testResumeNoCurrent()
 {
     QFAIL("Not implemented.");
 }

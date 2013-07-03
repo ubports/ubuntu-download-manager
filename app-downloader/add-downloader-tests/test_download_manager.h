@@ -22,11 +22,11 @@
 #include <QObject>
 #include "test_runner.h"
 
-class TestDownloader : public QObject
+class TestDownloadManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit TestDownloader(QObject *parent = 0);
+    explicit TestDownloadManager(QObject *parent = 0);
     
 private slots:
 
@@ -47,6 +47,6 @@ private slots:
     void testResumeNoCurrent();
 };
 
-DECLARE_TEST(TestDownloader)
+DECLARE_TEST(TestDownloadManager)
 
 #endif // TEST_DOWNLOADER_H

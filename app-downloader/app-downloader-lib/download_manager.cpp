@@ -19,17 +19,17 @@
 #include "request_factory.h"
 #include "application_download_adaptor.h"
 #include "download_queue.h"
-#include "downloader.h"
+#include "download_manager.h"
 
 /**
  * PRIVATE IMPLEMENATION
  */
 
-class DownloaderPrivate
+class DownloadManagerPrivate
 {
-    Q_DECLARE_PUBLIC(Downloader)
+    Q_DECLARE_PUBLIC(DownloadManager)
 public:
-    explicit DownloaderPrivate(DBusConnection* connection, Downloader* parent);
+    explicit DownloadManagerPrivate(DBusConnection* connection, DownloadManager* parent);
 
 private:
 
@@ -49,16 +49,16 @@ private:
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
     Download* _current;
-    Downloader* q_ptr;
+    DownloadManager* q_ptr;
 };
 
-QString DownloaderPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
+QString DownloadManagerPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
 
-DownloaderPrivate::DownloaderPrivate(DBusConnection* connection, Downloader* parent):
+DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, DownloadManager* parent):
     _conn(connection),
     q_ptr(parent)
 {
-    Q_Q(Downloader);
+    Q_Q(DownloadManager);
 
     _downloads = new DownloadQueue();
     q->connect(_downloads, SIGNAL(downloadRemoved(QString)),
@@ -68,36 +68,36 @@ DownloaderPrivate::DownloaderPrivate(DBusConnection* connection, Downloader* par
     _current = NULL;
 }
 
-void DownloaderPrivate::addDownload(Download* download)
+void DownloadManagerPrivate::addDownload(Download* download)
 {
     Q_UNUSED(download);
     // TODO
 }
 
-void DownloaderPrivate::loadPreviewsDownloads(QString path)
+void DownloadManagerPrivate::loadPreviewsDownloads(QString path)
 {
     // TODO
     // list the dirs of the different downloads that we can find, loop and create each of them
     Q_UNUSED(path);
 }
 
-void DownloaderPrivate::onDownloadRemoved(QString path)
+void DownloadManagerPrivate::onDownloadRemoved(QString path)
 {
     _conn->unregisterObject(path);
 }
 
-QDBusObjectPath DownloaderPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
+QDBusObjectPath DownloadManagerPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
 {
     return createDownloadWithHash(appId, appName, url, "", QCryptographicHash::Md5);
 }
 
-QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
+QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
     const QString &hash, QCryptographicHash::Algorithm algo)
 {
-    Q_Q(Downloader);
+    Q_Q(DownloadManager);
 
     // only create a download if the application is not already being downloaded
-    QString path = DownloaderPrivate::BASE_ACCOUNT_URL.arg(appId);
+    QString path = DownloadManagerPrivate::BASE_ACCOUNT_URL.arg(appId);
     QDBusObjectPath objectPath;
 
     if (_downloads->paths().contains(path))
@@ -123,7 +123,7 @@ QDBusObjectPath DownloaderPrivate::createDownloadWithHash(const QString &appId, 
     return objectPath;
 }
 
-QList<QDBusObjectPath> DownloaderPrivate::getAllDownloads()
+QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloads()
 {
     qDebug() << "Getting all object paths.";
     QList<QDBusObjectPath> paths;
@@ -136,28 +136,28 @@ QList<QDBusObjectPath> DownloaderPrivate::getAllDownloads()
  * PUBLIC IMPLEMENTATION
  */
 
-Downloader::Downloader(DBusConnection* connection, QObject *parent) :
+DownloadManager::DownloadManager(DBusConnection* connection, QObject *parent) :
     QObject(parent),
-    d_ptr(new DownloaderPrivate(connection, this))
+    d_ptr(new DownloadManagerPrivate(connection, this))
 {
 }
 
-void Downloader::loadPreviewsDownloads(const QString &path)
+void DownloadManager::loadPreviewsDownloads(const QString &path)
 {
-    Q_D(Downloader);
+    Q_D(DownloadManager);
     d->loadPreviewsDownloads(path);
 }
 
-QDBusObjectPath Downloader::createDownload(const QString &appId, const QString &appName, const QString &url)
+QDBusObjectPath DownloadManager::createDownload(const QString &appId, const QString &appName, const QString &url)
 {
-    Q_D(Downloader);
+    Q_D(DownloadManager);
     return d->createDownload(appId, appName, url);
 }
 
-QDBusObjectPath Downloader::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
+QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
     const QString &algorithm, const QString &hash)
 {
-    Q_D(Downloader);
+    Q_D(DownloadManager);
     // lowercase the algorithm just in case
     QString algoLower = algorithm.toLower();
     if (algoLower == "md4")
@@ -195,10 +195,10 @@ QDBusObjectPath Downloader::createDownloadWithHash(const QString &appId, const Q
     }
 }
 
-QList<QDBusObjectPath> Downloader::getAllDownloads()
+QList<QDBusObjectPath> DownloadManager::getAllDownloads()
 {
-    Q_D(Downloader);
+    Q_D(DownloadManager);
     return d->getAllDownloads();
 }
 
-#include "moc_downloader.cpp"
+#include "moc_download_manager.cpp"

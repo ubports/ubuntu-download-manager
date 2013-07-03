@@ -25,13 +25,13 @@
 #include "dbus_connection.h"
 #include "download.h"
 
-class DownloaderPrivate;
-class Downloader : public QObject
+class DownloadManagerPrivate;
+class DownloadManager : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Downloader)
+    Q_DECLARE_PRIVATE(DownloadManager)
 public:
-    explicit Downloader(DBusConnection* connection, QObject *parent = 0);
+    explicit DownloadManager(DBusConnection* connection, QObject *parent = 0);
     void loadPreviewsDownloads(const QString &path);
 
 public slots:
@@ -48,7 +48,7 @@ private:
 
 private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloaderPrivate* d_ptr;
+    DownloadManagerPrivate* d_ptr;
 };
 
 #endif // DOWNLOADER_H
