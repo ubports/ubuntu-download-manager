@@ -41,4 +41,5 @@ HEADERS +=\
 
 OTHER_FILES += \
     com.canonical.applications.application_download.xml \
-    com.canonical.applications.downloader.xml
+    com.canonical.applications.downloader.xml \
+    generate_adaptors.sh
