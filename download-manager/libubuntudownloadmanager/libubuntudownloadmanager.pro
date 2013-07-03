@@ -8,7 +8,7 @@ QT       += network dbus
 
 QT       -= gui
 
-TARGET = app-downloader-lib
+TARGET = libubuntudownloadmanager
 QMAKE_CXXFLAGS += -std=c++0x -Werror
 TEMPLATE = lib
 

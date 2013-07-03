@@ -8,7 +8,7 @@ QT       += network core testlib
 
 QT       -= gui
 
-TARGET = add-downloader-tests
+TARGET = ubuntu-download-manager-tests
 QMAKE_CXXFLAGS += -std=c++0x -Werror
 CONFIG   += console
 CONFIG   -= app_bundle
@@ -46,9 +46,7 @@ HEADERS += \
     test_runner.h \
     test_xdg_basedir.h
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/release/ -lapp-downloader-lib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../app-downloader-lib/debug/ -lapp-downloader-lib
-else:unix: LIBS += -L$$OUT_PWD/../app-downloader-lib/ -lapp-downloader-lib
+LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -llibubuntudownloadmanager
 
-INCLUDEPATH += $$PWD/../app-downloader-lib
-DEPENDPATH += $$PWD/../app-downloader-lib
+INCLUDEPATH += $$PWD/../libubuntudownloadmanager
+DEPENDPATH += $$PWD/../libubuntudownloadmanager
