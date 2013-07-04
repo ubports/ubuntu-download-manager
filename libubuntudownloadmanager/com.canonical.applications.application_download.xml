@@ -1,14 +1,6 @@
 <node>
   <interface name="com.canonical.applications.ApplicationDownload">
 
-    <method name="applicationId">
-        <arg name="id" type="s" direction="out"/>
-    </method>
-
-    <method name="applicationName">
-        <arg name="name" type="s" direction="out"/>
-    </method>
-
     <method name="totalSize">
         <arg name="total" type="u" direction="out"/>
     </method>
@@ -43,7 +35,9 @@
         <arg name="success" type="b" direction="out"/>
     </signal>
 
-    <signal name="finished" />
+    <signal name="finished">
+        <arg name="path" type="s" direction="out"/>
+    </signal>
 
     <signal name="error">
         <arg name="error" type="s" direction="out"/>

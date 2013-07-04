@@ -45,18 +45,16 @@ private slots:
     void testHashConstructor_data();
     void testPath_data();
     void testUrl_data();
-    void testApplicationId_data();
-    void testApplicationName_data();
     void testProgress_data();
-    void testMetadata_data();
     void testOnSuccessHash_data();
+    void testSetRawHeadersStart_data();
+    void testSetRawHeadersResume_data();
+    void testSetRawHeadersWithRangeStart_data();
+    void testSetRawHeadersWithRangeResume_data();
 
     // accessor methods
     void testPath();
     void testUrl();
-    void testApplicationId();
-    void testApplicationName();
-    void testMetadata();
     void testProgress();
     void testTotalSize();
     void testTotalSizeNoProgress();
@@ -80,14 +78,19 @@ private slots:
     void testOnSuccessHashError();
     void testOnSuccessHash();
     void testOnHttpError();
+    void testSetRawHeadersStart();
+    void testSetRawHeadersWithRangeStart();
+    void testSetRawHeadersResume();
+    void testSetRawHeadersWithRangeResume();
 
 private:
     bool removeDir(const QString& dirName);
 
 private:
     QDir _testDir;
-    QString _appId;
-    QString _appName;
+    QUuid _id;
+    QVariantMap _metadata;
+    QVariantMap _headers;
     QString _path;
     QUrl _url;
     QCryptographicHash::Algorithm _algo;

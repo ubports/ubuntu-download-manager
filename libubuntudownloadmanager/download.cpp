@@ -51,19 +51,21 @@ class DownloadPrivate
 {
     Q_DECLARE_PUBLIC(Download)
 public:
-    explicit DownloadPrivate(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam,
+    explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+        const QVariantMap& headers, RequestFactory* nam, Download* parent);
+    explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
+        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam,
         Download* parent);
-    explicit DownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
-        QCryptographicHash::Algorithm algo, RequestFactory* nam, Download* parent);
     ~DownloadPrivate();
 
     // public methods
+    QUuid downloadId() const;
     QString path() const;
     QUrl url() const;
     Download::State state();
     QString filePath();
-    QString hash();
-    QCryptographicHash::Algorithm hashAlgorithm();
+    QString hash() const;
+    QCryptographicHash::Algorithm hashAlgorithm() const;
 
     // methods that do really perform the actions
     void cancelDownload();
@@ -73,8 +75,6 @@ public:
     static DownloadPrivate* fromMetadata(const QString &path, RequestFactory* nam, Download* parent);
 
     // plublic slots used by public implementation
-    QString applicationId() const;
-    QString applicationName() const;
     QVariantMap metadata();
     uint progress();
     uint totalSize();
@@ -98,10 +98,10 @@ private:
     void storeMetadata();
     bool removeDir(const QString& dirName);
     void cleanUpCurrentData();
+    QNetworkRequest buildRequest();
 
 private:
-    QString _appId;
-    QString _appName;
+    QUuid _id;
     uint _totalSize;
     Download::State _state;
     QString _dbusPath;
@@ -109,6 +109,8 @@ private:
     QUrl _url;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
+    QVariantMap _metadata;
+    QVariantMap _headers;
     RequestFactory* _requestFactory;
     NetworkReply* _reply;
     QFile* _currentData;
@@ -116,32 +118,35 @@ private:
 
 };
 
-DownloadPrivate::DownloadPrivate(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam,
-    Download* parent):
-        _appId(appId),
-        _appName(appName),
+DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+    const QVariantMap& headers, RequestFactory* nam, Download* parent):
+        _id(id),
         _totalSize(0),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
         _hash(""),
         _algo(QCryptographicHash::Md5),
+        _metadata(metadata),
+        _headers(headers),
         _requestFactory(nam),
         q_ptr(parent)
 {
     init();
 }
 
-DownloadPrivate::DownloadPrivate(QString appId, QString appName, QString path, QUrl url, QString hash,
-    QCryptographicHash::Algorithm algo, RequestFactory* nam, Download* parent):
-        _appId(appId),
-        _appName(appName),
+DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
+    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
+    RequestFactory* nam, Download* parent):
+        _id(id),
         _totalSize(0),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
         _hash(hash),
         _algo(algo),
+        _metadata(metadata),
+        _headers(headers),
         _requestFactory(nam),
         q_ptr(parent)
 {
@@ -162,7 +167,7 @@ DownloadPrivate::~DownloadPrivate()
 void DownloadPrivate::init()
 {
     QStringList pathComponents;
-    pathComponents << "application_downloader" << _appId;
+    pathComponents << "application_downloader" << _id.toString();
     _localPath = XDGBasedir::saveDataPath(pathComponents);
 
     _reply = NULL;
@@ -292,6 +297,27 @@ void DownloadPrivate::cleanUpCurrentData()
 
 }
 
+QNetworkRequest DownloadPrivate::buildRequest()
+{
+    QNetworkRequest request = QNetworkRequest(_url);
+    foreach(const QString& header, _headers.keys())
+    {
+        QVariant data = _headers[header];
+        if (header.toLower() == "range")
+            // do no add the range
+            continue;
+
+        if (data.canConvert(QMetaType::QByteArray))
+            request.setRawHeader(header.toUtf8(), _headers[header].toByteArray());
+    }
+    return request;
+}
+
+QUuid DownloadPrivate::downloadId() const
+{
+    return _id;
+}
+
 QString DownloadPrivate::path() const
 {
     return _dbusPath;
@@ -314,12 +340,12 @@ QString DownloadPrivate::filePath()
     return saveFileName();
 }
 
-QString DownloadPrivate::hash()
+QString DownloadPrivate::hash() const
 {
     return _hash;
 }
 
-QCryptographicHash::Algorithm DownloadPrivate::hashAlgorithm()
+QCryptographicHash::Algorithm DownloadPrivate::hashAlgorithm() const
 {
     return _algo;
 }
@@ -377,13 +403,15 @@ void DownloadPrivate::resumeDownload()
         return;
     }
 
+
+    QNetworkRequest request = buildRequest();
+
+    // overrides the range header, we do not let clients set the range!!!
     qint64 currentDataSize = _currentData->size();
-
     QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(currentDataSize) + "-";
-    QNetworkRequest request = QNetworkRequest(_url);
     request.setRawHeader("Range", rangeHeaderValue);
-    _reply = _requestFactory->get(request);
 
+    _reply = _requestFactory->get(request);
     connectToReplySignals();
 
     emit q->resumed(true);
@@ -406,143 +434,22 @@ void DownloadPrivate::startDownload()
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     // signals should take care or calling deleteLater on the NetworkReply object
-    _reply = _requestFactory->get(QNetworkRequest(_url));
+    _reply = _requestFactory->get(buildRequest());
     connectToReplySignals();
     emit q->started(true);
 }
 
 DownloadPrivate* DownloadPrivate::fromMetadata(const QString &path, RequestFactory* nam, Download* parent)
 {
-
-    QString metadataPath = path + "/" + METADATA_FILE_NAME;
-    QFileInfo metadataInfo(path);
-
-    // we at least most have the metadata path
-    if (!metadataInfo.exists())
-    {
-        qCritical() << "ERROR: File " << metadataPath << "does not exist.";
-        return NULL;
-    }
-
-    // try to read the metadata so that is loaded in a QJsonDocument and we can retrieve the
-    // required info
-    QFile* metadataFile = new QFile(metadataPath);
-    metadataFile->open(QIODevice::ReadOnly);
-    QByteArray metadata = metadataFile->readAll();
-    metadataFile->close();
-    QJsonObject metadataJson = QJsonDocument::fromBinaryData(metadata).object();
-    if (metadataJson.empty())
-    {
-        qCritical() << "ERROR: Metadata could not be validated.";
-        return NULL;
-    }
-
-    // assert tha the json object has all the required keys
-    QString appId;
-    if (metadataJson.contains(ID))
-        appId = metadataJson[ID].toString();
-    else
-    {
-        qCritical() << "ERROR: ID is missing from json.";
-        return NULL;
-    }
-
-    QString appName;
-    if (metadataJson.contains(NAME))
-        appName = metadataJson[NAME].toString();
-    else
-    {
-        qCritical() << "ERROR: NAME is missing from json.";
-        return NULL;
-    }
-
-    QString dbusPath;
-    if (metadataJson.contains(DBUS_PATH))
-    {
-        dbusPath = metadataJson[DBUS_PATH].toString();
-    }
-    else
-    {
-        qCritical() << "ERROR: DBUS_PATH missing from json.";
-    }
-
-    uint totalSize = 0;
-    if (metadataJson.contains(SIZE))
-    {
-        totalSize = metadataJson.value(SIZE).toVariant().toUInt();
-    }
-
-    Download::State state = Download::IDLE;
-    if (metadataJson.contains(STATE))
-    {
-        state = (Download::State)metadataJson.value(STATE).toVariant().toInt();
-    }
-
-    QUrl url;
-    if (metadataJson.contains(URL))
-    {
-        url = QUrl(metadataJson[URL].toString());
-    }
-    else
-    {
-       qCritical() << "ERROR: URL missing form json.";
-       return NULL;
-    }
-
-    QString hash = "";
-    if (metadataJson.contains(HASH))
-        hash = metadataJson[HASH].toString();
-
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
-    if (metadataJson.contains(ALGO))
-        algo = (QCryptographicHash::Algorithm)metadataJson.value(ALGO).toVariant().toInt();
-
-    DownloadPrivate* appDownload;
-    if (hash.isEmpty())
-    {
-        appDownload = new DownloadPrivate(appId, appName, dbusPath, url, nam, parent);
-    }
-    else
-    {
-        appDownload = new DownloadPrivate(appId, appName, dbusPath, url, hash,
-            algo, nam, parent);
-    }
-    appDownload->_totalSize = totalSize;
-    appDownload->_state = state;
-
-    QString dataPath = path + "/" + DATA_FILE_NAME;
-    QFileInfo dataInfo(dataPath);
-    if (dataInfo.exists())
-    {
-        // create the file and set it
-        appDownload->_currentData = new QFile(dataPath);
-        appDownload->_currentData->open(QIODevice::ReadWrite | QFile::Append);
-    }
-    return appDownload;
-}
-
-QString DownloadPrivate::applicationId() const
-{
-    return _appId;
-}
-
-QString DownloadPrivate::applicationName() const
-{
-    return _appName;
+    Q_UNUSED(path)
+    Q_UNUSED(nam)
+    Q_UNUSED(parent)
+    return NULL;
 }
 
 QVariantMap DownloadPrivate::metadata()
 {
-    // create a QVarianMap with the required data
-    QVariantMap metadata;
-    metadata[ID] = _appId;
-    metadata[NAME] = _appName;
-    metadata[SIZE] = _totalSize;
-    if (_currentData == NULL)
-        metadata[PROGRESS] = -1;
-    else
-        metadata[PROGRESS] = _currentData->size();
-    return metadata;
+    return _metadata;
 }
 
 uint DownloadPrivate::progress()
@@ -645,7 +552,7 @@ void DownloadPrivate::onFinished()
     }
     _state = Download::FINISHED;
     emit q->stateChanged();
-    emit q->finished();
+    emit q->finished(filePath());
     _reply->deleteLater();
     _reply = NULL;
 
@@ -663,22 +570,29 @@ void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
  * PUBLIC IMPLEMENTATION
  */
 
-Download::Download(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent):
-    QObject(parent),
-    d_ptr(new DownloadPrivate(appId, appName, path, url, nam, this))
+Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+    const QVariantMap& headers, RequestFactory* nam, QObject* parent):
+        QObject(parent),
+        d_ptr(new DownloadPrivate(id, path, url, metadata, headers, nam, this))
 {
 }
 
-Download::Download(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-    RequestFactory* nam, QObject* parent):
+Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
+    const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam, QObject* parent):
         QObject(parent),
-        d_ptr(new DownloadPrivate(appId, appName, path, url, hash, algo, nam, this))
+        d_ptr(new DownloadPrivate(id, path, url, hash, algo, metadata, headers, nam, this))
 {
 }
 
 Download::Download() :
     d_ptr(NULL)
 {
+}
+
+QUuid Download::downloadId()
+{
+    Q_D(Download);
+    return d->downloadId();
 }
 
 QString Download::path()
@@ -751,18 +665,6 @@ Download* Download::fromMetadata(const QString &path, RequestFactory* reqFactory
         return appDownload;
     }
     return NULL;
-}
-
-QString Download::applicationId()
-{
-    Q_D(Download);
-    return d->applicationId();
-}
-
-QString Download::applicationName()
-{
-    Q_D(Download);
-    return d->applicationName();
 }
 
 QVariantMap Download::metadata()

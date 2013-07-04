@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QRegExp>
 #include "request_factory.h"
 #include "download_adaptor.h"
 #include "download_queue.h"
@@ -37,10 +38,11 @@ private:
     void loadPreviewsDownloads(QString path);
     void onDownloadRemoved(QString path);
 
-    QDBusObjectPath createDownload(const QString &appId, const QString &appName, const QString &url);
-    QDBusObjectPath createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
-        const QString &hash, QCryptographicHash::Algorithm algo);
+    QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers);
+    QDBusObjectPath createDownloadWithHash(const QString& url, const QString& hash, QCryptographicHash::Algorithm algo,
+        const QVariantMap& metadata, const QVariantMap& headers);
     QList<QDBusObjectPath> getAllDownloads();
+    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
 
 private:
     static QString BASE_ACCOUNT_URL;
@@ -86,18 +88,21 @@ void DownloadManagerPrivate::onDownloadRemoved(QString path)
     _conn->unregisterObject(path);
 }
 
-QDBusObjectPath DownloadManagerPrivate::createDownload(const QString &appId, const QString &appName, const QString &url)
+QDBusObjectPath DownloadManagerPrivate::createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers)
 {
-    return createDownloadWithHash(appId, appName, url, "", QCryptographicHash::Md5);
+    return createDownloadWithHash(url, "", QCryptographicHash::Md5, metadata, headers);
 }
 
-QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
-    const QString &hash, QCryptographicHash::Algorithm algo)
+QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& url, const QString& hash,
+    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers)
 {
     Q_Q(DownloadManager);
 
     // only create a download if the application is not already being downloaded
-    QString path = DownloadManagerPrivate::BASE_ACCOUNT_URL.arg(appId);
+    QUuid id = QUuid::createUuid();
+    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+
+    QString path = DownloadManagerPrivate::BASE_ACCOUNT_URL.arg(uuidString);
     QDBusObjectPath objectPath;
 
     if (_downloads->paths().contains(path))
@@ -106,9 +111,9 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString &ap
     {
         Download* appDownload;
         if (hash.isEmpty())
-            appDownload = new Download(appId, appName, path, url, _reqFactory);
+            appDownload = new Download(id, path, url, metadata, headers, _reqFactory);
         else
-            appDownload = new Download(appId, appName, path, url, hash, algo, _reqFactory);
+            appDownload = new Download(id, path, url, hash, algo, metadata, headers, _reqFactory);
 
         DownloadAdaptor* adaptor = new DownloadAdaptor(appDownload);
 
@@ -132,6 +137,15 @@ QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloads()
     return paths;
 }
 
+QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloadsWithMetadata(const QString& name, const QString& value)
+{
+    // TODO: return something real!
+    Q_UNUSED(name);
+    Q_UNUSED(value);
+    QList<QDBusObjectPath> paths;
+    return paths;
+}
+
 /**
  * PUBLIC IMPLEMENTATION
  */
@@ -148,57 +162,47 @@ void DownloadManager::loadPreviewsDownloads(const QString &path)
     d->loadPreviewsDownloads(path);
 }
 
-QDBusObjectPath DownloadManager::createDownload(const QString &appId, const QString &appName, const QString &url)
+QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVariantMap &metadata, const QVariantMap &headers)
 {
     Q_D(DownloadManager);
-    return d->createDownload(appId, appName, url);
+    return d->createDownload(url, metadata, headers);
 }
 
-QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &appId, const QString &appName, const QString &url,
-    const QString &algorithm, const QString &hash)
+QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
+        const QVariantMap &metadata, const QVariantMap &headers)
 {
     Q_D(DownloadManager);
     // lowercase the algorithm just in case
     QString algoLower = algorithm.toLower();
+    QCryptographicHash::Algorithm  algo;
     if (algoLower == "md4")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Md4);
-    }
+        algo = QCryptographicHash::Md4;
     else if (algoLower == "md5")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Md5);
-    }
+        algo = QCryptographicHash::Md5;
     else if (algoLower == "sha1")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha1);
-    }
+        algo = QCryptographicHash::Sha1;
     else if (algoLower == "sha224")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha224);
-    }
+        algo = QCryptographicHash::Sha224;
     else if (algoLower == "sha256")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha256);
-    }
+        algo = QCryptographicHash::Sha256;
     else if (algoLower == "sha384")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha384);
-    }
+        algo = QCryptographicHash::Sha384;
     else if (algoLower == "sha512")
-    {
-        return d->createDownloadWithHash(appId, appName, url, hash, QCryptographicHash::Sha512);
-    }
-    else
-    {
-        // TODO: what do do here?
-        return d->createDownload(appId, appName, url);
-    }
+        algo = QCryptographicHash::Sha512;
+
+    return d->createDownloadWithHash(url, hash, algo, metadata, headers);
 }
 
 QList<QDBusObjectPath> DownloadManager::getAllDownloads()
 {
     Q_D(DownloadManager);
     return d->getAllDownloads();
+}
+
+QList<QDBusObjectPath> DownloadManager::getAllDownloadsWithMetadata(const QString &name, const QString &value)
+{
+    Q_D(DownloadManager);
+    return d->getAllDownloadsWithMetadata(name, value);
 }
 
 #include "moc_download_manager.cpp"

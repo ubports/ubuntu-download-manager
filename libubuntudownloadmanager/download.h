@@ -25,6 +25,7 @@
 #include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QUuid>
 #include "request_factory.h"
 #include "app-downloader-lib_global.h"
 
@@ -45,11 +46,13 @@ public:
         FINISHED
     };
 
-    explicit Download(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent=0);
-    explicit Download(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-        RequestFactory* nam, QObject* parent=0);
+    explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+        const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
+    explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
+        const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
 
     // gets for internal state
+    QUuid downloadId();
     QString path();
     QUrl url();
     Download::State state();
@@ -68,8 +71,6 @@ public:
 public slots:
     // slots that are exposed via dbus, they just change the state, the downloader
     // takes care of the actual download operations
-    QString applicationId();
-    QString applicationName();
     QVariantMap metadata();
     uint progress();
     uint totalSize();
@@ -81,8 +82,8 @@ public slots:
 Q_SIGNALS:
     // signals that are exposed via dbus
     void canceled(bool success);
-    void error(const QString &error);
-    void finished();
+    void error(const QString& error);
+    void finished(const QString& path);
     void paused(bool success);
     void progress(uint received, uint total);
     void resumed(bool success);

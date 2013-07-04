@@ -27,9 +27,9 @@ TestDownloadQueue::TestDownloadQueue(QObject *parent) :
 void TestDownloadQueue::init()
 {
     _reqFactory = new FakeRequestFactory();
-    _first = new FakeDownload("first-id", "first-name", "first-path", QUrl(), _reqFactory);
+    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(), QVariantMap(), QVariantMap(), _reqFactory);
     _firstAdaptor = new DownloadAdaptor(_first);
-    _second = new FakeDownload("second-id", "second-name", "second-path", QUrl(), _reqFactory);
+    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(), QVariantMap(), QVariantMap(), _reqFactory);
     _secondAdaptor = new DownloadAdaptor(_second);
     _q = new DownloadQueue();
 }

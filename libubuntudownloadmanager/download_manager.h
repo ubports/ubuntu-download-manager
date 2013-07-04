@@ -35,13 +35,14 @@ public:
     void loadPreviewsDownloads(const QString &path);
 
 public slots:
-    QDBusObjectPath createDownload(const QString &id, const QString &name, const QString &url);
-    QDBusObjectPath createDownloadWithHash(const QString &id, const QString &name, const QString &url,
-        const QString &algorithm, const QString &hash);
+    QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, const QVariantMap &headers);
+    QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
+        const QVariantMap &metadata, const QVariantMap &headers);
     QList<QDBusObjectPath> getAllDownloads();
+    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name, const QString& value);
 
 Q_SIGNALS:
-    void downloadCreated(const QDBusObjectPath &path);
+    void downloadCreated(const QDBusObjectPath& path);
 
 private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadRemoved(QString))

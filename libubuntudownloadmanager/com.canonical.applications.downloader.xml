@@ -1,22 +1,32 @@
 <node>
   <interface name="com.canonical.applications.Downloader">
     <method name="createDownload">
-        <arg name="id" type="s" direction="in"/>
-        <arg name="name" type="s" direction="in"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="QVariantMap"/>
         <arg name="url" type="s" direction="in"/>
+        <arg name="metadata" type="a{sv}" direction="in"/>
+        <arg name="headers" type="a{sv}" direction="in"/>
         <arg name="download" type="o" direction="out" />
     </method>
 
     <method name="createDownloadWithHash">
-        <arg name="id" type="s" direction="in"/>
-        <arg name="name" type="s" direction="in"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In3" value="QVariantMap"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="QVariantMap"/>
         <arg name="url" type="s" direction="in"/>
         <arg name="algorithm" type="s" direction="in"/>
         <arg name="hash" type="s" direction="in"/>
+        <arg name="metadata" type="a{sv}" direction="in"/>
+        <arg name="headers" type="a{sv}" direction="in"/>
         <arg name="download" type="o" direction="out" />
     </method>
 
     <method name="getAllDownloads">
+        <arg name="downloads" type="ao" direction="out" />
+    </method>
+
+    <method name="getAllDownloadsWithMetadata">
+        <arg name="name" type="s" direction="in"/>
+        <arg name="value" type="s" direction="in"/>
         <arg name="downloads" type="ao" direction="out" />
     </method>
 

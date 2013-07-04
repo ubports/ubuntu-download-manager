@@ -18,14 +18,15 @@
 
 #include "fake_download.h"
 
-FakeDownload::FakeDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent):
-    Download(appId, appName, path, url, nam, parent)
+FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+    const QVariantMap& headers, RequestFactory* nam, QObject* parent):
+        Download(id, path, url, metadata, headers, nam, parent)
 {
 }
 
-FakeDownload::FakeDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
-    RequestFactory* nam, QObject* parent):
-        Download(appId, appName, path, url, hash, algo, nam, parent)
+FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
+        const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam, QObject* parent) :
+        Download(id, path, url, hash, algo, metadata, headers, nam, parent)
 {
 }
 

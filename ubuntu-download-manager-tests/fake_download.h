@@ -25,8 +25,10 @@ class FakeDownload : public Download, public Fake
 {
     Q_OBJECT
 public:
-    explicit FakeDownload(QString appId, QString appName, QString path, QUrl url, RequestFactory* nam, QObject* parent=0);
-    explicit FakeDownload(QString appId, QString appName, QString path, QUrl url, QString hash, QCryptographicHash::Algorithm algo,
+    explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
+        const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
+    explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
+        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
         RequestFactory* nam, QObject* parent=0);
 
     void cancelDownload() override;
