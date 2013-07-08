@@ -37,6 +37,7 @@ public:
 
     QByteArray readAll() override;
     void abort() override;
+    void setReadBufferSize(uint size) override;
 
 private:
     QByteArray _data;

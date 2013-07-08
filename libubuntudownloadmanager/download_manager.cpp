@@ -44,12 +44,15 @@ private:
     QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers);
     QDBusObjectPath createDownloadWithHash(const QString& url, const QString& hash, QCryptographicHash::Algorithm algo,
         const QVariantMap& metadata, const QVariantMap& headers);
+    uint defaultThrottle();
+    void setDefaultThrottle(uint speed);
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
 
 private:
     static QString BASE_ACCOUNT_URL;
 
+    uint _throttle;
     DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
@@ -60,6 +63,7 @@ private:
 QString DownloadManagerPrivate::BASE_ACCOUNT_URL = "/com/canonical/applications/download/%1";
 
 DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, DownloadManager* parent):
+    _throttle(0),
     _conn(connection),
     q_ptr(parent)
 {
@@ -70,6 +74,7 @@ DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, Downl
 
 DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory,
     DownloadManager* parent):
+        _throttle(0),
         _downloadsQueue(queue),
         _conn(connection),
         _uuidFactory(uuidFactory),
@@ -126,24 +131,41 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
         objectPath = QDBusObjectPath(path);
     else
     {
-        Download* appDownload;
+        Download* download;
         if (hash.isEmpty())
-            appDownload = new Download(id, path, url, metadata, headers, _reqFactory);
+            download = new Download(id, path, url, metadata, headers, _reqFactory);
         else
-            appDownload = new Download(id, path, url, hash, algo, metadata, headers, _reqFactory);
+            download = new Download(id, path, url, hash, algo, metadata, headers, _reqFactory);
 
-        DownloadAdaptor* adaptor = new DownloadAdaptor(appDownload);
+        download->setThrottle(_throttle);
+        DownloadAdaptor* adaptor = new DownloadAdaptor(download);
 
         // we need to store the ref of both objects, else the mem management will delete them
-        _downloadsQueue->add(appDownload, adaptor);
-        _conn->registerObject(appDownload->path(), appDownload);
-        objectPath = QDBusObjectPath(appDownload->path());
+        _downloadsQueue->add(download, adaptor);
+        _conn->registerObject(download->path(), download);
+        objectPath = QDBusObjectPath(download->path());
     }
 
     // emit that the download was created. Usefull in case other processes are interested in them
     emit q->downloadCreated(objectPath);
     return objectPath;
 }
+
+uint DownloadManagerPrivate::defaultThrottle()
+{
+    return _throttle;
+}
+
+void DownloadManagerPrivate::setDefaultThrottle(uint speed)
+{
+    _throttle = speed;
+    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    foreach(const QString& path, downloads.keys())
+    {
+        downloads[path]->setThrottle(speed);
+    }
+}
+
 
 QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloads()
 {
@@ -196,6 +218,18 @@ QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVaria
 {
     Q_D(DownloadManager);
     return d->createDownload(url, metadata, headers);
+}
+
+uint DownloadManager::defaultThrottle()
+{
+    Q_D(DownloadManager);
+    return d->defaultThrottle();
+}
+
+void DownloadManager::setDefaultThrottle(uint speed)
+{
+    Q_D(DownloadManager);
+    d->setDefaultThrottle(speed);
 }
 
 QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,

@@ -60,6 +60,27 @@ void StringWrapper::setValue(const QString& value)
 }
 
 /*
+ * UINT WRAPPER
+ */
+
+UintWrapper::UintWrapper(uint value, QObject* parent):
+    QObject(parent),
+    _value(value)
+{
+}
+
+
+uint UintWrapper::value()
+{
+    return _value;
+}
+
+void UintWrapper::setValue(uint value)
+{
+    _value = value;
+}
+
+/*
  * METHOD PARAMS
  */
 

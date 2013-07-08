@@ -29,8 +29,9 @@ public:
     explicit NetworkReplyPrivate(QNetworkReply* reply, NetworkReply* parent);
 
     // public methods used by other parts of the code
-    virtual QByteArray readAll();
-    virtual void abort();
+    QByteArray readAll();
+    void abort();
+    void setReadBufferSize(uint size);
 
     // slots used to foward the reply signals
     void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
@@ -72,6 +73,11 @@ QByteArray NetworkReplyPrivate::readAll()
 void NetworkReplyPrivate::abort()
 {
     _reply->abort();
+}
+
+void NetworkReplyPrivate::setReadBufferSize(uint size)
+{
+    _reply->setReadBufferSize(size);
 }
 
 void NetworkReplyPrivate::onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal)
@@ -120,6 +126,12 @@ void NetworkReply::abort()
 {
     Q_D(NetworkReply);
     d->abort();
+}
+
+void NetworkReply::setReadBufferSize(uint size)
+{
+    Q_D(NetworkReply);
+    d->setReadBufferSize(size);
 }
 
 #include "moc_network_reply.cpp"

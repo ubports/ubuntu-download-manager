@@ -31,6 +31,8 @@ public:
         QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
         RequestFactory* nam, QObject* parent=0);
 
+    void setThrottle(uint speed) override;
+    uint throttle() override;
     void cancelDownload() override;
     void pauseDownload() override;
     void resumeDownload() override;

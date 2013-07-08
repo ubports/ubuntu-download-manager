@@ -51,6 +51,8 @@ private slots:
     void testSetRawHeadersResume_data();
     void testSetRawHeadersWithRangeStart_data();
     void testSetRawHeadersWithRangeResume_data();
+    void testSetThrottleNoReply_data();
+    void testSetThrottle_data();
 
     // accessor methods
     void testPath();
@@ -58,6 +60,8 @@ private slots:
     void testProgress();
     void testTotalSize();
     void testTotalSizeNoProgress();
+    void testSetThrottleNoReply();
+    void testSetThrottle();
 
     // dbus method tests
     void testCancel();

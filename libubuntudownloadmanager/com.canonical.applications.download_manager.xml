@@ -30,8 +30,17 @@
         <arg name="downloads" type="ao" direction="out" />
     </method>
 
+    <method name="setDefaultThrottle">
+        <arg name="speed" type="u" direction="in"/>
+    </method>
+
+    <method name="defaultThrottle">
+        <arg name="speed" type="u" direction="out"/>
+    </method>
+
     <signal name="downloadCreated">
         <arg name="path" type="o" direction="out"/>
     </signal>
+
  </interface>
 </node>

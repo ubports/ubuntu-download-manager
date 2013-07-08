@@ -40,12 +40,16 @@ private slots:
     // data functions
     void testCreateDownload_data();
     void testCreateDownloadWithHash_data();
+    void testSetThrottleNotDownloads_data();
+    void testSetThrottleWithDownloads_data();
 
     // tests
     void testCreateDownload();
     void testCreateDownloadWithHash();
     void testGetAllDownloads();
     void testAllDownloadsWithMetadata();
+    void testSetThrottleNotDownloads();
+    void testSetThrottleWithDownloads();
 
 private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);

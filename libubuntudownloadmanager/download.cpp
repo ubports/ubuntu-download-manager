@@ -79,6 +79,8 @@ public:
     QVariantMap metadata();
     uint progress();
     uint totalSize();
+    void setThrottle(uint speed);
+    uint throttle();
     void cancel();
     void pause();
     void resume();
@@ -104,6 +106,7 @@ private:
 private:
     QUuid _id;
     uint _totalSize;
+    uint _throttle;
     Download::State _state;
     QString _dbusPath;
     QString _localPath;
@@ -123,6 +126,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
     const QVariantMap& headers, RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
+        _throttle(0),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
@@ -141,6 +145,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
     RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
+        _throttle(0),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
@@ -418,6 +423,8 @@ void DownloadPrivate::resumeDownload()
     request.setRawHeader("Range", rangeHeaderValue);
 
     _reply = _requestFactory->get(request);
+    _reply->setReadBufferSize(_throttle);
+
     connectToReplySignals();
 
     emit q->resumed(true);
@@ -441,6 +448,8 @@ void DownloadPrivate::startDownload()
 
     // signals should take care or calling deleteLater on the NetworkReply object
     _reply = _requestFactory->get(buildRequest());
+    _reply->setReadBufferSize(_throttle);
+
     connectToReplySignals();
     emit q->started(true);
 }
@@ -466,6 +475,18 @@ uint DownloadPrivate::progress()
 uint DownloadPrivate::totalSize()
 {
     return _totalSize;
+}
+
+void DownloadPrivate::setThrottle(uint speed)
+{
+    _throttle = speed;
+    if (_reply != NULL)
+        _reply->setReadBufferSize(_throttle);
+}
+
+uint DownloadPrivate::throttle()
+{
+    return _throttle;
 }
 
 void DownloadPrivate::cancel()
@@ -695,6 +716,18 @@ uint Download::totalSize()
 {
     Q_D(Download);
     return d->totalSize();
+}
+
+void Download::setThrottle(uint speed)
+{
+    Q_D(Download);
+    return d->setThrottle(speed);
+}
+
+uint Download::throttle()
+{
+    Q_D(Download);
+    return d->throttle();
 }
 
 void Download::cancel()

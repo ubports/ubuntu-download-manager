@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_ADAPTOR_H_1372949687
-#define DOWNLOAD_ADAPTOR_H_1372949687
+#ifndef DOWNLOAD_ADAPTOR_H_1373293162
+#define DOWNLOAD_ADAPTOR_H_1373293162
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -41,6 +41,12 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"metadata\">\n"
 "      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
 "      <arg direction=\"out\" type=\"a{sv}\" name=\"data\"/>\n"
+"    </method>\n"
+"    <method name=\"setThrottle\">\n"
+"      <arg direction=\"in\" type=\"u\" name=\"speed\"/>\n"
+"    </method>\n"
+"    <method name=\"throttle\">\n"
+"      <arg direction=\"out\" type=\"u\" name=\"speed\"/>\n"
 "    </method>\n"
 "    <method name=\"start\"/>\n"
 "    <method name=\"pause\"/>\n"
@@ -81,7 +87,9 @@ public Q_SLOTS: // METHODS
     void pause();
     uint progress();
     void resume();
+    void setThrottle(uint speed);
     void start();
+    uint throttle();
     uint totalSize();
 Q_SIGNALS: // SIGNALS
     void canceled(bool success);

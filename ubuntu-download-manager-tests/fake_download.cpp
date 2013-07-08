@@ -30,6 +30,32 @@ FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url
 {
 }
 
+void FakeDownload::setThrottle(uint speed)
+{
+    if (_recording)
+    {
+        QList<QObject*> inParams;
+        inParams.append(new UintWrapper(speed));
+
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("setThrottle", params);
+        _called.append(methodData);
+    }
+   Download::setThrottle(speed);
+}
+
+uint FakeDownload::throttle()
+{
+    if (_recording)
+    {
+        MethodData methodData;
+        methodData.setMethodName("throttle");
+        _called.append(methodData);
+    }
+    return Download::throttle();
+}
+
 void FakeDownload::cancelDownload()
 {
     if (_recording)

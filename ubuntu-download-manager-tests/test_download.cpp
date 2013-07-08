@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <stdlib.h>
 #include <QNetworkRequest>
 #include <QSignalSpy>
@@ -267,6 +268,54 @@ void TestDownload::testTotalSizeNoProgress()
     delete download;
 }
 
+void TestDownload::testSetThrottleNoReply_data()
+{
+    QTest::addColumn<uint>("speed");
+
+    QTest::newRow("First row") << 200u;
+    QTest::newRow("Second row") << 1212u;
+    QTest::newRow("Third row") << 998u;
+    QTest::newRow("Last row") << 60u;
+}
+
+void TestDownload::testSetThrottleNoReply()
+{
+    QFETCH(uint, speed);
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);
+    download->setThrottle(speed);
+    QCOMPARE(speed, download->throttle());
+}
+
+void TestDownload::testSetThrottle_data()
+{
+    QTest::addColumn<uint>("speed");
+
+    QTest::newRow("First row") << 200u;
+    QTest::newRow("Second row") << 1212u;
+    QTest::newRow("Third row") << 998u;
+    QTest::newRow("Last row") << 60u;
+}
+
+void TestDownload::testSetThrottle()
+{
+    QFETCH(uint, speed);
+
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);
+    download->setThrottle(speed);
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    calledMethods = reply->calledMethods();
+
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("setReadBufferSize"), calledMethods[0].methodName());
+    QCOMPARE(speed, ((UintWrapper*)calledMethods[0].params().inParams()[0])->value());
+}
+
 void TestDownload::testCancel()
 {
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);
@@ -331,9 +380,9 @@ void TestDownload::testCancelDownload()
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
-    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(2, calledMethods.count());  // setThrottle AND abort
 
-    QCOMPARE(QString("abort"), calledMethods[0].methodName());
+    QCOMPARE(QString("abort"), calledMethods[1].methodName());
     QCOMPARE(spy.count(), 1);
 
     // assert that the files do not exist in the system
@@ -382,10 +431,10 @@ void TestDownload::testPauseDownload()
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
-    QCOMPARE(2, calledMethods.count());  // abort + readAll
+    QCOMPARE(3, calledMethods.count());  // throttel + abort + readAll
 
-    QCOMPARE(QString("abort"), calledMethods[0].methodName());
-    QCOMPARE(QString("readAll"), calledMethods[1].methodName());
+    QCOMPARE(QString("abort"), calledMethods[1].methodName());
+    QCOMPARE(QString("readAll"), calledMethods[2].methodName());
 
     // assert current size is correct (progress)
     QCOMPARE(download->progress(), (uint)reply->data().size());

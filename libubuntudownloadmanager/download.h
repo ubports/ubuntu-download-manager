@@ -75,6 +75,8 @@ public slots:
     QVariantMap metadata();
     uint progress();
     uint totalSize();
+    virtual void setThrottle(uint speed);
+    virtual uint throttle();
     void cancel();
     void pause();
     void resume();

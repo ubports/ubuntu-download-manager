@@ -67,10 +67,24 @@ void DownloadAdaptor::resume()
     QMetaObject::invokeMethod(parent(), "resume");
 }
 
+void DownloadAdaptor::setThrottle(uint speed)
+{
+    // handle method call com.canonical.applications.Download.setThrottle
+    QMetaObject::invokeMethod(parent(), "setThrottle", Q_ARG(uint, speed));
+}
+
 void DownloadAdaptor::start()
 {
     // handle method call com.canonical.applications.Download.start
     QMetaObject::invokeMethod(parent(), "start");
+}
+
+uint DownloadAdaptor::throttle()
+{
+    // handle method call com.canonical.applications.Download.throttle
+    uint speed;
+    QMetaObject::invokeMethod(parent(), "throttle", Q_RETURN_ARG(uint, speed));
+    return speed;
 }
 
 uint DownloadAdaptor::totalSize()

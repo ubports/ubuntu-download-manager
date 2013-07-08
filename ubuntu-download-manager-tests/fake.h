@@ -51,6 +51,21 @@ private:
     QString _value;
 };
 
+
+class UintWrapper : public QObject
+{
+    Q_OBJECT
+
+public:
+    UintWrapper(uint value, QObject* parent=0);
+
+    uint value();
+    void setValue(uint value);
+
+private:
+    uint _value;
+};
+
 class MethodParams : public QPair<QList<QObject*>, QList<QObject*> >
 {
 

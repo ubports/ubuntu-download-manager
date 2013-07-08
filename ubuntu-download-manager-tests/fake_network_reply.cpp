@@ -55,3 +55,17 @@ void FakeNetworkReply::abort()
         _called.append(methodData);
     }
 }
+
+void FakeNetworkReply::setReadBufferSize(uint size)
+{
+    if (_recording)
+    {
+        QList<QObject*> inParams;
+        inParams.append(new UintWrapper(size));
+
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("setReadBufferSize", params);
+        _called.append(methodData);
+    }
+}

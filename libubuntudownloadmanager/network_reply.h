@@ -35,6 +35,7 @@ public:
 public:
     virtual QByteArray readAll();
     virtual void abort();
+    virtual void setReadBufferSize(uint size);
 
 signals:
     // signals fowarded from the real reply object

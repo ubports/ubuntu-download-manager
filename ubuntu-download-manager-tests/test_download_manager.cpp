@@ -310,3 +310,21 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
     QCOMPARE(filtered[0].path(), downloads[0]->path());
     QCOMPARE(filtered[1].path(), downloads[2]->path());
 }
+
+void TestDownloadManager::testSetThrottleNotDownloads_data()
+{
+}
+
+void TestDownloadManager::testSetThrottleNotDownloads()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownloadManager::testSetThrottleWithDownloads_data()
+{
+}
+
+void TestDownloadManager::testSetThrottleWithDownloads()
+{
+    QFAIL("Not implemented.");
+}

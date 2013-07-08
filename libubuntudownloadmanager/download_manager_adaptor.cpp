@@ -49,6 +49,14 @@ QDBusObjectPath DownloadManagerAdaptor::createDownloadWithHash(const QString &ur
     return download;
 }
 
+uint DownloadManagerAdaptor::defaultThrottle()
+{
+    // handle method call com.canonical.applications.DownloaderManager.defaultThrottle
+    uint speed;
+    QMetaObject::invokeMethod(parent(), "defaultThrottle", Q_RETURN_ARG(uint, speed));
+    return speed;
+}
+
 QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloads()
 {
     // handle method call com.canonical.applications.DownloaderManager.getAllDownloads
@@ -63,5 +71,11 @@ QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloadsWithMetadata(const
     QList<QDBusObjectPath> downloads;
     QMetaObject::invokeMethod(parent(), "getAllDownloadsWithMetadata", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, name), Q_ARG(QString, value));
     return downloads;
+}
+
+void DownloadManagerAdaptor::setDefaultThrottle(uint speed)
+{
+    // handle method call com.canonical.applications.DownloaderManager.setDefaultThrottle
+    QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(uint, speed));
 }
 
