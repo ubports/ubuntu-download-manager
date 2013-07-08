@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.canonical.applications.Downloader">
+  <interface name="com.canonical.applications.DownloaderManager">
     <method name="createDownload">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
         <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="QVariantMap"/>

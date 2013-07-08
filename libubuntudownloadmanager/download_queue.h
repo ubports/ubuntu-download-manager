@@ -38,6 +38,7 @@ public:
     // accessors for useful info
     QString currentDownload();
     QStringList paths();
+    QHash<QString, Download*> downloads();
 
 Q_SIGNALS:
     // signals raised when things happens within the q

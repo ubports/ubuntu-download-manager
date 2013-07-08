@@ -338,3 +338,14 @@ void TestDownloadQueue::testCancelDownloadNotStarted()
     QList<QVariant> arguments = removedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), _first->path());
 }
+
+void TestDownloadQueue::testDownloads()
+{
+    // add the downloads to the q and assert that they are all returned
+    _q->add(_first, _firstAdaptor);
+    _q->add(_second, _secondAdaptor);
+
+    QHash<QString, Download*> downloads = _q->downloads();
+    QCOMPARE(downloads[_first->path()], _first);
+    QCOMPARE(downloads[_second->path()], _second);
+}

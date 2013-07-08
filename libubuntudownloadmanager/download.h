@@ -59,6 +59,7 @@ public:
     QString filePath();
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();
+    QVariantMap headers();
 
     // methods that do perform the download
     virtual void cancelDownload();

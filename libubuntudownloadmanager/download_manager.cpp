@@ -31,9 +31,12 @@ class DownloadManagerPrivate
     Q_DECLARE_PUBLIC(DownloadManager)
 public:
     explicit DownloadManagerPrivate(DBusConnection* connection, DownloadManager* parent);
+    explicit DownloadManagerPrivate(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory,
+        DownloadManager* parent = 0);
 
 private:
 
+    void init();
     void addDownload(Download* download);
     void loadPreviewsDownloads(QString path);
     void onDownloadRemoved(QString path);
@@ -47,10 +50,10 @@ private:
 private:
     static QString BASE_ACCOUNT_URL;
 
-    DownloadQueue* _downloads;
+    DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
-    Download* _current;
+    UuidFactory* _uuidFactory;
     DownloadManager* q_ptr;
 };
 
@@ -60,14 +63,28 @@ DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, Downl
     _conn(connection),
     q_ptr(parent)
 {
-    Q_Q(DownloadManager);
+    _downloadsQueue = new DownloadQueue();
+    _uuidFactory = new UuidFactory();
+    init();
+}
 
-    _downloads = new DownloadQueue();
-    q->connect(_downloads, SIGNAL(downloadRemoved(QString)),
+DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory,
+    DownloadManager* parent):
+        _downloadsQueue(queue),
+        _conn(connection),
+        _uuidFactory(uuidFactory),
+        q_ptr(parent)
+{
+    init();
+}
+
+void DownloadManagerPrivate::init()
+{
+    Q_Q(DownloadManager);
+    q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
         q, SLOT(onDownloadRemoved(QString)));
 
     _reqFactory = new RequestFactory();
-    _current = NULL;
 }
 
 void DownloadManagerPrivate::addDownload(Download* download)
@@ -99,13 +116,13 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
     Q_Q(DownloadManager);
 
     // only create a download if the application is not already being downloaded
-    QUuid id = QUuid::createUuid();
+    QUuid id = _uuidFactory->createUuid();
     QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
 
     QString path = DownloadManagerPrivate::BASE_ACCOUNT_URL.arg(uuidString);
     QDBusObjectPath objectPath;
 
-    if (_downloads->paths().contains(path))
+    if (_downloadsQueue->paths().contains(path))
         objectPath = QDBusObjectPath(path);
     else
     {
@@ -118,7 +135,7 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
         DownloadAdaptor* adaptor = new DownloadAdaptor(appDownload);
 
         // we need to store the ref of both objects, else the mem management will delete them
-        _downloads->add(appDownload, adaptor);
+        _downloadsQueue->add(appDownload, adaptor);
         _conn->registerObject(appDownload->path(), appDownload);
         objectPath = QDBusObjectPath(appDownload->path());
     }
@@ -130,19 +147,26 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
 
 QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloads()
 {
-    qDebug() << "Getting all object paths.";
     QList<QDBusObjectPath> paths;
-    foreach(const QString& path, _downloads->paths())
+    foreach(const QString& path, _downloadsQueue->paths())
         paths << QDBusObjectPath(path);
     return paths;
 }
 
 QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloadsWithMetadata(const QString& name, const QString& value)
 {
-    // TODO: return something real!
-    Q_UNUSED(name);
-    Q_UNUSED(value);
     QList<QDBusObjectPath> paths;
+    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    foreach(const QString& path, downloads.keys())
+    {
+        QVariantMap metadata = downloads[path]->metadata();
+        if (metadata.contains(name))
+        {
+            QVariant data = metadata[name];
+            if (data.canConvert(QMetaType::QString) && data.toString() == value)
+                paths << QDBusObjectPath(path);
+        }
+    }
     return paths;
 }
 
@@ -150,9 +174,15 @@ QList<QDBusObjectPath> DownloadManagerPrivate::getAllDownloadsWithMetadata(const
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadManager::DownloadManager(DBusConnection* connection, QObject *parent) :
+DownloadManager::DownloadManager(DBusConnection* connection, QObject* parent) :
     QObject(parent),
     d_ptr(new DownloadManagerPrivate(connection, this))
+{
+}
+
+DownloadManager::DownloadManager(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory, QObject* parent) :
+    QObject(parent),
+    d_ptr(new DownloadManagerPrivate(connection, queue, uuidFactory, this))
 {
 }
 

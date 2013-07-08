@@ -66,6 +66,7 @@ public:
     QString filePath();
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
+    QVariantMap headers() const;
 
     // methods that do really perform the actions
     void cancelDownload();
@@ -350,6 +351,11 @@ QCryptographicHash::Algorithm DownloadPrivate::hashAlgorithm() const
     return _algo;
 }
 
+QVariantMap DownloadPrivate::headers() const
+{
+    return _headers;
+}
+
 void DownloadPrivate::cancelDownload()
 {
     Q_Q(Download);
@@ -631,6 +637,12 @@ QCryptographicHash::Algorithm Download::hashAlgorithm()
     return d->hashAlgorithm();
 }
 
+QVariantMap Download::headers()
+{
+    Q_D(Download);
+    return d->headers();
+}
+
 void Download::cancelDownload()
 {
     Q_D(Download);
@@ -708,6 +720,5 @@ void Download::start()
     Q_D(Download);
     d->start();
 }
-
 
 #include "moc_download.cpp"

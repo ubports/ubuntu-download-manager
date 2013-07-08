@@ -47,6 +47,7 @@ private slots:
     void testCancelDownloadNoOtherReady();
     void testCancelDownloadOtherReady();
     void testCancelDownloadNotStarted();
+    void testDownloads();
 
 private:
     FakeRequestFactory* _reqFactory;

@@ -35,6 +35,7 @@ public:
 
     QString currentDownload();
     QStringList paths();
+    QHash<QString, Download*> downloads();
 
 private:
     void onDownloadStateChanged();
@@ -93,6 +94,16 @@ QString DownloadQueuePrivate::currentDownload()
 QStringList DownloadQueuePrivate::paths()
 {
     return _sortedPaths;
+}
+
+QHash<QString, Download*> DownloadQueuePrivate::downloads()
+{
+    QHash<QString, Download*> downloads;
+    foreach(const QString& path, _sortedPaths)
+    {
+        downloads[path] = _downloads[path].first;
+    }
+    return downloads;
 }
 
 void DownloadQueuePrivate::onDownloadStateChanged()
@@ -208,5 +219,11 @@ QStringList DownloadQueue::paths()
     return d->paths();
 }
 
+
+QHash<QString, Download*> DownloadQueue::downloads()
+{
+    Q_D(DownloadQueue);
+    return d->downloads();
+}
 
 #include "moc_download_queue.cpp"

@@ -20,7 +20,11 @@
 #define TEST_DOWNLOADER_H
 
 #include <QObject>
+#include <download_manager.h>
 #include "test_runner.h"
+#include "fake_dbus_connection.h"
+#include "fake_download_queue.h"
+#include "fake_uuid_factory.h"
 
 class TestDownloadManager : public QObject
 {
@@ -33,18 +37,24 @@ private slots:
     void init();
     void cleanup();
 
-    // test exposed via dbus
+    // data functions
+    void testCreateDownload_data();
+    void testCreateDownloadWithHash_data();
+
+    // tests
     void testCreateDownload();
     void testCreateDownloadWithHash();
     void testGetAllDownloads();
+    void testAllDownloadsWithMetadata();
 
-    // test q methods
-    void testStartNoCurrent();
-    void testStartCurrent();
-    void testPauseCurrent();
-    void testPauseNotCurrent();
-    void testResumeCurrent();
-    void testResumeNoCurrent();
+private:
+    QCryptographicHash::Algorithm algoFromString(const QString& data);
+
+private:
+    FakeDBusConnection* _conn;
+    FakeDownloadQueue* _q;
+    FakeUuidFactory* _uuidFactory;
+    DownloadManager* _man;
 };
 
 DECLARE_TEST(TestDownloadManager)

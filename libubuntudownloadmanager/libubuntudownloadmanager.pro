@@ -24,7 +24,8 @@ SOURCES += \
     network_reply.cpp \
     dbus_connection.cpp \
     download_adaptor.cpp \
-    download_manager_adaptor.cpp
+    download_manager_adaptor.cpp \
+    uuid_factory.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -37,9 +38,10 @@ HEADERS +=\
     network_reply.h \
     dbus_connection.h \
     download_adaptor.h \
-    download_manager_adaptor.h
+    download_manager_adaptor.h \
+    uuid_factory.h
 
 OTHER_FILES += \
-    com.canonical.applications.application_download.xml \
-    com.canonical.applications.downloader.xml \
-    generate_adaptors.sh
+    generate_adaptors.sh \
+    com.canonical.applications.download.xml \
+    com.canonical.applications.download_manager.xml
