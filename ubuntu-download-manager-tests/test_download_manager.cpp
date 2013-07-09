@@ -313,18 +313,60 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
 
 void TestDownloadManager::testSetThrottleNotDownloads_data()
 {
+    QTest::addColumn<uint>("speed");
+
+    QTest::newRow("First row") << 200u;
+    QTest::newRow("Second row") << 1212u;
+    QTest::newRow("Third row") << 998u;
+    QTest::newRow("Last row") << 60u;
 }
 
 void TestDownloadManager::testSetThrottleNotDownloads()
 {
-    QFAIL("Not implemented.");
+    QFETCH(uint, speed);
+    _man->setDefaultThrottle(speed);
+    QCOMPARE(_man->defaultThrottle(), speed);
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads_data()
 {
+    QTest::addColumn<uint>("speed");
+
+    QTest::newRow("First row") << 200u;
+    QTest::newRow("Second row") << 1212u;
+    QTest::newRow("Third row") << 998u;
+    QTest::newRow("Last row") << 60u;
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads()
 {
-    QFAIL("Not implemented.");
+    QFETCH(uint, speed);
+
+    // add a number of downloads and assert that we do set their throttle limit
+    if (_man)
+        delete _man;
+
+    // do not use the fake uuid factory, else we only get one object path
+    _man = new DownloadManager(_conn, _q, new UuidFactory());
+
+    QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
+    QVariantMap firstMetadata, firstHeaders, secondMetadata, secondHeaders, thirdMetadata, thirdHeaders;
+
+    firstMetadata["type"] = "first";
+    secondMetadata["type"] = "second";
+    thirdMetadata["type"] = "first";
+
+    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
+    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
+    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+
+    _man->setDefaultThrottle(speed);
+
+    QList<MethodData> calledMethods = _q->calledMethods();
+    for(int index=0; index < calledMethods.count(); index++)
+    {
+        Download* download = (Download*) calledMethods[index].params().inParams()[0];
+        QCOMPARE(download->throttle(), speed);
+    }
+
 }
