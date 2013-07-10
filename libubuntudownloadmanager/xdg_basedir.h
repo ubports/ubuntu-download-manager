@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APP_DOWNLOADER_LIB_XDG_BASEDIR_H
-#define APP_DOWNLOADER_LIB_XDG_BASEDIR_H
+#ifndef DOWNLOADER_LIB_XDG_BASEDIR_H
+#define DOWNLOADER_LIB_XDG_BASEDIR_H
 
 #include <QList>
 #include <QObject>

@@ -32,6 +32,7 @@ class DownloadDaemonPrivate
 public:
     explicit DownloadDaemonPrivate(DownloadDaemon* parent);
     explicit DownloadDaemonPrivate(DBusConnection* conn, DownloadDaemon* parent);
+    ~DownloadDaemonPrivate();
 
     bool start();
 
@@ -54,7 +55,17 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn, DownloadDaemo
     _conn(conn),
     q_ptr(parent)
 {
-    _downInterface = new DownloadManager(_conn, q_ptr);
+    _downInterface = new DownloadManager(_conn);
+}
+
+DownloadDaemonPrivate::~DownloadDaemonPrivate()
+{
+    // no need to delete the adaptor because the interface is its parent
+    if (_conn)
+        delete _conn;
+    if (_downInterface)
+        delete _downInterface;
+
 }
 
 bool DownloadDaemonPrivate::start()

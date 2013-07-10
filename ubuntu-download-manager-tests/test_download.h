@@ -53,6 +53,8 @@ private slots:
     void testSetRawHeadersWithRangeResume_data();
     void testSetThrottleNoReply_data();
     void testSetThrottle_data();
+    void testSetGSMDownloadSame_data();
+    void testSetGSMDownloadDiff_data();
 
     // accessor methods
     void testPath();
@@ -62,6 +64,8 @@ private slots:
     void testTotalSizeNoProgress();
     void testSetThrottleNoReply();
     void testSetThrottle();
+    void testSetGSMDownloadSame();
+    void testSetGSMDownloadDiff();
 
     // dbus method tests
     void testCancel();

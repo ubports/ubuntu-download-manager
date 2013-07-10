@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APP_DOWNLOADER_LIB_APP_DOWNLOAD_H
-#define APP_DOWNLOADER_LIB_APP_DOWNLOAD_H
+#ifndef DOWNLOADER_LIB_APP_DOWNLOAD_H
+#define DOWNLOADER_LIB_APP_DOWNLOAD_H
 
 #include <QObject>
 #include <QByteArray>
@@ -60,6 +60,7 @@ public:
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();
     QVariantMap headers();
+    bool canDownload();
 
     // methods that do perform the download
     virtual void cancelDownload();
@@ -77,6 +78,8 @@ public slots:
     uint totalSize();
     virtual void setThrottle(uint speed);
     virtual uint throttle();
+    void allowGSMDownload(bool allowed);
+    bool isGSMDownloadAllowed();
     void cancel();
     void pause();
     void resume();

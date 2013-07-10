@@ -33,6 +33,12 @@ DownloadManagerAdaptor::~DownloadManagerAdaptor()
     // destructor
 }
 
+void DownloadManagerAdaptor::allowGSMDownload(bool allowed)
+{
+    // handle method call com.canonical.applications.DownloaderManager.allowGSMDownload
+    QMetaObject::invokeMethod(parent(), "allowGSMDownload", Q_ARG(bool, allowed));
+}
+
 QDBusObjectPath DownloadManagerAdaptor::createDownload(const QString &url, const QVariantMap &metadata, const QVariantMap &headers)
 {
     // handle method call com.canonical.applications.DownloaderManager.createDownload
@@ -71,6 +77,14 @@ QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloadsWithMetadata(const
     QList<QDBusObjectPath> downloads;
     QMetaObject::invokeMethod(parent(), "getAllDownloadsWithMetadata", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, name), Q_ARG(QString, value));
     return downloads;
+}
+
+bool DownloadManagerAdaptor::isGSMDownloadAllowed()
+{
+    // handle method call com.canonical.applications.DownloaderManager.isGSMDownloadAllowed
+    bool allowed;
+    QMetaObject::invokeMethod(parent(), "isGSMDownloadAllowed", Q_RETURN_ARG(bool, allowed));
+    return allowed;
 }
 
 void DownloadManagerAdaptor::setDefaultThrottle(uint speed)

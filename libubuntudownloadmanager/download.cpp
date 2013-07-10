@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
+#include "system_network_info.h"
 #include "network_reply.h"
 #include "xdg_basedir.h"
 #include "download.h"
@@ -67,6 +68,7 @@ public:
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
     QVariantMap headers() const;
+    bool canDownload();
 
     // methods that do really perform the actions
     void cancelDownload();
@@ -81,6 +83,8 @@ public:
     uint totalSize();
     void setThrottle(uint speed);
     uint throttle();
+    void allowGSMDownload(bool allowed);
+    bool isGSMDownloadAllowed();
     void cancel();
     void pause();
     void resume();
@@ -107,6 +111,7 @@ private:
     QUuid _id;
     uint _totalSize;
     uint _throttle;
+    bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
     QString _localPath;
@@ -115,6 +120,7 @@ private:
     QCryptographicHash::Algorithm _algo;
     QVariantMap _metadata;
     QVariantMap _headers;
+    SystemNetworkInfo* _networkInfo;
     RequestFactory* _requestFactory;
     NetworkReply* _reply;
     QFile* _currentData;
@@ -127,6 +133,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
         _id(id),
         _totalSize(0),
         _throttle(0),
+        _allowGSMDownload(true),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
@@ -146,6 +153,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
         _id(id),
         _totalSize(0),
         _throttle(0),
+        _allowGSMDownload(true),
         _state(Download::IDLE),
         _dbusPath(path),
         _url(url),
@@ -173,11 +181,12 @@ DownloadPrivate::~DownloadPrivate()
 void DownloadPrivate::init()
 {
     QStringList pathComponents;
-    pathComponents << "application_downloader" << _id.toString();
+    pathComponents << "download_manager" << _id.toString();
     _localPath = XDGBasedir::saveDataPath(pathComponents);
 
     _reply = NULL;
     _currentData = NULL;
+    _networkInfo = new SystemNetworkInfo();
 
     // store metadata in case we crash or are stopped
     storeMetadata();
@@ -361,6 +370,12 @@ QVariantMap DownloadPrivate::headers() const
     return _headers;
 }
 
+bool DownloadPrivate::canDownload()
+{
+    // TODO
+    return false;
+}
+
 void DownloadPrivate::cancelDownload()
 {
     Q_Q(Download);
@@ -487,6 +502,22 @@ void DownloadPrivate::setThrottle(uint speed)
 uint DownloadPrivate::throttle()
 {
     return _throttle;
+}
+
+void DownloadPrivate::allowGSMDownload(bool allowed)
+{
+    Q_Q(Download);
+    if (_allowGSMDownload != allowed)
+    {
+        _allowGSMDownload = allowed;
+        // emit the signals so that they q knows what to do
+        emit q->stateChanged();
+    }
+}
+
+bool DownloadPrivate::isGSMDownloadAllowed()
+{
+    return _allowGSMDownload;
 }
 
 void DownloadPrivate::cancel()
@@ -664,6 +695,12 @@ QVariantMap Download::headers()
     return d->headers();
 }
 
+bool Download::canDownload()
+{
+    Q_D(Download);
+    return d->canDownload();
+}
+
 void Download::cancelDownload()
 {
     Q_D(Download);
@@ -728,6 +765,18 @@ uint Download::throttle()
 {
     Q_D(Download);
     return d->throttle();
+}
+
+void Download::allowGSMDownload(bool allowed)
+{
+    Q_D(Download);
+    d->allowGSMDownload(allowed);
+}
+
+bool Download::isGSMDownloadAllowed()
+{
+    Q_D(Download);
+    return d->isGSMDownloadAllowed();
 }
 
 void Download::cancel()

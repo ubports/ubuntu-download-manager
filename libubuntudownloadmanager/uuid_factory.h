@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UUID_FACTORY_H
-#define UUID_FACTORY_H
+#ifndef DOWNLOADER_LIB_UUID_FACTORY_H
+#define DOWNLOADER_LIB_UUID_FACTORY_H
 
 #include <QUuid>
 #include <QObject>

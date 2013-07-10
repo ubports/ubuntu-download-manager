@@ -22,6 +22,14 @@
         <arg name="speed" type="u" direction="out"/>
     </method>
 
+    <method name="allowGSMDownload">
+        <arg name="allowed" type="b" direction="in"/>
+    </method>
+
+    <method name="isGSMDownloadAllowed">
+        <arg name="allowed" type="b" direction="out"/>
+    </method>
+
     <method name="start" />
     <method name="pause" />
     <method name="resume" />

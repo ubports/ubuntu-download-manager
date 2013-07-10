@@ -33,10 +33,24 @@ DownloadAdaptor::~DownloadAdaptor()
     // destructor
 }
 
+void DownloadAdaptor::allowGSMDownload(bool allowed)
+{
+    // handle method call com.canonical.applications.Download.allowGSMDownload
+    QMetaObject::invokeMethod(parent(), "allowGSMDownload", Q_ARG(bool, allowed));
+}
+
 void DownloadAdaptor::cancel()
 {
     // handle method call com.canonical.applications.Download.cancel
     QMetaObject::invokeMethod(parent(), "cancel");
+}
+
+bool DownloadAdaptor::isGSMDownloadAllowed()
+{
+    // handle method call com.canonical.applications.Download.isGSMDownloadAllowed
+    bool allowed;
+    QMetaObject::invokeMethod(parent(), "isGSMDownloadAllowed", Q_RETURN_ARG(bool, allowed));
+    return allowed;
 }
 
 QVariantMap DownloadAdaptor::metadata()

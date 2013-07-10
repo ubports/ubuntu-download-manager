@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,28 +16,31 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
-#define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
+#ifndef DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
+#define DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 
+#include <QNetworkInfo>
 #include <QObject>
-#include "app-downloader-lib_global.h"
-#include "dbus_connection.h"
 
-class DownloadDaemonPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject
+class SystemNetworkInfoPrivate;
+class SystemNetworkInfo : public QObject
 {
-    Q_DECLARE_PRIVATE(DownloadDaemon)
     Q_OBJECT
-public:
-    explicit DownloadDaemon(QObject *parent = 0);
-    explicit DownloadDaemon(DBusConnection* conn, QObject *parent = 0);
+    Q_DECLARE_PRIVATE(SystemNetworkInfo)
 
-    bool start();
+public:
+    explicit SystemNetworkInfo(QObject *parent = 0);
+    
+    virtual QNetworkInfo::NetworkMode currentNetworkMode();
+
+signals:
+    void currentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
 
 private:
-    // use pimpl so that we can mantains ABI compatibility
-    DownloadDaemonPrivate* d_ptr;
+    Q_PRIVATE_SLOT(d_func(), void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
+private:
+    SystemNetworkInfoPrivate* d_ptr;
 };
 
-#endif // DOWNLOAD_DAEMON_H
+#endif // SYSTEM_NETWORK_INFO_H

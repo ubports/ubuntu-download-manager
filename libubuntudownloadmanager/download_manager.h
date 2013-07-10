@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef APP_DOWNLOADER_LIB_DOWNLOADER_H
-#define APP_DOWNLOADER_LIB_DOWNLOADER_H
+#ifndef DOWNLOADER_LIB_DOWNLOADER_H
+#define DOWNLOADER_LIB_DOWNLOADER_H
 
 #include <QObject>
 #include <QByteArray>

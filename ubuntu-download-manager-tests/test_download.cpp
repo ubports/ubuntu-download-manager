@@ -316,6 +316,48 @@ void TestDownload::testSetThrottle()
     QCOMPARE(speed, ((UintWrapper*)calledMethods[0].params().inParams()[0])->value());
 }
 
+void TestDownload::testSetGSMDownloadSame_data()
+{
+    QTest::addColumn<bool>("value");
+
+    QTest::newRow("True") << true;
+    QTest::newRow("False") << false;
+}
+
+void TestDownload::testSetGSMDownloadSame()
+{
+    QFETCH(bool, value);
+
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);
+    download->allowGSMDownload(value);
+    QSignalSpy spy(download , SIGNAL(stateChanged()));
+
+    download->allowGSMDownload(value);
+    QCOMPARE(spy.count(), 0);
+}
+
+void TestDownload::testSetGSMDownloadDiff_data()
+{
+    QTest::addColumn<bool>("oldValue");
+    QTest::addColumn<bool>("newValue");
+
+    QTest::newRow("True") << true << false;
+    QTest::newRow("False") << false << true;
+}
+
+void TestDownload::testSetGSMDownloadDiff()
+{
+    QFETCH(bool, oldValue);
+    QFETCH(bool, newValue);
+
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);
+    download->allowGSMDownload(oldValue);
+    QSignalSpy spy(download , SIGNAL(stateChanged()));
+
+    download->allowGSMDownload(newValue);
+    QCOMPARE(spy.count(), 1);
+}
+
 void TestDownload::testCancel()
 {
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _reqFactory);

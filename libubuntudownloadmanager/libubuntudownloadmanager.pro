@@ -1,11 +1,4 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-06-12T12:09:34
-#
-#-------------------------------------------------
-
-QT       += network dbus
-
+QT       += network dbus systeminfo
 QT       -= gui
 
 TARGET = libubuntudownloadmanager
@@ -22,6 +15,7 @@ SOURCES += \
     xdg_basedir.cpp \
     request_factory.cpp \
     network_reply.cpp \
+    system_network_info.cpp \
     dbus_connection.cpp \
     download_adaptor.cpp \
     download_manager_adaptor.cpp \
@@ -35,6 +29,7 @@ HEADERS +=\
     download_queue.h \
     xdg_basedir.h \
     request_factory.h \
+    system_network_info.h \
     network_reply.h \
     dbus_connection.h \
     download_adaptor.h \

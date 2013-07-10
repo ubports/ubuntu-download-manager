@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_ADAPTOR_H_1373293162
-#define DOWNLOAD_ADAPTOR_H_1373293162
+#ifndef DOWNLOAD_ADAPTOR_H_1373367239
+#define DOWNLOAD_ADAPTOR_H_1373367239
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -48,6 +48,12 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"throttle\">\n"
 "      <arg direction=\"out\" type=\"u\" name=\"speed\"/>\n"
 "    </method>\n"
+"    <method name=\"allowGSMDownload\">\n"
+"      <arg direction=\"in\" type=\"b\" name=\"allowed\"/>\n"
+"    </method>\n"
+"    <method name=\"isGSMDownloadAllowed\">\n"
+"      <arg direction=\"out\" type=\"b\" name=\"allowed\"/>\n"
+"    </method>\n"
 "    <method name=\"start\"/>\n"
 "    <method name=\"pause\"/>\n"
 "    <method name=\"resume\"/>\n"
@@ -82,7 +88,9 @@ public:
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
+    void allowGSMDownload(bool allowed);
     void cancel();
+    bool isGSMDownloadAllowed();
     QVariantMap metadata();
     void pause();
     uint progress();
