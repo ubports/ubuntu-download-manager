@@ -243,11 +243,9 @@ QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &url, cons
     Q_D(DownloadManager);
     // lowercase the algorithm just in case
     QString algoLower = algorithm.toLower();
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md4;
+    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
 
-    if (algoLower == "md4")
-        algo = QCryptographicHash::Md4;
-    else if (algoLower == "md5")
+    if (algoLower == "md5")
         algo = QCryptographicHash::Md5;
     else if (algoLower == "sha1")
         algo = QCryptographicHash::Sha1;

@@ -50,9 +50,7 @@ void TestDownloadManager::cleanup()
 QCryptographicHash::Algorithm TestDownloadManager::algoFromString(const QString& data)
 {
     QString algoLower = data.toLower();
-    if (algoLower == "md4")
-        return QCryptographicHash::Md4;
-    else if (algoLower == "md5")
+    if (algoLower == "md5")
         return QCryptographicHash::Md5;
     else if (algoLower == "sha1")
         return QCryptographicHash::Sha1;
@@ -64,7 +62,7 @@ QCryptographicHash::Algorithm TestDownloadManager::algoFromString(const QString&
         return QCryptographicHash::Sha384;
     else if (algoLower == "sha512")
         return QCryptographicHash::Sha512;
-    return QCryptographicHash::Md4;
+    return QCryptographicHash::Md5;
 }
 
 void TestDownloadManager::testCreateDownload_data()
