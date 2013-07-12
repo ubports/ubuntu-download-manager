@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1373367239
-#define DOWNLOAD_MANAGER_ADAPTOR_H_1373367239
+#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1373626501
+#define DOWNLOAD_MANAGER_ADAPTOR_H_1373626501
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -59,10 +59,10 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
 "    <method name=\"setDefaultThrottle\">\n"
-"      <arg direction=\"in\" type=\"u\" name=\"speed\"/>\n"
+"      <arg direction=\"in\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
 "    <method name=\"defaultThrottle\">\n"
-"      <arg direction=\"out\" type=\"u\" name=\"speed\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
 "    <method name=\"allowGSMDownload\">\n"
 "      <arg direction=\"in\" type=\"b\" name=\"allowed\"/>\n"
@@ -84,11 +84,11 @@ public Q_SLOTS: // METHODS
     void allowGSMDownload(bool allowed);
     QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, const QVariantMap &headers);
     QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash, const QVariantMap &metadata, const QVariantMap &headers);
-    uint defaultThrottle();
+    qulonglong defaultThrottle();
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
     bool isGSMDownloadAllowed();
-    void setDefaultThrottle(uint speed);
+    void setDefaultThrottle(qulonglong speed);
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
 };

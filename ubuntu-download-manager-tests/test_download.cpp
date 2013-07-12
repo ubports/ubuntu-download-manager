@@ -114,8 +114,8 @@ void TestDownload::testNoHashConstructor()
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->state(), Download::IDLE);
-    QCOMPARE(download->progress(), 0u);
-    QCOMPARE(download->totalSize(), 0u);
+    QCOMPARE(download->progress(), 0LL);
+    QCOMPARE(download->totalSize(), 0LL);
 
     delete download;
 }
@@ -155,8 +155,8 @@ void TestDownload::testHashConstructor()
     QCOMPARE(download->hash(), hash);
     QCOMPARE((int)download->hashAlgorithm(), algo);
     QCOMPARE(download->state(), Download::IDLE);
-    QCOMPARE(download->progress(), 0u);
-    QCOMPARE(download->totalSize(), 0u);
+    QCOMPARE(download->progress(), 0LL);
+    QCOMPARE(download->totalSize(), 0LL);
 
     delete download;
 }
@@ -203,24 +203,24 @@ void TestDownload::testUrl()
 void TestDownload::testProgress_data()
 {
     QTest::addColumn<QByteArray>("fileData");
-    QTest::addColumn<uint>("received");
-    QTest::addColumn<uint>("total");
+    QTest::addColumn<qlonglong>("received");
+    QTest::addColumn<qlonglong>("total");
 
-    QTest::newRow("First row") << QByteArray(0, 'f') << 67u << 200u;
-    QTest::newRow("Second row") << QByteArray(200, 's') << 45u << 12000u;
-    QTest::newRow("Third row") << QByteArray(300, 't') << 2u << 2345u;
-    QTest::newRow("Last row") << QByteArray(400, 'l') << 3434u << 2323u;
+    QTest::newRow("First row") << QByteArray(0, 'f') << 67LL << 200LL;
+    QTest::newRow("Second row") << QByteArray(200, 's') << 45LL << 12000LL;
+    QTest::newRow("Third row") << QByteArray(300, 't') << 2LL << 2345LL;
+    QTest::newRow("Last row") << QByteArray(400, 'l') << 3434LL << 2323LL;
 }
 
 void TestDownload::testProgress()
 {
     QFETCH(QByteArray, fileData);
-    QFETCH(uint, received);
-    QFETCH(uint, total);
+    QFETCH(qlonglong, received);
+    QFETCH(qlonglong, total);
 
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory);
-    QSignalSpy spy(download , SIGNAL(progress(uint, uint)));
+    QSignalSpy spy(download , SIGNAL(progress(qlonglong, qlonglong)));
 
     // start the download so that we do have access to the reply
     download->start();  // change state
@@ -236,20 +236,20 @@ void TestDownload::testProgress()
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toUInt(), (uint)fileData.size());  // assert that the size is not the received but the file size
-    QCOMPARE(arguments.at(1).toUInt(), total);
+    QCOMPARE(arguments.at(0).toLongLong(), (qlonglong)fileData.size());  // assert that the size is not the received but the file size
+    QCOMPARE(arguments.at(1).toLongLong(), total);
     delete download;
 }
 
 void TestDownload::testTotalSize()
 {
-    uint received = 30u;
-    uint total = 200u;
+    qlonglong received = 30LL;
+    qlonglong total = 200LL;
 
     // assert that the total size is just set once by emitting two signals with diff sizes
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory);
-    QSignalSpy spy(download , SIGNAL(progress(uint, uint)));
+    QSignalSpy spy(download , SIGNAL(progress(qlonglong, qlonglong)));
 
     // start the download so that we do have access to the reply
     download->start();  // change state
@@ -268,23 +268,23 @@ void TestDownload::testTotalSize()
 void TestDownload::testTotalSizeNoProgress()
 {
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory);
-    QCOMPARE(0u, download->totalSize());
+    QCOMPARE(0LL, download->totalSize());
     delete download;
 }
 
 void TestDownload::testSetThrottleNoReply_data()
 {
-    QTest::addColumn<uint>("speed");
+    QTest::addColumn<qlonglong>("speed");
 
-    QTest::newRow("First row") << 200u;
-    QTest::newRow("Second row") << 1212u;
-    QTest::newRow("Third row") << 998u;
-    QTest::newRow("Last row") << 60u;
+    QTest::newRow("First row") << 200LL;
+    QTest::newRow("Second row") << 1212LL;
+    QTest::newRow("Third row") << 998LL;
+    QTest::newRow("Last row") << 60LL;
 }
 
 void TestDownload::testSetThrottleNoReply()
 {
-    QFETCH(uint, speed);
+    QFETCH(qlonglong, speed);
     Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory);
     download->setThrottle(speed);
     QCOMPARE(speed, download->throttle());
@@ -568,7 +568,7 @@ void TestDownload::testPauseDownload()
     QCOMPARE(QString("readAll"), calledMethods[2].methodName());
 
     // assert current size is correct (progress)
-    QCOMPARE(download->progress(), (uint)reply->data().size());
+    QCOMPARE(download->progress(), (qlonglong)reply->data().size());
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();

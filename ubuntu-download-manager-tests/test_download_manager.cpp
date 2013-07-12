@@ -314,34 +314,34 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
 
 void TestDownloadManager::testSetThrottleNotDownloads_data()
 {
-    QTest::addColumn<uint>("speed");
+    QTest::addColumn<qlonglong>("speed");
 
-    QTest::newRow("First row") << 200u;
-    QTest::newRow("Second row") << 1212u;
-    QTest::newRow("Third row") << 998u;
-    QTest::newRow("Last row") << 60u;
+    QTest::newRow("First row") << 200LL;
+    QTest::newRow("Second row") << 1212LL;
+    QTest::newRow("Third row") << 998LL;
+    QTest::newRow("Last row") << 60LL;
 }
 
 void TestDownloadManager::testSetThrottleNotDownloads()
 {
-    QFETCH(uint, speed);
+    QFETCH(qlonglong, speed);
     _man->setDefaultThrottle(speed);
     QCOMPARE(_man->defaultThrottle(), speed);
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads_data()
 {
-    QTest::addColumn<uint>("speed");
+    QTest::addColumn<qlonglong>("speed");
 
-    QTest::newRow("First row") << 200u;
-    QTest::newRow("Second row") << 1212u;
-    QTest::newRow("Third row") << 998u;
-    QTest::newRow("Last row") << 60u;
+    QTest::newRow("First row") << 200LL;
+    QTest::newRow("Second row") << 1212LL;
+    QTest::newRow("Third row") << 998LL;
+    QTest::newRow("Last row") << 60LL;
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads()
 {
-    QFETCH(uint, speed);
+    QFETCH(qlonglong, speed);
 
     // add a number of downloads and assert that we do set their throttle limit
     if (_man)

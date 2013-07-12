@@ -79,10 +79,10 @@ public:
 
     // plublic slots used by public implementation
     QVariantMap metadata();
-    uint progress();
-    uint totalSize();
-    void setThrottle(uint speed);
-    uint throttle();
+    qlonglong progress();
+    qlonglong totalSize();
+    void setThrottle(qlonglong speed);
+    qlonglong throttle();
     void allowGSMDownload(bool allowed);
     bool isGSMDownloadAllowed();
     void cancel();
@@ -109,8 +109,8 @@ private:
 
 private:
     QUuid _id;
-    uint _totalSize;
-    uint _throttle;
+    qlonglong _totalSize;
+    qlonglong _throttle;
     bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
@@ -501,24 +501,24 @@ QVariantMap DownloadPrivate::metadata()
     return _metadata;
 }
 
-uint DownloadPrivate::progress()
+qlonglong DownloadPrivate::progress()
 {
     return (_currentData == NULL)?0:_currentData->size();
 }
 
-uint DownloadPrivate::totalSize()
+qlonglong DownloadPrivate::totalSize()
 {
     return _totalSize;
 }
 
-void DownloadPrivate::setThrottle(uint speed)
+void DownloadPrivate::setThrottle(qlonglong speed)
 {
     _throttle = speed;
     if (_reply != NULL)
         _reply->setReadBufferSize(_throttle);
 }
 
-uint DownloadPrivate::throttle()
+qlonglong DownloadPrivate::throttle()
 {
     return _throttle;
 }
@@ -762,25 +762,25 @@ QVariantMap Download::metadata()
     return d->metadata();
 }
 
-uint Download::progress()
+qlonglong Download::progress()
 {
     Q_D(Download);
     return d->progress();
 }
 
-uint Download::totalSize()
+qlonglong Download::totalSize()
 {
     Q_D(Download);
     return d->totalSize();
 }
 
-void Download::setThrottle(uint speed)
+void Download::setThrottle(qlonglong speed)
 {
     Q_D(Download);
     return d->setThrottle(speed);
 }
 
-uint Download::throttle()
+qlonglong Download::throttle()
 {
     Q_D(Download);
     return d->throttle();

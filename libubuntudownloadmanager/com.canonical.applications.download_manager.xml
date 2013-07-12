@@ -31,11 +31,11 @@
     </method>
 
     <method name="setDefaultThrottle">
-        <arg name="speed" type="u" direction="in"/>
+        <arg name="speed" type="t" direction="in"/>
     </method>
 
     <method name="defaultThrottle">
-        <arg name="speed" type="u" direction="out"/>
+        <arg name="speed" type="t" direction="out"/>
     </method>
 
     <method name="allowGSMDownload">

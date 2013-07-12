@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_ADAPTOR_H_1373367239
-#define DOWNLOAD_ADAPTOR_H_1373367239
+#ifndef DOWNLOAD_ADAPTOR_H_1373626501
+#define DOWNLOAD_ADAPTOR_H_1373626501
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -33,20 +33,20 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
     Q_CLASSINFO("D-Bus Introspection", ""
 "  <interface name=\"com.canonical.applications.Download\">\n"
 "    <method name=\"totalSize\">\n"
-"      <arg direction=\"out\" type=\"u\" name=\"total\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
 "    </method>\n"
 "    <method name=\"progress\">\n"
-"      <arg direction=\"out\" type=\"u\" name=\"received\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"received\"/>\n"
 "    </method>\n"
 "    <method name=\"metadata\">\n"
 "      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
 "      <arg direction=\"out\" type=\"a{sv}\" name=\"data\"/>\n"
 "    </method>\n"
 "    <method name=\"setThrottle\">\n"
-"      <arg direction=\"in\" type=\"u\" name=\"speed\"/>\n"
+"      <arg direction=\"in\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
 "    <method name=\"throttle\">\n"
-"      <arg direction=\"out\" type=\"u\" name=\"speed\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
 "    <method name=\"allowGSMDownload\">\n"
 "      <arg direction=\"in\" type=\"b\" name=\"allowed\"/>\n"
@@ -77,8 +77,8 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"s\" name=\"error\"/>\n"
 "    </signal>\n"
 "    <signal name=\"progress\">\n"
-"      <arg direction=\"out\" type=\"u\" name=\"received\"/>\n"
-"      <arg direction=\"out\" type=\"u\" name=\"total\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"received\"/>\n"
+"      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
 "    </signal>\n"
 "  </interface>\n"
         "")
@@ -93,18 +93,18 @@ public Q_SLOTS: // METHODS
     bool isGSMDownloadAllowed();
     QVariantMap metadata();
     void pause();
-    uint progress();
+    qulonglong progress();
     void resume();
-    void setThrottle(uint speed);
+    void setThrottle(qulonglong speed);
     void start();
-    uint throttle();
-    uint totalSize();
+    qulonglong throttle();
+    qulonglong totalSize();
 Q_SIGNALS: // SIGNALS
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QString &path);
     void paused(bool success);
-    void progress(uint received, uint total);
+    void progress(qulonglong received, qulonglong total);
     void resumed(bool success);
     void started(bool success);
 };

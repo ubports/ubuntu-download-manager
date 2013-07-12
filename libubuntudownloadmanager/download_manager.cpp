@@ -45,15 +45,15 @@ private:
     QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers);
     QDBusObjectPath createDownloadWithHash(const QString& url, const QString& hash, QCryptographicHash::Algorithm algo,
         const QVariantMap& metadata, const QVariantMap& headers);
-    uint defaultThrottle();
-    void setDefaultThrottle(uint speed);
+    qlonglong defaultThrottle();
+    void setDefaultThrottle(qlonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
 
 private:
     static QString BASE_ACCOUNT_URL;
 
-    uint _throttle;
+    qlonglong _throttle;
     SystemNetworkInfo* _networkInfo;
     DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
@@ -155,12 +155,12 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
     return objectPath;
 }
 
-uint DownloadManagerPrivate::defaultThrottle()
+qlonglong DownloadManagerPrivate::defaultThrottle()
 {
     return _throttle;
 }
 
-void DownloadManagerPrivate::setDefaultThrottle(uint speed)
+void DownloadManagerPrivate::setDefaultThrottle(qlonglong speed)
 {
     _throttle = speed;
     QHash<QString, Download*> downloads = _downloadsQueue->downloads();
@@ -225,13 +225,13 @@ QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVaria
     return d->createDownload(url, metadata, headers);
 }
 
-uint DownloadManager::defaultThrottle()
+qlonglong DownloadManager::defaultThrottle()
 {
     Q_D(DownloadManager);
     return d->defaultThrottle();
 }
 
-void DownloadManager::setDefaultThrottle(uint speed)
+void DownloadManager::setDefaultThrottle(qlonglong speed)
 {
     Q_D(DownloadManager);
     d->setDefaultThrottle(speed);

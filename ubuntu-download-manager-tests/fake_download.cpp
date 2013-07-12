@@ -48,7 +48,7 @@ void FakeDownload::setCanDownload(bool canDownload)
     _canDownload = canDownload;
 }
 
-void FakeDownload::setThrottle(uint speed)
+void FakeDownload::setThrottle(qlonglong speed)
 {
     if (_recording)
     {
@@ -63,7 +63,7 @@ void FakeDownload::setThrottle(uint speed)
    Download::setThrottle(speed);
 }
 
-uint FakeDownload::throttle()
+qlonglong FakeDownload::throttle()
 {
     if (_recording)
     {

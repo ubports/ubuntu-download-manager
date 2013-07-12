@@ -67,11 +67,11 @@ void DownloadAdaptor::pause()
     QMetaObject::invokeMethod(parent(), "pause");
 }
 
-uint DownloadAdaptor::progress()
+qulonglong DownloadAdaptor::progress()
 {
     // handle method call com.canonical.applications.Download.progress
-    uint received;
-    QMetaObject::invokeMethod(parent(), "progress", Q_RETURN_ARG(uint, received));
+    qulonglong received;
+    QMetaObject::invokeMethod(parent(), "progress", Q_RETURN_ARG(qulonglong, received));
     return received;
 }
 
@@ -81,10 +81,10 @@ void DownloadAdaptor::resume()
     QMetaObject::invokeMethod(parent(), "resume");
 }
 
-void DownloadAdaptor::setThrottle(uint speed)
+void DownloadAdaptor::setThrottle(qulonglong speed)
 {
     // handle method call com.canonical.applications.Download.setThrottle
-    QMetaObject::invokeMethod(parent(), "setThrottle", Q_ARG(uint, speed));
+    QMetaObject::invokeMethod(parent(), "setThrottle", Q_ARG(qulonglong, speed));
 }
 
 void DownloadAdaptor::start()
@@ -93,19 +93,19 @@ void DownloadAdaptor::start()
     QMetaObject::invokeMethod(parent(), "start");
 }
 
-uint DownloadAdaptor::throttle()
+qulonglong DownloadAdaptor::throttle()
 {
     // handle method call com.canonical.applications.Download.throttle
-    uint speed;
-    QMetaObject::invokeMethod(parent(), "throttle", Q_RETURN_ARG(uint, speed));
+    qulonglong speed;
+    QMetaObject::invokeMethod(parent(), "throttle", Q_RETURN_ARG(qulonglong, speed));
     return speed;
 }
 
-uint DownloadAdaptor::totalSize()
+qulonglong DownloadAdaptor::totalSize()
 {
     // handle method call com.canonical.applications.Download.totalSize
-    uint total;
-    QMetaObject::invokeMethod(parent(), "totalSize", Q_RETURN_ARG(uint, total));
+    qulonglong total;
+    QMetaObject::invokeMethod(parent(), "totalSize", Q_RETURN_ARG(qulonglong, total));
     return total;
 }
 

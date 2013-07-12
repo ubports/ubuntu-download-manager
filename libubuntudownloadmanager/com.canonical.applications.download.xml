@@ -2,11 +2,11 @@
   <interface name="com.canonical.applications.Download">
 
     <method name="totalSize">
-        <arg name="total" type="u" direction="out"/>
+        <arg name="total" type="t" direction="out"/>
     </method>
 
     <method name="progress">
-        <arg name="received" type="u" direction="out"/>
+        <arg name="received" type="t" direction="out"/>
     </method>
 
     <method name="metadata">
@@ -15,11 +15,11 @@
     </method>
 
     <method name="setThrottle">
-        <arg name="speed" type="u" direction="in"/>
+        <arg name="speed" type="t" direction="in"/>
     </method>
 
     <method name="throttle">
-        <arg name="speed" type="u" direction="out"/>
+        <arg name="speed" type="t" direction="out"/>
     </method>
 
     <method name="allowGSMDownload">
@@ -60,8 +60,8 @@
     </signal>
 
     <signal name="progress">
-        <arg name="received" type="u" direction="out"/>
-        <arg name="total" type="u" direction="out"/>
+        <arg name="received" type="t" direction="out"/>
+        <arg name="total" type="t" direction="out"/>
     </signal>
 
  </interface>

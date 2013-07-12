@@ -55,11 +55,11 @@ QDBusObjectPath DownloadManagerAdaptor::createDownloadWithHash(const QString &ur
     return download;
 }
 
-uint DownloadManagerAdaptor::defaultThrottle()
+qulonglong DownloadManagerAdaptor::defaultThrottle()
 {
     // handle method call com.canonical.applications.DownloaderManager.defaultThrottle
-    uint speed;
-    QMetaObject::invokeMethod(parent(), "defaultThrottle", Q_RETURN_ARG(uint, speed));
+    qulonglong speed;
+    QMetaObject::invokeMethod(parent(), "defaultThrottle", Q_RETURN_ARG(qulonglong, speed));
     return speed;
 }
 
@@ -87,9 +87,9 @@ bool DownloadManagerAdaptor::isGSMDownloadAllowed()
     return allowed;
 }
 
-void DownloadManagerAdaptor::setDefaultThrottle(uint speed)
+void DownloadManagerAdaptor::setDefaultThrottle(qulonglong speed)
 {
     // handle method call com.canonical.applications.DownloaderManager.setDefaultThrottle
-    QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(uint, speed));
+    QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(qulonglong, speed));
 }
 
