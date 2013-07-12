@@ -19,6 +19,7 @@
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
 #include <download.h>
+#include <system_network_info.h>
 #include "fake.h"
 
 class FakeDownload : public Download, public Fake
@@ -26,11 +27,13 @@ class FakeDownload : public Download, public Fake
     Q_OBJECT
 public:
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
+        const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
         QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
-        RequestFactory* nam, QObject* parent=0);
+        SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
 
+    bool canDownload() override;
+    void setCanDownload(bool canDownload);
     void setThrottle(uint speed) override;
     uint throttle() override;
     void cancelDownload() override;
@@ -38,6 +41,8 @@ public:
     void resumeDownload() override;
     void startDownload() override;
     
+private:
+    bool _canDownload;
 };
 
 #endif // FAKE_DOWNLOAD_H

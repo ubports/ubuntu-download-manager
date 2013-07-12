@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QSignalSpy>
 #include "test_download_queue.h"
 
@@ -26,12 +27,13 @@ TestDownloadQueue::TestDownloadQueue(QObject *parent) :
 
 void TestDownloadQueue::init()
 {
+    _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
-    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(), QVariantMap(), QVariantMap(), _reqFactory);
+    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(), QVariantMap(), QVariantMap(), _networkInfo, _reqFactory);
     _firstAdaptor = new DownloadAdaptor(_first);
-    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(), QVariantMap(), QVariantMap(), _reqFactory);
+    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(), QVariantMap(), QVariantMap(), _networkInfo, _reqFactory);
     _secondAdaptor = new DownloadAdaptor(_second);
-    _q = new DownloadQueue();
+    _q = new DownloadQueue(_networkInfo);
 }
 
 void TestDownloadQueue::cleanup()
@@ -80,7 +82,8 @@ void TestDownloadQueue::testStartDownloadWithNoCurrent()
 
     // state that startDownload was called in first
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
 
 void TestDownloadQueue::testStartDownloadWithCurrent()
@@ -103,11 +106,35 @@ void TestDownloadQueue::testStartDownloadWithCurrent()
 
     // state that startDownload was called in first
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 
     // state that startDownload was NOT called in second
     calledMethods = _second->calledMethods();
     QCOMPARE(0, calledMethods.count());
+}
+
+void TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload()
+{
+    // tell the fake that it cannot download (GSM enabled)
+    _first->setCanDownload(false);
+    _first->record();
+    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    _q->add(_first, _firstAdaptor);
+
+    // we do not download just yet
+    QVERIFY(_q->currentDownload().isEmpty());
+
+    _first->start();  // emit signal
+    QCOMPARE(spy.count(), 1);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), QString(""));
+
+    // state that startDownload was called in first
+    QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(1, calledMethods.count()); // just canDownload should be called
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
 void TestDownloadQueue::testPauseDownloadNoOtherReady()
@@ -132,9 +159,11 @@ void TestDownloadQueue::testPauseDownloadNoOtherReady()
     QVERIFY(arguments.at(0).toString().isEmpty());
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(2, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("pauseDownload"), calledMethods[1].methodName());
+    QCOMPARE(5, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[3].methodName());
 }
 
 void TestDownloadQueue::testPauseDownloadOtherReady()
@@ -163,13 +192,15 @@ void TestDownloadQueue::testPauseDownloadOtherReady()
     QCOMPARE(arguments.at(0).toString(), _second->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(2, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("pauseDownload"), calledMethods[1].methodName());
+    QCOMPARE(5, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
 
     calledMethods = _second->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
 
 void TestDownloadQueue::testResumeDownloadNoOtherPresent()
@@ -202,13 +233,18 @@ void TestDownloadQueue::testResumeDownloadNoOtherPresent()
     QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(3, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("pauseDownload"), calledMethods[1].methodName());
-    QCOMPARE(QString("resumeDownload"), calledMethods[2].methodName());
+    QCOMPARE(7, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[3].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[4].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[5].methodName());
+    QCOMPARE(QString("resumeDownload"), calledMethods[6].methodName());
 
     calledMethods = _second->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
 void TestDownloadQueue::testResumeDownloadOtherPresent()
@@ -241,13 +277,61 @@ void TestDownloadQueue::testResumeDownloadOtherPresent()
     QCOMPARE(arguments.at(0).toString(), _second->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(2, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("pauseDownload"), calledMethods[1].methodName());
+    QCOMPARE(6, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[3].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[4].methodName());
 
     calledMethods = _second->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
+    QCOMPARE(3, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[2].methodName());
+}
+
+void TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload()
+{
+    // add, start, pause, resume and assert that the same guy is used even when other paused
+    // downloads are present
+    _first->record();
+    _second->record();
+
+    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    _q->add(_first, _firstAdaptor);
+    _q->add(_second, _firstAdaptor);
+
+    // we do not download just yet
+    QVERIFY(_q->currentDownload().isEmpty());
+
+    _first->start();
+    _first->pause();
+    _first->setCanDownload(false);
+    _first->resume();
+
+    QCOMPARE(_q->currentDownload(), QString(""));
+
+    QCOMPARE(spy.count(), 3);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), _first->path());
+    arguments = spy.takeFirst();
+    QVERIFY(arguments.at(0).toString().isEmpty());
+    arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), QString(""));
+
+    QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(6, calledMethods.count()); // only canDownload start and pause
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[3].methodName());
+
+    calledMethods = _second->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[1].methodName());
 }
 
 void TestDownloadQueue::testCancelDownloadNoOtherReady()
@@ -276,9 +360,10 @@ void TestDownloadQueue::testCancelDownloadNoOtherReady()
     QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(2, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("cancelDownload"), calledMethods[1].methodName());
+    QCOMPARE(3, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("cancelDownload"), calledMethods[2].methodName());
 }
 
 void TestDownloadQueue::testCancelDownloadOtherReady()
@@ -312,13 +397,57 @@ void TestDownloadQueue::testCancelDownloadOtherReady()
     QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(3, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("cancelDownload"), calledMethods[2].methodName());
+
+    calledMethods = _second->calledMethods();
     QCOMPARE(2, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
-    QCOMPARE(QString("cancelDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+}
+
+void TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload()
+{
+    // start and cancel and assert the second one is not started
+    _first->record();
+    _second->setCanDownload(false);
+    _second->record();
+
+    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
+    _q->add(_first, _firstAdaptor);
+    _q->add(_second, _firstAdaptor);
+
+    // we do not download just yet
+    QVERIFY(_q->currentDownload().isEmpty());
+
+    _first->start();
+    _second->start();
+    _first->cancel();
+    QCOMPARE(_q->currentDownload(), QString(""));
+
+    QCOMPARE(changedSpy.count(), 2);
+    QCOMPARE(removedSpy.count(), 1);
+
+    QList<QVariant> arguments = changedSpy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), _first->path());
+    arguments = changedSpy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), QString(""));
+
+    arguments = removedSpy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(), _first->path());
+
+    QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(3, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+    QCOMPARE(QString("cancelDownload"), calledMethods[2].methodName());
 
     calledMethods = _second->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("startDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
 void TestDownloadQueue::testCancelDownloadNotStarted()

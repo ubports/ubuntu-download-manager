@@ -27,7 +27,7 @@ class DownloadQueuePrivate
 {
     Q_DECLARE_PUBLIC(DownloadQueue)
 public:
-    explicit DownloadQueuePrivate(DownloadQueue* parent);
+    explicit DownloadQueuePrivate(SystemNetworkInfo* networkInfo, DownloadQueue* parent);
 
     void add(Download* download, DownloadAdaptor* adaptor);
     void add(const QPair<Download*, DownloadAdaptor*>& value);
@@ -37,21 +37,28 @@ public:
     QStringList paths();
     QHash<QString, Download*> downloads();
 
-private:
     void onDownloadStateChanged();
+    void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
+
+private:
     void updateCurrentDownload();
 
 private:
     QString _current;
     DownloadList _downloads;  // quick for access
     QStringList _sortedPaths; // keep the order in witch the downloads have been added
+    SystemNetworkInfo* _networkInfo;
     DownloadQueue* q_ptr;
 };
 
-DownloadQueuePrivate::DownloadQueuePrivate(DownloadQueue* parent):
+DownloadQueuePrivate::DownloadQueuePrivate(SystemNetworkInfo* networkInfo, DownloadQueue* parent):
     _current(""),
+    _networkInfo(networkInfo),
     q_ptr(parent)
 {
+    Q_Q(DownloadQueue);
+    q->connect(_networkInfo, SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)),
+        q, SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
 }
 
 void DownloadQueuePrivate::add(Download* download, DownloadAdaptor* adaptor)
@@ -147,12 +154,19 @@ void DownloadQueuePrivate::onDownloadStateChanged()
     }
 }
 
+void DownloadQueuePrivate::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode)
+{
+    Q_UNUSED(mode);
+    updateCurrentDownload();
+}
+
 void DownloadQueuePrivate::updateCurrentDownload()
 {
     Q_Q(DownloadQueue);
 
     if (!_current.isEmpty())
     {
+        // check if it was canceled/finished
         Download* currentDownload = _downloads[_current].first;
         Download::State state = currentDownload->state();
         if (state == Download::CANCELED || state == Download::FINISHED)
@@ -160,9 +174,10 @@ void DownloadQueuePrivate::updateCurrentDownload()
             remove(_current);
             _current = "";
         }
-        else
-            // it was paused
+        else if (!currentDownload->canDownload() || state == Download::PAUSED)
             _current = "";
+        else
+            return;
     }
 
     // loop via the downloads and choose the first that is started or resumed
@@ -170,7 +185,7 @@ void DownloadQueuePrivate::updateCurrentDownload()
     {
         QPair<Download*, DownloadAdaptor*> pair = _downloads[path];
         Download::State state = pair.first->state();
-        if(state == Download::STARTED || state == Download::RESUMED)
+        if(pair.first->canDownload() && (state == Download::STARTED || state == Download::RESUMED))
         {
             _current = path;
             if (state == Download::STARTED)
@@ -189,9 +204,9 @@ void DownloadQueuePrivate::updateCurrentDownload()
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadQueue::DownloadQueue(QObject* parent) :
+DownloadQueue::DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent) :
     QObject(parent),
-    d_ptr(new DownloadQueuePrivate(this))
+    d_ptr(new DownloadQueuePrivate(networkInfo, this))
 {
 }
 

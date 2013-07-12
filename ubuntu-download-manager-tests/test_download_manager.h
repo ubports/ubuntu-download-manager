@@ -25,6 +25,7 @@
 #include "fake_dbus_connection.h"
 #include "fake_download_queue.h"
 #include "fake_uuid_factory.h"
+#include "fake_system_network_info.h"
 
 class TestDownloadManager : public QObject
 {
@@ -55,6 +56,7 @@ private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
 private:
+    FakeSystemNetworkInfo* _networkInfo;
     FakeDBusConnection* _conn;
     FakeDownloadQueue* _q;
     FakeUuidFactory* _uuidFactory;

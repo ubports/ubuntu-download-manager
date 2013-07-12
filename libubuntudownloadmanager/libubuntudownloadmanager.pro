@@ -8,33 +8,33 @@ TEMPLATE = lib
 DEFINES += APPDOWNLOADERLIB_LIBRARY
 
 SOURCES += \
+    dbus_connection.cpp \
     download.cpp \
+    download_adaptor.cpp \
     download_daemon.cpp \
     download_manager.cpp \
-    download_queue.cpp \
-    xdg_basedir.cpp \
-    request_factory.cpp \
-    network_reply.cpp \
-    system_network_info.cpp \
-    dbus_connection.cpp \
-    download_adaptor.cpp \
     download_manager_adaptor.cpp \
-    uuid_factory.cpp
+    download_queue.cpp \
+    network_reply.cpp \
+    request_factory.cpp \
+    system_network_info.cpp \
+    uuid_factory.cpp \
+    xdg_basedir.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
+    dbus_connection.h \
     download.h \
+    download_adaptor.h \
     download_daemon.h \
     download_manager.h \
+    download_manager_adaptor.h \
     download_queue.h \
-    xdg_basedir.h \
+    network_reply.h \
     request_factory.h \
     system_network_info.h \
-    network_reply.h \
-    dbus_connection.h \
-    download_adaptor.h \
-    download_manager_adaptor.h \
-    uuid_factory.h
+    uuid_factory.h \
+    xdg_basedir.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

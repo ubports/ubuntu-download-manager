@@ -26,6 +26,7 @@
 #include "download.h"
 #include "download_queue.h"
 #include "uuid_factory.h"
+#include "system_network_info.h"
 
 class DownloadManagerPrivate;
 class DownloadManager : public QObject
@@ -34,7 +35,7 @@ class DownloadManager : public QObject
     Q_DECLARE_PRIVATE(DownloadManager)
 public:
     explicit DownloadManager(DBusConnection* connection, QObject *parent = 0);
-    explicit DownloadManager(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory, QObject *parent = 0);
+    explicit DownloadManager(DBusConnection* connection, SystemNetworkInfo* networkInfo, DownloadQueue* queue, UuidFactory* uuidFactory, QObject *parent = 0);
     void loadPreviewsDownloads(const QString &path);
 
 public slots:

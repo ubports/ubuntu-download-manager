@@ -23,6 +23,7 @@
 #include <QPair>
 #include "download.h"
 #include "download_adaptor.h"
+#include "system_network_info.h"
 
 class DownloadQueuePrivate;
 class DownloadQueue : public QObject
@@ -30,7 +31,7 @@ class DownloadQueue : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadQueue)
 public:
-    explicit DownloadQueue(QObject* parent=0);
+    explicit DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent=0);
     
     virtual void add(Download* download, DownloadAdaptor* adaptor);
     virtual void add(const QPair<Download*, DownloadAdaptor*>& value);
@@ -40,7 +41,7 @@ public:
     QStringList paths();
     QHash<QString, Download*> downloads();
 
-Q_SIGNALS:
+signals:
     // signals raised when things happens within the q
     void currentChanged(QString path);
     void downloadAdded(QString path);
@@ -48,6 +49,7 @@ Q_SIGNALS:
 
 private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
+    Q_PRIVATE_SLOT(d_func(), void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
 private:
     DownloadQueuePrivate* d_ptr;

@@ -26,6 +26,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QUuid>
+#include "system_network_info.h"
 #include "request_factory.h"
 #include "app-downloader-lib_global.h"
 
@@ -47,9 +48,10 @@ public:
     };
 
     explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
+        const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
     explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam, QObject* parent=0);
+        const QVariantMap& metadata, const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam,
+        QObject* parent=0);
 
     // gets for internal state
     QUuid downloadId();
@@ -60,7 +62,7 @@ public:
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();
     QVariantMap headers();
-    bool canDownload();
+    virtual bool canDownload();
 
     // methods that do perform the download
     virtual void cancelDownload();
@@ -85,7 +87,7 @@ public slots:
     void resume();
     void start();
 
-Q_SIGNALS:
+signals:
     // signals that are exposed via dbus
     void canceled(bool success);
     void error(const QString& error);

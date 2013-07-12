@@ -27,15 +27,18 @@ TestDownloadManager::TestDownloadManager(QObject *parent) :
 void TestDownloadManager::init()
 {
     _conn = new FakeDBusConnection();
-    _q = new FakeDownloadQueue();
+    _networkInfo = new FakeSystemNetworkInfo();
+    _q = new FakeDownloadQueue(_networkInfo);
     _uuidFactory = new FakeUuidFactory();
-    _man = new DownloadManager(_conn, _q, _uuidFactory);
+    _man = new DownloadManager(_conn, _networkInfo, _q, _uuidFactory);
 }
 
 void TestDownloadManager::cleanup()
 {
     if (_conn != NULL)
         delete _conn;
+    if (_networkInfo)
+        delete _networkInfo;
     if (_q != NULL)
         delete _q;
     if (_uuidFactory)
@@ -235,7 +238,7 @@ void TestDownloadManager::testGetAllDownloads()
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _q, new UuidFactory());
+    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -277,7 +280,7 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _q, new UuidFactory());
+    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -347,7 +350,7 @@ void TestDownloadManager::testSetThrottleWithDownloads()
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _q, new UuidFactory());
+    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
 
     QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
     QVariantMap firstMetadata, firstHeaders, secondMetadata, secondHeaders, thirdMetadata, thirdHeaders;

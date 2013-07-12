@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QObject>
 #include <download.h>
+#include "fake_system_network_info.h"
 #include "fake_request_factory.h"
 #include "test_runner.h"
 
@@ -55,6 +56,8 @@ private slots:
     void testSetThrottle_data();
     void testSetGSMDownloadSame_data();
     void testSetGSMDownloadDiff_data();
+    void testCanDownloadGSM_data();
+    void testCanDownloadNoGSM_data();
 
     // accessor methods
     void testPath();
@@ -66,6 +69,8 @@ private slots:
     void testSetThrottle();
     void testSetGSMDownloadSame();
     void testSetGSMDownloadDiff();
+    void testCanDownloadGSM();
+    void testCanDownloadNoGSM();
 
     // dbus method tests
     void testCancel();
@@ -102,10 +107,12 @@ private:
     QString _path;
     QUrl _url;
     QCryptographicHash::Algorithm _algo;
+    FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
 
 };
 
+Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)
 DECLARE_TEST(TestDownload)
 
 #endif // TEST_APP_DOWNLOAD_H

@@ -16,21 +16,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_DOWNLOAD_QUEUE_H
-#define FAKE_DOWNLOAD_QUEUE_H
-#include <download_queue.h>
+#ifndef FAKE_SYSTEM_NETWORK_INFO_H
+#define FAKE_SYSTEM_NETWORK_INFO_H
+
+#include <QObject>
 #include <system_network_info.h>
 #include "fake.h"
 
-class FakeDownloadQueue : public DownloadQueue, public Fake
+class NetworkModeWrapper : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit NetworkModeWrapper(QNetworkInfo::NetworkMode mode, QObject *parent = 0);
+
+    QNetworkInfo::NetworkMode mode();
+    void setMode(QNetworkInfo::NetworkMode mode);
+
+private:
+    QNetworkInfo::NetworkMode _mode;
+};
+
+class FakeSystemNetworkInfo : public SystemNetworkInfo, public Fake
 {
     Q_OBJECT
 public:
-    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo, QObject *parent = 0);
+    explicit FakeSystemNetworkInfo(QObject *parent = 0);
+    
+    QNetworkInfo::NetworkMode currentNetworkMode() override;
 
-    void add(Download* download, DownloadAdaptor* adaptor) override;
-    void add(const QPair<Download*, DownloadAdaptor*>& value) override;
+    // getters and setters used to force the result
+    QNetworkInfo::NetworkMode mode();
+    void setMode(QNetworkInfo::NetworkMode mode);
 
+private:
+    QNetworkInfo::NetworkMode _mode;
 };
 
-#endif // FAKE_DOWNLOAD_QUEUE_H
+#endif // FAKE_SYSTEM_NETWORK_INFO_H

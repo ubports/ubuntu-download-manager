@@ -16,46 +16,51 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_download_queue.h"
+#include "fake_system_network_info.h"
 
-FakeDownloadQueue::FakeDownloadQueue(SystemNetworkInfo* networkInfo, QObject *parent) :
-    DownloadQueue(networkInfo, parent),
-    Fake()
+NetworkModeWrapper::NetworkModeWrapper(QNetworkInfo::NetworkMode mode, QObject *parent):
+    QObject(parent)
+{
+    _mode = mode;
+}
+
+QNetworkInfo::NetworkMode NetworkModeWrapper::mode()
+{
+    return _mode;
+}
+
+void NetworkModeWrapper::setMode(QNetworkInfo::NetworkMode mode)
+{
+    _mode = mode;
+}
+
+FakeSystemNetworkInfo::FakeSystemNetworkInfo(QObject *parent) :
+    SystemNetworkInfo(parent)
 {
 }
 
-void FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor)
+QNetworkInfo::NetworkMode FakeSystemNetworkInfo::currentNetworkMode()
 {
     if (_recording)
     {
         QList<QObject*> inParams;
-        inParams.append(download);
-        inParams.append(adaptor);
 
         QList<QObject*> outParams;
+        outParams.append(new NetworkModeWrapper(_mode, this));
 
         MethodParams params(inParams, outParams);
-
-        MethodData methodData("add", params);
+        MethodData methodData("currentNetworkMode", params);
         _called.append(methodData);
     }
-    DownloadQueue::add(download, adaptor);
+    return _mode;
 }
 
-void FakeDownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value)
+QNetworkInfo::NetworkMode FakeSystemNetworkInfo::mode()
 {
-    if (_recording)
-    {
-        QList<QObject*> inParams;
-        inParams.append(value.first);
-        inParams.append(value.second);
+    return _mode;
+}
 
-        QList<QObject*> outParams;
-
-        MethodParams params(inParams, outParams);
-
-        MethodData methodData("add", params);
-        _called.append(methodData);
-    }
-    DownloadQueue::add(value);
+void FakeSystemNetworkInfo::setMode(QNetworkInfo::NetworkMode mode)
+{
+    _mode = mode;
 }

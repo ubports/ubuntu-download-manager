@@ -19,15 +19,33 @@
 #include "fake_download.h"
 
 FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QVariantMap& headers, RequestFactory* nam, QObject* parent):
-        Download(id, path, url, metadata, headers, nam, parent)
+    const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+        Download(id, path, url, metadata, headers, networkInfo, nam, parent),
+        _canDownload(true)
 {
 }
 
 FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QVariantMap& headers, RequestFactory* nam, QObject* parent) :
-        Download(id, path, url, hash, algo, metadata, headers, nam, parent)
+        const QVariantMap& metadata, const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent) :
+        Download(id, path, url, hash, algo, metadata, headers, networkInfo, nam, parent),
+        _canDownload(true)
 {
+}
+
+bool FakeDownload::canDownload()
+{
+    if (_recording)
+    {
+        MethodData methodData;
+        methodData.setMethodName("canDownload");
+        _called.append(methodData);
+    }
+    return _canDownload;
+}
+
+void FakeDownload::setCanDownload(bool canDownload)
+{
+    _canDownload = canDownload;
 }
 
 void FakeDownload::setThrottle(uint speed)

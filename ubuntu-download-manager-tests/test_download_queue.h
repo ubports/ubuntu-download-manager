@@ -25,6 +25,7 @@
 #include "test_runner.h"
 #include "fake_download.h"
 #include "fake_request_factory.h"
+#include "fake_system_network_info.h"
 
 class TestDownloadQueue : public QObject
 {
@@ -40,16 +41,20 @@ private slots:
     void testAddDownload();
     void testStartDownloadWithNoCurrent();
     void testStartDownloadWithCurrent();
+    void testStartDownloadWithNoCurrentCannotDownload();
     void testPauseDownloadNoOtherReady();
     void testPauseDownloadOtherReady();
     void testResumeDownloadNoOtherPresent();
     void testResumeDownloadOtherPresent();
+    void testResumeDownloadNoOtherPresentCannotDownload();
     void testCancelDownloadNoOtherReady();
     void testCancelDownloadOtherReady();
+    void testCancelDownloadOtherReadyCannotDownload();
     void testCancelDownloadNotStarted();
     void testDownloads();
 
 private:
+    FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeDownload* _first;
     DownloadAdaptor* _firstAdaptor;

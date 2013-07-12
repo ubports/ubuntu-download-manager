@@ -21,6 +21,7 @@
 #include "download_adaptor.h"
 #include "download_queue.h"
 #include "download_manager.h"
+#include "system_network_info.h"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -31,8 +32,8 @@ class DownloadManagerPrivate
     Q_DECLARE_PUBLIC(DownloadManager)
 public:
     explicit DownloadManagerPrivate(DBusConnection* connection, DownloadManager* parent);
-    explicit DownloadManagerPrivate(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory,
-        DownloadManager* parent = 0);
+    explicit DownloadManagerPrivate(DBusConnection* connection, SystemNetworkInfo* networkInfo, DownloadQueue* queue,
+        UuidFactory* uuidFactory, DownloadManager* parent = 0);
 
 private:
 
@@ -53,6 +54,7 @@ private:
     static QString BASE_ACCOUNT_URL;
 
     uint _throttle;
+    SystemNetworkInfo* _networkInfo;
     DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
@@ -67,14 +69,16 @@ DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, Downl
     _conn(connection),
     q_ptr(parent)
 {
-    _downloadsQueue = new DownloadQueue();
+    _networkInfo = new SystemNetworkInfo();
+    _downloadsQueue = new DownloadQueue(_networkInfo);
     _uuidFactory = new UuidFactory();
     init();
 }
 
-DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory,
-    DownloadManager* parent):
+DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, SystemNetworkInfo* networkInfo, DownloadQueue* queue,
+    UuidFactory* uuidFactory, DownloadManager* parent):
         _throttle(0),
+        _networkInfo(networkInfo),
         _downloadsQueue(queue),
         _conn(connection),
         _uuidFactory(uuidFactory),
@@ -133,9 +137,9 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
     {
         Download* download;
         if (hash.isEmpty())
-            download = new Download(id, path, url, metadata, headers, _reqFactory);
+            download = new Download(id, path, url, metadata, headers, _networkInfo, _reqFactory);
         else
-            download = new Download(id, path, url, hash, algo, metadata, headers, _reqFactory);
+            download = new Download(id, path, url, hash, algo, metadata, headers, _networkInfo, _reqFactory);
 
         download->setThrottle(_throttle);
         DownloadAdaptor* adaptor = new DownloadAdaptor(download);
@@ -202,9 +206,10 @@ DownloadManager::DownloadManager(DBusConnection* connection, QObject* parent) :
 {
 }
 
-DownloadManager::DownloadManager(DBusConnection* connection, DownloadQueue* queue, UuidFactory* uuidFactory, QObject* parent) :
+DownloadManager::DownloadManager(DBusConnection* connection, SystemNetworkInfo* networkInfo,
+    DownloadQueue* queue, UuidFactory* uuidFactory, QObject* parent) :
     QObject(parent),
-    d_ptr(new DownloadManagerPrivate(connection, queue, uuidFactory, this))
+    d_ptr(new DownloadManagerPrivate(connection, networkInfo, queue, uuidFactory, this))
 {
 }
 
