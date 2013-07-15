@@ -18,7 +18,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -llibubuntudownloadmanager
+LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager

@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+
+DH_CMAKE_BUILD_DIR=obj-${DEB_BUILD_GNU_TYPE}
+
+%:
+	dh $@ --buildsystem qmake --fail-missing
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DLIB_SUFFIX=/$(DEB_HOST_MULTIARCH)
+
+override_dh_auto_test:
+	dh_auto_build -- check
+

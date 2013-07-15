@@ -52,7 +52,7 @@ HEADERS += \
     fake_uuid_factory.h \
     fake_system_network_info.h
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -llibubuntudownloadmanager
+LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager
