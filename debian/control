@@ -2,8 +2,9 @@ Source: ubuntu-download-manager
 Section: network
 Priority: extra
 Build-Depends:
- qt5-qmake,
  debhelper (>= 9),
+ cdbs,
+ qt5-qmake,
  qtbase5-dev,
  qtsystems5-dev
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
