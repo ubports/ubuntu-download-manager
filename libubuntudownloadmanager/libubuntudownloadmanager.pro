@@ -41,5 +41,5 @@ OTHER_FILES += \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml
 
-target.path = /usr/lib/ubuntu-download-manager
+target.path = /usr/lib/
 INSTALLS += target
