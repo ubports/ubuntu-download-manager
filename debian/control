@@ -1,0 +1,35 @@
+Source: ubuntu-download-manager
+Section: network
+Priority: extra
+Build-Depends:
+ debhelper (>= 9),
+ cdbs,
+ qt5-qmake,
+ qtbase5-dev,
+ qtsystems5-dev
+Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
+Standards-Version: 3.9.4
+
+Package: libubuntudownloadmanager
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}, multiarch-support
+Depends: ${misc:Depends},
+ ${shlibs:Depends}
+Description: Ubuntu Download Manager library
+ A library that allows to perform downloads from a centralized daemon.
+ .
+ This package includes the main library.
+
+
+Package: ubuntuone-credentials
+Section: network
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}, multiarch-support
+Depends: ${misc:Depends},
+ ${shlibs:Depends},
+ libubuntudownloadmanager (= ${binary:Version})
+Description: Ubuntu One authentication library - utility applications
+ Daemon that allows to perform downloads in a centralized location.

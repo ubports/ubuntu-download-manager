@@ -1,0 +1,5 @@
+ubuntu-download-manager (58.1-0ubuntu1) raring; urgency=low
+
+  * Initial release for ubuntu-download-manager
+
+ -- Manuel de la Pena <manuel.delapena@canonical.com>  Fri, 12 Jul 2013 16:47:46 +0200
