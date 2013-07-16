@@ -23,5 +23,5 @@ LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager
 
-target.path = /usr/bin/ubuntu-download-manager
+target.path = /usr/bin/
 INSTALLS += target

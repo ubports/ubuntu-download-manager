@@ -40,3 +40,5 @@ OTHER_FILES += \
     generate_adaptors.sh \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml
+
+INSTALLS += target
