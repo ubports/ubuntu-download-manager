@@ -42,9 +42,9 @@ private:
     void loadPreviewsDownloads(QString path);
     void onDownloadRemoved(QString path);
 
-    QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers);
+    QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, StringMap headers);
     QDBusObjectPath createDownloadWithHash(const QString& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QVariantMap& headers);
+        const QVariantMap& metadata, StringMap headers);
     qlonglong defaultThrottle();
     void setDefaultThrottle(qlonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
@@ -114,13 +114,13 @@ void DownloadManagerPrivate::onDownloadRemoved(QString path)
     _conn->unregisterObject(path);
 }
 
-QDBusObjectPath DownloadManagerPrivate::createDownload(const QString& url, const QVariantMap& metadata, const QVariantMap& headers)
+QDBusObjectPath DownloadManagerPrivate::createDownload(const QString& url, const QVariantMap& metadata, StringMap headers)
 {
     return createDownloadWithHash(url, "", QCryptographicHash::Md5, metadata, headers);
 }
 
 QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& url, const QString& hash,
-    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers)
+    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, StringMap headers)
 {
     Q_Q(DownloadManager);
 
@@ -219,7 +219,7 @@ void DownloadManager::loadPreviewsDownloads(const QString &path)
     d->loadPreviewsDownloads(path);
 }
 
-QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVariantMap &metadata, const QVariantMap &headers)
+QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVariantMap &metadata, StringMap headers)
 {
     Q_D(DownloadManager);
     return d->createDownload(url, metadata, headers);
@@ -238,7 +238,7 @@ void DownloadManager::setDefaultThrottle(qlonglong speed)
 }
 
 QDBusObjectPath DownloadManager::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
-        const QVariantMap &metadata, const QVariantMap &headers)
+        const QVariantMap &metadata, StringMap headers)
 {
     Q_D(DownloadManager);
     // lowercase the algorithm just in case

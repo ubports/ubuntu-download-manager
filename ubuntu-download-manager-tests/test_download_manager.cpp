@@ -69,9 +69,10 @@ void TestDownloadManager::testCreateDownload_data()
 {
     QTest::addColumn<QString>("url");
     QTest::addColumn<QVariantMap>("metadata");
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<StringMap>("headers");
 
-    QVariantMap firstMetadata, firstHeaders, secondHeaders, secondMetadata, thirdHeaders, thirdMetadata;
+    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
+    StringMap firstHeaders, secondHeaders, thirdHeaders;
 
     firstMetadata["command"] = "cp test.com";
     firstMetadata["download-type"] = "click";
@@ -102,7 +103,7 @@ void TestDownloadManager::testCreateDownload()
 {
     QFETCH(QString, url);
     QFETCH(QVariantMap, metadata);
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
     _q->record();
     _conn->record();
 
@@ -129,7 +130,7 @@ void TestDownloadManager::testCreateDownload()
         QCOMPARE(metadata[key], downloadMetadata[key]);
     }
 
-    QVariantMap downloadHeaders = download->headers();
+    QHash<QString, QString> downloadHeaders = download->headers();
 
     foreach(const QString& key, headers.keys())
     {
@@ -148,9 +149,10 @@ void TestDownloadManager::testCreateDownloadWithHash_data()
     QTest::addColumn<QString>("algo");
     QTest::addColumn<QString>("hash");
     QTest::addColumn<QVariantMap>("metadata");
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<StringMap>("headers");
 
-    QVariantMap firstMetadata, firstHeaders, secondHeaders, secondMetadata, thirdHeaders, thirdMetadata;
+    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
+    StringMap firstHeaders, secondHeaders, thirdHeaders;
 
     firstMetadata["command"] = "cp test.com";
     firstMetadata["download-type"] = "click";
@@ -183,7 +185,7 @@ void TestDownloadManager::testCreateDownloadWithHash()
     QFETCH(QString, algo);
     QFETCH(QString, hash);
     QFETCH(QVariantMap, metadata);
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
     _q->record();
     _conn->record();
 
@@ -213,7 +215,7 @@ void TestDownloadManager::testCreateDownloadWithHash()
         QCOMPARE(metadata[key], downloadMetadata[key]);
     }
 
-    QVariantMap downloadHeaders = download->headers();
+    StringMap downloadHeaders = download->headers();
 
     foreach(const QString& key, headers.keys())
     {
@@ -241,7 +243,8 @@ void TestDownloadManager::testGetAllDownloads()
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
-    QVariantMap firstMetadata, firstHeaders, secondMetadata, secondHeaders, thirdMetadata, thirdHeaders;
+    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
+    StringMap firstHeaders, secondHeaders, thirdHeaders;
 
     _man->createDownload(firstUrl, firstMetadata, firstHeaders);
     _man->createDownload(secondUrl, secondMetadata, secondHeaders);
@@ -283,7 +286,8 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
-    QVariantMap firstMetadata, firstHeaders, secondMetadata, secondHeaders, thirdMetadata, thirdHeaders;
+    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
+    StringMap firstHeaders, secondHeaders, thirdHeaders;
 
     firstMetadata["type"] = "first";
     secondMetadata["type"] = "second";
@@ -351,7 +355,8 @@ void TestDownloadManager::testSetThrottleWithDownloads()
     _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
 
     QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
-    QVariantMap firstMetadata, firstHeaders, secondMetadata, secondHeaders, thirdMetadata, thirdHeaders;
+    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
+    StringMap firstHeaders, secondHeaders, thirdHeaders;
 
     firstMetadata["type"] = "first";
     secondMetadata["type"] = "second";

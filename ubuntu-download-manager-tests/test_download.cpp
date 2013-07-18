@@ -817,10 +817,10 @@ void TestDownload::testOnHttpError()
 
 void TestDownload::testSetRawHeadersStart_data()
 {
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<QHash<QString, QString> >("headers");
 
     // create a number of headers to assert that thy are added in the request
-    QVariantMap first, second, third;
+    StringMap first, second, third;
 
     // add headers to be added except range
     first["Accept"] = "text/plain";
@@ -843,7 +843,7 @@ void TestDownload::testSetRawHeadersStart_data()
 
 void TestDownload::testSetRawHeadersStart()
 {
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, headers, _networkInfo, _reqFactory);
 
@@ -859,17 +859,17 @@ void TestDownload::testSetRawHeadersStart()
     {
         QByteArray headerName = header.toUtf8();
         QVERIFY(request.hasRawHeader(headerName));
-        QCOMPARE(headers[header].toByteArray(), request.rawHeader(headerName));
+        QCOMPARE(headers[header].toUtf8(), request.rawHeader(headerName));
     }
 
 }
 
 void TestDownload::testSetRawHeadersWithRangeStart_data()
 {
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<StringMap>("headers");
 
     // create a number of headers to assert that thy are added in the request
-    QVariantMap first, second, third;
+    StringMap first, second, third;
 
     // add headers to be added except range
     first["Accept"] = "text/plain";
@@ -896,7 +896,7 @@ void TestDownload::testSetRawHeadersWithRangeStart_data()
 void TestDownload::testSetRawHeadersWithRangeStart()
 {
     // similar to the previous test but we want to ensure that range is not set
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, headers, _networkInfo, _reqFactory);
 
@@ -914,10 +914,10 @@ void TestDownload::testSetRawHeadersWithRangeStart()
 void TestDownload::testSetRawHeadersResume_data()
 {
     // same as with start but we test that all the headers are added + the range one
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<StringMap>("headers");
 
     // create a number of headers to assert that thy are added in the request
-    QVariantMap first, second, third;
+    StringMap first, second, third;
 
     // add headers to be added except range
     first["Accept"] = "text/plain";
@@ -940,7 +940,7 @@ void TestDownload::testSetRawHeadersResume_data()
 
 void TestDownload::testSetRawHeadersResume()
 {
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
 
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, headers, _networkInfo, _reqFactory);
@@ -978,16 +978,16 @@ void TestDownload::testSetRawHeadersResume()
     {
         QByteArray headerName = header.toUtf8();
         QVERIFY(request.hasRawHeader(headerName));
-        QCOMPARE(headers[header].toByteArray(), request.rawHeader(headerName));
+        QCOMPARE(headers[header].toUtf8(), request.rawHeader(headerName));
     }
 }
 
 void TestDownload::testSetRawHeadersWithRangeResume_data()
 {
-    QTest::addColumn<QVariantMap>("headers");
+    QTest::addColumn<StringMap>("headers");
 
     // create a number of headers to assert that thy are added in the request
-    QVariantMap first, second, third;
+    StringMap first, second, third;
 
     // add headers to be added except range
     first["Accept"] = "text/plain";
@@ -1014,7 +1014,7 @@ void TestDownload::testSetRawHeadersWithRangeResume_data()
 void TestDownload::testSetRawHeadersWithRangeResume()
 {
     // same as the previous test but we assert that range is correctly set
-    QFETCH(QVariantMap, headers);
+    QFETCH(StringMap, headers);
 
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata, headers, _networkInfo, _reqFactory);
