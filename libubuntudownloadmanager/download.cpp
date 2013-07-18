@@ -52,9 +52,9 @@ class DownloadPrivate
     Q_DECLARE_PUBLIC(Download)
 public:
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent);
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
+        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
         SystemNetworkInfo* networkInfo, RequestFactory* nam,
         Download* parent);
     ~DownloadPrivate();
@@ -67,7 +67,7 @@ public:
     QString filePath();
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
-    QVariantMap headers() const;
+    QMap<QString, QString> headers() const;
     bool canDownload();
 
     // methods that do really perform the actions
@@ -119,7 +119,7 @@ private:
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     QVariantMap _metadata;
-    QVariantMap _headers;
+    QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _requestFactory;
     NetworkReply* _reply;
@@ -129,7 +129,7 @@ private:
 };
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
         _throttle(0),
@@ -149,7 +149,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
 }
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QVariantMap& headers,
+    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
     SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
@@ -318,13 +318,11 @@ QNetworkRequest DownloadPrivate::buildRequest()
     QNetworkRequest request = QNetworkRequest(_url);
     foreach(const QString& header, _headers.keys())
     {
-        QVariant data = _headers[header];
+        QString data = _headers[header];
         if (header.toLower() == "range")
             // do no add the range
             continue;
-
-        if (data.canConvert(QMetaType::QByteArray))
-            request.setRawHeader(header.toUtf8(), _headers[header].toByteArray());
+        request.setRawHeader(header.toUtf8(), _headers[header].toUtf8());
     }
     return request;
 }
@@ -366,7 +364,7 @@ QCryptographicHash::Algorithm DownloadPrivate::hashAlgorithm() const
     return _algo;
 }
 
-QVariantMap DownloadPrivate::headers() const
+QMap<QString, QString> DownloadPrivate::headers() const
 {
     return _headers;
 }
@@ -648,14 +646,14 @@ void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
  */
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
         QObject(parent),
         d_ptr(new DownloadPrivate(id, path, url, metadata, headers, networkInfo, nam, this))
 {
 }
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-    const QVariantMap& metadata, const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QVariantMap& metadata, const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
         QObject(parent),
         d_ptr(new DownloadPrivate(id, path, url, hash, algo, metadata, headers, networkInfo, nam, this))
 {
@@ -708,7 +706,7 @@ QCryptographicHash::Algorithm Download::hashAlgorithm()
     return d->hashAlgorithm();
 }
 
-QVariantMap Download::headers()
+QMap<QString, QString> Download::headers()
 {
     Q_D(Download);
     return d->headers();

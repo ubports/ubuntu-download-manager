@@ -19,14 +19,14 @@
 #include "fake_download.h"
 
 FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
         Download(id, path, url, metadata, headers, networkInfo, nam, parent),
         _canDownload(true)
 {
 }
 
 FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QVariantMap& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent) :
+        const QVariantMap& metadata, const QMap<QString ,QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent) :
         Download(id, path, url, hash, algo, metadata, headers, networkInfo, nam, parent),
         _canDownload(true)
 {
