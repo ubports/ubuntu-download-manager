@@ -13,9 +13,6 @@ QMAKE_CXXFLAGS += -std=c++0x -Werror
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TEMPLATE = app
-
-
 SOURCES += \
     fake.cpp \
     fake_dbus_connection.cpp \
@@ -56,3 +53,8 @@ LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager
+
+check.depends = $${TARGET}
+check.commands = LD_LIBRARY_PATH=$$PWD/../libubuntudownloadmanager ./$${TARGET}
+QMAKE_EXTRA_TARGETS += check
+
