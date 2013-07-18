@@ -302,18 +302,18 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
     // get the diff create downloads and theri paths so that we can assert that they are returned
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(3, calledMethods.count());
-    QList<Download*> downloads;
+    QList<QString> downloads;
     for(int index=0; index < calledMethods.count(); index++)
     {
         Download* download = (Download*) calledMethods[index].params().inParams()[0];
-        downloads << download;
+        downloads << download->path();
     }
 
     QList<QDBusObjectPath> filtered = _man->getAllDownloadsWithMetadata("type", "first");
 
     QCOMPARE(2, filtered.count());
-    QCOMPARE(filtered[0].path(), downloads[0]->path());
-    QCOMPARE(filtered[1].path(), downloads[2]->path());
+    QVERIFY(downloads.contains(filtered[0].path()));
+    QVERIFY(downloads.contains(filtered[1].path()));
 }
 
 void TestDownloadManager::testSetThrottleNotDownloads_data()
