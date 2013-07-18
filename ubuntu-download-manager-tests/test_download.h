@@ -103,7 +103,7 @@ private:
     QDir _testDir;
     QUuid _id;
     QVariantMap _metadata;
-    QHash<QString, QString> _headers;
+    QMap<QString, QString> _headers;
     QString _path;
     QUrl _url;
     QCryptographicHash::Algorithm _algo;

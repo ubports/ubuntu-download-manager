@@ -21,7 +21,7 @@
 #define APPDOWNLOADERLIB_GLOBAL_H
 
 #include <QtCore/qglobal.h>
-#include <QHash>
+#include <QMap>
 
 #if defined(APPDOWNLOADERLIB_LIBRARY)
 #  define APPDOWNLOADERLIBSHARED_EXPORT Q_DECL_EXPORT
@@ -31,4 +31,4 @@
 
 #endif // APPDOWNLOADERLIB_GLOBAL_H
 
-typedef QHash<QString, QString> StringMap;
+typedef QMap<QString, QString> StringMap;

@@ -22,16 +22,16 @@
 #include <system_network_info.h>
 #include "fake.h"
 
-typedef QHash<QString, QString> StringMap;
+typedef QMap<QString, QString> StringMap;
 
 class FakeDownload : public Download, public Fake
 {
     Q_OBJECT
 public:
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QHash<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QHash<QString, QString> &headers,
+        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString> &headers,
         SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
 
     bool canDownload() override;

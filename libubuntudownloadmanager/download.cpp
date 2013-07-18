@@ -52,9 +52,9 @@ class DownloadPrivate
     Q_DECLARE_PUBLIC(Download)
 public:
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QHash<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent);
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QHash<QString, QString>& headers,
+        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
         SystemNetworkInfo* networkInfo, RequestFactory* nam,
         Download* parent);
     ~DownloadPrivate();
@@ -67,7 +67,7 @@ public:
     QString filePath();
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
-    QHash<QString, QString> headers() const;
+    QMap<QString, QString> headers() const;
     bool canDownload();
 
     // methods that do really perform the actions
@@ -119,7 +119,7 @@ private:
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     QVariantMap _metadata;
-    QHash<QString, QString> _headers;
+    QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _requestFactory;
     NetworkReply* _reply;
@@ -129,7 +129,7 @@ private:
 };
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QHash<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
         _throttle(0),
@@ -149,7 +149,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
 }
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QHash<QString, QString>& headers,
+    QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
     SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
         _id(id),
         _totalSize(0),
@@ -364,7 +364,7 @@ QCryptographicHash::Algorithm DownloadPrivate::hashAlgorithm() const
     return _algo;
 }
 
-QHash<QString, QString> DownloadPrivate::headers() const
+QMap<QString, QString> DownloadPrivate::headers() const
 {
     return _headers;
 }
@@ -646,14 +646,14 @@ void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
  */
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QHash<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
         QObject(parent),
         d_ptr(new DownloadPrivate(id, path, url, metadata, headers, networkInfo, nam, this))
 {
 }
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-    const QVariantMap& metadata, const QHash<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QVariantMap& metadata, const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
         QObject(parent),
         d_ptr(new DownloadPrivate(id, path, url, hash, algo, metadata, headers, networkInfo, nam, this))
 {
@@ -706,7 +706,7 @@ QCryptographicHash::Algorithm Download::hashAlgorithm()
     return d->hashAlgorithm();
 }
 
-QHash<QString, QString> Download::headers()
+QMap<QString, QString> Download::headers()
 {
     Q_D(Download);
     return d->headers();

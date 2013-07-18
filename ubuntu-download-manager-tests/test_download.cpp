@@ -817,7 +817,7 @@ void TestDownload::testOnHttpError()
 
 void TestDownload::testSetRawHeadersStart_data()
 {
-    QTest::addColumn<QHash<QString, QString> >("headers");
+    QTest::addColumn<QMap<QString, QString> >("headers");
 
     // create a number of headers to assert that thy are added in the request
     StringMap first, second, third;

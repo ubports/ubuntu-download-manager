@@ -130,7 +130,7 @@ void TestDownloadManager::testCreateDownload()
         QCOMPARE(metadata[key], downloadMetadata[key]);
     }
 
-    QHash<QString, QString> downloadHeaders = download->headers();
+    QMap<QString, QString> downloadHeaders = download->headers();
 
     foreach(const QString& key, headers.keys())
     {
