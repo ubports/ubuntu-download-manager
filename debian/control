@@ -24,17 +24,6 @@ Description: Ubuntu Download Manager - shared library
  .
  This package includes the shared library.
 
-Package: libubuntudownloadmanager-dev
-Section: libdevel
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         libubuntudownloadmanager1 (= ${binary:Version}),
-Description: Ubuntu Download Manager - development files
- A library that allows to perform downloads from a centralized daemon.
- .
- This package includes the development files.
-
 Package: ubuntu-download-manager
 Section: net
 Architecture: any
