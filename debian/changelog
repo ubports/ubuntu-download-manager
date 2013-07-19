@@ -1,8 +1,16 @@
-ubuntu-download-manager (0.2-0ubuntu2) UNRELEASED; urgency=low
+ubuntu-download-manager (0.2+13.10.20130719.2-0ubuntu1) saucy; urgency=low
 
+  [ Ken VanDine ]
   * Automatic snapshot from revision 70 (bootstrap)
 
- -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Jul 2013 09:44:15 -0400
+  [ Manuel de la Pena ]
+  * Pump version number.
+  * Removed not needed LICENSE file.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 73
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 19 Jul 2013 16:43:21 +0000
 
 ubuntu-download-manager (0.2-0ubuntu1) saucy; urgency=low
 
