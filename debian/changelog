@@ -1,6 +1,6 @@
 ubuntu-download-manager (0.2-0ubuntu2) UNRELEASED; urgency=low
 
- * Automatic snapshot from revision 70 (bootstrap)
+  * Automatic snapshot from revision 70 (bootstrap)
 
  -- Ken VanDine <ken.vandine@canonical.com>  Fri, 19 Jul 2013 09:44:15 -0400
 
