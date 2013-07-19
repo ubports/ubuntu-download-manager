@@ -1,6 +1,6 @@
 Source: ubuntu-download-manager
 Section: net
-Priority: extra
+Priority: optional
 Build-Depends: debhelper (>= 9),
                qt5-qmake,
                qt5-default,
