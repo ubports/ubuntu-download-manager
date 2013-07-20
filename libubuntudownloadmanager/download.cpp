@@ -92,7 +92,7 @@ public:
     void start();
 
     // slots executed to keep track of the newtork reply
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onDownloadProgress(qint64 progress, qint64 bytesTotal);
     void onError(QNetworkReply::NetworkError code);
     void onFinished();
     void onSslErrors(const QList<QSslError>& errors);
@@ -186,6 +186,7 @@ void DownloadPrivate::init()
     QStringList pathComponents;
     pathComponents << "download_manager" << _id.toString();
     _localPath = XDGBasedir::saveDataPath(pathComponents);
+    qDebug() << "File will be downloaded to" << _localPath;
 
     _reply = NULL;
     _currentData = NULL;
@@ -316,6 +317,7 @@ void DownloadPrivate::cleanUpCurrentData()
 
 QNetworkRequest DownloadPrivate::buildRequest()
 {
+    qDebug() << "Building request for " << _url;
     QNetworkRequest request = QNetworkRequest(_url);
     foreach(const QString& header, _headers.keys())
     {
@@ -402,6 +404,7 @@ bool DownloadPrivate::canDownload()
 void DownloadPrivate::cancelDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
@@ -420,14 +423,18 @@ void DownloadPrivate::cancelDownload()
 void DownloadPrivate::pauseDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply == NULL)
     {
         // cannot pause because is not running
+        qDebug() << "Cannot pause download because reply is NULL";
+        qDebug() << "EMIT paused(false)";
         emit q->paused(false);
         return;
     }
 
+    qDebug() << "Pausing download.";
     // we need to disconnect the signals to ensure that they are not emitted due
     // to the operation we are going to perform. We read the data in the reply and
     // store it in a file
@@ -438,21 +445,25 @@ void DownloadPrivate::pauseDownload()
     _currentData->write(_reply->readAll());
     _reply->deleteLater();
     _reply = NULL;
+    qDebug() << "EMIT paused(true)";
     emit q->paused(true);
 }
 
 void DownloadPrivate::resumeDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
         // cannot resume because it is already running
+        qDebug() << "Cannot resume download because reply != NULL";
+        qDebug() << "EMIT resumed(false)";
         emit q->resumed(false);
         return;
     }
 
-
+    qDebug() << "Resuming download.";
     QNetworkRequest request = buildRequest();
 
     // overrides the range header, we do not let clients set the range!!!
@@ -465,20 +476,25 @@ void DownloadPrivate::resumeDownload()
 
     connectToReplySignals();
 
+    qDebug() << "EMIT resumed(true)";
     emit q->resumed(true);
 }
 
 void DownloadPrivate::startDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
         // the download was already started, lets say that we did it
+        qDebug() << "Cannot start download because reply != NULL";
+        qDebug() << "EMIT started(false)";
         emit q->started(true);
         return;
     }
 
+    qDebug() << "Starting download.";
     // create file that will be used to mantain the state of the download when resumed.
     // TODO: Use a better name
     _currentData = new QFile(saveFileName());
@@ -489,6 +505,7 @@ void DownloadPrivate::startDownload()
     _reply->setReadBufferSize(_throttle);
 
     connectToReplySignals();
+    qDebug() << "EMIT started(true)";
     emit q->started(true);
 }
 
@@ -517,6 +534,8 @@ qlonglong DownloadPrivate::totalSize()
 
 void DownloadPrivate::setThrottle(qlonglong speed)
 {
+    qDebug() << __FUNCTION__ << _url;
+
     _throttle = speed;
     if (_reply != NULL)
         _reply->setReadBufferSize(_throttle);
@@ -574,9 +593,10 @@ void DownloadPrivate::start()
     emit q->stateChanged();
 }
 
-void DownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
+void DownloadPrivate::onDownloadProgress(qint64 progress, qint64 bytesTotal)
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url << progress << bytesTotal;
 
     // do write the current info we have just in case
     _currentData->write(_reply->readAll());
@@ -586,6 +606,7 @@ void DownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
     {
         if (_totalSize == 0)
         {
+            qDebug() << "Updating total size" << bytesTotal;
             // bytesTotal is different when we have resumed because we are not counting the size that
             // we already downloaded, therefore we only do this once
             _totalSize = bytesTotal;
@@ -594,6 +615,7 @@ void DownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
         }
         qint64 received = _currentData->size();
 
+        qDebug() << "EMIT progress" << received << _totalSize;
         emit q->progress(received, _totalSize);
     }
 }
@@ -614,6 +636,7 @@ void DownloadPrivate::onError(QNetworkReply::NetworkError code)
 void DownloadPrivate::onFinished()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     // if the hash is present we check it
     if (!_hash.isEmpty())
@@ -632,7 +655,9 @@ void DownloadPrivate::onFinished()
         }
     }
     _state = Download::FINISHED;
+    qDebug() << "EMIT stateChanged";
     emit q->stateChanged();
+    qDebug() << "EMIT finished" << filePath();
     emit q->finished(filePath());
     _reply->deleteLater();
     _reply = NULL;
@@ -641,6 +666,7 @@ void DownloadPrivate::onFinished()
 
 void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
 {
+    qDebug() << __FUNCTION__ << _url;
     // TODO: emit ssl errors signal?
     Q_UNUSED(errors);
     Q_Q(Download);
