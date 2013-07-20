@@ -27,7 +27,7 @@
 #include "download_queue.h"
 #include "uuid_factory.h"
 #include "system_network_info.h"
-#include "app-downloader-lib_global.h"
+#include "metatypes.h"
 
 class DownloadManagerPrivate;
 class DownloadManager : public QObject

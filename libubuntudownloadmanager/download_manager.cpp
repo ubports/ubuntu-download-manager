@@ -90,6 +90,10 @@ DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, Syste
 void DownloadManagerPrivate::init()
 {
     Q_Q(DownloadManager);
+
+    // register the required types
+    qDBusRegisterMetaType<StringMap>();
+
     q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
         q, SLOT(onDownloadRemoved(QString)));
 

@@ -34,7 +34,8 @@ HEADERS +=\
     request_factory.h \
     system_network_info.h \
     uuid_factory.h \
-    xdg_basedir.h
+    xdg_basedir.h \
+    metatypes.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

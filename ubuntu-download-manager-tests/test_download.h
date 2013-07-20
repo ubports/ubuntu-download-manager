@@ -22,6 +22,7 @@
 #include <QDir>
 #include <QObject>
 #include <download.h>
+#include <metatypes.h>
 #include "fake_system_network_info.h"
 #include "fake_request_factory.h"
 #include "test_runner.h"
