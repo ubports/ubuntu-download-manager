@@ -35,8 +35,8 @@ public:
 
     bool canDownload() override;
     void setCanDownload(bool canDownload);
-    void setThrottle(qlonglong speed) override;
-    qlonglong throttle() override;
+    void setThrottle(qulonglong speed) override;
+    qulonglong throttle() override;
     void cancelDownload() override;
     void pauseDownload() override;
     void resumeDownload() override;
