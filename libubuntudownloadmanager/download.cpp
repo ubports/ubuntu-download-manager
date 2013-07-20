@@ -64,6 +64,7 @@ public:
     QString path() const;
     QUrl url() const;
     Download::State state();
+    void setState(Download::State state);
     QString filePath();
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
@@ -345,6 +346,11 @@ QUrl DownloadPrivate::url() const
 Download::State DownloadPrivate::state()
 {
     return _state;
+}
+
+void DownloadPrivate::setState(Download::State state)
+{
+    _state = state;
 }
 
 QString DownloadPrivate::filePath()
@@ -686,6 +692,12 @@ Download::State Download::state()
 {
     Q_D(Download);
     return d->state();
+}
+
+void Download::setState(Download::State state)
+{
+    Q_D(Download);
+    d->setState(state);
 }
 
 QString Download::filePath()

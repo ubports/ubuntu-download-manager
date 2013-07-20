@@ -114,3 +114,10 @@ void FakeDownload::startDownload()
     }
 }
 
+void FakeDownload::emitFinished(const QString& path)
+{
+    setState(Download::FINISHED);
+    emit stateChanged();
+    emit finished(path);
+}
+

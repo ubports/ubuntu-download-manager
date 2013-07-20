@@ -41,6 +41,9 @@ public:
     void pauseDownload() override;
     void resumeDownload() override;
     void startDownload() override;
+
+    // useful methods to emit signals
+    void emitFinished(const QString& path);
     
 private:
     bool _canDownload;
