@@ -320,10 +320,10 @@ void TestDownloadManager::testSetThrottleNotDownloads_data()
 {
     QTest::addColumn<qulonglong>("speed");
 
-    QTest::newRow("First row") << 200LL;
-    QTest::newRow("Second row") << 1212LL;
-    QTest::newRow("Third row") << 998LL;
-    QTest::newRow("Last row") << 60LL;
+    QTest::newRow("First row") << 200ULL;
+    QTest::newRow("Second row") << 1212ULL;
+    QTest::newRow("Third row") << 998ULL;
+    QTest::newRow("Last row") << 60ULL;
 }
 
 void TestDownloadManager::testSetThrottleNotDownloads()
@@ -337,10 +337,10 @@ void TestDownloadManager::testSetThrottleWithDownloads_data()
 {
     QTest::addColumn<qulonglong>("speed");
 
-    QTest::newRow("First row") << 200LL;
-    QTest::newRow("Second row") << 1212LL;
-    QTest::newRow("Third row") << 998LL;
-    QTest::newRow("Last row") << 60LL;
+    QTest::newRow("First row") << 200ULL;
+    QTest::newRow("Second row") << 1212ULL;
+    QTest::newRow("Third row") << 998ULL;
+    QTest::newRow("Last row") << 60ULL;
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads()
