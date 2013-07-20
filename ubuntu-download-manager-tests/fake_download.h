@@ -20,9 +20,8 @@
 #define FAKE_DOWNLOAD_H
 #include <download.h>
 #include <system_network_info.h>
+#include <metatypes.h>
 #include "fake.h"
-
-typedef QMap<QString, QString> StringMap;
 
 class FakeDownload : public Download, public Fake
 {
