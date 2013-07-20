@@ -58,6 +58,7 @@ public:
     QString path();
     QUrl url();
     Download::State state();
+    void setState(Download::State state);
     QString filePath();
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();

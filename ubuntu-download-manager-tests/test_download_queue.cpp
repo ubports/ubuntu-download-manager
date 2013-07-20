@@ -478,3 +478,26 @@ void TestDownloadQueue::testDownloads()
     QCOMPARE(downloads[_first->path()], _first);
     QCOMPARE(downloads[_second->path()], _second);
 }
+
+void TestDownloadQueue::testDownloadFinishedOtherReady()
+{
+    _first->record();
+    _second->record();
+
+    _q->add(_first, _firstAdaptor);
+    _q->add(_second, _firstAdaptor);
+
+    _first->start();
+    _second->start();
+    _first->emitFinished("");
+
+    QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+
+    calledMethods = _second->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+}

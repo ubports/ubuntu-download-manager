@@ -145,7 +145,7 @@ void DownloadQueuePrivate::onDownloadStateChanged()
             break;
         case Download::FINISHED:
             // remove the registered object in dbus, remove the download and the adapter from the list
-            if (_current.isEmpty() && _current == sender->path())
+            if (!_current.isEmpty() && _current == sender->path())
                 updateCurrentDownload();
             break;
         default:

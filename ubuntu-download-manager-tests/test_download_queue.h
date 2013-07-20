@@ -52,6 +52,7 @@ private slots:
     void testCancelDownloadOtherReadyCannotDownload();
     void testCancelDownloadNotStarted();
     void testDownloads();
+    void testDownloadFinishedOtherReady();
 
 private:
     FakeSystemNetworkInfo* _networkInfo;
