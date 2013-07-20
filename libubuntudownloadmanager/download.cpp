@@ -80,10 +80,10 @@ public:
 
     // plublic slots used by public implementation
     QVariantMap metadata();
-    qlonglong progress();
-    qlonglong totalSize();
-    void setThrottle(qlonglong speed);
-    qlonglong throttle();
+    qulonglong progress();
+    qulonglong totalSize();
+    void setThrottle(qulonglong speed);
+    qulonglong throttle();
     void allowGSMDownload(bool allowed);
     bool isGSMDownloadAllowed();
     void cancel();
@@ -110,8 +110,8 @@ private:
 
 private:
     QUuid _id;
-    qlonglong _totalSize;
-    qlonglong _throttle;
+    qulonglong _totalSize;
+    qulonglong _throttle;
     bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
@@ -522,17 +522,17 @@ QVariantMap DownloadPrivate::metadata()
     return _metadata;
 }
 
-qlonglong DownloadPrivate::progress()
+qulonglong DownloadPrivate::progress()
 {
     return (_currentData == NULL)?0:_currentData->size();
 }
 
-qlonglong DownloadPrivate::totalSize()
+qulonglong DownloadPrivate::totalSize()
 {
     return _totalSize;
 }
 
-void DownloadPrivate::setThrottle(qlonglong speed)
+void DownloadPrivate::setThrottle(qulonglong speed)
 {
     qDebug() << __FUNCTION__ << _url;
 
@@ -541,7 +541,7 @@ void DownloadPrivate::setThrottle(qlonglong speed)
         _reply->setReadBufferSize(_throttle);
 }
 
-qlonglong DownloadPrivate::throttle()
+qulonglong DownloadPrivate::throttle()
 {
     return _throttle;
 }
@@ -609,11 +609,12 @@ void DownloadPrivate::onDownloadProgress(qint64 progress, qint64 bytesTotal)
             qDebug() << "Updating total size" << bytesTotal;
             // bytesTotal is different when we have resumed because we are not counting the size that
             // we already downloaded, therefore we only do this once
-            _totalSize = bytesTotal;
+            qlonglong uBytestTotal = bytesTotal;
+            _totalSize = uBytestTotal;
             // update the metadata
             storeMetadata();
         }
-        qint64 received = _currentData->size();
+        qulonglong received = _currentData->size();
 
         qDebug() << "EMIT progress" << received << _totalSize;
         emit q->progress(received, _totalSize);
@@ -798,25 +799,25 @@ QVariantMap Download::metadata()
     return d->metadata();
 }
 
-qlonglong Download::progress()
+qulonglong Download::progress()
 {
     Q_D(Download);
     return d->progress();
 }
 
-qlonglong Download::totalSize()
+qulonglong Download::totalSize()
 {
     Q_D(Download);
     return d->totalSize();
 }
 
-void Download::setThrottle(qlonglong speed)
+void Download::setThrottle(qulonglong speed)
 {
     Q_D(Download);
     return d->setThrottle(speed);
 }
 
-qlonglong Download::throttle()
+qulonglong Download::throttle()
 {
     Q_D(Download);
     return d->throttle();

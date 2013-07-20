@@ -318,7 +318,7 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
 
 void TestDownloadManager::testSetThrottleNotDownloads_data()
 {
-    QTest::addColumn<qlonglong>("speed");
+    QTest::addColumn<qulonglong>("speed");
 
     QTest::newRow("First row") << 200LL;
     QTest::newRow("Second row") << 1212LL;
@@ -328,14 +328,14 @@ void TestDownloadManager::testSetThrottleNotDownloads_data()
 
 void TestDownloadManager::testSetThrottleNotDownloads()
 {
-    QFETCH(qlonglong, speed);
+    QFETCH(qulonglong, speed);
     _man->setDefaultThrottle(speed);
     QCOMPARE(_man->defaultThrottle(), speed);
 }
 
 void TestDownloadManager::testSetThrottleWithDownloads_data()
 {
-    QTest::addColumn<qlonglong>("speed");
+    QTest::addColumn<qulonglong>("speed");
 
     QTest::newRow("First row") << 200LL;
     QTest::newRow("Second row") << 1212LL;
@@ -345,7 +345,7 @@ void TestDownloadManager::testSetThrottleWithDownloads_data()
 
 void TestDownloadManager::testSetThrottleWithDownloads()
 {
-    QFETCH(qlonglong, speed);
+    QFETCH(qulonglong, speed);
 
     // add a number of downloads and assert that we do set their throttle limit
     if (_man)

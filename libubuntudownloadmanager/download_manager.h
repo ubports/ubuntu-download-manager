@@ -43,8 +43,8 @@ public slots:
     QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, StringMap headers);
     QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
         const QVariantMap &metadata, StringMap headers);
-    qlonglong defaultThrottle();
-    void setDefaultThrottle(qlonglong speed);
+    qulonglong defaultThrottle();
+    void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name, const QString& value);
 
