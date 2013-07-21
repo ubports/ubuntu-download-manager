@@ -25,6 +25,7 @@
 #include <metatypes.h>
 #include "fake_system_network_info.h"
 #include "fake_request_factory.h"
+#include "fake_process_factory.h"
 #include "test_runner.h"
 
 class TestDownload: public QObject
@@ -60,6 +61,9 @@ private slots:
     void testSetGSMDownloadDiff_data();
     void testCanDownloadGSM_data();
     void testCanDownloadNoGSM_data();
+    void testProcessExecutedNoParams_data();
+    void testProcessExecutedWithParams_data();
+    void testProcessExecutedWithParamsFile_data();
 
     // accessor methods
     void testPath();
@@ -99,6 +103,11 @@ private slots:
     void testSetRawHeadersResume();
     void testSetRawHeadersWithRangeResume();
 
+    // process related tests
+    void testProcessExecutedNoParams();
+    void testProcessExecutedWithParams();
+    void testProcessExecutedWithParamsFile();
+
 private:
     bool removeDir(const QString& dirName);
 
@@ -112,6 +121,7 @@ private:
     QCryptographicHash::Algorithm _algo;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
+    FakeProcessFactory* _processFactory;
 
 };
 

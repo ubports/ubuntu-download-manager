@@ -29,7 +29,9 @@ SOURCES += \
     test_xdg_basedir.cpp \
     fake_download_queue.cpp \
     fake_uuid_factory.cpp \
-    fake_system_network_info.cpp
+    fake_system_network_info.cpp \
+    fake_process.cpp \
+    fake_process_factory.cpp
 
 HEADERS += \
     fake.h \
@@ -47,7 +49,9 @@ HEADERS += \
     test_xdg_basedir.h \
     fake_download_queue.h \
     fake_uuid_factory.h \
-    fake_system_network_info.h
+    fake_system_network_info.h \
+    fake_process.h \
+    fake_process_factory.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 
