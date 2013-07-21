@@ -264,7 +264,7 @@ void TestDownload::testProgressNotKnownSize()
     QFETCH(int, total);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory);
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
