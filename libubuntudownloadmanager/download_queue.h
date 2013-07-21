@@ -49,6 +49,7 @@ signals:
 
 private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
+    Q_PRIVATE_SLOT(d_func(), void onDestroyed(const QString& path))
     Q_PRIVATE_SLOT(d_func(), void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
 private:
