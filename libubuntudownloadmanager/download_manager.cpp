@@ -18,6 +18,7 @@
 
 #include <QRegExp>
 #include "request_factory.h"
+#include "process_factory.h"
 #include "download_adaptor.h"
 #include "download_queue.h"
 #include "download_manager.h"
@@ -58,6 +59,7 @@ private:
     DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
     RequestFactory* _reqFactory;
+    ProcessFactory* _processFactory;
     UuidFactory* _uuidFactory;
     DownloadManager* q_ptr;
 };
@@ -98,6 +100,7 @@ void DownloadManagerPrivate::init()
         q, SLOT(onDownloadRemoved(QString)));
 
     _reqFactory = new RequestFactory();
+    _processFactory = new ProcessFactory();
 }
 
 void DownloadManagerPrivate::addDownload(Download* download)
@@ -141,9 +144,9 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
     {
         Download* download;
         if (hash.isEmpty())
-            download = new Download(id, path, url, metadata, headers, _networkInfo, _reqFactory);
+            download = new Download(id, path, url, metadata, headers, _networkInfo, _reqFactory, _processFactory);
         else
-            download = new Download(id, path, url, hash, algo, metadata, headers, _networkInfo, _reqFactory);
+            download = new Download(id, path, url, hash, algo, metadata, headers, _networkInfo, _reqFactory, _processFactory);
 
         download->setThrottle(_throttle);
         DownloadAdaptor* adaptor = new DownloadAdaptor(download);

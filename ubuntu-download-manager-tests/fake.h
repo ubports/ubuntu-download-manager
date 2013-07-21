@@ -22,6 +22,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QStringList>
 
 
 class BoolWrapper : public QObject
@@ -51,6 +52,20 @@ private:
     QString _value;
 };
 
+
+class StringListWrapper : public QObject
+{
+    Q_OBJECT
+
+public:
+    StringListWrapper(const QStringList& list, QObject* parent=0);
+
+    QStringList value();
+    void setValue(const QStringList& value);
+
+private:
+    QStringList _value;
+};
 
 class UintWrapper : public QObject
 {
