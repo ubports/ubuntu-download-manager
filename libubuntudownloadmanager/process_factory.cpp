@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,32 +16,48 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_NETWORK_REPLY_H
-#define FAKE_NETWORK_REPLY_H
+#include "process_factory.h"
 
-#include <QObject>
-#include <network_reply.h>
-#include "fake.h"
+/*
+ * PRIVATE IMPLEMENTATION
+ */
 
-class FakeNetworkReply : public NetworkReply, public Fake
+class ProcessFactoryPrivate
 {
-    Q_OBJECT
+    Q_DECLARE_PUBLIC(ProcessFactory)
 public:
-    explicit FakeNetworkReply(QObject *parent = 0);
+    explicit ProcessFactoryPrivate(ProcessFactory* parent);
 
-    // access methods
-    QByteArray data();
-    void setData(QByteArray data);
-
-    // fake methods
-
-    QByteArray readAll() override;
-    void abort() override;
-    void setReadBufferSize(uint size) override;
-    void emitFinished();
+    Process* createProcess();
 
 private:
-    QByteArray _data;
+    ProcessFactory* q_ptr;
+
 };
 
-#endif // FAKE_NETWORK_REPLY_H
+
+ProcessFactoryPrivate::ProcessFactoryPrivate(ProcessFactory* parent):
+    q_ptr(parent)
+{
+}
+
+Process* ProcessFactoryPrivate::createProcess()
+{
+    return new Process();
+}
+
+/*
+ * PUBLIC IMPLEMENTATION
+ */
+
+ProcessFactory::ProcessFactory(QObject *parent) :
+    QObject(parent),
+    d_ptr(new ProcessFactoryPrivate(this))
+{
+}
+
+Process* ProcessFactory::createProcess()
+{
+    Q_D(ProcessFactory);
+    return d->createProcess();
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,32 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_NETWORK_REPLY_H
-#define FAKE_NETWORK_REPLY_H
+#ifndef DOWNLOADER_LIB_PROCESS_FACTORY_H
+#define DOWNLOADER_LIB_PROCESS_FACTORY_H
 
 #include <QObject>
-#include <network_reply.h>
-#include "fake.h"
+#include "process.h"
 
-class FakeNetworkReply : public NetworkReply, public Fake
+class ProcessFactoryPrivate;
+class ProcessFactory : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(ProcessFactory)
+
 public:
-    explicit FakeNetworkReply(QObject *parent = 0);
+    explicit ProcessFactory(QObject *parent = 0);
 
-    // access methods
-    QByteArray data();
-    void setData(QByteArray data);
-
-    // fake methods
-
-    QByteArray readAll() override;
-    void abort() override;
-    void setReadBufferSize(uint size) override;
-    void emitFinished();
+    virtual Process* createProcess();
 
 private:
-    QByteArray _data;
+    // use pimpl so that we can mantains ABI compatibility
+    ProcessFactoryPrivate* d_ptr;
 };
 
-#endif // FAKE_NETWORK_REPLY_H
+#endif
