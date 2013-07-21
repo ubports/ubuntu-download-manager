@@ -22,6 +22,7 @@
 #include <QSignalSpy>
 #include <QSslError>
 #include "fake_network_reply.h"
+#include "fake_process.h"
 #include "test_download.h"
 
 TestDownload::TestDownload(QObject* parent) :
@@ -1054,50 +1055,162 @@ void TestDownload::testSetRawHeadersWithRangeResume()
 
 void TestDownload::testProcessExecutedNoParams_data()
 {
-    QTest::addColumn<QVariantMap>("headers");
-
-    // create a number of headers to assert that thy are added in the request
+    QTest::addColumn<QString>("command");
+    QTest::addColumn<QVariantMap>("metadata");
     QVariantMap first, second, third;
+    QStringList firstCommand, secondCommand, thirdCommand;
 
-    // add headers to be added except range
-    first["Accept"] = "text/plain";
+    firstCommand << "touch";
+    first["post-download-command"] = firstCommand;
 
-    QTest::newRow("First row") << first;
+    QTest::newRow("First row") << firstCommand[0] << first;
 
-    second["Accept-Language"] = "en-US";
+    secondCommand << "sudo";
+    second["post-download-command"] = secondCommand;
 
-    QTest::newRow("Second row") << second;
+    QTest::newRow("Second row") << secondCommand[0] << second;
 
-    third["Content-Length"] = "348";
+    thirdCommand << "grep";
+    third["post-download-command"] = thirdCommand;
 
-    QTest::newRow("Third row") << third;
+    QTest::newRow("Third row") << thirdCommand[0] << third;
 }
 
 void TestDownload::testProcessExecutedNoParams()
 {
-    QFAIL("Not implemented.");
+    QFETCH(QString, command);
+    QFETCH(QVariantMap, metadata);
+
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers, _networkInfo, _reqFactory, _processFactory);
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = (FakeProcess*) calledMethods[0].params().outParams()[0];
+
+    calledMethods = process->calledMethods();
+    QString processCommand = ((StringWrapper*)calledMethods[0].params().inParams()[0])->value();
+    QStringList processArgs = ((StringListWrapper*)calledMethods[0].params().inParams()[1])->value();
+    QCOMPARE(processCommand, command);
+    QCOMPARE(0, processArgs.count());
 }
 
 void TestDownload::testProcessExecutedWithParams_data()
 {
+    QTest::addColumn<QString>("command");
+    QTest::addColumn<QVariantMap>("metadata");
+    QVariantMap first, second, third;
+    QStringList firstCommand, secondCommand, thirdCommand;
+
+    firstCommand << "touch" << "test-file";
+    first["post-download-command"] = firstCommand;
+
+    QTest::newRow("First row") << firstCommand[0] << first;
+
+    secondCommand << "sudo" << "apt-get" << "install" << "click";
+    second["post-download-command"] = secondCommand;
+
+    QTest::newRow("Second row") << secondCommand[0] << second;
+
+    thirdCommand << "grep" << "." << "-Rn";
+    third["post-download-command"] = thirdCommand;
+
+    QTest::newRow("Third row") << thirdCommand[0] << third;
 }
 
 void TestDownload::testProcessExecutedWithParams()
 {
-    QFAIL("Not implemented.");
+    QFETCH(QString, command);
+    QFETCH(QVariantMap, metadata);
+
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers, _networkInfo, _reqFactory, _processFactory);
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = (FakeProcess*) calledMethods[0].params().outParams()[0];
+
+    calledMethods = process->calledMethods();
+    QString processCommand = ((StringWrapper*)calledMethods[0].params().inParams()[0])->value();
+    QStringList processArgs = ((StringListWrapper*)calledMethods[0].params().inParams()[1])->value();
+    QCOMPARE(processCommand, command);
+    QVERIFY(0 != processArgs.count());
 }
 
-void TestDownload::testProcessMetadataError()
+void TestDownload::testProcessExecutedWithParamsFile_data()
 {
-    QFAIL("Not implemented.");
+    QTest::addColumn<QString>("command");
+    QTest::addColumn<QVariantMap>("metadata");
+    QVariantMap first, second, third;
+    QStringList firstCommand, secondCommand, thirdCommand;
+
+    firstCommand << "touch" << "$file";
+    first["post-download-command"] = firstCommand;
+
+    QTest::newRow("First row") << firstCommand[0] << first;
+
+    secondCommand << "sudo" << "apt-get" << "install" << "$file";
+    second["post-download-command"] = secondCommand;
+
+    QTest::newRow("Second row") << secondCommand[0] << second;
+
+    thirdCommand << "grep" << "$file" << "-Rn";
+    third["post-download-command"] = thirdCommand;
+
+    QTest::newRow("Third row") << thirdCommand[0] << third;
 }
 
-void TestDownload::testProcessFinished()
+void TestDownload::testProcessExecutedWithParamsFile()
 {
-    QFAIL("Not implemented.");
-}
+    QFETCH(QString, command);
+    QFETCH(QVariantMap, metadata);
 
-void TestDownload::testProcessError()
-{
-    QFAIL("Not implemented.");
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers, _networkInfo, _reqFactory, _processFactory);
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = (FakeProcess*) calledMethods[0].params().outParams()[0];
+
+    calledMethods = process->calledMethods();
+    QString processCommand = ((StringWrapper*)calledMethods[0].params().inParams()[0])->value();
+    QStringList processArgs = ((StringListWrapper*)calledMethods[0].params().inParams()[1])->value();
+    QCOMPARE(processCommand, command);
+    QVERIFY(processArgs.contains(download->filePath()));
 }

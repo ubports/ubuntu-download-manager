@@ -69,3 +69,8 @@ void FakeNetworkReply::setReadBufferSize(uint size)
         _called.append(methodData);
     }
 }
+
+void FakeNetworkReply::emitFinished()
+{
+    emit finished();
+}

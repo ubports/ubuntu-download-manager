@@ -709,6 +709,7 @@ void DownloadPrivate::onFinished()
 
             qDebug() << "Executing" << command << args;
             postDownloadProcess->start(command, args);
+            return;
         }
     }
     else
@@ -744,12 +745,13 @@ void DownloadPrivate::onProcessError(QProcess::ProcessError error)
 
 void DownloadPrivate::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+    qDebug() << __FUNCTION__ << exitCode << exitStatus;
     // TODO: send the command exit code and status
-    Q_UNUSED(exitCode);
-    Q_UNUSED(exitStatus);
     Q_Q(Download);
     _state = Download::FINISHED;
+    qDebug() << "EMIT stateChanged";
     emit q->stateChanged();
+    qDebug() << "EMIT finished" << filePath();
     emit q->finished(filePath());
 }
 

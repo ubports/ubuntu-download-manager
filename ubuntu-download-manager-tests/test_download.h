@@ -62,6 +62,7 @@ private slots:
     void testCanDownloadNoGSM_data();
     void testProcessExecutedNoParams_data();
     void testProcessExecutedWithParams_data();
+    void testProcessExecutedWithParamsFile_data();
 
     // accessor methods
     void testPath();
@@ -103,9 +104,7 @@ private slots:
     // process related tests
     void testProcessExecutedNoParams();
     void testProcessExecutedWithParams();
-    void testProcessMetadataError();
-    void testProcessFinished();
-    void testProcessError();
+    void testProcessExecutedWithParamsFile();
 
 private:
     bool removeDir(const QString& dirName);
