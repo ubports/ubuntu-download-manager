@@ -41,6 +41,7 @@
 #define ALGO "algo"
 #define DATA_FILE_NAME "data"
 #define METADATA_FILE_NAME "metadata"
+#define METADATA_COMMAND_KEY "post-download-command"
 
 
 /**
@@ -52,10 +53,11 @@ class DownloadPrivate
     Q_DECLARE_PUBLIC(Download)
 public:
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory,
+        Download* parent);
     explicit DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
         QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
-        SystemNetworkInfo* networkInfo, RequestFactory* nam,
+        SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory,
         Download* parent);
     ~DownloadPrivate();
 
@@ -96,6 +98,10 @@ public:
     void onFinished();
     void onSslErrors(const QList<QSslError>& errors);
 
+    // slots executed to keep track of the post download process
+    void onProcessError(QProcess::ProcessError error);
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+
 private:
     void init();
     void connectToReplySignals();
@@ -122,6 +128,7 @@ private:
     QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _requestFactory;
+    ProcessFactory* _processFactory;
     NetworkReply* _reply;
     QFile* _currentData;
     Download* q_ptr;
@@ -129,7 +136,8 @@ private:
 };
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory,
+    Download* parent):
         _id(id),
         _totalSize(0),
         _throttle(0),
@@ -143,6 +151,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
         _headers(headers),
         _networkInfo(networkInfo),
         _requestFactory(nam),
+        _processFactory(processFactory),
         q_ptr(parent)
 {
     init();
@@ -150,7 +159,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
 
 DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
     QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString>& headers,
-    SystemNetworkInfo* networkInfo, RequestFactory* nam, Download* parent):
+    SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, Download* parent):
         _id(id),
         _totalSize(0),
         _throttle(0),
@@ -164,6 +173,7 @@ DownloadPrivate::DownloadPrivate(const QUuid& id, const QString& path, const QUr
         _headers(headers),
         _networkInfo(networkInfo),
         _requestFactory(nam),
+        _processFactory(processFactory),
         q_ptr(parent)
 {
     init();
@@ -474,7 +484,6 @@ void DownloadPrivate::startDownload()
     }
 
     // create file that will be used to mantain the state of the download when resumed.
-    // TODO: Use a better name
     _currentData = new QFile(saveFileName());
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
@@ -625,12 +634,51 @@ void DownloadPrivate::onFinished()
             return;
         }
     }
-    _state = Download::FINISHED;
-    emit q->stateChanged();
-    emit q->finished(filePath());
+
+    // there are two possible cases, the first, we do no have the metadata info to execute a
+    // commnad once the download was finished and that means we are done here else we execute the
+    // command AND raise the finish signals once the command was done (or an error ocurred in the
+    // command execution.
+    if (_metadata.contains(METADATA_COMMAND_KEY))
+    {
+        // toStringList will return an empty list if it cannot be converted
+        QStringList commandData = _metadata[METADATA_COMMAND_KEY].toStringList();
+        if (commandData.count() == 0)
+        {
+            // raise error, command metadata was passed without the commnad
+            qCritical() << "COMMAND DATA MISSING";
+            _state = Download::FINISHED;
+            emit q->stateChanged();
+            emit q->error("COMMAND ERROR");
+            return;
+        }
+        else
+        {
+            // first item of the string list is the commnad, rest is the arguments
+            QString command = commandData.at(0);
+            commandData.removeAt(0);
+            Process* postDownloadProcess = _processFactory->createProcess();
+
+            // connect to signals so that we can tell the clients that the operation succeed
+
+            q->connect(postDownloadProcess, SIGNAL(finished(int, QProcess::ExitStatus)),
+                q, SLOT(onProcessFinished(int, QProcess::ExitStatus)));
+            q->connect(postDownloadProcess, SIGNAL(error(QProcess::ProcessError)),
+                q, SLOT(onProcessError(QProcess::ProcessError)));
+
+            postDownloadProcess->start(command, commandData);
+        }
+    }
+    else
+    {
+        _state = Download::FINISHED;
+        emit q->stateChanged();
+        emit q->finished(filePath());
+    }
+
+    // clean the reply
     _reply->deleteLater();
     _reply = NULL;
-
 }
 
 void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
@@ -641,21 +689,41 @@ void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
     emit q->error("SSL ERROR");
 }
 
+void DownloadPrivate::onProcessError(QProcess::ProcessError error)
+{
+    // TODO: better error fowarding
+    Q_UNUSED(error);
+    Q_Q(Download);
+    emit q->error("COMMAND ERROR");
+}
+
+void DownloadPrivate::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    // TODO: send the command exit code and status
+    Q_UNUSED(exitCode);
+    Q_UNUSED(exitStatus);
+    Q_Q(Download);
+    _state = Download::FINISHED;
+    emit q->stateChanged();
+    emit q->finished(filePath());
+}
+
 /**
  * PUBLIC IMPLEMENTATION
  */
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent):
         QObject(parent),
-        d_ptr(new DownloadPrivate(id, path, url, metadata, headers, networkInfo, nam, this))
+        d_ptr(new DownloadPrivate(id, path, url, metadata, headers, networkInfo, nam, processFactory, this))
 {
 }
 
 Download::Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-    const QVariantMap& metadata, const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent):
+    const QVariantMap& metadata, const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam,
+    ProcessFactory* processFactory, QObject* parent):
         QObject(parent),
-        d_ptr(new DownloadPrivate(id, path, url, hash, algo, metadata, headers, networkInfo, nam, this))
+        d_ptr(new DownloadPrivate(id, path, url, hash, algo, metadata, headers, networkInfo, nam, processFactory, this))
 {
 }
 

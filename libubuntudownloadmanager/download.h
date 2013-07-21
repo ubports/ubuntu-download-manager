@@ -24,9 +24,11 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QNetworkReply>
+#include <QProcess>
 #include <QUrl>
 #include <QUuid>
 #include "system_network_info.h"
+#include "process_factory.h"
 #include "request_factory.h"
 #include "app-downloader-lib_global.h"
 
@@ -48,10 +50,10 @@ public:
     };
 
     explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent=0);
     explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
         const QVariantMap& metadata, const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam,
-        QObject* parent=0);
+        ProcessFactory* processFactory, QObject* parent=0);
 
     // gets for internal state
     QUuid downloadId();
@@ -108,6 +110,11 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
     Q_PRIVATE_SLOT(d_func(), void onFinished())
     Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
+
+    // private slots used to keep track of the post download command
+
+    Q_PRIVATE_SLOT(d_func(), void onProcessError(QProcess::ProcessError error))
+    Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus))
 
 private:
     // use pimpl so that we can mantains ABI compatibility

@@ -29,10 +29,11 @@ class FakeDownload : public Download, public Fake
     Q_OBJECT
 public:
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
+        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory,
+        QObject* parent=0);
     explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
         QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString> &headers,
-        SystemNetworkInfo* networkInfo, RequestFactory* nam, QObject* parent=0);
+        SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent=0);
 
     bool canDownload() override;
     void setCanDownload(bool canDownload);

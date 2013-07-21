@@ -25,6 +25,7 @@
 #include "test_runner.h"
 #include "fake_download.h"
 #include "fake_request_factory.h"
+#include "fake_process_factory.h"
 #include "fake_system_network_info.h"
 
 class TestDownloadQueue : public QObject
@@ -56,6 +57,7 @@ private slots:
 private:
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
+    FakeProcessFactory* _processFactory;
     FakeDownload* _first;
     DownloadAdaptor* _firstAdaptor;
     FakeDownload* _second;

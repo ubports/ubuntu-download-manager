@@ -24,6 +24,7 @@
 #include <download.h>
 #include "fake_system_network_info.h"
 #include "fake_request_factory.h"
+#include "fake_process_factory.h"
 #include "test_runner.h"
 
 class TestDownload: public QObject
@@ -109,6 +110,7 @@ private:
     QCryptographicHash::Algorithm _algo;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
+    FakeProcessFactory* _processFactory;
 
 };
 

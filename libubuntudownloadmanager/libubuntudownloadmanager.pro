@@ -19,7 +19,9 @@ SOURCES += \
     request_factory.cpp \
     system_network_info.cpp \
     uuid_factory.cpp \
-    xdg_basedir.cpp
+    xdg_basedir.cpp \
+    process.cpp \
+    process_factory.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -34,7 +36,9 @@ HEADERS +=\
     request_factory.h \
     system_network_info.h \
     uuid_factory.h \
-    xdg_basedir.h
+    xdg_basedir.h \
+    process.h \
+    process_factory.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
