@@ -49,7 +49,7 @@ void FakeDownload::setCanDownload(bool canDownload)
     _canDownload = canDownload;
 }
 
-void FakeDownload::setThrottle(qlonglong speed)
+void FakeDownload::setThrottle(qulonglong speed)
 {
     if (_recording)
     {
@@ -64,7 +64,7 @@ void FakeDownload::setThrottle(qlonglong speed)
    Download::setThrottle(speed);
 }
 
-qlonglong FakeDownload::throttle()
+qulonglong FakeDownload::throttle()
 {
     if (_recording)
     {
@@ -113,5 +113,12 @@ void FakeDownload::startDownload()
         methodData.setMethodName("startDownload");
         _called.append(methodData);
     }
+}
+
+void FakeDownload::emitFinished(const QString& path)
+{
+    setState(Download::FINISHED);
+    emit stateChanged();
+    emit finished(path);
 }
 

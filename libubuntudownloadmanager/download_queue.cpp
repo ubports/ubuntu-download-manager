@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
+#include <QSignalMapper>
 #include "download_queue.h"
 
 /*
@@ -28,6 +30,7 @@ class DownloadQueuePrivate
     Q_DECLARE_PUBLIC(DownloadQueue)
 public:
     explicit DownloadQueuePrivate(SystemNetworkInfo* networkInfo, DownloadQueue* parent);
+    ~DownloadQueuePrivate();
 
     void add(Download* download, DownloadAdaptor* adaptor);
     void add(const QPair<Download*, DownloadAdaptor*>& value);
@@ -38,12 +41,14 @@ public:
     QHash<QString, Download*> downloads();
 
     void onDownloadStateChanged();
+    void onDestroyed(const QString& path);
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
 
 private:
     void updateCurrentDownload();
 
 private:
+    QSignalMapper* _mapper;
     QString _current;
     DownloadList _downloads;  // quick for access
     QStringList _sortedPaths; // keep the order in witch the downloads have been added
@@ -57,8 +62,19 @@ DownloadQueuePrivate::DownloadQueuePrivate(SystemNetworkInfo* networkInfo, Downl
     q_ptr(parent)
 {
     Q_Q(DownloadQueue);
+    _mapper = new QSignalMapper();
+
     q->connect(_networkInfo, SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)),
         q, SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
+
+    q->connect(_mapper, SIGNAL(mapped(const QString&)),
+        q, SLOT(onDestroyed(const QString&)));
+}
+
+DownloadQueuePrivate::~DownloadQueuePrivate()
+{
+    if (_mapper != NULL)
+        delete _mapper;
 }
 
 void DownloadQueuePrivate::add(Download* download, DownloadAdaptor* adaptor)
@@ -82,15 +98,22 @@ void DownloadQueuePrivate::add(const QPair<Download*, DownloadAdaptor*>& value)
 
 void DownloadQueuePrivate::remove(const QString& path)
 {
+    qDebug() << __FUNCTION__ << path;
+
     Q_Q(DownloadQueue);
+
     QPair<Download*, DownloadAdaptor*> pair = _downloads[path];
-    pair.first->deleteLater();
-    pair.second->deleteLater();
     _sortedPaths.removeOne(path);
     _downloads.remove(path);
 
-    // emit the signal that it was removed
-    emit q->downloadRemoved(path);
+    // connect to the adaptor destroyed event to ensure that we have emitted all signals, else
+    // we might have a race condition where the object path is removed from dbus to early
+    q->connect(pair.second, SIGNAL(destroyed(QObject*)),
+        _mapper, SLOT(map(QObject*)));
+    _mapper->setMapping(pair.first, path);
+
+    pair.second->deleteLater();
+    pair.first->deleteLater();
 }
 
 QString DownloadQueuePrivate::currentDownload()
@@ -145,13 +168,20 @@ void DownloadQueuePrivate::onDownloadStateChanged()
             break;
         case Download::FINISHED:
             // remove the registered object in dbus, remove the download and the adapter from the list
-            if (_current.isEmpty() && _current == sender->path())
+            if (!_current.isEmpty() && _current == sender->path())
                 updateCurrentDownload();
             break;
         default:
             // do nothing
             break;
     }
+}
+
+void DownloadQueuePrivate::onDestroyed(const QString &path)
+{
+    qDebug() << __FUNCTION__;
+    Q_Q(DownloadQueue);
+    emit q->downloadRemoved(path);
 }
 
 void DownloadQueuePrivate::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode)

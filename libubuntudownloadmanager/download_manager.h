@@ -27,7 +27,7 @@
 #include "download_queue.h"
 #include "uuid_factory.h"
 #include "system_network_info.h"
-#include "app-downloader-lib_global.h"
+#include "metatypes.h"
 
 class DownloadManagerPrivate;
 class DownloadManager : public QObject
@@ -43,8 +43,8 @@ public slots:
     QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, StringMap headers);
     QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
         const QVariantMap &metadata, StringMap headers);
-    qlonglong defaultThrottle();
-    void setDefaultThrottle(qlonglong speed);
+    qulonglong defaultThrottle();
+    void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name, const QString& value);
 

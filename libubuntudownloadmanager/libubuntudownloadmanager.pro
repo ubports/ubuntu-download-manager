@@ -38,7 +38,8 @@ HEADERS +=\
     uuid_factory.h \
     xdg_basedir.h \
     process.h \
-    process_factory.h
+    process_factory.h \
+    metatypes.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

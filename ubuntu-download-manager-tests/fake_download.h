@@ -20,9 +20,8 @@
 #define FAKE_DOWNLOAD_H
 #include <download.h>
 #include <system_network_info.h>
+#include <metatypes.h>
 #include "fake.h"
-
-typedef QMap<QString, QString> StringMap;
 
 class FakeDownload : public Download, public Fake
 {
@@ -37,12 +36,15 @@ public:
 
     bool canDownload() override;
     void setCanDownload(bool canDownload);
-    void setThrottle(qlonglong speed) override;
-    qlonglong throttle() override;
+    void setThrottle(qulonglong speed) override;
+    qulonglong throttle() override;
     void cancelDownload() override;
     void pauseDownload() override;
     void resumeDownload() override;
     void startDownload() override;
+
+    // useful methods to emit signals
+    void emitFinished(const QString& path);
     
 private:
     bool _canDownload;

@@ -46,15 +46,15 @@ private:
     QDBusObjectPath createDownload(const QString& url, const QVariantMap& metadata, StringMap headers);
     QDBusObjectPath createDownloadWithHash(const QString& url, const QString& hash, QCryptographicHash::Algorithm algo,
         const QVariantMap& metadata, StringMap headers);
-    qlonglong defaultThrottle();
-    void setDefaultThrottle(qlonglong speed);
+    qulonglong defaultThrottle();
+    void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
 
 private:
     static QString BASE_ACCOUNT_URL;
 
-    qlonglong _throttle;
+    qulonglong _throttle;
     SystemNetworkInfo* _networkInfo;
     DownloadQueue* _downloadsQueue;
     DBusConnection* _conn;
@@ -92,6 +92,10 @@ DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection, Syste
 void DownloadManagerPrivate::init()
 {
     Q_Q(DownloadManager);
+
+    // register the required types
+    qDBusRegisterMetaType<StringMap>();
+
     q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
         q, SLOT(onDownloadRemoved(QString)));
 
@@ -158,12 +162,12 @@ QDBusObjectPath DownloadManagerPrivate::createDownloadWithHash(const QString& ur
     return objectPath;
 }
 
-qlonglong DownloadManagerPrivate::defaultThrottle()
+qulonglong DownloadManagerPrivate::defaultThrottle()
 {
     return _throttle;
 }
 
-void DownloadManagerPrivate::setDefaultThrottle(qlonglong speed)
+void DownloadManagerPrivate::setDefaultThrottle(qulonglong speed)
 {
     _throttle = speed;
     QHash<QString, Download*> downloads = _downloadsQueue->downloads();
@@ -228,13 +232,13 @@ QDBusObjectPath DownloadManager::createDownload(const QString &url, const QVaria
     return d->createDownload(url, metadata, headers);
 }
 
-qlonglong DownloadManager::defaultThrottle()
+qulonglong DownloadManager::defaultThrottle()
 {
     Q_D(DownloadManager);
     return d->defaultThrottle();
 }
 
-void DownloadManager::setDefaultThrottle(qlonglong speed)
+void DownloadManager::setDefaultThrottle(qulonglong speed)
 {
     Q_D(DownloadManager);
     d->setDefaultThrottle(speed);

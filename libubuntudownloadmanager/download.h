@@ -60,6 +60,7 @@ public:
     QString path();
     QUrl url();
     Download::State state();
+    void setState(Download::State state);
     QString filePath();
     QString hash();
     QCryptographicHash::Algorithm hashAlgorithm();
@@ -78,10 +79,10 @@ public slots:
     // slots that are exposed via dbus, they just change the state, the downloader
     // takes care of the actual download operations
     QVariantMap metadata();
-    qlonglong progress();
-    qlonglong totalSize();
-    virtual void setThrottle(qlonglong speed);
-    virtual qlonglong throttle();
+    qulonglong progress();
+    qulonglong totalSize();
+    virtual void setThrottle(qulonglong speed);
+    virtual qulonglong throttle();
     void allowGSMDownload(bool allowed);
     bool isGSMDownloadAllowed();
     void cancel();
@@ -95,7 +96,7 @@ signals:
     void error(const QString& error);
     void finished(const QString& path);
     void paused(bool success);
-    void progress(qlonglong received, qlonglong total);
+    void progress(qulonglong received, qulonglong total);
     void resumed(bool success);
     void started(bool success);
 

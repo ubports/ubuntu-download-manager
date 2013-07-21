@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,18 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifndef DOWNLOADER_LIB_APP_METATYPES_H
+#define DOWNLOADER_LIB_APP_METATYPES_H
 
-#ifndef APPDOWNLOADERLIB_GLOBAL_H
-#define APPDOWNLOADERLIB_GLOBAL_H
+#include <QMap>
 
-#include <QtCore/qglobal.h>
+typedef QMap<QString, QString> StringMap;
 
-#if defined(APPDOWNLOADERLIB_LIBRARY)
-#  define APPDOWNLOADERLIBSHARED_EXPORT Q_DECL_EXPORT
-#else
-#  define APPDOWNLOADERLIBSHARED_EXPORT Q_DECL_IMPORT
-#endif
+Q_DECLARE_METATYPE(StringMap)
 
-#endif // APPDOWNLOADERLIB_GLOBAL_H
-
-
+#endif // METATYPES_H

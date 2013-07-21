@@ -66,6 +66,7 @@ public:
     QString path() const;
     QUrl url() const;
     Download::State state();
+    void setState(Download::State state);
     QString filePath();
     QString hash() const;
     QCryptographicHash::Algorithm hashAlgorithm() const;
@@ -81,10 +82,10 @@ public:
 
     // plublic slots used by public implementation
     QVariantMap metadata();
-    qlonglong progress();
-    qlonglong totalSize();
-    void setThrottle(qlonglong speed);
-    qlonglong throttle();
+    qulonglong progress();
+    qulonglong totalSize();
+    void setThrottle(qulonglong speed);
+    qulonglong throttle();
     void allowGSMDownload(bool allowed);
     bool isGSMDownloadAllowed();
     void cancel();
@@ -93,7 +94,7 @@ public:
     void start();
 
     // slots executed to keep track of the newtork reply
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void onDownloadProgress(qint64 progress, qint64 bytesTotal);
     void onError(QNetworkReply::NetworkError code);
     void onFinished();
     void onSslErrors(const QList<QSslError>& errors);
@@ -115,8 +116,8 @@ private:
 
 private:
     QUuid _id;
-    qlonglong _totalSize;
-    qlonglong _throttle;
+    qulonglong _totalSize;
+    qulonglong _throttle;
     bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
@@ -195,6 +196,7 @@ void DownloadPrivate::init()
     QStringList pathComponents;
     pathComponents << "download_manager" << _id.toString();
     _localPath = XDGBasedir::saveDataPath(pathComponents);
+    qDebug() << "File will be downloaded to" << _localPath;
 
     _reply = NULL;
     _currentData = NULL;
@@ -325,6 +327,7 @@ void DownloadPrivate::cleanUpCurrentData()
 
 QNetworkRequest DownloadPrivate::buildRequest()
 {
+    qDebug() << "Building request for " << _url;
     QNetworkRequest request = QNetworkRequest(_url);
     foreach(const QString& header, _headers.keys())
     {
@@ -355,6 +358,11 @@ QUrl DownloadPrivate::url() const
 Download::State DownloadPrivate::state()
 {
     return _state;
+}
+
+void DownloadPrivate::setState(Download::State state)
+{
+    _state = state;
 }
 
 QString DownloadPrivate::filePath()
@@ -406,6 +414,7 @@ bool DownloadPrivate::canDownload()
 void DownloadPrivate::cancelDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
@@ -424,14 +433,18 @@ void DownloadPrivate::cancelDownload()
 void DownloadPrivate::pauseDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply == NULL)
     {
         // cannot pause because is not running
+        qDebug() << "Cannot pause download because reply is NULL";
+        qDebug() << "EMIT paused(false)";
         emit q->paused(false);
         return;
     }
 
+    qDebug() << "Pausing download.";
     // we need to disconnect the signals to ensure that they are not emitted due
     // to the operation we are going to perform. We read the data in the reply and
     // store it in a file
@@ -442,21 +455,25 @@ void DownloadPrivate::pauseDownload()
     _currentData->write(_reply->readAll());
     _reply->deleteLater();
     _reply = NULL;
+    qDebug() << "EMIT paused(true)";
     emit q->paused(true);
 }
 
 void DownloadPrivate::resumeDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
         // cannot resume because it is already running
+        qDebug() << "Cannot resume download because reply != NULL";
+        qDebug() << "EMIT resumed(false)";
         emit q->resumed(false);
         return;
     }
 
-
+    qDebug() << "Resuming download.";
     QNetworkRequest request = buildRequest();
 
     // overrides the range header, we do not let clients set the range!!!
@@ -469,20 +486,25 @@ void DownloadPrivate::resumeDownload()
 
     connectToReplySignals();
 
+    qDebug() << "EMIT resumed(true)";
     emit q->resumed(true);
 }
 
 void DownloadPrivate::startDownload()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     if (_reply != NULL)
     {
         // the download was already started, lets say that we did it
+        qDebug() << "Cannot start download because reply != NULL";
+        qDebug() << "EMIT started(false)";
         emit q->started(true);
         return;
     }
 
+    qDebug() << "Starting download.";
     // create file that will be used to mantain the state of the download when resumed.
     _currentData = new QFile(saveFileName());
     _currentData->open(QIODevice::ReadWrite | QFile::Append);
@@ -492,6 +514,7 @@ void DownloadPrivate::startDownload()
     _reply->setReadBufferSize(_throttle);
 
     connectToReplySignals();
+    qDebug() << "EMIT started(true)";
     emit q->started(true);
 }
 
@@ -508,24 +531,26 @@ QVariantMap DownloadPrivate::metadata()
     return _metadata;
 }
 
-qlonglong DownloadPrivate::progress()
+qulonglong DownloadPrivate::progress()
 {
     return (_currentData == NULL)?0:_currentData->size();
 }
 
-qlonglong DownloadPrivate::totalSize()
+qulonglong DownloadPrivate::totalSize()
 {
     return _totalSize;
 }
 
-void DownloadPrivate::setThrottle(qlonglong speed)
+void DownloadPrivate::setThrottle(qulonglong speed)
 {
+    qDebug() << __FUNCTION__ << _url;
+
     _throttle = speed;
     if (_reply != NULL)
         _reply->setReadBufferSize(_throttle);
 }
 
-qlonglong DownloadPrivate::throttle()
+qulonglong DownloadPrivate::throttle()
 {
     return _throttle;
 }
@@ -577,9 +602,10 @@ void DownloadPrivate::start()
     emit q->stateChanged();
 }
 
-void DownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
+void DownloadPrivate::onDownloadProgress(qint64 progress, qint64 bytesTotal)
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url << progress << bytesTotal;
 
     // do write the current info we have just in case
     _currentData->write(_reply->readAll());
@@ -589,14 +615,17 @@ void DownloadPrivate::onDownloadProgress(qint64, qint64 bytesTotal)
     {
         if (_totalSize == 0)
         {
+            qDebug() << "Updating total size" << bytesTotal;
             // bytesTotal is different when we have resumed because we are not counting the size that
             // we already downloaded, therefore we only do this once
-            _totalSize = bytesTotal;
+            qlonglong uBytestTotal = bytesTotal;
+            _totalSize = uBytestTotal;
             // update the metadata
             storeMetadata();
         }
-        qint64 received = _currentData->size();
+        qulonglong received = _currentData->size();
 
+        qDebug() << "EMIT progress" << received << _totalSize;
         emit q->progress(received, _totalSize);
     }
 }
@@ -617,6 +646,7 @@ void DownloadPrivate::onError(QNetworkReply::NetworkError code)
 void DownloadPrivate::onFinished()
 {
     Q_Q(Download);
+    qDebug() << __FUNCTION__ << _url;
 
     // if the hash is present we check it
     if (!_hash.isEmpty())
@@ -666,13 +696,16 @@ void DownloadPrivate::onFinished()
             q->connect(postDownloadProcess, SIGNAL(error(QProcess::ProcessError)),
                 q, SLOT(onProcessError(QProcess::ProcessError)));
 
+	    qDebug() << "Executing" << command << commandData;
             postDownloadProcess->start(command, commandData);
         }
     }
     else
     {
         _state = Download::FINISHED;
+    	qDebug() << "EMIT stateChanged";
         emit q->stateChanged();
+    	qDebug() << "EMIT finished" << filePath();
         emit q->finished(filePath());
     }
 
@@ -683,6 +716,7 @@ void DownloadPrivate::onFinished()
 
 void DownloadPrivate::onSslErrors(const QList<QSslError>& errors)
 {
+    qDebug() << __FUNCTION__ << _url;
     // TODO: emit ssl errors signal?
     Q_UNUSED(errors);
     Q_Q(Download);
@@ -754,6 +788,12 @@ Download::State Download::state()
 {
     Q_D(Download);
     return d->state();
+}
+
+void Download::setState(Download::State state)
+{
+    Q_D(Download);
+    d->setState(state);
 }
 
 QString Download::filePath()
@@ -828,25 +868,25 @@ QVariantMap Download::metadata()
     return d->metadata();
 }
 
-qlonglong Download::progress()
+qulonglong Download::progress()
 {
     Q_D(Download);
     return d->progress();
 }
 
-qlonglong Download::totalSize()
+qulonglong Download::totalSize()
 {
     Q_D(Download);
     return d->totalSize();
 }
 
-void Download::setThrottle(qlonglong speed)
+void Download::setThrottle(qulonglong speed)
 {
     Q_D(Download);
     return d->setThrottle(speed);
 }
 
-qlonglong Download::throttle()
+qulonglong Download::throttle()
 {
     Q_D(Download);
     return d->throttle();
