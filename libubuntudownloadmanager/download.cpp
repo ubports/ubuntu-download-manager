@@ -42,6 +42,7 @@
 #define DATA_FILE_NAME "data"
 #define METADATA_FILE_NAME "metadata"
 #define METADATA_COMMAND_KEY "post-download-command"
+#define METADATA_COMMAND_FILE_KEY "$file"
 
 
 /**
@@ -687,6 +688,16 @@ void DownloadPrivate::onFinished()
             // first item of the string list is the commnad, rest is the arguments
             QString command = commandData.at(0);
             commandData.removeAt(0);
+            QStringList args;
+
+            foreach(const QString& arg, commandData)
+            {
+                if (arg == METADATA_COMMAND_FILE_KEY)
+                    args << filePath();
+                else
+                    args << arg;
+            }
+
             Process* postDownloadProcess = _processFactory->createProcess();
 
             // connect to signals so that we can tell the clients that the operation succeed
@@ -696,8 +707,8 @@ void DownloadPrivate::onFinished()
             q->connect(postDownloadProcess, SIGNAL(error(QProcess::ProcessError)),
                 q, SLOT(onProcessError(QProcess::ProcessError)));
 
-	    qDebug() << "Executing" << command << commandData;
-            postDownloadProcess->start(command, commandData);
+            qDebug() << "Executing" << command << args;
+            postDownloadProcess->start(command, args);
         }
     }
     else

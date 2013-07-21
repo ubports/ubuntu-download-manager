@@ -60,6 +60,8 @@ private slots:
     void testSetGSMDownloadDiff_data();
     void testCanDownloadGSM_data();
     void testCanDownloadNoGSM_data();
+    void testProcessExecutedNoParams_data();
+    void testProcessExecutedWithParams_data();
 
     // accessor methods
     void testPath();
@@ -97,6 +99,13 @@ private slots:
     void testSetRawHeadersWithRangeStart();
     void testSetRawHeadersResume();
     void testSetRawHeadersWithRangeResume();
+
+    // process related tests
+    void testProcessExecutedNoParams();
+    void testProcessExecutedWithParams();
+    void testProcessMetadataError();
+    void testProcessFinished();
+    void testProcessError();
 
 private:
     bool removeDir(const QString& dirName);

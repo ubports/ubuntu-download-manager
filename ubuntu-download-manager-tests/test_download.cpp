@@ -1051,3 +1051,53 @@ void TestDownload::testSetRawHeadersWithRangeResume()
     QByteArray rangeHeaderValue = "bytes=" + QByteArray::number(reply->data().size()) + "-";
     QCOMPARE(rangeHeaderValue, request.rawHeader("Range"));
 }
+
+void TestDownload::testProcessExecutedNoParams_data()
+{
+    QTest::addColumn<QVariantMap>("headers");
+
+    // create a number of headers to assert that thy are added in the request
+    QVariantMap first, second, third;
+
+    // add headers to be added except range
+    first["Accept"] = "text/plain";
+
+    QTest::newRow("First row") << first;
+
+    second["Accept-Language"] = "en-US";
+
+    QTest::newRow("Second row") << second;
+
+    third["Content-Length"] = "348";
+
+    QTest::newRow("Third row") << third;
+}
+
+void TestDownload::testProcessExecutedNoParams()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownload::testProcessExecutedWithParams_data()
+{
+}
+
+void TestDownload::testProcessExecutedWithParams()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownload::testProcessMetadataError()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownload::testProcessFinished()
+{
+    QFAIL("Not implemented.");
+}
+
+void TestDownload::testProcessError()
+{
+    QFAIL("Not implemented.");
+}
