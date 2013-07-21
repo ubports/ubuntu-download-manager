@@ -342,7 +342,6 @@ void TestDownloadQueue::testCancelDownloadNoOtherReady()
     // cancel the download and expect it to be done
     _first->record();
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
     _q->add(_first, _firstAdaptor);
 
     QVERIFY(_q->currentDownload().isEmpty());
@@ -352,15 +351,11 @@ void TestDownloadQueue::testCancelDownloadNoOtherReady()
     QVERIFY(_q->currentDownload().isEmpty());
 
     QCOMPARE(changedSpy.count(), 2);
-    QCOMPARE(removedSpy.count(), 1);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), _first->path());
     arguments = changedSpy.takeFirst();
     QVERIFY(arguments.at(0).toString().isEmpty());
-
-    arguments = removedSpy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
     QCOMPARE(3, calledMethods.count());
@@ -376,7 +371,6 @@ void TestDownloadQueue::testCancelDownloadOtherReady()
     _second->record();
 
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
     _q->add(_first, _firstAdaptor);
     _q->add(_second, _firstAdaptor);
 
@@ -389,15 +383,11 @@ void TestDownloadQueue::testCancelDownloadOtherReady()
     QCOMPARE(_q->currentDownload(), _second->path());
 
     QCOMPARE(changedSpy.count(), 2);
-    QCOMPARE(removedSpy.count(), 1);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), _first->path());
     arguments = changedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), _second->path());
-
-    arguments = removedSpy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
     QCOMPARE(3, calledMethods.count());
@@ -419,7 +409,6 @@ void TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload()
     _second->record();
 
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
     _q->add(_first, _firstAdaptor);
     _q->add(_second, _firstAdaptor);
 
@@ -432,15 +421,11 @@ void TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload()
     QCOMPARE(_q->currentDownload(), QString(""));
 
     QCOMPARE(changedSpy.count(), 2);
-    QCOMPARE(removedSpy.count(), 1);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), _first->path());
     arguments = changedSpy.takeFirst();
     QCOMPARE(arguments.at(0).toString(), QString(""));
-
-    arguments = removedSpy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), _first->path());
 
     QList<MethodData> calledMethods = _first->calledMethods();
     QCOMPARE(3, calledMethods.count());
@@ -464,11 +449,6 @@ void TestDownloadQueue::testCancelDownloadNotStarted()
 
     _first->cancel();
     QVERIFY(_q->currentDownload().isEmpty());
-
-    QCOMPARE(removedSpy.count(), 1);
-
-    QList<QVariant> arguments = removedSpy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), _first->path());
 }
 
 void TestDownloadQueue::testDownloads()
