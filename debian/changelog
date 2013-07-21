@@ -1,3 +1,16 @@
+ubuntu-download-manager (0.2+13.10.20130721-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Register types with DBus.
+  * Ensure that the q is updated correctly after a download is finished.
+  * Add logging for the downloads.
+  * Ensure progress is emitted.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 78
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 21 Jul 2013 07:01:47 +0000
+
 ubuntu-download-manager (0.2+13.10.20130719.2-0ubuntu1) saucy; urgency=low
 
   [ Ken VanDine ]
