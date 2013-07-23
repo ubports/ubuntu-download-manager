@@ -20,22 +20,21 @@
 #define DOWNLOADER_LIB_PROCESS_FACTORY_H
 
 #include <QObject>
-#include "process.h"
+#include "./process.h"
 
 class ProcessFactoryPrivate;
-class ProcessFactory : public QObject
-{
+class ProcessFactory : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(ProcessFactory)
 
-public:
+ public:
     explicit ProcessFactory(QObject *parent = 0);
 
     virtual Process* createProcess();
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     ProcessFactoryPrivate* d_ptr;
 };
 
-#endif
+#endif  // DOWNLOADER_LIB_PROCESS_FACTORY_H
