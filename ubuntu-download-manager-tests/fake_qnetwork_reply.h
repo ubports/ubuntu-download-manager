@@ -20,14 +20,13 @@
 #define FAKE_QNETWORK_REPLY_H
 
 #include <QNetworkReply>
-#include "fake.h"
+#include "./fake.h"
 
 
-class FakeQNetworkReply : public QNetworkReply, public Fake
-{
-
+class FakeQNetworkReply : public QNetworkReply, public Fake {
     Q_OBJECT
-public:
+
+ public:
     FakeQNetworkReply(QObject* parent=0);
 
     // fake methods used for the tests
@@ -43,4 +42,4 @@ public:
     virtual qint64 readData(char* data, qint64 maxlen);
 };
 
-#endif // FAKE_QNETWORK_REPLY_H
+#endif  // FAKE_QNETWORK_REPLY_H
