@@ -16,27 +16,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_download.h"
+#include "./fake_download.h"
 
-FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-    const QMap<QString, QString> &headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent):
-        Download(id, path, url, metadata, headers, networkInfo, nam, processFactory, parent),
-        _canDownload(true)
-{
+FakeDownload::FakeDownload(const QUuid& id,
+                           const QString& path,
+                           const QUrl& url,
+                           const QVariantMap& metadata,
+                           const QMap<QString, QString> &headers,
+                           SystemNetworkInfo* networkInfo,
+                           RequestFactory* nam,
+                           ProcessFactory* processFactory,
+                           QObject* parent)
+        : Download(id, path, url, metadata, headers, networkInfo, nam,
+                processFactory, parent),
+        _canDownload(true) {
 }
 
-FakeDownload::FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QMap<QString ,QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam,
-        ProcessFactory* processFactory, QObject* parent) :
-        Download(id, path, url, hash, algo, metadata, headers, networkInfo, nam, processFactory, parent),
-        _canDownload(true)
-{
+FakeDownload::FakeDownload(const QUuid& id,
+                           const QString& path,
+                           const QUrl& url,
+                           const QString& hash,
+                           QCryptographicHash::Algorithm algo,
+                           const QVariantMap& metadata,
+                           const QMap<QString, QString>& headers,
+                           SystemNetworkInfo* networkInfo,
+                           RequestFactory* nam,
+                           ProcessFactory* processFactory,
+                           QObject* parent)
+        : Download(id, path, url, hash, algo, metadata, headers, networkInfo,
+                nam, processFactory, parent),
+        _canDownload(true) {
 }
 
-bool FakeDownload::canDownload()
-{
-    if (_recording)
-    {
+bool
+FakeDownload::canDownload() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("canDownload");
         _called.append(methodData);
@@ -44,15 +58,14 @@ bool FakeDownload::canDownload()
     return _canDownload;
 }
 
-void FakeDownload::setCanDownload(bool canDownload)
-{
+void
+FakeDownload::setCanDownload(bool canDownload) {
     _canDownload = canDownload;
 }
 
-void FakeDownload::setThrottle(qulonglong speed)
-{
-    if (_recording)
-    {
+void
+FakeDownload::setThrottle(qulonglong speed) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new UintWrapper(speed));
 
@@ -61,13 +74,12 @@ void FakeDownload::setThrottle(qulonglong speed)
         MethodData methodData("setThrottle", params);
         _called.append(methodData);
     }
-   Download::setThrottle(speed);
+    Download::setThrottle(speed);
 }
 
-qulonglong FakeDownload::throttle()
-{
-    if (_recording)
-    {
+qulonglong
+FakeDownload::throttle() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("throttle");
         _called.append(methodData);
@@ -75,48 +87,44 @@ qulonglong FakeDownload::throttle()
     return Download::throttle();
 }
 
-void FakeDownload::cancelDownload()
-{
-    if (_recording)
-    {
+void
+FakeDownload::cancelDownload() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("cancelDownload");
         _called.append(methodData);
     }
 }
 
-void FakeDownload::pauseDownload()
-{
-    if (_recording)
-    {
+void
+FakeDownload::pauseDownload() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("pauseDownload");
         _called.append(methodData);
     }
 }
 
-void FakeDownload::resumeDownload()
-{
-    if (_recording)
-    {
+void
+FakeDownload::resumeDownload() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("resumeDownload");
         _called.append(methodData);
     }
 }
 
-void FakeDownload::startDownload()
-{
-    if (_recording)
-    {
+void
+FakeDownload::startDownload() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("startDownload");
         _called.append(methodData);
     }
 }
 
-void FakeDownload::emitFinished(const QString& path)
-{
+void
+FakeDownload::emitFinished(const QString& path) {
     setState(Download::FINISHED);
     emit stateChanged();
     emit finished(path);
