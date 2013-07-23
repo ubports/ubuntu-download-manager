@@ -16,14 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "uuid_factory.h"
+#include "./uuid_factory.h"
 
-UuidFactory::UuidFactory(QObject *parent) :
-    QObject(parent)
-{
+UuidFactory::UuidFactory(QObject *parent)
+    : QObject(parent) {
 }
 
-QUuid UuidFactory::createUuid()
-{
+QUuid
+UuidFactory::createUuid() {
     return QUuid::createUuid();
 }
