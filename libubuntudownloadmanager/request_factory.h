@@ -21,23 +21,22 @@
 
 #include <QNetworkRequest>
 #include <QObject>
-#include "network_reply.h"
-#include "app-downloader-lib_global.h"
+#include "./app-downloader-lib_global.h"
+#include "./network_reply.h"
 
 class RequestFactoryPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject
-{
+class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(RequestFactory)
 
-public:
+ public:
     explicit RequestFactory(QObject *parent = 0);
-    
+
     virtual NetworkReply* get(const QNetworkRequest& request);
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     RequestFactoryPrivate* d_ptr;
 };
 
-#endif // REQUEST_FACTORY_H
+#endif  // DOWNLOADER_LIB_REQUEST_FACTORY_H
