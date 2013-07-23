@@ -27,20 +27,18 @@
 #include <QProcess>
 #include <QUrl>
 #include <QUuid>
-#include "system_network_info.h"
-#include "process_factory.h"
-#include "request_factory.h"
-#include "app-downloader-lib_global.h"
+#include "./app-downloader-lib_global.h"
+#include "./process_factory.h"
+#include "./request_factory.h"
+#include "./system_network_info.h"
 
 class DownloadPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject
-{
+class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Download)
-public:
 
-    enum State
-    {
+ public:
+    enum State {
         IDLE,
         STARTED,
         PAUSED,
@@ -49,11 +47,26 @@ public:
         FINISHED
     };
 
-    explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent=0);
-    explicit Download(const QUuid& id, const QString& path, const QUrl& url, const QString& hash, QCryptographicHash::Algorithm algo,
-        const QVariantMap& metadata, const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam,
-        ProcessFactory* processFactory, QObject* parent=0);
+    explicit Download(const QUuid& id,
+                      const QString& path,
+                      const QUrl& url,
+                      const QVariantMap& metadata,
+                      const QMap<QString, QString>& headers,
+                      SystemNetworkInfo* networkInfo,
+                      RequestFactory* nam,
+                      ProcessFactory* processFactory,
+                      QObject* parent = 0);
+    explicit Download(const QUuid& id,
+                      const QString& path,
+                      const QUrl& url,
+                      const QString& hash,
+                      QCryptographicHash::Algorithm algo,
+                      const QVariantMap& metadata,
+                      const QMap<QString, QString>& headers,
+                      SystemNetworkInfo* networkInfo,
+                      RequestFactory* nam,
+                      ProcessFactory* processFactory,
+                      QObject* parent = 0);
 
     // gets for internal state
     QUuid downloadId();
@@ -74,10 +87,9 @@ public:
     virtual void startDownload();
     static Download* fromMetadata(const QString &path, RequestFactory* nam);
 
-
-public slots:
-    // slots that are exposed via dbus, they just change the state, the downloader
-    // takes care of the actual download operations
+ public slots:  // NOLINT(whitespace/indent)
+    // slots that are exposed via dbus, they just change the state,
+    // the downloader takes care of the actual download operations
     QVariantMap metadata();
     qulonglong progress();
     qulonglong totalSize();
@@ -90,7 +102,7 @@ public slots:
     void resume();
     void start();
 
-signals:
+ signals:
     // signals that are exposed via dbus
     void canceled(bool success);
     void error(const QString& error);
@@ -103,7 +115,7 @@ signals:
     // internal signals used for the download queue
     void stateChanged();
 
-private:
+ private:
     explicit Download();
     // private slots used to keep track of the qnetwork reply state
 
@@ -115,11 +127,12 @@ private:
     // private slots used to keep track of the post download command
 
     Q_PRIVATE_SLOT(d_func(), void onProcessError(QProcess::ProcessError error))
-    Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus))
+    Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode,
+                                              QProcess::ExitStatus exitStatus))
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadPrivate* d_ptr;
 };
 
-#endif // APP_DOWNLOAD_H
+#endif  // DOWNLOADER_LIB_APP_DOWNLOAD_H
