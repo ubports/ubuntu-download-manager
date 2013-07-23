@@ -19,47 +19,48 @@
 #ifndef FAKE_DBUS_CONNECTION_H
 #define FAKE_DBUS_CONNECTION_H
 #include <dbus_connection.h>
-#include "fake.h"
+#include "./fake.h"
 
-class RegisterOptionsWrapper : public QObject
-{
+class RegisterOptionsWrapper : public QObject {
     Q_OBJECT
-public:
-    explicit RegisterOptionsWrapper(QDBusConnection::RegisterOptions options, QObject* parent=0);
+
+ public:
+    explicit RegisterOptionsWrapper(QDBusConnection::RegisterOptions options,
+                                    QObject* parent = 0);
 
     QDBusConnection::RegisterOptions value();
     void setValue(QDBusConnection::RegisterOptions value);
 
-private:
+ private:
     QDBusConnection::RegisterOptions _value;
 };
 
-class UnregisterOptionsWrapper : public QObject
-{
+class UnregisterOptionsWrapper : public QObject {
     Q_OBJECT
-public:
-    explicit UnregisterOptionsWrapper(QDBusConnection::UnregisterMode options, QObject* parent=0);
+ public:
+    explicit UnregisterOptionsWrapper(QDBusConnection::UnregisterMode options,
+                                      QObject* parent = 0);
 
     QDBusConnection::UnregisterMode value();
     void setValue(QDBusConnection::UnregisterMode value);
 
-private:
+ private:
     QDBusConnection::UnregisterMode _value;
 };
 
-class FakeDBusConnection : public DBusConnection, public Fake
-{
+class FakeDBusConnection : public DBusConnection, public Fake {
     Q_OBJECT
-public:
+ public:
     explicit FakeDBusConnection(QObject *parent = 0);
-    
+
     // faked methods
 
     bool registerService(const QString& serviceName) override;
-    bool registerObject(const QString& path, QObject* object,
-        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors) override;
+    bool registerObject(const QString& path,
+                        QObject* object,
+                        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors) override;  // NOLINT(whitespace/line_length)
     void unregisterObject(const QString& path,
-        QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode) override;
+                          QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode) override;  // NOLINT(whitespace/line_length)
 
     // getters and setters of expected results
     bool registerServiceResult();
@@ -68,9 +69,9 @@ public:
     bool registerObjectResult();
     void setRegisterObjectResult(bool result);
 
-private:
+ private:
     bool _registerServiceResult;
     bool _registerObjectResult;
 };
 
-#endif // FAKE_DBUS_CONNECTION_H
+#endif  // FAKE_DBUS_CONNECTION_H
