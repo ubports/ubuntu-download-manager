@@ -16,25 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_dbus_connection.h"
+#include "./fake_dbus_connection.h"
 
 /*
  * REGISTER OPTIONS WRAPPER
  */
 
-RegisterOptionsWrapper::RegisterOptionsWrapper(QDBusConnection::RegisterOptions options, QObject* parent):
-    QObject(parent),
-    _value(options)
-{
+RegisterOptionsWrapper::RegisterOptionsWrapper(
+                QDBusConnection::RegisterOptions options,
+                QObject* parent)
+    : QObject(parent),
+      _value(options) {
 }
 
-QDBusConnection::RegisterOptions RegisterOptionsWrapper::value()
-{
+QDBusConnection::RegisterOptions
+RegisterOptionsWrapper::value() {
     return _value;
 }
 
-void RegisterOptionsWrapper::setValue(QDBusConnection::RegisterOptions value)
-{
+void
+RegisterOptionsWrapper::setValue(QDBusConnection::RegisterOptions value) {
     _value = value;
 }
 
@@ -42,19 +43,20 @@ void RegisterOptionsWrapper::setValue(QDBusConnection::RegisterOptions value)
  * UNREGISTER OPTIONS WRAPPER
  */
 
-UnregisterOptionsWrapper::UnregisterOptionsWrapper(QDBusConnection::UnregisterMode options, QObject* parent) :
-    QObject(parent),
-    _value(options)
-{
+UnregisterOptionsWrapper::UnregisterOptionsWrapper(
+                QDBusConnection::UnregisterMode options,
+                QObject* parent)
+    : QObject(parent),
+      _value(options) {
 }
 
-QDBusConnection::UnregisterMode UnregisterOptionsWrapper::value()
-{
+QDBusConnection::UnregisterMode
+UnregisterOptionsWrapper::value() {
     return _value;
 }
 
-void UnregisterOptionsWrapper::setValue(QDBusConnection::UnregisterMode value)
-{
+void
+UnregisterOptionsWrapper::setValue(QDBusConnection::UnregisterMode value) {
     _value = value;
 }
 
@@ -62,18 +64,16 @@ void UnregisterOptionsWrapper::setValue(QDBusConnection::UnregisterMode value)
  * FAKE DBUS CONNECTION
  */
 
-FakeDBusConnection::FakeDBusConnection(QObject *parent) :
-    DBusConnection(parent),
-    Fake()
-{
+FakeDBusConnection::FakeDBusConnection(QObject *parent)
+    : DBusConnection(parent),
+    Fake() {
     _registerServiceResult = false;
     _registerObjectResult = false;
 }
 
-bool FakeDBusConnection::registerService(const QString& serviceName)
-{
-    if (_recording)
-    {
+bool
+FakeDBusConnection::registerService(const QString& serviceName) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new StringWrapper(serviceName, this));
 
@@ -83,16 +83,15 @@ bool FakeDBusConnection::registerService(const QString& serviceName)
 
         MethodData methodData("registerService", params);
         _called.append(methodData);
-
     }
     return _registerServiceResult;
 }
 
-bool FakeDBusConnection::registerObject(const QString& path, QObject* object,
-    QDBusConnection::RegisterOptions options)
-{
-    if (_recording)
-    {
+bool
+FakeDBusConnection::registerObject(const QString& path,
+                                   QObject* object,
+                                   QDBusConnection::RegisterOptions options) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new StringWrapper(path, this));
         inParams.append(object);
@@ -104,16 +103,14 @@ bool FakeDBusConnection::registerObject(const QString& path, QObject* object,
 
         MethodData methodData("registerObject", params);
         _called.append(methodData);
-
     }
     return _registerObjectResult;
 }
 
-void FakeDBusConnection::unregisterObject(const QString& path,
-    QDBusConnection::UnregisterMode mode)
-{
-    if (_recording)
-    {
+void
+FakeDBusConnection::unregisterObject(const QString& path,
+                                     QDBusConnection::UnregisterMode mode) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new StringWrapper(path, this));
         inParams.append(new UnregisterOptionsWrapper(mode, this));
@@ -123,26 +120,25 @@ void FakeDBusConnection::unregisterObject(const QString& path,
 
         MethodData methodData("unregisterObject", params);
         _called.append(methodData);
-
     }
 }
 
-bool FakeDBusConnection::registerServiceResult()
-{
+bool
+FakeDBusConnection::registerServiceResult() {
     return _registerServiceResult;
 }
 
-void FakeDBusConnection::setRegisterServiceResult(bool result)
-{
+void
+FakeDBusConnection::setRegisterServiceResult(bool result) {
     _registerServiceResult = result;
 }
 
-bool FakeDBusConnection::registerObjectResult()
-{
+bool
+FakeDBusConnection::registerObjectResult() {
     return _registerObjectResult;
 }
 
-void FakeDBusConnection::setRegisterObjectResult(bool result)
-{
+void
+FakeDBusConnection::setRegisterObjectResult(bool result) {
     _registerObjectResult = result;
 }
