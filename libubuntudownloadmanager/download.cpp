@@ -788,7 +788,7 @@ Download::Download(const QUuid& id,
                    SystemNetworkInfo* networkInfo,
                    RequestFactory* nam,
                    ProcessFactory* processFactory,
-                   QObject* parent)x:
+                   QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadPrivate(id, path, url, metadata, headers,
                   networkInfo, nam, processFactory, this)) {
