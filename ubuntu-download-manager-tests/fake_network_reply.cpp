@@ -16,29 +16,27 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_qnetwork_reply.h"
-#include "fake_network_reply.h"
+#include "./fake_qnetwork_reply.h"
+#include "./fake_network_reply.h"
 
-FakeNetworkReply::FakeNetworkReply(QObject *parent) :
-    NetworkReply(new FakeQNetworkReply(parent)),
-    Fake()
-{
+FakeNetworkReply::FakeNetworkReply(QObject *parent)
+    : NetworkReply(new FakeQNetworkReply(parent)),
+      Fake() {
 }
 
-QByteArray FakeNetworkReply::data()
-{
+QByteArray
+FakeNetworkReply::data() {
     return _data;
 }
 
-void FakeNetworkReply::setData(QByteArray data)
-{
+void
+FakeNetworkReply::setData(QByteArray data) {
     _data = data;
 }
 
-QByteArray FakeNetworkReply::readAll()
-{
-    if (_recording)
-    {
+QByteArray
+FakeNetworkReply::readAll() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("readAll");
         _called.append(methodData);
@@ -46,20 +44,18 @@ QByteArray FakeNetworkReply::readAll()
     return _data;
 }
 
-void FakeNetworkReply::abort()
-{
-    if (_recording)
-    {
+void
+FakeNetworkReply::abort() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("abort");
         _called.append(methodData);
     }
 }
 
-void FakeNetworkReply::setReadBufferSize(uint size)
-{
-    if (_recording)
-    {
+void
+FakeNetworkReply::setReadBufferSize(uint size) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new UintWrapper(size));
 
@@ -70,7 +66,7 @@ void FakeNetworkReply::setReadBufferSize(uint size)
     }
 }
 
-void FakeNetworkReply::emitFinished()
-{
+void
+FakeNetworkReply::emitFinished() {
     emit finished();
 }
