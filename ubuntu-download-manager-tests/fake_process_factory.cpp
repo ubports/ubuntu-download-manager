@@ -16,22 +16,19 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_process_factory.h"
-#include "fake_process.h"
+#include "./fake_process_factory.h"
+#include "./fake_process.h"
 
-FakeProcessFactory::FakeProcessFactory(QObject *parent) :
-    ProcessFactory(parent),
-    Fake()
-{
+FakeProcessFactory::FakeProcessFactory(QObject *parent)
+    : ProcessFactory(parent),
+      Fake() {
 }
 
-Process* FakeProcessFactory::createProcess()
-{
-
+Process*
+FakeProcessFactory::createProcess() {
     FakeProcess* process = new FakeProcess();
 
-    if (_recording)
-    {
+    if (_recording) {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
