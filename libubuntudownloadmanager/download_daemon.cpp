@@ -65,7 +65,8 @@ DownloadDaemonPrivate::~DownloadDaemonPrivate() {
         delete _downInterface;
 }
 
-bool DownloadDaemonPrivate::start() {
+bool
+DownloadDaemonPrivate::start() {
     qDebug() << "Starting daemon";
     _downAdaptor = new DownloadManagerAdaptor(_downInterface);
     bool ret = _conn->registerService("com.canonical.applications.Downloader");
@@ -94,7 +95,8 @@ DownloadDaemon::DownloadDaemon(DBusConnection* conn, QObject *parent)
       d_ptr(new DownloadDaemonPrivate(conn, this)) {
 }
 
-bool DownloadDaemon::start() {
+bool
+DownloadDaemon::start() {
     Q_D(DownloadDaemon);
     return d->start();
 }

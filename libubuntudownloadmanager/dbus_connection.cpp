@@ -44,17 +44,20 @@ DBusConnectionPrivate::DBusConnectionPrivate(DBusConnection* parent)
       q_ptr(parent) {
 }
 
-bool DBusConnectionPrivate::registerService(const QString& serviceName) {
+bool
+DBusConnectionPrivate::registerService(const QString& serviceName) {
     return _conn.registerService(serviceName);
 }
 
-bool DBusConnectionPrivate::registerObject(const QString& path,
-		                           QObject* object,
-                                           QDBusConnection::RegisterOptions options) {  // NOLINT(whitespace/line_length)
+bool
+DBusConnectionPrivate::registerObject(const QString& path,
+                                      QObject* object,
+                                      QDBusConnection::RegisterOptions options) {  // NOLINT(whitespace/line_length)
     return _conn.registerObject(path, object, options);
 }
 
-void DBusConnectionPrivate::unregisterObject(const QString& path,
+void
+DBusConnectionPrivate::unregisterObject(const QString& path,
     QDBusConnection::UnregisterMode mode) {
     return _conn.unregisterObject(path, mode);
 }
@@ -68,20 +71,23 @@ DBusConnection::DBusConnection(QObject *parent)
       d_ptr(new DBusConnectionPrivate(this)) {
 }
 
-bool DBusConnection::registerService(const QString& serviceName) {
+bool
+DBusConnection::registerService(const QString& serviceName) {
     Q_D(DBusConnection);
     return d->registerService(serviceName);
 }
 
-bool DBusConnection::registerObject(const QString& path,
-		                    QObject* object,
-                                    QDBusConnection::RegisterOptions options) {
+bool
+DBusConnection::registerObject(const QString& path,
+		               QObject* object,
+                               QDBusConnection::RegisterOptions options) {
     Q_D(DBusConnection);
     return d->registerObject(path, object, options);
 }
 
-void DBusConnection::unregisterObject(const QString& path,
-                                      QDBusConnection::UnregisterMode mode) {
+void
+DBusConnection::unregisterObject(const QString& path,
+                                 QDBusConnection::UnregisterMode mode) {
     Q_D(DBusConnection);
     d->unregisterObject(path, mode);
 }
