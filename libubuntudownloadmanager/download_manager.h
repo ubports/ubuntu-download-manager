@@ -22,41 +22,52 @@
 #include <QObject>
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
-#include "dbus_connection.h"
-#include "download.h"
-#include "download_queue.h"
-#include "uuid_factory.h"
-#include "system_network_info.h"
-#include "metatypes.h"
+#include "./dbus_connection.h"
+#include "./download.h"
+#include "./download_queue.h"
+#include "./metatypes.h"
+#include "./system_network_info.h"
+#include "./uuid_factory.h"
 
 class DownloadManagerPrivate;
-class DownloadManager : public QObject
-{
+class DownloadManager : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadManager)
-public:
-    explicit DownloadManager(DBusConnection* connection, QObject *parent = 0);
-    explicit DownloadManager(DBusConnection* connection, SystemNetworkInfo* networkInfo, DownloadQueue* queue, UuidFactory* uuidFactory, QObject *parent = 0);
+
+ public:
+    explicit DownloadManager(DBusConnection* connection,
+                             QObject *parent = 0);
+    explicit DownloadManager(DBusConnection* connection,
+                             SystemNetworkInfo* networkInfo,
+                             DownloadQueue* queue,
+                             UuidFactory* uuidFactory,
+                             QObject *parent = 0);
     void loadPreviewsDownloads(const QString &path);
 
-public slots:
-    QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, StringMap headers);
-    QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash,
-        const QVariantMap &metadata, StringMap headers);
+ public slots:  // NOLINT(whitespace/indent)
+    QDBusObjectPath createDownload(const QString &url,
+                                   const QVariantMap &metadata,
+                                   StringMap headers);
+    QDBusObjectPath createDownloadWithHash(const QString &url,
+                                           const QString &algorithm,
+                                           const QString &hash,
+                                           const QVariantMap &metadata,
+                                           StringMap headers);
     qulonglong defaultThrottle();
     void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();
-    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name, const QString& value);
+    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name,
+                                                       const QString& value);
 
-Q_SIGNALS:
+ signals:
     void downloadCreated(const QDBusObjectPath& path);
 
-private:
+ private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadRemoved(QString))
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadManagerPrivate* d_ptr;
 };
 
-#endif // DOWNLOADER_H
+#endif  // DOWNLOADER_LIB_DOWNLOADER_H
