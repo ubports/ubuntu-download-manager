@@ -24,36 +24,34 @@
 #include <QNetworkReply>
 
 class NetworkReplyPrivate;
-class NetworkReply : public QObject
-{
+class NetworkReply : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(NetworkReply)
 
-public:
+ public:
     explicit NetworkReply(QNetworkReply* reply, QObject *parent = 0);
-    
-public:
+
     virtual QByteArray readAll();
     virtual void abort();
     virtual void setReadBufferSize(uint size);
 
-signals:
+ signals:
     // signals fowarded from the real reply object
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void error(QNetworkReply::NetworkError code);
     void finished();
     void sslErrors(const QList<QSslError>& errors);
-    
-private:
-    Q_PRIVATE_SLOT(d_func(), void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal))
+
+ private:
+    Q_PRIVATE_SLOT(d_func(),
+            void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal))
     Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError code))
     Q_PRIVATE_SLOT(d_func(), void onFinished())
     Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>& errors))
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     NetworkReplyPrivate* d_ptr;
-
 };
 
-#endif // NETWORK_REPLY_H
+#endif  // DOWNLOADER_LIB_NETWORK_REPLY_H
