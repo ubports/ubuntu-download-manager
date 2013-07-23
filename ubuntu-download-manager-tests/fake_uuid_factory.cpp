@@ -16,23 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_uuid_factory.h"
+#include "./fake_uuid_factory.h"
 
-FakeUuidFactory::FakeUuidFactory(QObject *parent) :
-    UuidFactory(parent)
-{
+FakeUuidFactory::FakeUuidFactory(QObject *parent)
+    : UuidFactory(parent) {
     _id = QUuid::createUuid();
 }
 
-QUuid FakeUuidFactory::data()
-{
+QUuid
+FakeUuidFactory::data() {
     return _id;
 }
 
-QUuid FakeUuidFactory::createUuid()
-{
-    if (_recording)
-    {
+QUuid
+FakeUuidFactory::createUuid() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createUuid");
         _called.append(methodData);
