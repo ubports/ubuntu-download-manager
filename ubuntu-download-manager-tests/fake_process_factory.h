@@ -21,16 +21,15 @@
 
 #include <QObject>
 #include <process_factory.h>
-#include "fake.h"
+#include "./fake.h"
 
-class FakeProcessFactory : public ProcessFactory, public Fake
-{
+class FakeProcessFactory : public ProcessFactory, public Fake {
     Q_OBJECT
-public:
+
+ public:
     explicit FakeProcessFactory(QObject *parent = 0);
-    
+
     Process* createProcess() override;
-    
 };
 
-#endif // FAKE_PROCESS_FACTORY_H
+#endif  // FAKE_PROCESS_FACTORY_H
