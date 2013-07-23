@@ -23,21 +23,20 @@
 #include <QtDBus/QDBusConnection>
 
 class DBusConnectionPrivate;
-class DBusConnection : public QObject
-{
+class DBusConnection : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DBusConnection)
-public:
+ public:
     explicit DBusConnection(QObject *parent = 0);
 
     virtual bool registerService(const QString& serviceName);
     virtual bool registerObject(const QString& path, QObject* object,
-        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);
+        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
     virtual void unregisterObject(const QString& path,
         QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
 
-private:
+ private:
     DBusConnectionPrivate* d_ptr;
 };
 
-#endif // DBUS_CONNECTION_H
+#endif  // DOWNLOADER_LIB_DBUS_CONNECTION_H
