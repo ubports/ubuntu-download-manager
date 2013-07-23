@@ -22,13 +22,13 @@
 #include <QUuid>
 #include <QObject>
 
-class UuidFactory : public QObject
-{
+class UuidFactory : public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit UuidFactory(QObject *parent = 0);
-    
+
     virtual QUuid createUuid();
 };
 
-#endif // UUID_FACTORY_H
+#endif  // DOWNLOADER_LIB_UUID_FACTORY_H
