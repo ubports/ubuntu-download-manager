@@ -21,18 +21,32 @@
 #include <download.h>
 #include <system_network_info.h>
 #include <metatypes.h>
-#include "fake.h"
+#include "./fake.h"
 
-class FakeDownload : public Download, public Fake
-{
+class FakeDownload : public Download, public Fake {
     Q_OBJECT
-public:
-    explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QVariantMap& metadata,
-        const QMap<QString, QString>& headers, SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory,
-        QObject* parent=0);
-    explicit FakeDownload(const QUuid& id, const QString& path, const QUrl& url, const QString& hash,
-        QCryptographicHash::Algorithm algo, const QVariantMap& metadata, const QMap<QString, QString> &headers,
-        SystemNetworkInfo* networkInfo, RequestFactory* nam, ProcessFactory* processFactory, QObject* parent=0);
+
+ public:
+    explicit FakeDownload(const QUuid& id,
+                          const QString& path,
+                          const QUrl& url,
+                          const QVariantMap& metadata,
+                          const QMap<QString, QString>& headers,
+                          SystemNetworkInfo* networkInfo,
+                          RequestFactory* nam,
+                          ProcessFactory* processFactory,
+                          QObject* parent = 0);
+    explicit FakeDownload(const QUuid& id,
+                          const QString& path,
+                          const QUrl& url,
+                          const QString& hash,
+                          QCryptographicHash::Algorithm algo,
+                          const QVariantMap& metadata,
+                          const QMap<QString, QString> &headers,
+                          SystemNetworkInfo* networkInfo,
+                          RequestFactory* nam,
+                          ProcessFactory* processFactory,
+                          QObject* parent = 0);
 
     bool canDownload() override;
     void setCanDownload(bool canDownload);
@@ -45,9 +59,9 @@ public:
 
     // useful methods to emit signals
     void emitFinished(const QString& path);
-    
-private:
+
+ private:
     bool _canDownload;
 };
 
-#endif // FAKE_DOWNLOAD_H
+#endif  // FAKE_DOWNLOAD_H
