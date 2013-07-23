@@ -16,53 +16,52 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "system_network_info.h"
+#include "./system_network_info.h"
 
 
 /*
  * PRIVATE IMPLEMENTATION
  */
 
-class SystemNetworkInfoPrivate
-{
+class SystemNetworkInfoPrivate {
     Q_DECLARE_PUBLIC(SystemNetworkInfo)
-public:
+
+ public:
     explicit SystemNetworkInfoPrivate(SystemNetworkInfo* parent);
     ~SystemNetworkInfoPrivate();
 
     QNetworkInfo::NetworkMode currentNetworkMode();
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
 
-private:
+ private:
     QNetworkInfo* _info;
     SystemNetworkInfo* q_ptr;
-
 };
 
-SystemNetworkInfoPrivate::SystemNetworkInfoPrivate(SystemNetworkInfo* parent):
-    q_ptr(parent)
-{
+SystemNetworkInfoPrivate::SystemNetworkInfoPrivate(SystemNetworkInfo* parent)
+    : q_ptr(parent) {
     Q_Q(SystemNetworkInfo);
     _info = new QNetworkInfo();
 
     // connect to interesting signal
-    q->connect(_info, SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)),
-        q, SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
+    q->connect(_info,
+            SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
+            SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
 }
 
-SystemNetworkInfoPrivate::~SystemNetworkInfoPrivate()
-{
+SystemNetworkInfoPrivate::~SystemNetworkInfoPrivate() {
     if (_info != NULL)
         delete _info;
 }
 
-QNetworkInfo::NetworkMode SystemNetworkInfoPrivate::currentNetworkMode()
-{
+QNetworkInfo::NetworkMode
+SystemNetworkInfoPrivate::currentNetworkMode() {
     return _info->currentNetworkMode();
 }
 
-void SystemNetworkInfoPrivate::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode)
-{
+void
+SystemNetworkInfoPrivate::onCurrentNetworkModeChanged(
+        QNetworkInfo::NetworkMode mode) {
     // foward the signal
     Q_Q(SystemNetworkInfo);
     emit q->currentNetworkModeChanged(mode);
@@ -72,14 +71,13 @@ void SystemNetworkInfoPrivate::onCurrentNetworkModeChanged(QNetworkInfo::Network
  * PUBLIC IMPLEMNTATION
  */
 
-SystemNetworkInfo::SystemNetworkInfo(QObject *parent) :
-    QObject(parent),
-    d_ptr(new SystemNetworkInfoPrivate(this))
-{
+SystemNetworkInfo::SystemNetworkInfo(QObject *parent)
+    : QObject(parent),
+      d_ptr(new SystemNetworkInfoPrivate(this)) {
 }
 
-QNetworkInfo::NetworkMode SystemNetworkInfo::currentNetworkMode()
-{
+QNetworkInfo::NetworkMode
+SystemNetworkInfo::currentNetworkMode() {
     Q_D(SystemNetworkInfo);
     return d->currentNetworkMode();
 }
