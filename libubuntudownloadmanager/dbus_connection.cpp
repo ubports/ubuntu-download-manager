@@ -48,8 +48,9 @@ bool DBusConnectionPrivate::registerService(const QString& serviceName) {
     return _conn.registerService(serviceName);
 }
 
-bool DBusConnectionPrivate::registerObject(const QString& path, QObject* object,
-    QDBusConnection::RegisterOptions options) {
+bool DBusConnectionPrivate::registerObject(const QString& path,
+		                           QObject* object,
+                                           QDBusConnection::RegisterOptions options) {  // NOLINT(whitespace/line_length)
     return _conn.registerObject(path, object, options);
 }
 
@@ -72,14 +73,15 @@ bool DBusConnection::registerService(const QString& serviceName) {
     return d->registerService(serviceName);
 }
 
-bool DBusConnection::registerObject(const QString& path, QObject* object,
-    QDBusConnection::RegisterOptions options) {
+bool DBusConnection::registerObject(const QString& path,
+		                    QObject* object,
+                                    QDBusConnection::RegisterOptions options) {
     Q_D(DBusConnection);
     return d->registerObject(path, object, options);
 }
 
 void DBusConnection::unregisterObject(const QString& path,
-    QDBusConnection::UnregisterMode mode) {
+                                      QDBusConnection::UnregisterMode mode) {
     Q_D(DBusConnection);
     d->unregisterObject(path, mode);
 }
