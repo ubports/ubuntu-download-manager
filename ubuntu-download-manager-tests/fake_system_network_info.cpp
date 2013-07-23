@@ -16,33 +16,31 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_system_network_info.h"
+#include "./fake_system_network_info.h"
 
-NetworkModeWrapper::NetworkModeWrapper(QNetworkInfo::NetworkMode mode, QObject *parent):
-    QObject(parent)
-{
+NetworkModeWrapper::NetworkModeWrapper(QNetworkInfo::NetworkMode mode,
+                                       QObject *parent)
+    : QObject(parent) {
     _mode = mode;
 }
 
-QNetworkInfo::NetworkMode NetworkModeWrapper::mode()
-{
+QNetworkInfo::NetworkMode
+NetworkModeWrapper::mode() {
     return _mode;
 }
 
-void NetworkModeWrapper::setMode(QNetworkInfo::NetworkMode mode)
-{
+void
+NetworkModeWrapper::setMode(QNetworkInfo::NetworkMode mode) {
     _mode = mode;
 }
 
-FakeSystemNetworkInfo::FakeSystemNetworkInfo(QObject *parent) :
-    SystemNetworkInfo(parent)
-{
+FakeSystemNetworkInfo::FakeSystemNetworkInfo(QObject *parent)
+    : SystemNetworkInfo(parent) {
 }
 
-QNetworkInfo::NetworkMode FakeSystemNetworkInfo::currentNetworkMode()
-{
-    if (_recording)
-    {
+QNetworkInfo::NetworkMode
+FakeSystemNetworkInfo::currentNetworkMode() {
+    if (_recording) {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
@@ -55,12 +53,12 @@ QNetworkInfo::NetworkMode FakeSystemNetworkInfo::currentNetworkMode()
     return _mode;
 }
 
-QNetworkInfo::NetworkMode FakeSystemNetworkInfo::mode()
-{
+QNetworkInfo::NetworkMode
+FakeSystemNetworkInfo::mode() {
     return _mode;
 }
 
-void FakeSystemNetworkInfo::setMode(QNetworkInfo::NetworkMode mode)
-{
+void
+FakeSystemNetworkInfo::setMode(QNetworkInfo::NetworkMode mode) {
     _mode = mode;
 }
