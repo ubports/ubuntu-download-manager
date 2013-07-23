@@ -20,17 +20,17 @@
 #define FAKE_DOWNLOAD_QUEUE_H
 #include <download_queue.h>
 #include <system_network_info.h>
-#include "fake.h"
+#include "./fake.h"
 
-class FakeDownloadQueue : public DownloadQueue, public Fake
-{
+class FakeDownloadQueue : public DownloadQueue, public Fake {
     Q_OBJECT
-public:
-    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo, QObject *parent = 0);
+
+ public:
+    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo,
+                               QObject *parent = 0);
 
     void add(Download* download, DownloadAdaptor* adaptor) override;
     void add(const QPair<Download*, DownloadAdaptor*>& value) override;
-
 };
 
-#endif // FAKE_DOWNLOAD_QUEUE_H
+#endif  // FAKE_DOWNLOAD_QUEUE_H
