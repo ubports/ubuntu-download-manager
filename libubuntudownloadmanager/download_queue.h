@@ -21,18 +21,18 @@
 
 #include <QList>
 #include <QPair>
-#include "download.h"
-#include "download_adaptor.h"
-#include "system_network_info.h"
+#include "./download.h"
+#include "./download_adaptor.h"
+#include "./system_network_info.h"
 
 class DownloadQueuePrivate;
-class DownloadQueue : public QObject
-{
+class DownloadQueue : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadQueue)
-public:
-    explicit DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent=0);
-    
+
+ public:
+    explicit DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent = 0);
+
     virtual void add(Download* download, DownloadAdaptor* adaptor);
     virtual void add(const QPair<Download*, DownloadAdaptor*>& value);
 
@@ -41,20 +41,20 @@ public:
     QStringList paths();
     QHash<QString, Download*> downloads();
 
-signals:
+ signals:
     // signals raised when things happens within the q
     void currentChanged(QString path);
     void downloadAdded(QString path);
     void downloadRemoved(QString path);
 
-private:
+ private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
     Q_PRIVATE_SLOT(d_func(), void onDestroyed(const QString& path))
-    Q_PRIVATE_SLOT(d_func(), void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
+    Q_PRIVATE_SLOT(d_func(),
+            void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
-private:
+ private:
     DownloadQueuePrivate* d_ptr;
-
 };
 
-#endif // DOWNLOAD_QUEUE_H
+#endif  // DOWNLOADER_LIB_DOWNLOAD_QUEUE_H
