@@ -21,36 +21,36 @@
 
 #include <QObject>
 #include <system_network_info.h>
-#include "fake.h"
+#include "./fake.h"
 
-class NetworkModeWrapper : public QObject
-{
+class NetworkModeWrapper : public QObject {
     Q_OBJECT
 
-public:
-    explicit NetworkModeWrapper(QNetworkInfo::NetworkMode mode, QObject *parent = 0);
+ public:
+    explicit NetworkModeWrapper(QNetworkInfo::NetworkMode mode,
+                                QObject *parent = 0);
 
     QNetworkInfo::NetworkMode mode();
     void setMode(QNetworkInfo::NetworkMode mode);
 
-private:
+ private:
     QNetworkInfo::NetworkMode _mode;
 };
 
-class FakeSystemNetworkInfo : public SystemNetworkInfo, public Fake
-{
+class FakeSystemNetworkInfo : public SystemNetworkInfo, public Fake {
     Q_OBJECT
-public:
+
+ public:
     explicit FakeSystemNetworkInfo(QObject *parent = 0);
-    
+
     QNetworkInfo::NetworkMode currentNetworkMode() override;
 
     // getters and setters used to force the result
     QNetworkInfo::NetworkMode mode();
     void setMode(QNetworkInfo::NetworkMode mode);
 
-private:
+ private:
     QNetworkInfo::NetworkMode _mode;
 };
 
-#endif // FAKE_SYSTEM_NETWORK_INFO_H
+#endif  // FAKE_SYSTEM_NETWORK_INFO_H
