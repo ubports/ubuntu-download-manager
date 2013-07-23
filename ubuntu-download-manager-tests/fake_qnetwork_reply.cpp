@@ -18,26 +18,23 @@
 
 #include "fake_qnetwork_reply.h"
 
-FakeQNetworkReply::FakeQNetworkReply(QObject* parent) :
-    QNetworkReply(parent),
-    Fake()
-{
+FakeQNetworkReply::FakeQNetworkReply(QObject* parent)
+    : QNetworkReply(parent),
+      Fake() {
 }
 
-void FakeQNetworkReply::abort()
-{
-    if (_recording)
-    {
+void
+FakeQNetworkReply::abort() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("abort");
         _called.append(methodData);
     }
 }
 
-void FakeQNetworkReply::deleteLater()
-{
-    if (_recording)
-    {
+void
+FakeQNetworkReply::deleteLater() {
+    if (_recording) {
         MethodData methodData;
         methodData.setMethodName("deleteLater");
         _called.append(methodData);
@@ -46,29 +43,35 @@ void FakeQNetworkReply::deleteLater()
     QObject::deleteLater();
 }
 
-qint64 FakeQNetworkReply::bytesAvailable() const
-{
+qint64
+FakeQNetworkReply::bytesAvailable() const {
     return 0;
 }
-qint64 FakeQNetworkReply::bytesToWrite() const
-{
+
+qint64
+FakeQNetworkReply::bytesToWrite() const {
     return -1;
 }
 
-bool FakeQNetworkReply::canReadLine() const {
+bool
+FakeQNetworkReply::canReadLine() const {
     qFatal("not implemented"); return false;
 }
 
-bool FakeQNetworkReply::waitForReadyRead(int) {
+bool
+FakeQNetworkReply::waitForReadyRead(int data) {
+    Q_UNUSED(data);
     qFatal("not implemented"); return false;
 }
 
-bool FakeQNetworkReply::waitForBytesWritten(int) {
+bool
+FakeQNetworkReply::waitForBytesWritten(int data) {
+    Q_UNUSED(data);
     qFatal("not implemented"); return false;
 }
 
-qint64 FakeQNetworkReply::readData(char* data, qint64 maxlen)
-{
+qint64
+FakeQNetworkReply::readData(char* data, qint64 maxlen) {
     Q_UNUSED(data)
     Q_UNUSED(maxlen)
     return 0;
