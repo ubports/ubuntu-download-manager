@@ -18,22 +18,21 @@
 
 #include <QSslError>
 #include <QSignalSpy>
-#include "test_network_reply.h"
-#include "fake_qnetwork_reply.h"
+#include "./test_network_reply.h"
+#include "./fake_qnetwork_reply.h"
 
-TestNetworkReply::TestNetworkReply(QObject *parent) :
-    QObject(parent)
-{
+TestNetworkReply::TestNetworkReply(QObject *parent)
+    : QObject(parent) {
 }
 
-void TestNetworkReply::init()
-{
+void
+TestNetworkReply::init() {
     _qReply = new FakeQNetworkReply();
     _reply = new NetworkReply(_qReply);
 }
 
-void TestNetworkReply::cleanup()
-{
+void
+TestNetworkReply::cleanup() {
     if (_reply != NULL)
         _reply->deleteLater();
 
@@ -41,8 +40,8 @@ void TestNetworkReply::cleanup()
         _qReply->deleteLater();
 }
 
-void TestNetworkReply::testDownloadProgressForwarded_data()
-{
+void
+TestNetworkReply::testDownloadProgressForwarded_data() {
     QTest::addColumn<uint>("received");
     QTest::addColumn<uint>("total");
 
@@ -52,8 +51,8 @@ void TestNetworkReply::testDownloadProgressForwarded_data()
     QTest::newRow("Last row") << 3434u << 2323u;
 }
 
-void TestNetworkReply::testDownloadProgressForwarded()
-{
+void
+TestNetworkReply::testDownloadProgressForwarded() {
     QFETCH(uint, received);
     QFETCH(uint, total);
 
@@ -66,23 +65,23 @@ void TestNetworkReply::testDownloadProgressForwarded()
     QCOMPARE(arguments.at(1).toUInt(), total);
 }
 
-void TestNetworkReply::testErrorForwarded()
-{
+void
+TestNetworkReply::testErrorForwarded() {
     QSignalSpy spy(_reply, SIGNAL(error(QNetworkReply::NetworkError)));
     emit _qReply->error(QNetworkReply::NoError);
 
     QCOMPARE(spy.count(), 1);
 }
 
-void TestNetworkReply::testFinishedForwarded()
-{
+void
+TestNetworkReply::testFinishedForwarded() {
     QSignalSpy spy(_reply, SIGNAL(finished()));
     emit _qReply->finished();
     QCOMPARE(spy.count(), 1);
 }
 
-void TestNetworkReply::testSslErrorsForwarded()
-{
+void
+TestNetworkReply::testSslErrorsForwarded() {
     QList<QSslError> errors;
     QSignalSpy spy(_reply, SIGNAL(sslErrors(const QList<QSslError>&)));
     emit _qReply->sslErrors(errors);
