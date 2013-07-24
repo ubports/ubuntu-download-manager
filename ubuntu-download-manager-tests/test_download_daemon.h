@@ -21,16 +21,16 @@
 
 #include <QObject>
 #include <download_daemon.h>
-#include "fake_dbus_connection.h"
-#include "test_runner.h"
+#include "./fake_dbus_connection.h"
+#include "./test_runner.h"
 
-class TestDownloadDaemon : public QObject
-{
+class TestDownloadDaemon : public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit TestDownloadDaemon(QObject *parent = 0);
-    
-private slots:
+
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -38,11 +38,11 @@ private slots:
     void testStartFailServiceRegister();
     void testStartFailObjectRegister();
 
-private:
+ private:
     FakeDBusConnection* _conn;
     DownloadDaemon* _daemon;
 };
 
 DECLARE_TEST(TestDownloadDaemon)
 
-#endif // TEST_DOWNLOAD_DAEMON_H
+#endif  // TEST_DOWNLOAD_DAEMON_H
