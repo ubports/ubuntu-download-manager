@@ -18,29 +18,29 @@
 
 #include <QDebug>
 #include <QSignalSpy>
-#include "test_download_queue.h"
+#include "./test_download_queue.h"
 
-TestDownloadQueue::TestDownloadQueue(QObject *parent) :
-    QObject(parent)
-{
+TestDownloadQueue::TestDownloadQueue(QObject *parent)
+    : QObject(parent) {
 }
 
-void TestDownloadQueue::init()
-{
+void
+TestDownloadQueue::init() {
     _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(), QVariantMap(), QMap<QString, QString>(), _networkInfo,
-        _reqFactory, _processFactory);
+    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(),
+        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory, _processFactory);
     _firstAdaptor = new DownloadAdaptor(_first);
-    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(), QVariantMap(), QMap<QString, QString>(), _networkInfo,
-        _reqFactory, _processFactory);
+    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(),
+        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
+        _processFactory);
     _secondAdaptor = new DownloadAdaptor(_second);
     _q = new DownloadQueue(_networkInfo);
 }
 
-void TestDownloadQueue::cleanup()
-{
+void
+TestDownloadQueue::cleanup() {
     if (_q != NULL)
         delete _q;
 
@@ -52,11 +52,10 @@ void TestDownloadQueue::cleanup()
 
     if (_second != NULL)
         delete _second;
-
 }
 
-void TestDownloadQueue::testAddDownload()
-{
+void
+TestDownloadQueue::testAddDownload() {
     // test that when a download added the add signals is raised
     QSignalSpy spy(_q, SIGNAL(downloadAdded(QString)));
     _q->add(_first, _firstAdaptor);
@@ -67,8 +66,8 @@ void TestDownloadQueue::testAddDownload()
     QCOMPARE(arguments.at(0).toString(), _first->path());
 }
 
-void TestDownloadQueue::testStartDownloadWithNoCurrent()
-{
+void
+TestDownloadQueue::testStartDownloadWithNoCurrent() {
     // add a download, set the state to start and assert that it will be started
     _first->record();
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
@@ -89,8 +88,8 @@ void TestDownloadQueue::testStartDownloadWithNoCurrent()
     QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
 
-void TestDownloadQueue::testStartDownloadWithCurrent()
-{
+void
+TestDownloadQueue::testStartDownloadWithCurrent() {
     // add a download, start it, add a second one and
     // assert that we did not start it right away
     _first->record();
@@ -117,8 +116,8 @@ void TestDownloadQueue::testStartDownloadWithCurrent()
     QCOMPARE(0, calledMethods.count());
 }
 
-void TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload()
-{
+void
+TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload() {
     // tell the fake that it cannot download (GSM enabled)
     _first->setCanDownload(false);
     _first->record();
@@ -136,13 +135,14 @@ void TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload()
 
     // state that startDownload was called in first
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(1, calledMethods.count()); // just canDownload should be called
+    QCOMPARE(1, calledMethods.count());  // just canDownload should be called
     QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
-void TestDownloadQueue::testPauseDownloadNoOtherReady()
-{
-    // add, start and pause a download, this should, chage current to "" and emit the required
+void
+TestDownloadQueue::testPauseDownloadNoOtherReady() {
+    // add, start and pause a download, this should,
+    // chage current to "" and emit the required
     // signals and execute the required methods
     _first->record();
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
@@ -169,9 +169,10 @@ void TestDownloadQueue::testPauseDownloadNoOtherReady()
     QCOMPARE(QString("canDownload"), calledMethods[3].methodName());
 }
 
-void TestDownloadQueue::testPauseDownloadOtherReady()
-{
-    // add two downloads, start them, pause the first and assert that the second one is started
+void
+TestDownloadQueue::testPauseDownloadOtherReady() {
+    // add two downloads, start them, pause the first
+    // and assert that the second one is started
     _first->record();
     _second->record();
 
@@ -206,10 +207,10 @@ void TestDownloadQueue::testPauseDownloadOtherReady()
     QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
 
-void TestDownloadQueue::testResumeDownloadNoOtherPresent()
-{
-    // add, start, pause, resume and assert that the same guy is used even when other paused
-    // downloads are present
+void
+TestDownloadQueue::testResumeDownloadNoOtherPresent() {
+    // add, start, pause, resume and assert that the same guy
+    // is used even when other paused downloads are present
     _first->record();
     _second->record();
 
@@ -250,9 +251,10 @@ void TestDownloadQueue::testResumeDownloadNoOtherPresent()
     QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
-void TestDownloadQueue::testResumeDownloadOtherPresent()
-{
-    // add tow, start, pause, resume and assert that resume does not change the current one
+void
+TestDownloadQueue::testResumeDownloadOtherPresent() {
+    // add tow, start, pause, resume and assert that
+    // resume does not change the current one
     _first->record();
     _second->record();
 
@@ -294,10 +296,10 @@ void TestDownloadQueue::testResumeDownloadOtherPresent()
     QCOMPARE(QString("startDownload"), calledMethods[2].methodName());
 }
 
-void TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload()
-{
-    // add, start, pause, resume and assert that the same guy is used even when other paused
-    // downloads are present
+void
+TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload() {
+    // add, start, pause, resume and assert that the same guy
+    // is used even when other paused downloads are present
     _first->record();
     _second->record();
 
@@ -325,7 +327,7 @@ void TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload()
     QCOMPARE(arguments.at(0).toString(), QString(""));
 
     QList<MethodData> calledMethods = _first->calledMethods();
-    QCOMPARE(6, calledMethods.count()); // only canDownload start and pause
+    QCOMPARE(6, calledMethods.count());  // only canDownload start and pause
     QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
     QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
     QCOMPARE(QString("pauseDownload"), calledMethods[2].methodName());
@@ -337,8 +339,8 @@ void TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload()
     QCOMPARE(QString("canDownload"), calledMethods[1].methodName());
 }
 
-void TestDownloadQueue::testCancelDownloadNoOtherReady()
-{
+void
+TestDownloadQueue::testCancelDownloadNoOtherReady() {
     // cancel the download and expect it to be done
     _first->record();
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
@@ -364,8 +366,8 @@ void TestDownloadQueue::testCancelDownloadNoOtherReady()
     QCOMPARE(QString("cancelDownload"), calledMethods[2].methodName());
 }
 
-void TestDownloadQueue::testCancelDownloadOtherReady()
-{
+void
+TestDownloadQueue::testCancelDownloadOtherReady() {
     // start and cancel and assert the second one is started
     _first->record();
     _second->record();
@@ -401,8 +403,8 @@ void TestDownloadQueue::testCancelDownloadOtherReady()
     QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
 
-void TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload()
-{
+void
+TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload() {
     // start and cancel and assert the second one is not started
     _first->record();
     _second->setCanDownload(false);
@@ -438,8 +440,8 @@ void TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload()
     QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
 }
 
-void TestDownloadQueue::testCancelDownloadNotStarted()
-{
+void
+TestDownloadQueue::testCancelDownloadNotStarted() {
     // cancel not started and ensure that it is removed
     _first->record();
     QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
@@ -451,8 +453,8 @@ void TestDownloadQueue::testCancelDownloadNotStarted()
     QVERIFY(_q->currentDownload().isEmpty());
 }
 
-void TestDownloadQueue::testDownloads()
-{
+void
+TestDownloadQueue::testDownloads() {
     // add the downloads to the q and assert that they are all returned
     _q->add(_first, _firstAdaptor);
     _q->add(_second, _secondAdaptor);
@@ -462,8 +464,8 @@ void TestDownloadQueue::testDownloads()
     QCOMPARE(downloads[_second->path()], _second);
 }
 
-void TestDownloadQueue::testDownloadFinishedOtherReady()
-{
+void
+TestDownloadQueue::testDownloadFinishedOtherReady() {
     _first->record();
     _second->record();
 
