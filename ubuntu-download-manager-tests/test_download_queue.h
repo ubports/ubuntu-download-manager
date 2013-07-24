@@ -22,19 +22,19 @@
 #include <QObject>
 #include <download_adaptor.h>
 #include <download_queue.h>
-#include "test_runner.h"
-#include "fake_download.h"
-#include "fake_request_factory.h"
-#include "fake_process_factory.h"
-#include "fake_system_network_info.h"
+#include "./test_runner.h"
+#include "./fake_download.h"
+#include "./fake_request_factory.h"
+#include "./fake_process_factory.h"
+#include "./fake_system_network_info.h"
 
-class TestDownloadQueue : public QObject
-{
+class TestDownloadQueue : public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit TestDownloadQueue(QObject *parent = 0);
 
-private slots:
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -55,7 +55,7 @@ private slots:
     void testDownloads();
     void testDownloadFinishedOtherReady();
 
-private:
+ private:
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
@@ -68,4 +68,4 @@ private:
 
 DECLARE_TEST(TestDownloadQueue)
 
-#endif // TEST_DOWNLOAD_QUEUE_H
+#endif  // TEST_DOWNLOAD_QUEUE_H
