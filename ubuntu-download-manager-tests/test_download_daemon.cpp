@@ -16,29 +16,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "test_download_daemon.h"
+#include "./test_download_daemon.h"
 
-TestDownloadDaemon::TestDownloadDaemon(QObject *parent) :
-    QObject(parent)
-{
+TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
+    : QObject(parent) {
 }
 
-void TestDownloadDaemon::init()
-{
+void
+TestDownloadDaemon::init() {
     _conn = new FakeDBusConnection();
     _daemon = new DownloadDaemon(_conn);
 }
 
-void TestDownloadDaemon::cleanup()
-{
+void
+TestDownloadDaemon::cleanup() {
     if (_conn != NULL)
         delete _conn;
     if (_daemon != NULL)
         delete _daemon;
 }
 
-void TestDownloadDaemon::testStart()
-{
+void
+TestDownloadDaemon::testStart() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(true);
     _conn->record();
@@ -52,8 +51,8 @@ void TestDownloadDaemon::testStart()
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
 }
 
-void TestDownloadDaemon::testStartFailServiceRegister()
-{
+void
+TestDownloadDaemon::testStartFailServiceRegister() {
     _conn->setRegisterServiceResult(false);
     _conn->setRegisterObjectResult(true);
     _conn->record();
@@ -66,8 +65,8 @@ void TestDownloadDaemon::testStartFailServiceRegister()
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
 }
 
-void TestDownloadDaemon::testStartFailObjectRegister()
-{
+void
+TestDownloadDaemon::testStartFailObjectRegister() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(false);
     _conn->record();
