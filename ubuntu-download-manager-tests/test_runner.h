@@ -25,40 +25,34 @@
 #include <QSharedPointer>
 #include <iostream>
 
-class TestRunner
-{
-    public:
+class TestRunner {
+ public:
 
-        static TestRunner& Instance()
-        {
-            static TestRunner instance;
-            return instance;
+    static TestRunner& Instance() {
+        static TestRunner instance;
+        return instance;
+    }
+
+    template <typename T>
+    char RegisterTest(char* name) {
+        if(!_tests.contains(name)) {
+            QSharedPointer<QObject> test(new T());
+            _tests.insert(name, QSharedPointer<QObject>(test));
         }
+        return char(1);
+    }
 
-        template <typename T>
-        char RegisterTest(char* name)
-        {
-            if(!_tests.contains(name))
-            {
-                QSharedPointer<QObject> test(new T());
-                _tests.insert(name, QSharedPointer<QObject>(test));
-            }
-            return char(1);
+    int RunAll(int argc, char *argv[]) {
+        int errorCode = 0;
+        foreach (QString const &testName, _tests.keys()) {
+            errorCode |= QTest::qExec(_tests[testName].data(), argc, argv);
+            std::cout << std::endl;
         }
+        return errorCode;
+    }
 
-        int RunAll(int argc, char *argv[])
-        {
-            int errorCode = 0;
-            foreach (QString const &testName, _tests.keys())
-            {
-                errorCode |= QTest::qExec(_tests[testName].data(), argc, argv);
-                std::cout << std::endl;
-            }
-            return errorCode;
-        }
-
-    private:
-        QMap<QString, QSharedPointer<QObject> > _tests;
+ private:
+    QMap<QString, QSharedPointer<QObject> > _tests;
 };
 
 
@@ -70,4 +64,4 @@ class TestRunner
 #define RUN_ALL_QTESTS(argc, argv)\
     TestRunner::Instance().RunAll(argc, argv);
 
-#endif // TEST_RUNNER_H
+#endif  // TEST_RUNNER_H
