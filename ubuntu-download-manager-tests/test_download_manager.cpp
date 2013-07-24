@@ -17,15 +17,14 @@
  */
 
 #include <QSignalSpy>
-#include "test_download_manager.h"
+#include "./test_download_manager.h"
 
-TestDownloadManager::TestDownloadManager(QObject *parent) :
-    QObject(parent)
-{
+TestDownloadManager::TestDownloadManager(QObject *parent)
+    : QObject(parent) {
 }
 
-void TestDownloadManager::init()
-{
+void
+TestDownloadManager::init() {
     _conn = new FakeDBusConnection();
     _networkInfo = new FakeSystemNetworkInfo();
     _q = new FakeDownloadQueue(_networkInfo);
@@ -33,8 +32,8 @@ void TestDownloadManager::init()
     _man = new DownloadManager(_conn, _networkInfo, _q, _uuidFactory);
 }
 
-void TestDownloadManager::cleanup()
-{
+void
+TestDownloadManager::cleanup() {
     if (_conn != NULL)
         delete _conn;
     if (_networkInfo)
@@ -47,8 +46,8 @@ void TestDownloadManager::cleanup()
         delete _man;
 }
 
-QCryptographicHash::Algorithm TestDownloadManager::algoFromString(const QString& data)
-{
+QCryptographicHash::Algorithm
+TestDownloadManager::algoFromString(const QString& data) {
     QString algoLower = data.toLower();
     if (algoLower == "md5")
         return QCryptographicHash::Md5;
@@ -65,8 +64,8 @@ QCryptographicHash::Algorithm TestDownloadManager::algoFromString(const QString&
     return QCryptographicHash::Md5;
 }
 
-void TestDownloadManager::testCreateDownload_data()
-{
+void
+TestDownloadManager::testCreateDownload_data() {
     QTest::addColumn<QString>("url");
     QTest::addColumn<QVariantMap>("metadata");
     QTest::addColumn<StringMap>("headers");
@@ -80,7 +79,8 @@ void TestDownloadManager::testCreateDownload_data()
     firstHeaders["header1"] = "headerdata";
     firstHeaders["header2"] = "header2 data";
 
-    QTest::newRow("First row") << "http://ubuntu.com" << firstMetadata << firstHeaders;
+    QTest::newRow("First row") << "http://ubuntu.com"
+        << firstMetadata << firstHeaders;
 
     secondMetadata["name"] = "paul";
     secondMetadata["download-type"] = "update";
@@ -88,7 +88,8 @@ void TestDownloadManager::testCreateDownload_data()
     secondHeaders["Auth"] = "auth header";
     secondHeaders["test"] = "header2 data";
 
-    QTest::newRow("Second row") << "http://ubuntu.com/phone" << secondMetadata << secondHeaders;
+    QTest::newRow("Second row") << "http://ubuntu.com/phone"
+        << secondMetadata << secondHeaders;
 
     thirdMetadata["command"] = "sudo update";
     thirdMetadata["download-type"] = "update";
@@ -96,11 +97,12 @@ void TestDownloadManager::testCreateDownload_data()
     thirdHeaders["header1"] = "headerdata";
     thirdHeaders["header2"] = "header2 data";
 
-    QTest::newRow("Last row") << "http://ubuntu.com/phablet" << thirdMetadata << thirdHeaders;
+    QTest::newRow("Last row") << "http://ubuntu.com/phablet"
+        << thirdMetadata << thirdHeaders;
 }
 
-void TestDownloadManager::testCreateDownload()
-{
+void
+TestDownloadManager::testCreateDownload() {
     QFETCH(QString, url);
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
@@ -114,26 +116,26 @@ void TestDownloadManager::testCreateDownload()
 
     QCOMPARE(spy.count(), 1);
 
-    // grab the created download and assert that it was created correctly with the data
+    // grab the created download and assert that
+    // it was created correctly with the data
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(1, calledMethods.count());
 
-    Download* download = (Download*) calledMethods[0].params().inParams()[0];
+    Download* download = reinterpret_cast<Download*>(
+        calledMethods[0].params().inParams()[0]);
     QCOMPARE(_uuidFactory->data(), download->downloadId());
     QCOMPARE(QUrl(url), download->url());
 
     QVariantMap downloadMetadata = download->metadata();
 
-    foreach(const QString& key, metadata.keys())
-    {
+    foreach(const QString& key, metadata.keys()) {
         QVERIFY(downloadMetadata.contains(key));
         QCOMPARE(metadata[key], downloadMetadata[key]);
     }
 
     QMap<QString, QString> downloadHeaders = download->headers();
 
-    foreach(const QString& key, headers.keys())
-    {
+    foreach(const QString& key, headers.keys()) {
         QVERIFY(downloadHeaders.contains(key));
         QCOMPARE(headers[key], downloadHeaders[key]);
     }
@@ -143,8 +145,8 @@ void TestDownloadManager::testCreateDownload()
     QCOMPARE(QString("registerObject"), calledMethods[0].methodName());
 }
 
-void TestDownloadManager::testCreateDownloadWithHash_data()
-{
+void
+TestDownloadManager::testCreateDownloadWithHash_data() {
     QTest::addColumn<QString>("url");
     QTest::addColumn<QString>("algo");
     QTest::addColumn<QString>("hash");
@@ -160,7 +162,8 @@ void TestDownloadManager::testCreateDownloadWithHash_data()
     firstHeaders["header1"] = "headerdata";
     firstHeaders["header2"] = "header2 data";
 
-    QTest::newRow("First row") << "http://ubuntu.com" << "md5" << "my-first-hash" << firstMetadata << firstHeaders;
+    QTest::newRow("First row") << "http://ubuntu.com" << "md5"
+        << "my-first-hash" << firstMetadata << firstHeaders;
 
     secondMetadata["name"] = "paul";
     secondMetadata["download-type"] = "update";
@@ -168,7 +171,8 @@ void TestDownloadManager::testCreateDownloadWithHash_data()
     secondHeaders["Auth"] = "auth header";
     secondHeaders["test"] = "header2 data";
 
-    QTest::newRow("Second row") << "http://ubuntu.com/phone" << "sha1" << "my second hash" << secondMetadata << secondHeaders;
+    QTest::newRow("Second row") << "http://ubuntu.com/phone" << "sha1"
+        << "my second hash" << secondMetadata << secondHeaders;
 
     thirdMetadata["command"] = "sudo update";
     thirdMetadata["download-type"] = "update";
@@ -176,11 +180,12 @@ void TestDownloadManager::testCreateDownloadWithHash_data()
     thirdHeaders["header1"] = "headerdata";
     thirdHeaders["header2"] = "header2 data";
 
-    QTest::newRow("Last row") << "http://ubuntu.com/phablet" << "sha256" << "my-third-hash" << thirdMetadata << thirdHeaders;
+    QTest::newRow("Last row") << "http://ubuntu.com/phablet" << "sha256"
+        << "my-third-hash" << thirdMetadata << thirdHeaders;
 }
 
-void TestDownloadManager::testCreateDownloadWithHash()
-{
+void
+TestDownloadManager::testCreateDownloadWithHash() {
     QFETCH(QString, url);
     QFETCH(QString, algo);
     QFETCH(QString, hash);
@@ -196,11 +201,13 @@ void TestDownloadManager::testCreateDownloadWithHash()
 
     QCOMPARE(spy.count(), 1);
 
-    // grab the created download and assert that it was created correctly with the data
+    // grab the created download and assert that it was created
+    // correctly with the data
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(1, calledMethods.count());
 
-    Download* download = (Download*) calledMethods[0].params().inParams()[0];
+    Download* download = reinterpret_cast<Download*>(
+        calledMethods[0].params().inParams()[0]);
     QCOMPARE(_uuidFactory->data(), download->downloadId());
     QCOMPARE(QUrl(url), download->url());
 
@@ -209,16 +216,14 @@ void TestDownloadManager::testCreateDownloadWithHash()
     QCOMPARE(hash, download->hash());
     QCOMPARE(algoFromString(algo), download->hashAlgorithm());
 
-    foreach(const QString& key, metadata.keys())
-    {
+    foreach(const QString& key, metadata.keys()) {
         QVERIFY(downloadMetadata.contains(key));
         QCOMPARE(metadata[key], downloadMetadata[key]);
     }
 
     StringMap downloadHeaders = download->headers();
 
-    foreach(const QString& key, headers.keys())
-    {
+    foreach(const QString& key, headers.keys()) {
         QVERIFY(downloadHeaders.contains(key));
         QCOMPARE(headers[key], downloadHeaders[key]);
     }
@@ -228,8 +233,8 @@ void TestDownloadManager::testCreateDownloadWithHash()
     QCOMPARE(QString("registerObject"), calledMethods[0].methodName());
 }
 
-void TestDownloadManager::testGetAllDownloads()
-{
+void
+TestDownloadManager::testGetAllDownloads() {
     // add a number of downloads and assert that all the paths are returned
     _q->record();
     _conn->record();
@@ -242,7 +247,9 @@ void TestDownloadManager::testGetAllDownloads()
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
-    QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
+    QString firstUrl("http://www.ubuntu.com"),
+            secondUrl("http://www.ubuntu.com/phone"),
+            thirdUrl("http://www");
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
@@ -252,27 +259,27 @@ void TestDownloadManager::testGetAllDownloads()
 
     QCOMPARE(spy.count(), 3);
 
-    // get the diff create downloads and theri paths so that we can assert that they are returned
+    // get the diff create downloads and theri paths so
+    // that we can assert that they are returned
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(3, calledMethods.count());
     QList<QString> paths;
-    for(int index=0; index < calledMethods.count(); index++)
-    {
-        Download* download = (Download*) calledMethods[index].params().inParams()[0];
+    for (int index = 0; index < calledMethods.count(); index++) {
+        Download* download = reinterpret_cast<Download*>(
+            calledMethods[index].params().inParams()[0]);
         paths << download->path();
     }
 
     QList<QDBusObjectPath> allDownloads = _man->getAllDownloads();
     QCOMPARE(paths.count(), allDownloads.count());
 
-    foreach(const QDBusObjectPath& path, allDownloads)
-    {
+    foreach(const QDBusObjectPath& path, allDownloads) {
         QVERIFY(paths.contains(path.path()));
     }
 }
 
-void TestDownloadManager::testAllDownloadsWithMetadata()
-{
+void
+TestDownloadManager::testAllDownloadsWithMetadata() {
     // add a number of downloads and assert that all the paths are returned
     _q->record();
     _conn->record();
@@ -285,7 +292,9 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
-    QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
+    QString firstUrl("http://www.ubuntu.com"),
+            secondUrl("http://www.ubuntu.com/phone"),
+            thirdUrl("http://www");
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
@@ -299,25 +308,27 @@ void TestDownloadManager::testAllDownloadsWithMetadata()
 
     QCOMPARE(spy.count(), 3);
 
-    // get the diff create downloads and theri paths so that we can assert that they are returned
+    // get the diff create downloads and theri paths so that we
+    // can assert that they are returned
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(3, calledMethods.count());
     QList<QString> downloads;
-    for(int index=0; index < calledMethods.count(); index++)
-    {
-        Download* download = (Download*) calledMethods[index].params().inParams()[0];
+    for (int index = 0; index < calledMethods.count(); index++) {
+        Download* download = reinterpret_cast<Download*>(
+            calledMethods[index].params().inParams()[0]);
         downloads << download->path();
     }
 
-    QList<QDBusObjectPath> filtered = _man->getAllDownloadsWithMetadata("type", "first");
+    QList<QDBusObjectPath> filtered = _man->getAllDownloadsWithMetadata(
+        "type", "first");
 
     QCOMPARE(2, filtered.count());
     QVERIFY(downloads.contains(filtered[0].path()));
     QVERIFY(downloads.contains(filtered[1].path()));
 }
 
-void TestDownloadManager::testSetThrottleNotDownloads_data()
-{
+void
+TestDownloadManager::testSetThrottleNotDownloads_data() {
     QTest::addColumn<qulonglong>("speed");
 
     QTest::newRow("First row") << 200ULL;
@@ -326,15 +337,15 @@ void TestDownloadManager::testSetThrottleNotDownloads_data()
     QTest::newRow("Last row") << 60ULL;
 }
 
-void TestDownloadManager::testSetThrottleNotDownloads()
-{
+void
+TestDownloadManager::testSetThrottleNotDownloads() {
     QFETCH(qulonglong, speed);
     _man->setDefaultThrottle(speed);
     QCOMPARE(_man->defaultThrottle(), speed);
 }
 
-void TestDownloadManager::testSetThrottleWithDownloads_data()
-{
+void
+TestDownloadManager::testSetThrottleWithDownloads_data() {
     QTest::addColumn<qulonglong>("speed");
 
     QTest::newRow("First row") << 200ULL;
@@ -343,8 +354,8 @@ void TestDownloadManager::testSetThrottleWithDownloads_data()
     QTest::newRow("Last row") << 60ULL;
 }
 
-void TestDownloadManager::testSetThrottleWithDownloads()
-{
+void
+TestDownloadManager::testSetThrottleWithDownloads() {
     QFETCH(qulonglong, speed);
 
     // add a number of downloads and assert that we do set their throttle limit
@@ -354,7 +365,9 @@ void TestDownloadManager::testSetThrottleWithDownloads()
     // do not use the fake uuid factory, else we only get one object path
     _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
 
-    QString firstUrl("http://www.ubuntu.com"), secondUrl("http://www.ubuntu.com/phone"), thirdUrl("http://www");
+    QString firstUrl("http://www.ubuntu.com"),
+            secondUrl("http://www.ubuntu.com/phone"),
+            thirdUrl("http://www");
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
@@ -369,10 +382,9 @@ void TestDownloadManager::testSetThrottleWithDownloads()
     _man->setDefaultThrottle(speed);
 
     QList<MethodData> calledMethods = _q->calledMethods();
-    for(int index=0; index < calledMethods.count(); index++)
-    {
-        Download* download = (Download*) calledMethods[index].params().inParams()[0];
+    for (int index = 0; index < calledMethods.count(); index++) {
+        Download* download = reinterpret_cast<Download*>(
+            calledMethods[index].params().inParams()[0]);
         QCOMPARE(download->throttle(), speed);
     }
-
 }
