@@ -22,16 +22,16 @@
 #include <functional>
 #include <QHash>
 #include <QObject>
-#include "xdg_basedir.h"
-#include "test_runner.h"
+#include "./xdg_basedir.h"
+#include "./test_runner.h"
 
-class TestXDGBasedir : public QObject
-{
+class TestXDGBasedir : public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit TestXDGBasedir(QObject *parent = 0);
 
-private slots:
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -46,17 +46,22 @@ private slots:
     void testDataDirsDefault();
     void testDataDirsEnv();
 
-private:
-
-    void testDefault(QString envVar, std::function<QString(void)> callBack, QString expected);
-    void testUserSet(QString envVar, std::function<QString(void)> cb, QString expected);
-    void testCollectionDefault(QString envVar, std::function<QList<QString>()> cb,
-        QString expected);
-    void testCollectionEnv(QString envVar, std::function<QList<QString>()> cb,
-        QList<QString> expected);
+ private:
+    void testDefault(QString envVar,
+                     std::function<QString(void)> callBack,
+                     QString expected);
+    void testUserSet(QString envVar,
+                     std::function<QString(void)> cb,
+                     QString expected);
+    void testCollectionDefault(QString envVar,
+                               std::function<QList<QString>()> cb,
+                               QString expected);
+    void testCollectionEnv(QString envVar,
+                           std::function<QList<QString>()> cb,
+                           QList<QString> expected);
     QHash<QString, QString> _envData;
 };
 
 DECLARE_TEST(TestXDGBasedir)
 
-#endif // TEST_XDG_BASEDIR_H
+#endif  // TEST_XDG_BASEDIR_H
