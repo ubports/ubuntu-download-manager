@@ -394,7 +394,7 @@ bool DownloadPrivate::canDownload()
     switch(mode){
         case QNetworkInfo::UnknownMode:
             qWarning() << "Network Mode unknown!";
-            return false;
+            return _allowGSMDownload;
             break;
         case QNetworkInfo::GsmMode:
         case QNetworkInfo::CdmaMode:
