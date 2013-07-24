@@ -39,7 +39,7 @@ FakeProcess::FakeProcess(QObject *parent)
 }
 
 void
-FakeProcess::start(const QString& program
+FakeProcess::start(const QString& program,
                    const QStringList& arguments,
                    QProcess::OpenMode mode) {
     if (_recording) {
