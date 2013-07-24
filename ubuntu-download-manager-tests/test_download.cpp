@@ -146,7 +146,7 @@ TestDownload::testHashConstructor_data() {
         << "my-third-hash" << static_cast<int>(QCryptographicHash::Sha1);
     QTest::newRow("Last row") << QUuid::createUuid()
         << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
-        << "my-last-hash" << static_cast<int>(CryptographicHash::Sha256);
+        << "my-last-hash" << static_cast<int>(QCryptographicHash::Sha256);
 }
 
 void
@@ -829,7 +829,7 @@ TestDownload::testOnSuccessHash() {
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
-        calledMethods[0].params().outParams()[0](;
+        calledMethods[0].params().outParams()[0]);
     reply->setData(data);
 
     download->pause();
@@ -866,7 +866,7 @@ TestDownload::testOnHttpError() {
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
-        calledMethods[0].params().outParams()[0](;
+        calledMethods[0].params().outParams()[0]);
 
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
@@ -915,7 +915,7 @@ TestDownload::testSetRawHeadersStart() {
     QCOMPARE(1, calledMethods.count());
     RequestWrapper* requestWrapper = reinterpret_cast<RequestWrapper*>(
         calledMethods[0].params().inParams()[0]);
-    QNetworkRequest request = requetWrapper->request();
+    QNetworkRequest request = requestWrapper->request();
 
     // assert that all headers are present
     foreach(const QString& header, headers.keys()) {
@@ -1019,7 +1019,7 @@ TestDownload::testSetRawHeadersResume() {
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
-        calledMethods[0].params().outParams()[0](;
+        calledMethods[0].params().outParams()[0]);
     reply->setData(QByteArray(900, 's'));
 
     download->pause();  // change state
