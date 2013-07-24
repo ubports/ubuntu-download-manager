@@ -245,6 +245,46 @@ void TestDownload::testProgress()
     delete download;
 }
 
+void TestDownload::testProgressNotKnownSize_data()
+{
+    QTest::addColumn<QByteArray>("fileData");
+    QTest::addColumn<qulonglong>("received");
+    QTest::addColumn<int>("total");
+
+    QTest::newRow("First row") << QByteArray(0, 'f') << 67ULL << -1;
+    QTest::newRow("Second row") << QByteArray(200, 's') << 45ULL << -1;
+    QTest::newRow("Third row") << QByteArray(300, 't') << 2ULL << -1;
+    QTest::newRow("Last row") << QByteArray(400, 'l') << 3434ULL << -1;
+}
+
+void TestDownload::testProgressNotKnownSize()
+{
+    QFETCH(QByteArray, fileData);
+    QFETCH(qulonglong, received);
+    QFETCH(int, total);
+
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, _metadata, _headers, _networkInfo, _reqFactory, _processFactory);
+    QSignalSpy spy(download , SIGNAL(progress(qulonglong, qulonglong)));
+
+    // start the download so that we do have access to the reply
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    FakeNetworkReply* reply = (FakeNetworkReply*) calledMethods[0].params().outParams()[0];
+    reply->setData(fileData);
+    emit reply->downloadProgress(received, total);
+
+    QCOMPARE(spy.count(), 1);
+
+    QList<QVariant> arguments = spy.takeFirst();
+    qulonglong size = (qulonglong)fileData.size();
+    QCOMPARE(arguments.at(0).toULongLong(), size);
+    QCOMPARE(arguments.at(1).toULongLong(), size);  // must be the same as the progress
+    delete download;
+}
+
 void TestDownload::testTotalSize()
 {
     qulonglong received = 30ULL;

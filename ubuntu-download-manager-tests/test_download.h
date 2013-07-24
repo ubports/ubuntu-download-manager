@@ -49,6 +49,7 @@ private slots:
     void testPath_data();
     void testUrl_data();
     void testProgress_data();
+    void testProgressNotKnownSize_data();
     void testOnSuccessHash_data();
     void testSetRawHeadersStart_data();
     void testSetRawHeadersResume_data();
@@ -68,6 +69,7 @@ private slots:
     void testPath();
     void testUrl();
     void testProgress();
+    void testProgressNotKnownSize();
     void testTotalSize();
     void testTotalSizeNoProgress();
     void testSetThrottleNoReply();
