@@ -18,6 +18,7 @@
 
 #include <QtDBus/QDBusConnection>
 #include <QDebug>
+#include "./logger.h"
 #include "./download_manager.h"
 #include "./download_manager_adaptor.h"
 #include "./download_daemon.h"
@@ -38,6 +39,9 @@ class DownloadDaemonPrivate {
     bool start();
 
  private:
+    void init();
+
+ private:
     DBusConnection* _conn;
     DownloadManager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
@@ -48,6 +52,7 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent)
     : q_ptr(parent) {
     _conn = new DBusConnection();
     _downInterface = new DownloadManager(_conn, q_ptr);
+    init();
 }
 
 DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn,
@@ -55,6 +60,19 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn,
     : _conn(conn),
       q_ptr(parent) {
       _downInterface = new DownloadManager(_conn);
+    init();
+}
+
+void DownloadDaemonPrivate::init() {
+
+    // set logging
+    Logger::setupLogging();
+#ifdef QT_DEBUG
+    Logger::setLogLevel(QtDebugMsg);
+#else
+    if (qgetenv("UBUNTU_DOWNLOADER_DEBUG") != "")
+        Logger::setLogLevel(QtDebugMsg);
+#endif
 }
 
 DownloadDaemonPrivate::~DownloadDaemonPrivate() {
@@ -63,6 +81,9 @@ DownloadDaemonPrivate::~DownloadDaemonPrivate() {
         delete _conn;
     if (_downInterface)
         delete _downInterface;
+
+    // stop logging
+    Logger::setupLogging();
 }
 
 bool

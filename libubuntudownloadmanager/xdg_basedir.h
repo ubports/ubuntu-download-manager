@@ -37,6 +37,7 @@ class XDGBasedir : public QObject {
     static QList<QString> configPaths(QList<QString> resource);
     static QList<QString> dataPaths(QList<QString> resource);
     static QString loadFirstConfig(QList<QString> resource);
+    static QString saveCachePath(QList<QString> resources);
     static QString saveConfigPath(QList<QString> resource);
     static QString saveDataPath(QList<QString> resource);
 

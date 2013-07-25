@@ -138,6 +138,28 @@ XDGBasedir::loadFirstConfig(QList<QString> resource) {
 }
 
 QString
+XDGBasedir::saveCachePath(QList<QString> resources){
+    QString home = XDGBasedir::cacheHome();
+    QStringList pathComponents;
+    pathComponents.append(home);
+    pathComponents.append(resources);
+    QString path = pathComponents.join(QDir::separator());
+    QFileInfo info = QFileInfo(path);
+    if (!info.exists() || !info.isDir()) {
+        QDir dir(home);
+        QStringList child;
+        child.append(resources);
+        bool created = dir.mkpath(child.join(QDir::separator()));
+        if (!created) {
+            qCritical() << "Could not create path:"
+                << child.join(QDir::separator());
+            return QString("");
+        }
+    }
+    return path;
+}
+
+QString
 XDGBasedir::saveConfigPath(QList<QString> resources) {
     QString home = XDGBasedir::configHome();
     QStringList pathComponents;
