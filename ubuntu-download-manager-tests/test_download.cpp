@@ -577,7 +577,8 @@ TestDownload::testCancelDownload() {
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(canceled(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
@@ -608,7 +609,8 @@ TestDownload::testCancelDownloadNotStarted() {
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(canceled(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->cancel();  // change state
     download->cancelDownload();  // method under test
@@ -628,7 +630,8 @@ TestDownload::testPauseDownload() {
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(paused(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
@@ -645,7 +648,7 @@ TestDownload::testPauseDownload() {
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
-    QCOMPARE(3, calledMethods.count());  // throttel + abort + readAll
+    QCOMPARE(3, calledMethods.count());  // throttle + abort + readAll
 
     QCOMPARE(QString("abort"), calledMethods[1].methodName());
     QCOMPARE(QString("readAll"), calledMethods[2].methodName());
@@ -664,7 +667,8 @@ void
 TestDownload::testPauseDownloadNotStarted() {
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(paused(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->pause();
     download->pauseDownload();
@@ -680,7 +684,8 @@ void
 TestDownload::testResumeRunning() {
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(resumed(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(resumed(bool)));  // NOLINT(readability/function)
 
     download->start();
     download->startDownload();
@@ -737,7 +742,8 @@ TestDownload::testStartDownload() {
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(started(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
@@ -758,7 +764,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
     _reqFactory->record();
     Download* download = new Download(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
-    QSignalSpy spy(download , SIGNAL(started(bool result)));
+    QSignalSpy spy(download,
+        SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
