@@ -42,7 +42,7 @@ class Logger : public QObject {
     static void stopLogging();
     static bool setLogLevel(QtMsgType level);
     static const QString getMessageTypeString(QtMsgType type);
-    static QString getLogFile();
+    static QString getLogDir();
 
  private:
     bool _initialized = false;

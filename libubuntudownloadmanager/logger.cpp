@@ -38,7 +38,7 @@ _realMessageHandler(QtMsgType type,
 
 Logger::Logger(const QString filename) {
     if (filename == "") {
-        _logFileName = getLogFile() + "/ubuntu-download-manager.log";
+        _logFileName = getLogDir() + "/ubuntu-download-manager.log";
     } else {
         _logFileName = filename;
     }
@@ -100,7 +100,7 @@ Logger::getMessageTypeString(QtMsgType type) {
 }
 
 QString
-Logger::getLogFile() {
+Logger::getLogDir() {
     QStringList pathComponents;
     pathComponents << "download_manager";
     return XDGBasedir::saveDataPath(pathComponents);
