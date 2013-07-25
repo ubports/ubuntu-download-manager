@@ -416,7 +416,7 @@ DownloadPrivate::canDownload() {
     switch (mode) {
         case QNetworkInfo::UnknownMode:
             qWarning() << "Network Mode unknown!";
-            return false;
+            return _allowGSMDownload;
             break;
         case QNetworkInfo::GsmMode:
         case QNetworkInfo::CdmaMode:
@@ -601,7 +601,7 @@ DownloadPrivate::cancel() {
     emit q->stateChanged();
 }
 
-void 
+void
 DownloadPrivate::pause() {
     Q_Q(Download);
     _state = Download::PAUSED;
@@ -617,7 +617,7 @@ DownloadPrivate::resume() {
     emit q->stateChanged();
 }
 
-void 
+void
 DownloadPrivate::start() {
     Q_Q(Download);
     _state = Download::STARTED;
@@ -632,23 +632,28 @@ DownloadPrivate::onDownloadProgress(qint64 progress, qint64 bytesTotal) {
 
     // do write the current info we have just in case
     _currentData->write(_reply->readAll());
+    qulonglong received = _currentData->size();
 
-    // ignore the case of 0 or when we do not know yet the size
-    if (!bytesTotal >= 0) {
+    if (bytesTotal == -1) {
+        // we do not know the size of the download, simply return
+        // the same for received and for total
+        qDebug() << "EMIT progress" << received << received;
+        emit q->progress(received, received);
+        return;
+    } else {
         if (_totalSize == 0) {
             qDebug() << "Updating total size" << bytesTotal;
-            // bytesTotal is different when we have resumed because we
-            // are not counting the size that we already downloaded,
-            // therefore we only do this once
             qlonglong uBytestTotal = bytesTotal;
-            _totalSize = uBytestTotal;
+            // bytesTotal is different when we have resumed because we
+            // are not counting the size that  we already downloaded,
+            // therefore we only do this once
             // update the metadata
+            _totalSize = uBytestTotal;
             storeMetadata();
         }
-        qulonglong received = _currentData->size();
-
         qDebug() << "EMIT progress" << received << _totalSize;
         emit q->progress(received, _totalSize);
+        return;
     }
 }
 
@@ -941,7 +946,7 @@ Download::throttle() {
     return d->throttle();
 }
 
-void 
+void
 Download::allowGSMDownload(bool allowed) {
     Q_D(Download);
     d->allowGSMDownload(allowed);
