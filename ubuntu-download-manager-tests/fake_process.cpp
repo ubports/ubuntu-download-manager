@@ -18,32 +18,31 @@
 
 #include "fake_process.h"
 
-OpenModeWrapper::OpenModeWrapper(QProcess::OpenMode mode, QObject* parent) :
-    QObject(parent)
-{
+OpenModeWrapper::OpenModeWrapper(QProcess::OpenMode mode, QObject* parent)
+    : QObject(parent) {
     _value = mode;
 }
 
-QProcess::OpenMode OpenModeWrapper::value()
-{
+QProcess::OpenMode
+OpenModeWrapper::value() {
     return _value;
 }
 
-void OpenModeWrapper::setValue(QProcess::OpenMode value)
-{
+void
+OpenModeWrapper::setValue(QProcess::OpenMode value) {
     _value = value;
 }
 
-FakeProcess::FakeProcess(QObject *parent) :
-    Process(parent),
-    Fake()
-{
+FakeProcess::FakeProcess(QObject *parent)
+    : Process(parent),
+    Fake() {
 }
 
-void FakeProcess::start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode)
-{
-    if (_recording)
-    {
+void
+FakeProcess::start(const QString& program,
+                   const QStringList& arguments,
+                   QProcess::OpenMode mode) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new StringWrapper(program));
         inParams.append(new StringListWrapper(arguments));

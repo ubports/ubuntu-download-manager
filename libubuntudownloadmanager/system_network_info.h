@@ -23,24 +23,24 @@
 #include <QObject>
 
 class SystemNetworkInfoPrivate;
-class SystemNetworkInfo : public QObject
-{
+class SystemNetworkInfo : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(SystemNetworkInfo)
 
-public:
+ public:
     explicit SystemNetworkInfo(QObject *parent = 0);
-    
+
     virtual QNetworkInfo::NetworkMode currentNetworkMode();
 
-signals:
+ signals:
     void currentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
 
-private:
-    Q_PRIVATE_SLOT(d_func(), void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
+ private:
+    Q_PRIVATE_SLOT(d_func(),
+            void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
-private:
+ private:
     SystemNetworkInfoPrivate* d_ptr;
 };
 
-#endif // SYSTEM_NETWORK_INFO_H
+#endif  // DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H

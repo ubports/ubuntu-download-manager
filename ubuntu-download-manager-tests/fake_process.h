@@ -21,30 +21,30 @@
 
 #include <QObject>
 #include <process.h>
-#include "fake.h"
+#include "./fake.h"
 
-class OpenModeWrapper: public QObject
-{
+class OpenModeWrapper: public QObject {
     Q_OBJECT
 
-public:
-    OpenModeWrapper(QProcess::OpenMode mode, QObject* parent=0);
+ public:
+    OpenModeWrapper(QProcess::OpenMode mode, QObject* parent = 0);
 
     QProcess::OpenMode value();
     void setValue(QProcess::OpenMode value);
 
-private:
+ private:
     QProcess::OpenMode _value;
 };
 
-class FakeProcess : public Process, public Fake
-{
+class FakeProcess : public Process, public Fake {
     Q_OBJECT
-public:
+
+ public:
     explicit FakeProcess(QObject *parent = 0);
-    
-    void start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode = QProcess::ReadWrite) override;
-    
+
+    void start(const QString& program,
+               const QStringList& arguments,
+               QProcess::OpenMode mode = QProcess::ReadWrite) override;
 };
 
-#endif // FAKE_PROCESS_H
+#endif  // FAKE_PROCESS_H

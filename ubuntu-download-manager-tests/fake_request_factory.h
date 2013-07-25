@@ -22,32 +22,30 @@
 #include <QList>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QList>
 #include <QPair>
 #include <request_factory.h>
-#include "fake.h"
+#include "./fake.h"
 
-class RequestWrapper : public QObject
-{
+class RequestWrapper : public QObject {
     Q_OBJECT
 
-public:
-    explicit RequestWrapper(const QNetworkRequest& request, QObject* parent=0);
+ public:
+    explicit RequestWrapper(const QNetworkRequest& request,
+                            QObject* parent = 0);
 
     QNetworkRequest request();
-private:
+ private:
     QNetworkRequest _request;
 };
 
-class FakeRequestFactory : public RequestFactory, public Fake
-{
+class FakeRequestFactory : public RequestFactory, public Fake {
     Q_OBJECT
 
-public:
+ public:
     explicit FakeRequestFactory(QObject* parent = 0);
 
     // overriden methods used to fake the nam
     NetworkReply* get(const QNetworkRequest& request);
 };
 
-#endif // FAKE_QNETWORK_ACCESS_MANAGER_H
+#endif  // FAKE_QNETWORK_ACCESS_MANAGER_H

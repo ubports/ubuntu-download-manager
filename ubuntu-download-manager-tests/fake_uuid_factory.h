@@ -21,19 +21,19 @@
 
 #include <QObject>
 #include <uuid_factory.h>
-#include "fake.h"
+#include "./fake.h"
 
-class FakeUuidFactory : public UuidFactory, public Fake
-{
+class FakeUuidFactory : public UuidFactory, public Fake {
     Q_OBJECT
-public:
+
+ public:
     explicit FakeUuidFactory(QObject *parent = 0);
 
     QUuid data();
     QUuid createUuid() override;
 
-private:
+ private:
     QUuid _id;
 };
 
-#endif // FAKE_UUID_FACTORY_H
+#endif  // FAKE_UUID_FACTORY_H

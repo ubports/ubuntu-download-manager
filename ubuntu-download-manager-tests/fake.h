@@ -23,68 +23,64 @@
 #include <QObject>
 #include <QPair>
 #include <QStringList>
+#include <string>
 
 
-class BoolWrapper : public QObject
-{
+class BoolWrapper : public QObject {
     Q_OBJECT
-public:
-    BoolWrapper(bool value, QObject* parent=0);
+
+ public:
+    BoolWrapper(bool value, QObject* parent = 0);
 
     bool value();
     void setValue(bool value);
 
-private:
+ private:
     bool _value;
 };
 
-class StringWrapper : public QObject
-{
+class StringWrapper : public QObject {
     Q_OBJECT
 
-public:
-    StringWrapper(const QString& string, QObject* parent=0);
+ public:
+    StringWrapper(const QString& string, QObject* parent = 0);
 
     QString value();
     void setValue(const QString& value);
 
-private:
+ private:
     QString _value;
 };
 
 
-class StringListWrapper : public QObject
-{
+class StringListWrapper : public QObject {
     Q_OBJECT
 
-public:
-    StringListWrapper(const QStringList& list, QObject* parent=0);
+ public:
+    StringListWrapper(const QStringList& list, QObject* parent = 0);
 
     QStringList value();
     void setValue(const QStringList& value);
 
-private:
+ private:
     QStringList _value;
 };
 
-class UintWrapper : public QObject
-{
+class UintWrapper : public QObject {
     Q_OBJECT
 
-public:
-    UintWrapper(uint value, QObject* parent=0);
+ public:
+    UintWrapper(uint value, QObject* parent = 0);
 
     uint value();
     void setValue(uint value);
 
-private:
+ private:
     uint _value;
 };
 
-class MethodParams : public QPair<QList<QObject*>, QList<QObject*> >
-{
-
-public:
+class MethodParams : public QPair<QList<QObject*>, QList<QObject*> > {
+ public:
     explicit MethodParams();
     explicit MethodParams(QList<QObject*> inParams, QList<QObject*> outParams);
 
@@ -93,13 +89,10 @@ public:
 
     QList<QObject*> outParams();
     void setOutParams(QList<QObject*> params);
-
 };
 
-class MethodData : public QPair<QString, MethodParams>
-{
-
-public:
+class MethodData : public QPair<QString, MethodParams> {
+ public:
     explicit MethodData();
     explicit MethodData(const QString& name, const MethodParams& params);
 
@@ -110,19 +103,18 @@ public:
     void setParams(const MethodParams& params);
 };
 
-class Fake
-{
-public:
+class Fake {
+ public:
     explicit Fake();
-    
+
     void record();
     void stopRecording();
     void clear();
     QList<MethodData> calledMethods();
 
-protected:
+ protected:
     bool _recording;
     QList<MethodData> _called;
 };
 
-#endif // FAKE_H
+#endif  // FAKE_H

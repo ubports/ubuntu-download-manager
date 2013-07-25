@@ -21,12 +21,12 @@
 
 #include <QObject>
 #include <network_reply.h>
-#include "fake.h"
+#include "./fake.h"
 
-class FakeNetworkReply : public NetworkReply, public Fake
-{
+class FakeNetworkReply : public NetworkReply, public Fake {
     Q_OBJECT
-public:
+
+ public:
     explicit FakeNetworkReply(QObject *parent = 0);
 
     // access methods
@@ -40,8 +40,8 @@ public:
     void setReadBufferSize(uint size) override;
     void emitFinished();
 
-private:
+ private:
     QByteArray _data;
 };
 
-#endif // FAKE_NETWORK_REPLY_H
+#endif  // FAKE_NETWORK_REPLY_H

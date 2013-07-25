@@ -17,33 +17,33 @@
  */
 
 #include <QProcess>
-#include "process.h"
+#include "./process.h"
 
 /*
  * PRIVATE IMPLEMENTATION
  */
 
-class ProcessPrivate
-{
+class ProcessPrivate {
     Q_DECLARE_PUBLIC(Process)
-public:
+
+ public:
     explicit ProcessPrivate(Process* parent);
     ~ProcessPrivate();
 
-    void start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode = QProcess::ReadWrite);
+    void start(const QString& program,
+               const QStringList& arguments,
+               QProcess::OpenMode mode = QProcess::ReadWrite);
 
     void onError(QProcess::ProcessError error);
     void onFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
-private:
+ private:
     QProcess* _process;
     Process* q_ptr;
-
 };
 
-ProcessPrivate::ProcessPrivate(Process* parent) :
-    q_ptr(parent)
-{
+ProcessPrivate::ProcessPrivate(Process* parent)
+    : q_ptr(parent) {
     Q_Q(Process);
     _process = new QProcess();
 
@@ -53,25 +53,26 @@ ProcessPrivate::ProcessPrivate(Process* parent) :
         q, SLOT(onError(QProcess::ProcessError)));
 }
 
-ProcessPrivate::~ProcessPrivate()
-{
+ProcessPrivate::~ProcessPrivate() {
     if (_process != NULL)
         delete _process;
 }
 
-void ProcessPrivate::start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode)
-{
+void
+ProcessPrivate::start(const QString& program,
+                      const QStringList& arguments,
+                      QProcess::OpenMode mode) {
     _process->start(program, arguments, mode);
 }
 
-void ProcessPrivate::onError(QProcess::ProcessError error)
-{
+void
+ProcessPrivate::onError(QProcess::ProcessError error) {
     Q_Q(Process);
     emit q->error(error);
 }
 
-void ProcessPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
-{
+void
+ProcessPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     Q_Q(Process);
     emit q->finished(exitCode, exitStatus);
 }
@@ -80,14 +81,15 @@ void ProcessPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus)
  * PUBLIC IMPLEMENTATION
  */
 
-Process::Process(QObject *parent) :
-    QObject(parent),
-    d_ptr(new ProcessPrivate(this))
-{
+Process::Process(QObject *parent)
+    : QObject(parent),
+      d_ptr(new ProcessPrivate(this)) {
 }
 
-void Process::start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode)
-{
+void
+Process::start(const QString& program,
+                    const QStringList& arguments,
+                    QProcess::OpenMode mode) {
     Q_D(Process);
     d->start(program, arguments, mode);
 }

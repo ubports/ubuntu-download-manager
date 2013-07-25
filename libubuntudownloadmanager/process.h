@@ -23,27 +23,29 @@
 #include <QProcess>
 
 class ProcessPrivate;
-class Process : public QObject
-{
+class Process : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Process)
 
-public:
+ public:
     explicit Process(QObject *parent = 0);
-    
-    virtual void start(const QString& program, const QStringList& arguments, QProcess::OpenMode mode = QProcess::ReadWrite);
 
-signals:
+    virtual void start(const QString& program,
+                       const QStringList& arguments,
+                       QProcess::OpenMode mode = QProcess::ReadWrite);
+
+ signals:
     void error(QProcess::ProcessError error);
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
-    
-private:
-    Q_PRIVATE_SLOT(d_func(), void onError(QProcess::ProcessError error))
-    Q_PRIVATE_SLOT(d_func(), void onFinished(int exitCode, QProcess::ExitStatus exitStatus))
 
-private:
+ private:
+    Q_PRIVATE_SLOT(d_func(), void onError(QProcess::ProcessError error))
+    Q_PRIVATE_SLOT(d_func(),
+            void onFinished(int exitCode, QProcess::ExitStatus exitStatus))
+
+ private:
     // use pimpl so that we can mantains ABI compatibility
     ProcessPrivate* d_ptr;
 };
 
-#endif // PROCESS_H
+#endif  // DOWNLOADER_LIB_PROCESS_H

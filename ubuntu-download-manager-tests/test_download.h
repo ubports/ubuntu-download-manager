@@ -23,18 +23,18 @@
 #include <QObject>
 #include <download.h>
 #include <metatypes.h>
-#include "fake_system_network_info.h"
-#include "fake_request_factory.h"
-#include "fake_process_factory.h"
-#include "test_runner.h"
+#include "./fake_system_network_info.h"
+#include "./fake_request_factory.h"
+#include "./fake_process_factory.h"
+#include "./test_runner.h"
 
-class TestDownload: public QObject
-{
+class TestDownload: public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit TestDownload(QObject *parent = 0);
 
-private slots:
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -108,10 +108,10 @@ private slots:
     void testProcessExecutedWithParams();
     void testProcessExecutedWithParamsFile();
 
-private:
+ private:
     bool removeDir(const QString& dirName);
 
-private:
+ private:
     QDir _testDir;
     QUuid _id;
     QVariantMap _metadata;
@@ -122,10 +122,9 @@ private:
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
-
 };
 
 Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)
 DECLARE_TEST(TestDownload)
 
-#endif // TEST_APP_DOWNLOAD_H
+#endif  // TEST_APP_DOWNLOAD_H

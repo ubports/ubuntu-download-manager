@@ -21,15 +21,15 @@
 
 #include <QObject>
 #include <network_reply.h>
-#include "test_runner.h"
+#include "./test_runner.h"
 
-class TestNetworkReply : public QObject
-{
+class TestNetworkReply : public QObject {
     Q_OBJECT
-public:
+
+  public:
     explicit TestNetworkReply(QObject *parent = 0);
-    
-private slots:
+
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -41,11 +41,11 @@ private slots:
     void testErrorForwarded();
     void testFinishedForwarded();
     void testSslErrorsForwarded();
-private:
+ private:
     QNetworkReply* _qReply;
     NetworkReply* _reply;
 };
 
 DECLARE_TEST(TestNetworkReply)
 
-#endif // TEST_NETWORK_REPLY_H
+#endif  // TEST_NETWORK_REPLY_H

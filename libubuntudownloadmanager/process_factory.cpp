@@ -16,33 +16,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "process_factory.h"
+#include "./process_factory.h"
 
 /*
  * PRIVATE IMPLEMENTATION
  */
 
-class ProcessFactoryPrivate
-{
+class ProcessFactoryPrivate {
     Q_DECLARE_PUBLIC(ProcessFactory)
-public:
+ public:
     explicit ProcessFactoryPrivate(ProcessFactory* parent);
 
     Process* createProcess();
 
-private:
+ private:
     ProcessFactory* q_ptr;
-
 };
 
 
-ProcessFactoryPrivate::ProcessFactoryPrivate(ProcessFactory* parent):
-    q_ptr(parent)
-{
+ProcessFactoryPrivate::ProcessFactoryPrivate(ProcessFactory* parent)
+    : q_ptr(parent) {
 }
 
-Process* ProcessFactoryPrivate::createProcess()
-{
+Process*
+ProcessFactoryPrivate::createProcess() {
     return new Process();
 }
 
@@ -50,14 +47,13 @@ Process* ProcessFactoryPrivate::createProcess()
  * PUBLIC IMPLEMENTATION
  */
 
-ProcessFactory::ProcessFactory(QObject *parent) :
-    QObject(parent),
-    d_ptr(new ProcessFactoryPrivate(this))
-{
+ProcessFactory::ProcessFactory(QObject *parent)
+    : QObject(parent),
+      d_ptr(new ProcessFactoryPrivate(this)) {
 }
 
-Process* ProcessFactory::createProcess()
-{
+Process*
+ProcessFactory::createProcess() {
     Q_D(ProcessFactory);
     return d->createProcess();
 }

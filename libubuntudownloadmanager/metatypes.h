@@ -25,4 +25,4 @@ typedef QMap<QString, QString> StringMap;
 
 Q_DECLARE_METATYPE(StringMap)
 
-#endif // METATYPES_H
+#endif  // DOWNLOADER_LIB_APP_METATYPES_H

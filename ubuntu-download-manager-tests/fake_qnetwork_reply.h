@@ -20,15 +20,14 @@
 #define FAKE_QNETWORK_REPLY_H
 
 #include <QNetworkReply>
-#include "fake.h"
+#include "./fake.h"
 
 
-class FakeQNetworkReply : public QNetworkReply, public Fake
-{
-
+class FakeQNetworkReply : public QNetworkReply, public Fake {
     Q_OBJECT
-public:
-    FakeQNetworkReply(QObject* parent=0);
+
+ public:
+    explicit FakeQNetworkReply(QObject* parent = 0);
 
     // fake methods used for the tests
     void abort();
@@ -38,9 +37,9 @@ public:
     virtual qint64 bytesAvailable() const;
     virtual qint64 bytesToWrite() const;
     virtual bool canReadLine() const;
-    virtual bool waitForReadyRead(int);
-    virtual bool waitForBytesWritten(int);
+    virtual bool waitForReadyRead(int data);
+    virtual bool waitForBytesWritten(int data);
     virtual qint64 readData(char* data, qint64 maxlen);
 };
 
-#endif // FAKE_QNETWORK_REPLY_H
+#endif  // FAKE_QNETWORK_REPLY_H

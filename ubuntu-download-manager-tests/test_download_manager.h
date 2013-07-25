@@ -21,19 +21,19 @@
 
 #include <QObject>
 #include <download_manager.h>
-#include "test_runner.h"
-#include "fake_dbus_connection.h"
-#include "fake_download_queue.h"
-#include "fake_uuid_factory.h"
-#include "fake_system_network_info.h"
+#include "./test_runner.h"
+#include "./fake_dbus_connection.h"
+#include "./fake_download_queue.h"
+#include "./fake_uuid_factory.h"
+#include "./fake_system_network_info.h"
 
-class TestDownloadManager : public QObject
-{
+class TestDownloadManager : public QObject {
     Q_OBJECT
-public:
+
+ public:
     explicit TestDownloadManager(QObject *parent = 0);
-    
-private slots:
+
+ private slots:  // NOLINT(whitespace/indent)
 
     void init();
     void cleanup();
@@ -52,10 +52,10 @@ private slots:
     void testSetThrottleNotDownloads();
     void testSetThrottleWithDownloads();
 
-private:
+ private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
-private:
+ private:
     FakeSystemNetworkInfo* _networkInfo;
     FakeDBusConnection* _conn;
     FakeDownloadQueue* _q;
@@ -65,4 +65,4 @@ private:
 
 DECLARE_TEST(TestDownloadManager)
 
-#endif // TEST_DOWNLOADER_H
+#endif  // TEST_DOWNLOADER_H

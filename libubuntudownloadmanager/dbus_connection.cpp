@@ -16,50 +16,49 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "dbus_connection.h"
+#include "./dbus_connection.h"
 
 /*
  * PRIVATE IMPLEMENTATION
  */
 
 
-class DBusConnectionPrivate
-{
+class DBusConnectionPrivate {
     Q_DECLARE_PUBLIC(DBusConnection)
-public:
+ public:
     explicit DBusConnectionPrivate(DBusConnection* parent);
 
     bool registerService(const QString& serviceName);
     bool registerObject(const QString& path, QObject* object,
-        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);
+        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
     void unregisterObject(const QString& path,
         QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
 
-private:
+ private:
     QDBusConnection _conn;
     DBusConnection* q_ptr;
-
 };
 
-DBusConnectionPrivate::DBusConnectionPrivate(DBusConnection* parent):
-    _conn(QDBusConnection::sessionBus()),
-    q_ptr(parent)
-{
+DBusConnectionPrivate::DBusConnectionPrivate(DBusConnection* parent)
+    : _conn(QDBusConnection::sessionBus()),
+      q_ptr(parent) {
 }
 
-bool DBusConnectionPrivate::registerService(const QString& serviceName)
-{
+bool
+DBusConnectionPrivate::registerService(const QString& serviceName) {
     return _conn.registerService(serviceName);
 }
 
-bool DBusConnectionPrivate::registerObject(const QString& path, QObject* object,
-    QDBusConnection::RegisterOptions options)
-{
+bool
+DBusConnectionPrivate::registerObject(const QString& path,
+                                      QObject* object,
+                                      QDBusConnection::RegisterOptions options) {  // NOLINT(whitespace/line_length)
     return _conn.registerObject(path, object, options);
 }
 
-void DBusConnectionPrivate::unregisterObject(const QString& path, QDBusConnection::UnregisterMode mode)
-{
+void
+DBusConnectionPrivate::unregisterObject(const QString& path,
+    QDBusConnection::UnregisterMode mode) {
     return _conn.unregisterObject(path, mode);
 }
 
@@ -67,27 +66,28 @@ void DBusConnectionPrivate::unregisterObject(const QString& path, QDBusConnectio
  * PUBLIC IMPLEMENTATION
  */
 
-DBusConnection::DBusConnection(QObject *parent) :
-    QObject(parent),
-    d_ptr(new DBusConnectionPrivate(this))
-{
+DBusConnection::DBusConnection(QObject *parent)
+    : QObject(parent),
+      d_ptr(new DBusConnectionPrivate(this)) {
 }
 
-bool DBusConnection::registerService(const QString& serviceName)
-{
+bool
+DBusConnection::registerService(const QString& serviceName) {
     Q_D(DBusConnection);
     return d->registerService(serviceName);
 }
 
-bool DBusConnection::registerObject(const QString& path, QObject* object,
-    QDBusConnection::RegisterOptions options)
-{
+bool
+DBusConnection::registerObject(const QString& path,
+		               QObject* object,
+                               QDBusConnection::RegisterOptions options) {
     Q_D(DBusConnection);
     return d->registerObject(path, object, options);
 }
 
-void DBusConnection::unregisterObject(const QString& path, QDBusConnection::UnregisterMode mode)
-{
+void
+DBusConnection::unregisterObject(const QString& path,
+                                 QDBusConnection::UnregisterMode mode) {
     Q_D(DBusConnection);
     d->unregisterObject(path, mode);
 }

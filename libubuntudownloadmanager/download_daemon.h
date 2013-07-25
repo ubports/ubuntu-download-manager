@@ -20,24 +20,23 @@
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
 #include <QObject>
-#include "app-downloader-lib_global.h"
-#include "dbus_connection.h"
+#include "./app-downloader-lib_global.h"
+#include "./dbus_connection.h"
 
 class DownloadDaemonPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject
-{
+class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
     Q_DECLARE_PRIVATE(DownloadDaemon)
     Q_OBJECT
-public:
+
+ public:
     explicit DownloadDaemon(QObject *parent = 0);
     explicit DownloadDaemon(DBusConnection* conn, QObject *parent = 0);
 
     bool start();
 
-private:
+ private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadDaemonPrivate* d_ptr;
-
 };
 
-#endif // DOWNLOAD_DAEMON_H
+#endif  // DOWNLOADER_LIB_DOWNLOAD_DAEMON_H

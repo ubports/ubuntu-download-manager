@@ -16,18 +16,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_download_queue.h"
+#include "./fake_download_queue.h"
 
-FakeDownloadQueue::FakeDownloadQueue(SystemNetworkInfo* networkInfo, QObject *parent) :
-    DownloadQueue(networkInfo, parent),
-    Fake()
-{
+FakeDownloadQueue::FakeDownloadQueue(SystemNetworkInfo* networkInfo,
+                                     QObject *parent)
+    : DownloadQueue(networkInfo, parent),
+    Fake() {
 }
 
-void FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor)
-{
-    if (_recording)
-    {
+void
+FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(download);
         inParams.append(adaptor);
@@ -42,10 +41,9 @@ void FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor)
     DownloadQueue::add(download, adaptor);
 }
 
-void FakeDownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value)
-{
-    if (_recording)
-    {
+void
+FakeDownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value) {
+    if (_recording) {
         QList<QObject*> inParams;
         inParams.append(value.first);
         inParams.append(value.second);

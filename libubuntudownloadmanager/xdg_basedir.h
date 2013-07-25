@@ -23,12 +23,12 @@
 #include <QObject>
 #include <QString>
 #include <stdio.h>
+#include <string>
 
-class XDGBasedir : public QObject
-{
+class XDGBasedir : public QObject {
     Q_OBJECT
-public:
 
+ public:
     static QString cacheHome();
     static QString configHome();
     static QString dataHome();
@@ -40,7 +40,7 @@ public:
     static QString saveConfigPath(QList<QString> resource);
     static QString saveDataPath(QList<QString> resource);
 
-private:
+ private:
     static QString DEFAULT_CACHE_HOME;
     static QString DEFAULT_CONFIG_HOME;
     static QString DEFAULT_CONFIG_PATH;
@@ -51,7 +51,6 @@ private:
     static std::string XDG_DATA_HOME;
     static std::string XDG_CONFIG_DIRS;
     static std::string XDG_DATA_DIRS;
-
 };
 
-#endif // APP_DOWNLOADER_LIB_XDG_BASEDIR_H
+#endif  // DOWNLOADER_LIB_XDG_BASEDIR_H

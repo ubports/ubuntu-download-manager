@@ -16,26 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake.h"
+#include <string>
+#include "./fake.h"
 
 /*
  * BOOL WRAPPER
  */
 
 
-BoolWrapper::BoolWrapper(bool value, QObject* parent):
-    QObject(parent),
-    _value(value)
-{
+BoolWrapper::BoolWrapper(bool value, QObject* parent)
+    : QObject(parent),
+      _value(value) {
 }
 
-bool BoolWrapper::value()
-{
+bool
+BoolWrapper::value() {
     return _value;
 }
 
-void BoolWrapper::setValue(bool value)
-{
+void
+BoolWrapper::setValue(bool value) {
     _value = value;
 }
 
@@ -43,19 +43,18 @@ void BoolWrapper::setValue(bool value)
  * STRING WRAPPER
  */
 
-StringWrapper::StringWrapper(const QString& string, QObject* parent):
-    QObject(parent),
-    _value(string)
-{
+StringWrapper::StringWrapper(const QString& string, QObject* parent)
+    : QObject(parent),
+      _value(string) {
 }
 
-QString StringWrapper::value()
-{
+QString
+StringWrapper::value() {
     return _value;
 }
 
-void StringWrapper::setValue(const QString& value)
-{
+void
+StringWrapper::setValue(const QString& value) {
     _value = value;
 }
 
@@ -64,19 +63,18 @@ void StringWrapper::setValue(const QString& value)
  */
 
 
-StringListWrapper::StringListWrapper(const QStringList& list, QObject* parent) :
-    QObject(parent)
-{
+StringListWrapper::StringListWrapper(const QStringList& list, QObject* parent)
+    : QObject(parent) {
     _value = list;
 }
 
-QStringList StringListWrapper::value()
-{
+QStringList
+StringListWrapper::value() {
     return _value;
 }
 
-void StringListWrapper::setValue(const QStringList& value)
-{
+void
+StringListWrapper::setValue(const QStringList& value) {
     _value = value;
 }
 
@@ -84,20 +82,19 @@ void StringListWrapper::setValue(const QStringList& value)
  * UINT WRAPPER
  */
 
-UintWrapper::UintWrapper(uint value, QObject* parent):
-    QObject(parent),
-    _value(value)
-{
+UintWrapper::UintWrapper(uint value, QObject* parent)
+    : QObject(parent),
+      _value(value) {
 }
 
 
-uint UintWrapper::value()
-{
+uint
+UintWrapper::value() {
     return _value;
 }
 
-void UintWrapper::setValue(uint value)
-{
+void
+UintWrapper::setValue(uint value) {
     _value = value;
 }
 
@@ -107,32 +104,30 @@ void UintWrapper::setValue(uint value)
 
 typedef QPair<QList<QObject*>, QList<QObject*> > MethodParamsPair;
 
-MethodParams::MethodParams() : MethodParamsPair()
-{
+MethodParams::MethodParams() : MethodParamsPair() {
 }
 
-MethodParams::MethodParams(QList<QObject*> inParams, QList<QObject*> outParams) :
-    MethodParamsPair(inParams, outParams)
-{
+MethodParams::MethodParams(QList<QObject*> inParams, QList<QObject*> outParams)
+    : MethodParamsPair(inParams, outParams) {
 }
 
-QList<QObject*> MethodParams::inParams()
-{
+QList<QObject*>
+MethodParams::inParams() {
     return first;
 }
 
-void MethodParams::setInParams(QList<QObject*> params)
-{
+void
+MethodParams::setInParams(QList<QObject*> params) {
     first = params;
 }
 
-QList<QObject*> MethodParams::outParams()
-{
+QList<QObject*>
+MethodParams::outParams() {
     return second;
 }
 
-void MethodParams::setOutParams(QList<QObject*> params)
-{
+void
+MethodParams::setOutParams(QList<QObject*> params) {
     second = params;
 }
 
@@ -143,32 +138,30 @@ void MethodParams::setOutParams(QList<QObject*> params)
 typedef QPair<QString, MethodParams> MethodDataPair;
 
 MethodData::MethodData()
-    : MethodDataPair()
-{
+    : MethodDataPair() {
 }
 
 MethodData::MethodData(const QString& name, const MethodParams& params)
-    : MethodDataPair(name, params)
-{
+    : MethodDataPair(name, params) {
 }
 
-QString MethodData::methodName()
-{
+QString
+MethodData::methodName() {
     return first;
 }
 
-void MethodData::setMethodName(const QString& name)
-{
+void
+MethodData::setMethodName(const QString& name) {
     first = name;
 }
 
-MethodParams MethodData::params()
-{
+MethodParams
+MethodData::params() {
     return second;
 }
 
-void MethodData::setParams(const MethodParams& params)
-{
+void
+MethodData::setParams(const MethodParams& params) {
     second = params;
 }
 
@@ -176,28 +169,27 @@ void MethodData::setParams(const MethodParams& params)
  * FAKE
  */
 
-Fake::Fake() :
-    _recording(false)
-{
+Fake::Fake()
+    : _recording(false) {
 }
 
 
-void Fake::record()
-{
+void
+Fake::record() {
     _recording = true;
 }
 
-void Fake::stopRecording()
-{
+void
+Fake::stopRecording() {
     _recording = false;
 }
 
-void Fake::clear()
-{
+void
+Fake::clear() {
     _called.clear();
 }
 
-QList<MethodData> Fake::calledMethods()
-{
+QList<MethodData>
+Fake::calledMethods() {
     return _called;
 }
