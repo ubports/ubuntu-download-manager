@@ -1,3 +1,17 @@
+ubuntu-download-manager (0.2+13.10.20130725-0ubuntu1) saucy; urgency=low
+
+  [ Rodney Dawes ]
+  * Allow downloads if GSM download is enabled, and network is Unknown
+    state. (LP: #1204654)
+
+  [ Manuel de la Pena ]
+  * Fix progress signal.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 85
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 25 Jul 2013 07:01:49 +0000
+
 ubuntu-download-manager (0.2+13.10.20130723-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
