@@ -102,8 +102,8 @@ Logger::getMessageTypeString(QtMsgType type) {
 QString
 Logger::getLogDir() {
     QStringList pathComponents;
-    pathComponents << "download_manager";
-    return XDGBasedir::saveDataPath(pathComponents);
+    pathComponents << "ubuntu-download-manager";
+    return XDGBasedir::saveCachePath(pathComponents);
 }
 
 void
