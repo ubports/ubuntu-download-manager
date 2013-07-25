@@ -81,6 +81,9 @@ DownloadDaemonPrivate::~DownloadDaemonPrivate() {
         delete _conn;
     if (_downInterface)
         delete _downInterface;
+
+    // stop logging
+    Logger::setupLogging();
 }
 
 bool
