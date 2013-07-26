@@ -32,9 +32,9 @@ class DownloadManagerPrivate {
     Q_DECLARE_PUBLIC(DownloadManager)
 
  public:
-    explicit DownloadManagerPrivate(DBusConnection* connection,
+    explicit DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
                                     DownloadManager* parent);
-    explicit DownloadManagerPrivate(DBusConnection* connection,
+    explicit DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
                                     SystemNetworkInfo* networkInfo,
                                     DownloadQueue* queue,
                                     UuidFactory* uuidFactory,
@@ -66,7 +66,7 @@ class DownloadManagerPrivate {
     qulonglong _throttle;
     SystemNetworkInfo* _networkInfo;
     DownloadQueue* _downloadsQueue;
-    DBusConnection* _conn;
+    QSharedPointer<DBusConnection> _conn;
     RequestFactory* _reqFactory;
     ProcessFactory* _processFactory;
     UuidFactory* _uuidFactory;
@@ -76,28 +76,30 @@ class DownloadManagerPrivate {
 QString DownloadManagerPrivate::BASE_ACCOUNT_URL =
     "/com/canonical/applications/download/%1";
 
-DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection,
-                                               DownloadManager* parent)
+DownloadManagerPrivate::DownloadManagerPrivate(
+                                QSharedPointer<DBusConnection> connection,
+                                DownloadManager* parent)
     : _throttle(0),
-      _conn(connection),
       q_ptr(parent) {
+    _conn = connection;
     _networkInfo = new SystemNetworkInfo();
     _downloadsQueue = new DownloadQueue(_networkInfo);
     _uuidFactory = new UuidFactory();
     init();
 }
 
-DownloadManagerPrivate::DownloadManagerPrivate(DBusConnection* connection,
-                                               SystemNetworkInfo* networkInfo,
-                                               DownloadQueue* queue,
-                                               UuidFactory* uuidFactory,
-                                               DownloadManager* parent)
+DownloadManagerPrivate::DownloadManagerPrivate(
+                                QSharedPointer<DBusConnection> connection,
+                                SystemNetworkInfo* networkInfo,
+                                DownloadQueue* queue,
+                                UuidFactory* uuidFactory,
+                                DownloadManager* parent)
         : _throttle(0),
           _networkInfo(networkInfo),
           _downloadsQueue(queue),
-          _conn(connection),
           _uuidFactory(uuidFactory),
           q_ptr(parent) {
+    _conn = connection;
     init();
 }
 
@@ -226,13 +228,13 @@ DownloadManagerPrivate::getAllDownloadsWithMetadata(const QString& name,
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadManager::DownloadManager(DBusConnection* connection,
+DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
                                  QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadManagerPrivate(connection, this)) {
 }
 
-DownloadManager::DownloadManager(DBusConnection* connection,
+DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
                                  SystemNetworkInfo* networkInfo,
                                  DownloadQueue* queue,
                                  UuidFactory* uuidFactory,

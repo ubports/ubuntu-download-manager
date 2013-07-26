@@ -25,17 +25,16 @@ TestDownloadManager::TestDownloadManager(QObject *parent)
 
 void
 TestDownloadManager::init() {
-    _conn = new FakeDBusConnection();
+    _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
     _networkInfo = new FakeSystemNetworkInfo();
     _q = new FakeDownloadQueue(_networkInfo);
     _uuidFactory = new FakeUuidFactory();
-    _man = new DownloadManager(_conn, _networkInfo, _q, _uuidFactory);
+    _man = new DownloadManager(qSharedPointerCast<DBusConnection>(_conn),
+        _networkInfo, _q, _uuidFactory);
 }
 
 void
 TestDownloadManager::cleanup() {
-    if (_conn != NULL)
-        delete _conn;
     if (_networkInfo)
         delete _networkInfo;
     if (_q != NULL)
