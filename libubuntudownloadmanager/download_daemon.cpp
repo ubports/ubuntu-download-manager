@@ -67,7 +67,7 @@ void DownloadDaemonPrivate::init() {
 
     // set logging
     Logger::setupLogging();
-#ifdef QT_DEBUG
+#ifdef DEBUG
     Logger::setLogLevel(QtDebugMsg);
 #else
     if (qgetenv("UBUNTU_DOWNLOADER_DEBUG") != "")
