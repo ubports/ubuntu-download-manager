@@ -39,9 +39,8 @@ class Process : public QObject {
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onError(QProcess::ProcessError error))
-    Q_PRIVATE_SLOT(d_func(),
-            void onFinished(int exitCode, QProcess::ExitStatus exitStatus))
+    Q_PRIVATE_SLOT(d_func(), void onReadyReadStandardError())
+    Q_PRIVATE_SLOT(d_func(), void onReadyReadStandardOutput())
 
  private:
     // use pimpl so that we can mantains ABI compatibility

@@ -130,6 +130,7 @@ class DownloadPrivate {
     bool removeDir(const QString& dirName);
     void cleanUpCurrentData();
     QNetworkRequest buildRequest();
+    void emitError(const QString& error);
 
  private:
     QUuid _id;
@@ -361,6 +362,17 @@ DownloadPrivate::buildRequest() {
         request.setRawHeader(header.toUtf8(), _headers[header].toUtf8());
     }
     return request;
+}
+
+void
+DownloadPrivate::emitError(const QString& error) {
+    qDebug() << "EMIT ERROR:" << error;
+    Q_Q(Download);
+    disconnectFromReplySignals();
+    _reply->deleteLater();
+    _reply = NULL;
+    cleanUpCurrentData();
+    emit q->error(error);
 }
 
 QUuid
@@ -660,14 +672,7 @@ DownloadPrivate::onDownloadProgress(qint64 progress, qint64 bytesTotal) {
 void
 DownloadPrivate::onError(QNetworkReply::NetworkError code) {
     qCritical() << _url << "ERROR:" << ":" << code;
-    // get the error data, disconnect and remove the reply and data
-
-    disconnectFromReplySignals();
-    _reply->deleteLater();
-    _reply = NULL;
-    cleanUpCurrentData();
-
-    // TODO(mandel): emit error signal
+    emitError("NETWORK ERROR");
 }
 
 void
@@ -754,7 +759,6 @@ DownloadPrivate::onFinished() {
 void
 DownloadPrivate::onSslErrors(const QList<QSslError>& errors) {
     qDebug() << __FUNCTION__ << _url;
-    // TODO(mandel): emit ssl errors signal?
     Q_UNUSED(errors);
     Q_Q(Download);
     emit q->error("SSL ERROR");
@@ -762,23 +766,25 @@ DownloadPrivate::onSslErrors(const QList<QSslError>& errors) {
 
 void
 DownloadPrivate::onProcessError(QProcess::ProcessError error) {
-    // TODO(mandel): better error fowarding
+    qDebug() << __FUNCTION__ << error;
     Q_UNUSED(error);
-    Q_Q(Download);
-    emit q->error("COMMAND ERROR");
+    emitError("COMMAND ERROR");
 }
 
 void
 DownloadPrivate::onProcessFinished(int exitCode,
-                                        QProcess::ExitStatus exitStatus) {
+                                   QProcess::ExitStatus exitStatus) {
     qDebug() << __FUNCTION__ << exitCode << exitStatus;
-    // TODO(mandel): send the command exit code and status
     Q_Q(Download);
-    _state = Download::FINISHED;
-    qDebug() << "EMIT stateChanged";
-    emit q->stateChanged();
-    qDebug() << "EMIT finished" << filePath();
-    emit q->finished(filePath());
+    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
+        _state = Download::FINISHED;
+         qDebug() << "EMIT stateChanged";
+         emit q->stateChanged();
+         qDebug() << "EMIT finished" << filePath();
+         emit q->finished(filePath());
+    } else {
+        emitError("COMMAND ERROR");
+    }
 }
 
 /**

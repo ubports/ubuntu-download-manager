@@ -45,6 +45,8 @@ class FakeProcess : public Process, public Fake {
     void start(const QString& program,
                const QStringList& arguments,
                QProcess::OpenMode mode = QProcess::ReadWrite) override;
+
+    void emitFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif  // FAKE_PROCESS_H

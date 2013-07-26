@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QProcess>
 #include "./process.h"
 
@@ -34,8 +35,8 @@ class ProcessPrivate {
                const QStringList& arguments,
                QProcess::OpenMode mode = QProcess::ReadWrite);
 
-    void onError(QProcess::ProcessError error);
-    void onFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onReadyReadStandardError();
+    void onReadyReadStandardOutput();
 
  private:
     QProcess* _process;
@@ -46,11 +47,19 @@ ProcessPrivate::ProcessPrivate(Process* parent)
     : q_ptr(parent) {
     Q_Q(Process);
     _process = new QProcess();
+    _process->setProcessChannelMode(QProcess::SeparateChannels);
 
+    // connect so that we foward the signals
     q->connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)),
-        q, SLOT(onFinished(int, QProcess::ExitStatus)));
+        q, SIGNAL(finished(int, QProcess::ExitStatus)));
     q->connect(_process, SIGNAL(error(QProcess::ProcessError)),
-        q, SLOT(onError(QProcess::ProcessError)));
+        q, SIGNAL(error(QProcess::ProcessError)));
+
+    // connect so that we can log the stdout and stderr of the process
+    q->connect(_process, SIGNAL(readyReadStandardError()),
+        q, SLOT(onReadyReadStandardError()));
+    q->connect(_process, SIGNAL(readyReadStandardOutput()),
+        q, SLOT(onReadyReadStandardOutput()));
 }
 
 ProcessPrivate::~ProcessPrivate() {
@@ -62,19 +71,20 @@ void
 ProcessPrivate::start(const QString& program,
                       const QStringList& arguments,
                       QProcess::OpenMode mode) {
+    qDebug() << __FUNCTION__ << program << arguments << mode;
     _process->start(program, arguments, mode);
 }
 
 void
-ProcessPrivate::onError(QProcess::ProcessError error) {
-    Q_Q(Process);
-    emit q->error(error);
+ProcessPrivate::onReadyReadStandardError() {
+    // use qCritical this is important stuff
+    qCritical() << QString(_process->readAllStandardError());
 }
 
 void
-ProcessPrivate::onFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    Q_Q(Process);
-    emit q->finished(exitCode, exitStatus);
+ProcessPrivate::onReadyReadStandardOutput() {
+    // use qDebug
+    qDebug() << QString(_process->readAllStandardOutput());
 }
 
 /*

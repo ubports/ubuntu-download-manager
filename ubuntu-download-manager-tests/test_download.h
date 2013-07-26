@@ -107,6 +107,9 @@ class TestDownload: public QObject {
     void testProcessExecutedNoParams();
     void testProcessExecutedWithParams();
     void testProcessExecutedWithParamsFile();
+    void testProcessFinishedNoError();
+    void testProcessFinishedWithError();
+    void testProcessFinishedCrash();
 
  private:
     bool removeDir(const QString& dirName);
