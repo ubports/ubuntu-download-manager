@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_process.h"
+#include "./fake_process.h"
 
 OpenModeWrapper::OpenModeWrapper(QProcess::OpenMode mode, QObject* parent)
     : QObject(parent) {
@@ -53,4 +53,9 @@ FakeProcess::start(const QString& program,
         MethodData methodData("start", params);
         _called.append(methodData);
     }
+}
+
+void
+FakeProcess::emitFinished(int exitCode, QProcess::ExitStatus exitStatus) {
+    emit finished(exitCode, exitStatus);
 }

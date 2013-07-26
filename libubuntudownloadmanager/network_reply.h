@@ -43,13 +43,6 @@ class NetworkReply : public QObject {
     void sslErrors(const QList<QSslError>& errors);
 
  private:
-    Q_PRIVATE_SLOT(d_func(),
-            void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal))
-    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError code))
-    Q_PRIVATE_SLOT(d_func(), void onFinished())
-    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>& errors))
-
- private:
     // use pimpl so that we can mantains ABI compatibility
     NetworkReplyPrivate* d_ptr;
 };

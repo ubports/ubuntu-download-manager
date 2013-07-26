@@ -1354,3 +1354,108 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QCOMPARE(processCommand, command);
     QVERIFY(processArgs.contains(download->filePath()));
 }
+
+void
+TestDownload::testProcessFinishedNoError() {
+    QVariantMap metadata;
+    QStringList command;
+    command << "grep" << "$file" << "-Rn";
+    metadata["post-download-command"] = command;
+
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers,
+        _networkInfo, _reqFactory, _processFactory);
+    QSignalSpy spy(download , SIGNAL(finished(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finished signal with 0 and ensure that finished is emitted
+    process->emitFinished(0, QProcess::NormalExit);
+    QCOMPARE(spy.count(), 1);
+}
+
+void
+TestDownload::testProcessFinishedWithError() {
+    QVariantMap metadata;
+    QStringList command;
+    command << "grep" << "$file" << "-Rn";
+    metadata["post-download-command"] = command;
+
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers,
+        _networkInfo, _reqFactory, _processFactory);
+    QSignalSpy spy(download , SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finished signal with a result > 0 and ensure error is emitted
+    process->emitFinished(1, QProcess::NormalExit);
+    QCOMPARE(spy.count(), 1);
+}
+
+void
+TestDownload::testProcessFinishedCrash() {
+    QVariantMap metadata;
+    QStringList command;
+    command << "grep" << "$file" << "-Rn";
+    metadata["post-download-command"] = command;
+
+    _processFactory->record();
+    _reqFactory->record();
+    Download* download = new Download(_id, _path, _url, metadata, _headers,
+        _networkInfo, _reqFactory, _processFactory);
+    QSignalSpy spy(download , SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finished signal with a result > 0 and ensure error is emitted
+    process->emitFinished(1, QProcess::CrashExit);
+    QCOMPARE(spy.count(), 1);
+}

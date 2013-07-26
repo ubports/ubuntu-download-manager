@@ -33,12 +33,6 @@ class NetworkReplyPrivate {
     void abort();
     void setReadBufferSize(uint size);
 
-    // slots used to foward the reply signals
-    void onDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
-    void onError(QNetworkReply::NetworkError code);
-    void onFinished();
-    void onSslErrors(const QList<QSslError>& errors);
-
  private:
     QNetworkReply* _reply;
     NetworkReply* q_ptr;
@@ -52,13 +46,13 @@ NetworkReplyPrivate::NetworkReplyPrivate(QNetworkReply* reply,
     Q_Q(NetworkReply);
     if (_reply != NULL) {
         q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
-            q, SLOT(onDownloadProgress(qint64, qint64)));
+            q, SIGNAL(downloadProgress(qint64, qint64)));
         q->connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            q, SLOT(onError(QNetworkReply::NetworkError)));
+            q, SIGNAL(error(QNetworkReply::NetworkError)));
         q->connect(_reply, SIGNAL(finished()),
-            q, SLOT(onFinished()));
+            q, SIGNAL(finished()));
         q->connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)),
-            q, SLOT(onSslErrors(const QList<QSslError>&)));
+            q, SIGNAL(sslErrors(const QList<QSslError>&)));
     }
 }
 
@@ -76,32 +70,6 @@ void
 NetworkReplyPrivate::setReadBufferSize(uint size) {
     _reply->setReadBufferSize(size);
 }
-
-void
-NetworkReplyPrivate::onDownloadProgress(qint64 bytesReceived,
-                                        qint64 bytesTotal) {
-    Q_Q(NetworkReply);
-    emit q->downloadProgress(bytesReceived, bytesTotal);
-}
-
-void
-NetworkReplyPrivate::onError(QNetworkReply::NetworkError code) {
-    Q_Q(NetworkReply);
-    emit q->error(code);
-}
-
-void
-NetworkReplyPrivate::onFinished() {
-    Q_Q(NetworkReply);
-    emit q->finished();
-}
-
-void
-NetworkReplyPrivate::onSslErrors(const QList<QSslError>& errors) {
-    Q_Q(NetworkReply);
-    emit q->sslErrors(errors);
-}
-
 
 /*
  * PUBLIC IMPLEMENTATION
