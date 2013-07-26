@@ -46,7 +46,6 @@ Logger::Logger(const QString filename) {
     _logFile.setFileName(_logFileName);
     if (_logFile.open(QFile::WriteOnly | QFile::Append)) {
         _logStream.setDevice(&_logFile);
-        _logStream.seek(0);
         _logStream.flush();
     }
 
