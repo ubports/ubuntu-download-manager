@@ -1,3 +1,18 @@
+ubuntu-download-manager (0.2+13.10.20130727-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Improved the use of the child process by: * Send the error signals
+    when the return code != 0 or when the exit status is crash. * Log
+    the stdout and stderr of the child proccess. (LP: #1205092,
+    #1205269)
+  * Append to the log instead of truncate. Later deal with rotations.
+  * Define the app as always in DEBUG until we are mature.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 92
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 27 Jul 2013 07:01:47 +0000
+
 ubuntu-download-manager (0.2+13.10.20130726-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
