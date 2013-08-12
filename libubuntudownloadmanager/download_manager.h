@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
+#include <QSharedPointer>
 #include "./dbus_connection.h"
 #include "./download.h"
 #include "./download_queue.h"
@@ -35,9 +36,9 @@ class DownloadManager : public QObject {
     Q_DECLARE_PRIVATE(DownloadManager)
 
  public:
-    explicit DownloadManager(DBusConnection* connection,
+    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
                              QObject *parent = 0);
-    explicit DownloadManager(DBusConnection* connection,
+    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
                              SystemNetworkInfo* networkInfo,
                              DownloadQueue* queue,
                              UuidFactory* uuidFactory,

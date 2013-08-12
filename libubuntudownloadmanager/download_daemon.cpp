@@ -18,6 +18,7 @@
 
 #include <QtDBus/QDBusConnection>
 #include <QDebug>
+#include <QSharedPointer>
 #include "./logger.h"
 #include "./download_manager.h"
 #include "./download_manager_adaptor.h"
@@ -42,7 +43,7 @@ class DownloadDaemonPrivate {
     void init();
 
  private:
-    DBusConnection* _conn;
+    QSharedPointer<DBusConnection> _conn;
     DownloadManager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
     DownloadDaemon* q_ptr;
@@ -50,7 +51,7 @@ class DownloadDaemonPrivate {
 
 DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent)
     : q_ptr(parent) {
-    _conn = new DBusConnection();
+    _conn = QSharedPointer<DBusConnection>(new DBusConnection());
     _downInterface = new DownloadManager(_conn, q_ptr);
     init();
 }
@@ -64,7 +65,6 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn,
 }
 
 void DownloadDaemonPrivate::init() {
-
     // set logging
     Logger::setupLogging();
 #ifdef DEBUG
@@ -77,8 +77,6 @@ void DownloadDaemonPrivate::init() {
 
 DownloadDaemonPrivate::~DownloadDaemonPrivate() {
     // no need to delete the adaptor because the interface is its parent
-    if (_conn)
-        delete _conn;
     if (_downInterface)
         delete _downInterface;
 
