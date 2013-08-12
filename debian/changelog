@@ -1,3 +1,13 @@
+ubuntu-download-manager (0.2+13.10.20130812-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Use smart pointers to simplify the memory management.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 94
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 Aug 2013 18:04:03 +0000
+
 ubuntu-download-manager (0.2+13.10.20130727-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
