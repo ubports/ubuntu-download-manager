@@ -79,6 +79,26 @@ StringListWrapper::setValue(const QStringList& value) {
 }
 
 /*
+ * INT WRAPPER
+ */
+
+IntWrapper::IntWrapper(int value, QObject* parent)
+    : QObject(parent),
+      _value(value) {
+}
+
+
+int
+IntWrapper::value() {
+    return _value;
+}
+
+void
+IntWrapper::setValue(int value) {
+    _value = value;
+}
+
+/*
  * UINT WRAPPER
  */
 

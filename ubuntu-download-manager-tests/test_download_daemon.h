@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <download_daemon.h>
+#include "./fake_application.h"
 #include "./fake_dbus_connection.h"
 #include "./test_runner.h"
 
@@ -39,6 +40,7 @@ class TestDownloadDaemon : public QObject {
     void testStartFailObjectRegister();
 
  private:
+    FakeApplication* _app;
     FakeDBusConnection* _conn;
     DownloadDaemon* _daemon;
 };

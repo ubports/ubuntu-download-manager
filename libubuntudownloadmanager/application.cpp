@@ -58,6 +58,6 @@ Application::Application(QObject *parent)
 
 void
 Application::exit(int returnCode) {
-    Q_D(Process);
+    Q_D(Application);
     d->exit(returnCode);
 }

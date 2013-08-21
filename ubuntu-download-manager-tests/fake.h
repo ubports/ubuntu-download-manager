@@ -66,6 +66,19 @@ class StringListWrapper : public QObject {
     QStringList _value;
 };
 
+class IntWrapper : public QObject {
+    Q_OBJECT
+
+ public:
+    IntWrapper(int value, QObject* parent = 0);
+
+    int value();
+    void setValue(int value);
+
+ private:
+    int _value;
+};
+
 class UintWrapper : public QObject {
     Q_OBJECT
 

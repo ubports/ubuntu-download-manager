@@ -19,6 +19,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QDebug>
 #include <QSharedPointer>
+#include "./application.h"
 #include "./logger.h"
 #include "./download_manager.h"
 #include "./download_manager_adaptor.h"
@@ -33,16 +34,18 @@ class DownloadDaemonPrivate {
 
  public:
     explicit DownloadDaemonPrivate(DownloadDaemon* parent);
-    explicit DownloadDaemonPrivate(DBusConnection* conn,
+    explicit DownloadDaemonPrivate(Application* app,
+                                   DBusConnection* conn,
                                    DownloadDaemon* parent);
     ~DownloadDaemonPrivate();
 
-    bool start();
+    void start();
 
  private:
     void init();
 
  private:
+    Application* _app;
     QSharedPointer<DBusConnection> _conn;
     DownloadManager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
@@ -56,9 +59,11 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent)
     init();
 }
 
-DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn,
+DownloadDaemonPrivate::DownloadDaemonPrivate(Application* app,
+                                             DBusConnection* conn,
                                              DownloadDaemon* parent)
-    : _conn(conn),
+    : _app(app),
+      _conn(conn),
       q_ptr(parent) {
       _downInterface = new DownloadManager(_conn);
     init();
@@ -66,6 +71,7 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DBusConnection* conn,
 
 void DownloadDaemonPrivate::init() {
     // set logging
+    _app = new Application();
     Logger::setupLogging();
 #ifdef DEBUG
     Logger::setLogLevel(QtDebugMsg);
@@ -79,12 +85,14 @@ DownloadDaemonPrivate::~DownloadDaemonPrivate() {
     // no need to delete the adaptor because the interface is its parent
     if (_downInterface)
         delete _downInterface;
+    if (_app)
+        delete _app;
 
     // stop logging
     Logger::setupLogging();
 }
 
-bool
+void
 DownloadDaemonPrivate::start() {
     qDebug() << "Starting daemon";
     _downAdaptor = new DownloadManagerAdaptor(_downInterface);
@@ -94,10 +102,13 @@ DownloadDaemonPrivate::start() {
             << "com.canonical.applications.Downloader";
         ret = _conn->registerObject("/", _downInterface);
         qDebug() << ret;
-        return ret;
+        if (!ret) {
+            qDebug() << "Could not register";
+            _app->exit(-1);
+        }
     }
     qDebug() << "Could not register";
-    return false;
+    _app->exit(-1);
 }
 
 /**
@@ -109,13 +120,15 @@ DownloadDaemon::DownloadDaemon(QObject *parent)
       d_ptr(new DownloadDaemonPrivate(this)) {
 }
 
-DownloadDaemon::DownloadDaemon(DBusConnection* conn, QObject *parent)
+DownloadDaemon::DownloadDaemon(Application* app,
+                               DBusConnection* conn,
+                               QObject *parent)
     : QObject(parent),
-      d_ptr(new DownloadDaemonPrivate(conn, this)) {
+      d_ptr(new DownloadDaemonPrivate(app, conn, this)) {
 }
 
-bool
+void
 DownloadDaemon::start() {
     Q_D(DownloadDaemon);
-    return d->start();
+    d->start();
 }

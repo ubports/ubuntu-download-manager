@@ -24,12 +24,15 @@ TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
 
 void
 TestDownloadDaemon::init() {
+    _app = new FakeApplication();
     _conn = new FakeDBusConnection();
-    _daemon = new DownloadDaemon(_conn);
+    _daemon = new DownloadDaemon(_app, _conn);
 }
 
 void
 TestDownloadDaemon::cleanup() {
+    if (_app != NULL)
+        delete _app;
     if (_conn != NULL)
         delete _conn;
     if (_daemon != NULL)
@@ -41,14 +44,19 @@ TestDownloadDaemon::testStart() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(true);
     _conn->record();
+    _app->record();
 
-    QVERIFY(_daemon->start());
+    _daemon->start();
 
     QList<MethodData> calledMethods = _conn->calledMethods();
 
     QCOMPARE(2, calledMethods.count());
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
+
+    // assert exit was NOT called
+    calledMethods = _conn->calledMethods();
+    QCOMPARE(0, calledMethods.count());
 }
 
 void
@@ -56,13 +64,19 @@ TestDownloadDaemon::testStartFailServiceRegister() {
     _conn->setRegisterServiceResult(false);
     _conn->setRegisterObjectResult(true);
     _conn->record();
+    _app->record();
 
-    QVERIFY(!_daemon->start());
+    _daemon->start();
 
     QList<MethodData> calledMethods = _conn->calledMethods();
 
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+
+    // assert exit was called
+    calledMethods = _conn->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
 
 void
@@ -70,12 +84,18 @@ TestDownloadDaemon::testStartFailObjectRegister() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(false);
     _conn->record();
+    _app->record();
 
-    QVERIFY(!_daemon->start());
+    _daemon->start();
 
     QList<MethodData> calledMethods = _conn->calledMethods();
 
     QCOMPARE(2, calledMethods.count());
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
+
+    // assert exit was called
+    calledMethods = _conn->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
