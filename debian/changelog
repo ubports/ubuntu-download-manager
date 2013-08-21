@@ -1,3 +1,15 @@
+ubuntu-download-manager (0.2+13.10.20130821.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Ensure that the DownloadQueue is notified when there is an error and
+    that way the download is removed and a new download is started. (LP:
+    #1211751)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 98
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 21 Aug 2013 22:04:01 +0000
+
 ubuntu-download-manager (0.2+13.10.20130821-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
