@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,31 +16,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
-#define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
+#ifndef DOWNLOADER_LIB_APPLICATION_H
+#define DOWNLOADER_LIB_APPLICATION_H
 
 #include <QObject>
-#include "./app-downloader-lib_global.h"
-#include "./application.h"
-#include "./dbus_connection.h"
 
-class DownloadDaemonPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
-    Q_DECLARE_PRIVATE(DownloadDaemon)
+class ApplicationPrivate;
+class Application : public QObject {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Application)
 
  public:
-    explicit DownloadDaemon(QObject *parent = 0);
-    explicit DownloadDaemon(Application* app,
-                            DBusConnection* conn,
-                            QObject *parent = 0);
+    explicit Application(QObject *parent = 0);
 
- public slots:
-    void start();
+    virtual void exit(int returnCode = 0);
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloadDaemonPrivate* d_ptr;
+    ApplicationPrivate* d_ptr;
 };
 
-#endif  // DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
+#endif  // DOWNLOADER_LIB_APPLICATION_H

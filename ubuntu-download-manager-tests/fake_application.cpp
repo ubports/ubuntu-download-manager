@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,16 +16,22 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QTimer>
-#include <QCoreApplication>
-#include <download_daemon.h>
+#include "fake_application.h"
 
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+FakeApplication::FakeApplication(QObject *parent)
+    : Application(parent),
+    Fake() {
+}
 
-    DownloadDaemon* daemon = new DownloadDaemon();
-    // use a singleShot timer so that we start after exec so that exit works
-    QTimer::singleShot(0, daemon, SLOT(start()));
+void
+FakeApplication::exit(int returnCode) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        inParams.append(new IntWrapper(returnCode));
 
-    return a.exec();
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("exit", params);
+        _called.append(methodData);
+    }
 }
