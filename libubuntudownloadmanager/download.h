@@ -40,11 +40,12 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
  public:
     enum State {
         IDLE,
-        STARTED,
-        PAUSED,
-        RESUMED,
-        CANCELED,
-        FINISHED
+        START,
+        PAUSE,
+        RESUME,
+        CANCEL,
+        FINISH,
+        ERROR
     };
 
     explicit Download(const QUuid& id,

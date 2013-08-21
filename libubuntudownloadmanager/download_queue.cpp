@@ -143,22 +143,22 @@ DownloadQueuePrivate::onDownloadStateChanged() {
     // get the appdownload that emited the signal and decide what to do with it
     Download* sender = qobject_cast<Download*>(q->sender());
     switch (sender->state()) {
-        case Download::STARTED:
+        case Download::START:
             // only start the download in the update method
             if (_current.isEmpty())
                 updateCurrentDownload();
             break;
-        case Download::PAUSED:
+        case Download::PAUSE:
             sender->pauseDownload();
             if (!_current.isEmpty()  && _current == sender->path())
                 updateCurrentDownload();
             break;
-        case Download::RESUMED:
+        case Download::RESUME:
             // only resume the download in the update method
             if (_current.isEmpty())
                 updateCurrentDownload();
             break;
-        case Download::CANCELED:
+        case Download::CANCEL:
             // cancel and remove the download
             sender->cancelDownload();
             if (!_current.isEmpty() && _current == sender->path())
@@ -166,7 +166,8 @@ DownloadQueuePrivate::onDownloadStateChanged() {
             else
                 remove(sender->path());
             break;
-        case Download::FINISHED:
+        case Download::ERROR:
+        case Download::FINISH:
             // remove the registered object in dbus, remove the download
             // and the adapter from the list
             if (!_current.isEmpty() && _current == sender->path())
@@ -200,11 +201,12 @@ DownloadQueuePrivate::updateCurrentDownload() {
         // check if it was canceled/finished
         Download* currentDownload = _downloads[_current].first;
         Download::State state = currentDownload->state();
-        if (state == Download::CANCELED || state == Download::FINISHED) {
+        if (state == Download::CANCEL || state == Download::FINISH
+            || state == Download::ERROR) {
             remove(_current);
             _current = "";
         } else if (!currentDownload->canDownload()
-                || state == Download::PAUSED) {
+                || state == Download::PAUSE) {
             _current = "";
         } else {
             return;
@@ -216,9 +218,9 @@ DownloadQueuePrivate::updateCurrentDownload() {
         QPair<Download*, DownloadAdaptor*> pair = _downloads[path];
         Download::State state = pair.first->state();
         if (pair.first->canDownload()
-                && (state == Download::STARTED || state == Download::RESUMED)) {
+                && (state == Download::START || state == Download::RESUME)) {
             _current = path;
-            if (state == Download::STARTED)
+            if (state == Download::START)
                 pair.first->startDownload();
             else
                 pair.first->resumeDownload();

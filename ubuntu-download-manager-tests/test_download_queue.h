@@ -54,6 +54,7 @@ class TestDownloadQueue : public QObject {
     void testCancelDownloadNotStarted();
     void testDownloads();
     void testDownloadFinishedOtherReady();
+    void testDownloadErrorWithOtherReady();
 
  private:
     FakeSystemNetworkInfo* _networkInfo;
