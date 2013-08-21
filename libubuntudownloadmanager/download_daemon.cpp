@@ -54,6 +54,7 @@ class DownloadDaemonPrivate {
 
 DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent)
     : q_ptr(parent) {
+    _app = new Application();
     _conn = QSharedPointer<DBusConnection>(new DBusConnection());
     _downInterface = new DownloadManager(_conn, q_ptr);
     init();
@@ -71,7 +72,6 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(Application* app,
 
 void DownloadDaemonPrivate::init() {
     // set logging
-    _app = new Application();
     Logger::setupLogging();
 #ifdef DEBUG
     Logger::setLogLevel(QtDebugMsg);

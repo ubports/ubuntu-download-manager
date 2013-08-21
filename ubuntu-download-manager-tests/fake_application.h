@@ -29,7 +29,7 @@ class FakeApplication : public Application, public Fake {
  public:
     explicit FakeApplication(QObject *parent = 0);
 
-    virtual void exit(int returnCode = 0) override;
+    void exit(int returnCode = 0) override;
 };
 
 #endif  // FAKE_APPLICATION_H

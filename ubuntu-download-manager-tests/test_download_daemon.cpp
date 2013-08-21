@@ -26,7 +26,7 @@ void
 TestDownloadDaemon::init() {
     _app = new FakeApplication();
     _conn = new FakeDBusConnection();
-    _daemon = new DownloadDaemon(_app, _conn);
+    _daemon = new DownloadDaemon(_app, _conn, this);
 }
 
 void
@@ -55,7 +55,7 @@ TestDownloadDaemon::testStart() {
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
 
     // assert exit was NOT called
-    calledMethods = _conn->calledMethods();
+    calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
 
@@ -74,7 +74,7 @@ TestDownloadDaemon::testStartFailServiceRegister() {
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
 
     // assert exit was called
-    calledMethods = _conn->calledMethods();
+    calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
@@ -95,7 +95,7 @@ TestDownloadDaemon::testStartFailObjectRegister() {
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
 
     // assert exit was called
-    calledMethods = _conn->calledMethods();
+    calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
