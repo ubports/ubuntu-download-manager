@@ -530,7 +530,7 @@ TestDownload::testCancel() {
     download->cancel();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::CANCELED);
+    QCOMPARE(download->state(), Download::CANCEL);
     delete download;
 }
 
@@ -542,7 +542,7 @@ TestDownload::testPause() {
     download->pause();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::PAUSED);
+    QCOMPARE(download->state(), Download::PAUSE);
     delete download;
 }
 
@@ -554,7 +554,7 @@ TestDownload::testResume() {
     download->resume();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::RESUMED);
+    QCOMPARE(download->state(), Download::RESUME);
     delete download;
 }
 
@@ -566,7 +566,7 @@ TestDownload::testStart() {
     download->start();
 
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::STARTED);
+    QCOMPARE(download->state(), Download::START);
     delete download;
 }
 
@@ -801,7 +801,7 @@ TestDownload::testOnSuccessNoHash() {
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISHED);
+    QCOMPARE(download->state(), Download::FINISH);
 }
 
 void
@@ -837,7 +837,7 @@ TestDownload::testOnSuccessHashError() {
 
     // the has is a random string so we should get an error signal
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISHED);
+    QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
 }
@@ -897,7 +897,7 @@ TestDownload::testOnSuccessHash() {
 
     // the hash should be correct and we should get the finish signal
     QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISHED);
+    QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
 }

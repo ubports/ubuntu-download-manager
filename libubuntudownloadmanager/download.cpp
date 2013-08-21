@@ -372,6 +372,10 @@ DownloadPrivate::emitError(const QString& error) {
     _reply->deleteLater();
     _reply = NULL;
     cleanUpCurrentData();
+    _state = Download::ERROR;
+    // notify the q
+    emit q->stateChanged();
+    // notify the dbus clients
     emit q->error(error);
 }
 
@@ -609,14 +613,14 @@ DownloadPrivate::isGSMDownloadAllowed() {
 void
 DownloadPrivate::cancel() {
     Q_Q(Download);
-    _state = Download::CANCELED;
+    _state = Download::CANCEL;
     emit q->stateChanged();
 }
 
 void
 DownloadPrivate::pause() {
     Q_Q(Download);
-    _state = Download::PAUSED;
+    _state = Download::PAUSE;
     storeMetadata();
     emit q->stateChanged();
 }
@@ -624,7 +628,7 @@ DownloadPrivate::pause() {
 void
 DownloadPrivate::resume() {
     Q_Q(Download);
-    _state = Download::RESUMED;
+    _state = Download::RESUME;
     storeMetadata();
     emit q->stateChanged();
 }
@@ -632,7 +636,7 @@ DownloadPrivate::resume() {
 void
 DownloadPrivate::start() {
     Q_Q(Download);
-    _state = Download::STARTED;
+    _state = Download::START;
     storeMetadata();
     emit q->stateChanged();
 }
@@ -690,7 +694,7 @@ DownloadPrivate::onFinished() {
             QCryptographicHash::hash(data, _algo).toHex());
         if (fileSig != _hash) {
             qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
-            _state = Download::FINISHED;
+            _state = Download::FINISH;
             emit q->stateChanged();
             emit q->error("HASH ERROR");
             return;
@@ -709,7 +713,7 @@ DownloadPrivate::onFinished() {
         if (commandData.count() == 0) {
             // raise error, command metadata was passed without the commnad
             qCritical() << "COMMAND DATA MISSING";
-            _state = Download::FINISHED;
+            _state = Download::FINISH;
             emit q->stateChanged();
             emit q->error("COMMAND ERROR");
             return;
@@ -744,7 +748,7 @@ DownloadPrivate::onFinished() {
             return;
         }
     } else {
-        _state = Download::FINISHED;
+        _state = Download::FINISH;
         qDebug() << "EMIT stateChanged";
         emit q->stateChanged();
         qDebug() << "EMIT finished" << filePath();
@@ -777,7 +781,7 @@ DownloadPrivate::onProcessFinished(int exitCode,
     qDebug() << __FUNCTION__ << exitCode << exitStatus;
     Q_Q(Download);
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
-        _state = Download::FINISHED;
+        _state = Download::FINISH;
          qDebug() << "EMIT stateChanged";
          emit q->stateChanged();
          qDebug() << "EMIT finished" << filePath();

@@ -30,7 +30,8 @@ TestDownloadQueue::init() {
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
     _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory, _processFactory);
+        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
+        _processFactory);
     _firstAdaptor = new DownloadAdaptor(_first);
     _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(),
         QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
@@ -475,6 +476,29 @@ TestDownloadQueue::testDownloadFinishedOtherReady() {
     _first->start();
     _second->start();
     _first->emitFinished("");
+
+    QList<MethodData> calledMethods = _first->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+
+    calledMethods = _second->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
+    QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
+}
+
+void
+TestDownloadQueue::testDownloadErrorWithOtherReady() {
+    _first->record();
+    _second->record();
+
+    _q->add(_first, _firstAdaptor);
+    _q->add(_second, _firstAdaptor);
+
+    _first->start();
+    _second->start();
+    _first->emitError("");
 
     QList<MethodData> calledMethods = _first->calledMethods();
     QCOMPARE(2, calledMethods.count());
