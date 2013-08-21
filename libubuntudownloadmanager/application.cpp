@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QCoreApplication>
 #include "./application.h"
 
@@ -29,7 +30,7 @@ class ApplicationPrivate {
  public:
     explicit ApplicationPrivate(Application* parent);
 
-    virtual void exit(int returnCode = 0);
+    virtual void exit(int returnCode);
 
  private:
     Application* q_ptr;
@@ -59,5 +60,6 @@ Application::Application(QObject *parent)
 void
 Application::exit(int returnCode) {
     Q_D(Application);
+    qDebug() << "Exit app" << returnCode;
     d->exit(returnCode);
 }

@@ -103,11 +103,12 @@ DownloadDaemonPrivate::start() {
         ret = _conn->registerObject("/", _downInterface);
         qDebug() << ret;
         if (!ret) {
-            qDebug() << "Could not register";
+            qDebug() << "Could not register interface";
             _app->exit(-1);
         }
+        return;
     }
-    qDebug() << "Could not register";
+    qDebug() << "Could not register service";
     _app->exit(-1);
 }
 

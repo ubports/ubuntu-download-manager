@@ -16,15 +16,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QTimer>
 #include <QCoreApplication>
 #include <download_daemon.h>
 
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    // TODO(mandel): deal with the fact that we might be already running
     DownloadDaemon* daemon = new DownloadDaemon();
-    daemon->start();
+    // use a singleShot timer so that we start after exec so that exit works
+    QTimer::singleShot(0, daemon, SLOT(start()));
 
     return a.exec();
 }

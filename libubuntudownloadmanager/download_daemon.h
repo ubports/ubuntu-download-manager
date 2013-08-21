@@ -35,6 +35,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
                             DBusConnection* conn,
                             QObject *parent = 0);
 
+ public slots:
     void start();
 
  private:
