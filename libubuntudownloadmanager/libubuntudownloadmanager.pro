@@ -23,7 +23,8 @@ SOURCES += \
     xdg_basedir.cpp \
     process.cpp \
     process_factory.cpp \
-    logger.cpp
+    logger.cpp \
+    application.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -42,7 +43,8 @@ HEADERS +=\
     process.h \
     process_factory.h \
     metatypes.h \
-    logger.h
+    logger.h \
+    application.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
