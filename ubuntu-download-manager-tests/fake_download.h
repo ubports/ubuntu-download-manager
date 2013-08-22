@@ -59,6 +59,7 @@ class FakeDownload : public Download, public Fake {
 
     // useful methods to emit signals
     void emitFinished(const QString& path);
+    void emitError(const QString& error);
 
  private:
     bool _canDownload;

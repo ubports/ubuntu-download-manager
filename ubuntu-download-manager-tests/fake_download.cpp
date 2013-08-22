@@ -125,8 +125,14 @@ FakeDownload::startDownload() {
 
 void
 FakeDownload::emitFinished(const QString& path) {
-    setState(Download::FINISHED);
+    setState(Download::FINISH);
     emit stateChanged();
     emit finished(path);
 }
 
+void
+FakeDownload::emitError(const QString& errorMsg) {
+    setState(Download::ERROR);
+    emit stateChanged();
+    emit error(errorMsg);
+}
