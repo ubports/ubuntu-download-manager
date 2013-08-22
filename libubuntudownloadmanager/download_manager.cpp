@@ -44,7 +44,7 @@ class DownloadManagerPrivate {
     void init();
     void addDownload(Download* download);
     void loadPreviewsDownloads(QString path);
-    void onDownloadRemoved(QString path);
+    void onDownloadsChanged(QString path);
 
     QDBusObjectPath createDownload(const QString& url,
                                    const QVariantMap& metadata,
@@ -111,7 +111,9 @@ DownloadManagerPrivate::init() {
     qDBusRegisterMetaType<StringMap>();
 
     q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
-        q, SLOT(onDownloadRemoved(QString)));
+        q, SLOT(onDownloadsChanged(QString)));
+    q->connect(_downloadsQueue, SIGNAL(downloadAdded(QString)),
+        q, SLOT(onDownloadsChanged(QString)));
 
     _reqFactory = new RequestFactory();
     _processFactory = new ProcessFactory();
@@ -131,14 +133,17 @@ DownloadManagerPrivate::loadPreviewsDownloads(QString path) {
 }
 
 void
-DownloadManagerPrivate::onDownloadRemoved(QString path) {
-    _conn->unregisterObject(path);
+DownloadManagerPrivate::onDownloadsChanged(QString path) {
+    qDebug() << __FUNCTION__ << path;
+    Q_Q(DownloadManager);
+    emit q->sizeChanged(_downloadsQueue->size());
 }
 
 QDBusObjectPath
 DownloadManagerPrivate::createDownload(const QString& url,
                                        const QVariantMap& metadata,
                                        StringMap headers) {
+    qDebug() << __FUNCTION__ << url << metadata << headers;
     return createDownloadWithHash(url, "", QCryptographicHash::Md5,
         metadata, headers);
 }

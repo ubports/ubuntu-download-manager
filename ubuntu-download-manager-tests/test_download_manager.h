@@ -44,6 +44,8 @@ class TestDownloadManager : public QObject {
     void testCreateDownloadWithHash_data();
     void testSetThrottleNotDownloads_data();
     void testSetThrottleWithDownloads_data();
+    void testSizeChangedEmittedOnAddition_data();
+    void testSizeChangedEmittedOnRemoval_data();
 
     // tests
     void testCreateDownload();
@@ -52,6 +54,8 @@ class TestDownloadManager : public QObject {
     void testAllDownloadsWithMetadata();
     void testSetThrottleNotDownloads();
     void testSetThrottleWithDownloads();
+    void testSizeChangedEmittedOnAddition();
+    void testSizeChangedEmittedOnRemoval();
 
  private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);

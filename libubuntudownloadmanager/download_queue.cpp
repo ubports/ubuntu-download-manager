@@ -40,16 +40,15 @@ class DownloadQueuePrivate {
     QString currentDownload();
     QStringList paths();
     QHash<QString, Download*> downloads();
+    int size();
 
     void onDownloadStateChanged();
-    void onDestroyed(const QString& path);
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
 
  private:
     void updateCurrentDownload();
 
  private:
-    QSignalMapper* _mapper;
     QString _current;
     DownloadList _downloads;   // quick for access
     QStringList _sortedPaths;  // keep the order
@@ -63,19 +62,13 @@ DownloadQueuePrivate::DownloadQueuePrivate(SystemNetworkInfo* networkInfo,
       _networkInfo(networkInfo),
       q_ptr(parent) {
     Q_Q(DownloadQueue);
-    _mapper = new QSignalMapper();
 
     q->connect(_networkInfo,
             SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
             SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
-
-    q->connect(_mapper, SIGNAL(mapped(const QString&)),
-        q, SLOT(onDestroyed(const QString&)));
 }
 
 DownloadQueuePrivate::~DownloadQueuePrivate() {
-    if (_mapper != NULL)
-        delete _mapper;
 }
 
 void
@@ -89,6 +82,8 @@ DownloadQueuePrivate::add(const QPair<Download*, DownloadAdaptor*>& value) {
     Q_Q(DownloadQueue);
     // connect to the signals and append to the list
     QString path = value.first->path();
+    qDebug() << __FUNCTION__ << path;
+
     _sortedPaths.append(path);
     _downloads[path] = value;
 
@@ -107,15 +102,10 @@ DownloadQueuePrivate::remove(const QString& path) {
     _sortedPaths.removeOne(path);
     _downloads.remove(path);
 
-    // connect to the adaptor destroyed event to ensure that we have
-    // emitted all signals, else we might have a race condition where
-    // the object path is removed from dbus to early
-    q->connect(pair.second, SIGNAL(destroyed(QObject* obj)),
-        _mapper, SLOT(map(QObject* obj)));
-    _mapper->setMapping(pair.first, path);
-
     pair.second->deleteLater();
     pair.first->deleteLater();
+
+    emit q->downloadRemoved(path);
 }
 
 QString
@@ -137,8 +127,14 @@ DownloadQueuePrivate::downloads() {
     return downloads;
 }
 
+int
+DownloadQueuePrivate::size() {
+    return _downloads.size();
+}
+
 void
 DownloadQueuePrivate::onDownloadStateChanged() {
+    qDebug() << __FUNCTION__;
     Q_Q(DownloadQueue);
     // get the appdownload that emited the signal and decide what to do with it
     Download* sender = qobject_cast<Download*>(q->sender());
@@ -179,13 +175,6 @@ DownloadQueuePrivate::onDownloadStateChanged() {
 }
 
 void
-DownloadQueuePrivate::onDestroyed(const QString &path) {
-    qDebug() << __FUNCTION__;
-    Q_Q(DownloadQueue);
-    emit q->downloadRemoved(path);
-}
-
-void
 DownloadQueuePrivate::onCurrentNetworkModeChanged(
         QNetworkInfo::NetworkMode mode) {
     Q_UNUSED(mode);
@@ -194,6 +183,7 @@ DownloadQueuePrivate::onCurrentNetworkModeChanged(
 
 void
 DownloadQueuePrivate::updateCurrentDownload() {
+    qDebug() << __FUNCTION__;
     Q_Q(DownloadQueue);
 
     if (!_current.isEmpty()) {
@@ -201,10 +191,12 @@ DownloadQueuePrivate::updateCurrentDownload() {
         Download* currentDownload = _downloads[_current].first;
         Download::State state = currentDownload->state();
         if (state == Download::CANCELED || state == Download::FINISHED) {
+            qDebug() << "States is CANCEL || FINISH";
             remove(_current);
             _current = "";
         } else if (!currentDownload->canDownload()
                 || state == Download::PAUSED) {
+            qDebug() << "States is Cannot Download || PAUSE";
             _current = "";
         } else {
             return;
@@ -268,6 +260,12 @@ QHash<QString, Download*>
 DownloadQueue::downloads() {
     Q_D(DownloadQueue);
     return d->downloads();
+}
+
+int
+DownloadQueue::size() {
+    Q_D(DownloadQueue);
+    return d->size();
 }
 
 #include "moc_download_queue.cpp"

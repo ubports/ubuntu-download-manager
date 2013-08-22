@@ -40,6 +40,7 @@ class DownloadQueue : public QObject {
     QString currentDownload();
     QStringList paths();
     QHash<QString, Download*> downloads();
+    virtual int size();
 
  signals:
     // signals raised when things happens within the q
@@ -49,7 +50,6 @@ class DownloadQueue : public QObject {
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
-    Q_PRIVATE_SLOT(d_func(), void onDestroyed(const QString& path))
     Q_PRIVATE_SLOT(d_func(),
             void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 

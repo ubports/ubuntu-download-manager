@@ -36,16 +36,23 @@ class DownloadDaemonPrivate {
     explicit DownloadDaemonPrivate(DownloadDaemon* parent);
     explicit DownloadDaemonPrivate(Application* app,
                                    DBusConnection* conn,
+                                   Timer* timer,
+                                   DownloadManager* man,
                                    DownloadDaemon* parent);
     ~DownloadDaemonPrivate();
 
     void start();
+    void onTimeout();
+    void onDownloadManagerSizeChanged(int size);
+
+    static const int timeout = 30000;
 
  private:
     void init();
 
  private:
     Application* _app;
+    Timer* _shutDownTimer;
     QSharedPointer<DBusConnection> _conn;
     DownloadManager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
@@ -56,21 +63,36 @@ DownloadDaemonPrivate::DownloadDaemonPrivate(DownloadDaemon* parent)
     : q_ptr(parent) {
     _app = new Application();
     _conn = QSharedPointer<DBusConnection>(new DBusConnection());
+    _shutDownTimer = new Timer();
     _downInterface = new DownloadManager(_conn, q_ptr);
     init();
 }
 
 DownloadDaemonPrivate::DownloadDaemonPrivate(Application* app,
                                              DBusConnection* conn,
+                                             Timer* timer,
+                                             DownloadManager* man,
                                              DownloadDaemon* parent)
     : _app(app),
+      _shutDownTimer(timer),
       _conn(conn),
+      _downInterface(man),
       q_ptr(parent) {
-      _downInterface = new DownloadManager(_conn);
     init();
 }
 
 void DownloadDaemonPrivate::init() {
+    Q_Q(DownloadDaemon);
+
+    q->connect(_shutDownTimer, SIGNAL(timeout()),
+        q, SLOT(onTimeout()));
+    _shutDownTimer->start(timeout);
+
+    // connect to the download manager changes
+    q->connect(_downInterface,
+        SIGNAL(sizeChanged(int)),  // NOLINT (readability/function)
+        q, SLOT(onDownloadManagerSizeChanged(int))); // NOLINT (readability/function)
+
     // set logging
     Logger::setupLogging();
 #ifdef DEBUG
@@ -87,6 +109,8 @@ DownloadDaemonPrivate::~DownloadDaemonPrivate() {
         delete _downInterface;
     if (_app)
         delete _app;
+    if (_shutDownTimer)
+        delete _shutDownTimer;
 
     // stop logging
     Logger::setupLogging();
@@ -112,6 +136,28 @@ DownloadDaemonPrivate::start() {
     _app->exit(-1);
 }
 
+void
+DownloadDaemonPrivate::onTimeout() {
+    qDebug() << "Timeout reached, shutdown service.";
+    _app->exit(0);
+}
+
+void
+DownloadDaemonPrivate::onDownloadManagerSizeChanged(int size) {
+    bool isActive = _shutDownTimer->isActive();
+    qDebug() << "Timer is active:" << isActive << "size is:" << size;
+
+    if (isActive && size > 0) {
+        qDebug() << "Timer must be stopped because we have" << size
+            << "downloads.";
+        _shutDownTimer->stop();
+    }
+    if (!isActive && size == 0) {
+        qDebug() << "Timer must be started because we have 0 downloads.";
+        _shutDownTimer->start(timeout);
+    }
+}
+
 /**
  * PUBLIC IMPLEMENTATION
  */
@@ -123,9 +169,11 @@ DownloadDaemon::DownloadDaemon(QObject *parent)
 
 DownloadDaemon::DownloadDaemon(Application* app,
                                DBusConnection* conn,
+                               Timer* timer,
+                               DownloadManager* man,
                                QObject *parent)
     : QObject(parent),
-      d_ptr(new DownloadDaemonPrivate(app, conn, this)) {
+      d_ptr(new DownloadDaemonPrivate(app, conn, timer, man, this)) {
 }
 
 void
@@ -133,3 +181,5 @@ DownloadDaemon::start() {
     Q_D(DownloadDaemon);
     d->start();
 }
+
+#include "moc_download_daemon.cpp"

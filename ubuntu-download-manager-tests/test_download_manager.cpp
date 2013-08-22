@@ -387,3 +387,47 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         QCOMPARE(download->throttle(), speed);
     }
 }
+
+void
+TestDownloadManager::testSizeChangedEmittedOnAddition_data() {
+    QTest::addColumn<int>("size");
+
+    QTest::newRow("First row") << 4;
+    QTest::newRow("Second row") << 5;
+    QTest::newRow("Third row") << 0;
+    QTest::newRow("Last row") << 34;
+}
+
+void
+TestDownloadManager::testSizeChangedEmittedOnAddition() {
+    QFETCH(int, size);
+    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));
+    _q->setSize(size);
+    _q->emitDownloadAdded("");
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toInt(), size);
+}
+
+void
+TestDownloadManager::testSizeChangedEmittedOnRemoval_data() {
+    QTest::addColumn<int>("size");
+
+    QTest::newRow("First row") << 4;
+    QTest::newRow("Second row") << 5;
+    QTest::newRow("Third row") << 0;
+    QTest::newRow("Last row") << 34;
+}
+
+void
+TestDownloadManager::testSizeChangedEmittedOnRemoval() {
+    QFETCH(int, size);
+    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));
+    _q->setSize(size);
+    _q->emitDownloadRemoved("");
+
+    QCOMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toInt(), size);
+}

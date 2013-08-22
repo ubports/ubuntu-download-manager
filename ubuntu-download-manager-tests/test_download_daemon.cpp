@@ -24,9 +24,11 @@ TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
 
 void
 TestDownloadDaemon::init() {
+    _timer = new FakeTimer();
     _app = new FakeApplication();
     _conn = new FakeDBusConnection();
-    _daemon = new DownloadDaemon(_app, _conn, this);
+    _man = new FakeDownloadManager(QSharedPointer<DBusConnection>(_conn));
+    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
 }
 
 void
@@ -37,6 +39,10 @@ TestDownloadDaemon::cleanup() {
         delete _conn;
     if (_daemon != NULL)
         delete _daemon;
+    if (_timer != NULL)
+        delete _timer;
+    if (_man != NULL)
+        delete _man;
 }
 
 void
@@ -99,3 +105,39 @@ TestDownloadDaemon::testStartFailObjectRegister() {
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
+
+void
+TestDownloadDaemon::testTimerStop() {
+    _timer->setIsActive(true);
+    _timer->record();
+    _man->emitSizeChaged(1);
+
+    QList<MethodData> calledMethods = _timer->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("isActive"), calledMethods[0].methodName());
+    QCOMPARE(QString("stop"), calledMethods[1].methodName());
+}
+
+void
+TestDownloadDaemon::testTimerStart() {
+    _timer->setIsActive(false);
+    _timer->record();
+    _man->emitSizeChaged(0);
+
+    QList<MethodData> calledMethods = _timer->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("isActive"), calledMethods[0].methodName());
+    QCOMPARE(QString("start"), calledMethods[1].methodName());
+}
+
+void
+TestDownloadDaemon::testTimeoutExit() {
+    _app->record();
+    // emit the timeout signal and assert that exit was called
+    _timer->emitTimeout();
+
+    QList<MethodData> calledMethods = _app->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("exit"), calledMethods[0].methodName());
+}
+

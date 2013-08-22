@@ -24,7 +24,8 @@ SOURCES += \
     process.cpp \
     process_factory.cpp \
     logger.cpp \
-    application.cpp
+    application.cpp \
+    timer.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -44,7 +45,8 @@ HEADERS +=\
     process_factory.h \
     metatypes.h \
     logger.h \
-    application.h
+    application.h \
+    timer.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

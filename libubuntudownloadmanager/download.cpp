@@ -352,7 +352,7 @@ DownloadPrivate::cleanUpCurrentData() {
 
 QNetworkRequest
 DownloadPrivate::buildRequest() {
-    qDebug() << "Building request for " << _url;
+    qDebug() << __FUNCTION__ << _url;
     QNetworkRequest request = QNetworkRequest(_url);
     foreach(const QString& header, _headers.keys()) {
         QString data = _headers[header];
@@ -366,7 +366,7 @@ DownloadPrivate::buildRequest() {
 
 void
 DownloadPrivate::emitError(const QString& error) {
-    qDebug() << "EMIT ERROR:" << error;
+    qDebug() << __FUNCTION__ << error;
     Q_Q(Download);
     disconnectFromReplySignals();
     _reply->deleteLater();
@@ -424,6 +424,7 @@ DownloadPrivate::headers() const {
 
 bool
 DownloadPrivate::canDownload() {
+    qDebug() << __FUNCTION__;
     QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
     switch (mode) {
         case QNetworkInfo::UnknownMode:

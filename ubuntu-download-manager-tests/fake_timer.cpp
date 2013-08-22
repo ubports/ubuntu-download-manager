@@ -16,64 +16,60 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./fake_download_queue.h"
+#include "./fake_timer.h"
 
-FakeDownloadQueue::FakeDownloadQueue(SystemNetworkInfo* networkInfo,
-                                     QObject *parent)
-    : DownloadQueue(networkInfo, parent),
+FakeTimer::FakeTimer(QObject *parent)
+    : Timer(parent),
     Fake() {
 }
 
-void
-FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor) {
+bool
+FakeTimer::isActive() {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(download);
-        inParams.append(adaptor);
+
+        QList<QObject*> outParams;
+        outParams.append(new BoolWrapper(_isActive));
+
+        MethodParams params(inParams, outParams);
+        MethodData methodData("isActive", params);
+        _called.append(methodData);
+    }
+    return _isActive;
+}
+
+void
+FakeTimer::setIsActive(bool active) {
+    _isActive = active;
+}
+
+void
+FakeTimer::start(int msec) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        inParams.append(new IntWrapper(msec));
 
         QList<QObject*> outParams;
 
         MethodParams params(inParams, outParams);
-
-        MethodData methodData("add", params);
+        MethodData methodData("start", params);
         _called.append(methodData);
     }
-    DownloadQueue::add(download, adaptor);
 }
 
 void
-FakeDownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value) {
+FakeTimer::stop() {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(value.first);
-        inParams.append(value.second);
-
         QList<QObject*> outParams;
 
         MethodParams params(inParams, outParams);
-
-        MethodData methodData("add", params);
+        MethodData methodData("stop", params);
         _called.append(methodData);
     }
-    DownloadQueue::add(value);
-}
-
-int
-FakeDownloadQueue::size() {
-    return _size;
 }
 
 void
-FakeDownloadQueue::setSize(int size) {
-    _size = size;
-}
-
-void
-FakeDownloadQueue::emitDownloadAdded(const QString& path) {
-    emit downloadAdded(path);
-}
-
-void
-FakeDownloadQueue::emitDownloadRemoved(const QString& path) {
-    emit downloadRemoved(path);
+FakeTimer::emitTimeout() {
+    emit timeout();
 }
