@@ -23,6 +23,8 @@
 #include <download_daemon.h>
 #include "./fake_application.h"
 #include "./fake_dbus_connection.h"
+#include "./fake_download_manager.h"
+#include "./fake_timer.h"
 #include "./test_runner.h"
 
 class TestDownloadDaemon : public QObject {
@@ -38,9 +40,14 @@ class TestDownloadDaemon : public QObject {
     void testStart();
     void testStartFailServiceRegister();
     void testStartFailObjectRegister();
+    void testTimerStop();
+    void testTimerStart();
+    void testTimeoutExit();
 
  private:
+    FakeTimer* _timer;
     FakeApplication* _app;
+    FakeDownloadManager* _man;
     FakeDBusConnection* _conn;
     DownloadDaemon* _daemon;
 };

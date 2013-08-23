@@ -32,7 +32,9 @@ SOURCES += \
     fake_system_network_info.cpp \
     fake_process.cpp \
     fake_process_factory.cpp \
-    fake_application.cpp
+    fake_application.cpp \
+    fake_timer.cpp \
+    fake_download_manager.cpp
 
 HEADERS += \
     fake.h \
@@ -53,7 +55,9 @@ HEADERS += \
     fake_system_network_info.h \
     fake_process.h \
     fake_process_factory.h \
-    fake_application.h
+    fake_application.h \
+    fake_timer.h \
+    fake_download_manager.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 

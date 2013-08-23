@@ -16,29 +16,29 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_DOWNLOAD_QUEUE_H
-#define FAKE_DOWNLOAD_QUEUE_H
-#include <download_queue.h>
-#include <system_network_info.h>
+#ifndef FAKE_TIMER_H
+#define FAKE_TIMER_H
+
+#include <QObject>
+#include <timer.h>
 #include "./fake.h"
 
-class FakeDownloadQueue : public DownloadQueue, public Fake {
+
+class FakeTimer : public Timer, public Fake {
     Q_OBJECT
 
  public:
-    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo,
-                               QObject *parent = 0);
+    explicit FakeTimer(QObject *parent = 0);
 
-    void add(Download* download, DownloadAdaptor* adaptor) override;
-    void add(const QPair<Download*, DownloadAdaptor*>& value) override;
-    int size() override;
-    void setSize(int size);
+    bool isActive() override;
+    void setIsActive(bool active);
+    void start(int msec) override;
+    void stop() override;
 
-    void emitDownloadAdded(const QString& path);
-    void emitDownloadRemoved(const QString& path);
+    void emitTimeout();
 
  private:
-    int _size;
+    bool _isActive;
 };
 
-#endif  // FAKE_DOWNLOAD_QUEUE_H
+#endif  // FAKE_TIMER_H

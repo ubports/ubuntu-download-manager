@@ -62,9 +62,10 @@ class DownloadManager : public QObject {
 
  signals:
     void downloadCreated(const QDBusObjectPath& path);
+    void sizeChanged(int count);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onDownloadRemoved(QString))
+    Q_PRIVATE_SLOT(d_func(), void onDownloadsChanged(QString))
 
  private:
     // use pimpl so that we can mantains ABI compatibility

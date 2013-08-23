@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 2013 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,29 +16,22 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_DOWNLOAD_QUEUE_H
-#define FAKE_DOWNLOAD_QUEUE_H
-#include <download_queue.h>
-#include <system_network_info.h>
+#ifndef FAKE_DOWNLOAD_MANAGER_H
+#define FAKE_DOWNLOAD_MANAGER_H
+
+#include <QObject>
+#include <download_manager.h>
 #include "./fake.h"
 
-class FakeDownloadQueue : public DownloadQueue, public Fake {
+
+class FakeDownloadManager : public DownloadManager, public Fake {
     Q_OBJECT
 
  public:
-    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo,
-                               QObject *parent = 0);
+    explicit FakeDownloadManager(QSharedPointer<DBusConnection> connection,
+                                 QObject *parent = 0);
 
-    void add(Download* download, DownloadAdaptor* adaptor) override;
-    void add(const QPair<Download*, DownloadAdaptor*>& value) override;
-    int size() override;
-    void setSize(int size);
-
-    void emitDownloadAdded(const QString& path);
-    void emitDownloadRemoved(const QString& path);
-
- private:
-    int _size;
+    void emitSizeChaged(int size);
 };
 
-#endif  // FAKE_DOWNLOAD_QUEUE_H
+#endif  // FAKE_DOWNLOAD_MANAGER_H

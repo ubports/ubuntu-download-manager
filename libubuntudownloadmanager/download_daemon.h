@@ -23,6 +23,8 @@
 #include "./app-downloader-lib_global.h"
 #include "./application.h"
 #include "./dbus_connection.h"
+#include "./download_manager.h"
+#include "./timer.h"
 
 class DownloadDaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
@@ -33,10 +35,16 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
     explicit DownloadDaemon(QObject *parent = 0);
     explicit DownloadDaemon(Application* app,
                             DBusConnection* conn,
+                            Timer* timer,
+                            DownloadManager* man,
                             QObject *parent = 0);
 
- public slots:
+ public slots:  // NOLINT (whitespace/indent)
     void start();
+
+ private:
+    Q_PRIVATE_SLOT(d_func(), void onTimeout())
+    Q_PRIVATE_SLOT(d_func(), void onDownloadManagerSizeChanged(int))  // NOLINT (readability/function)
 
  private:
     // use pimpl so that we can mantains ABI compatibility
