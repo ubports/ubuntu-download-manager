@@ -1,3 +1,14 @@
+ubuntu-download-manager (0.2+13.10.20130823-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Ensures that the daemon is stopped when there is nothing to
+    download. (LP: #1215137, #1200666)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 100
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 Aug 2013 18:04:05 +0000
+
 ubuntu-download-manager (0.2+13.10.20130821.1-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
