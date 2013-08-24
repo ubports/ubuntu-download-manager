@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <download_manager.h>
+#include <single_download.h>
 #include "./test_runner.h"
 #include "./fake_dbus_connection.h"
 #include "./fake_download_queue.h"

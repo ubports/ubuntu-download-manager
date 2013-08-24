@@ -27,7 +27,7 @@ FakeDownload::FakeDownload(const QUuid& id,
                            RequestFactory* nam,
                            ProcessFactory* processFactory,
                            QObject* parent)
-        : Download(id, path, url, metadata, headers, networkInfo, nam,
+        : SingleDownload(id, path, url, metadata, headers, networkInfo, nam,
                 processFactory, parent),
         _canDownload(true) {
 }
@@ -43,8 +43,8 @@ FakeDownload::FakeDownload(const QUuid& id,
                            RequestFactory* nam,
                            ProcessFactory* processFactory,
                            QObject* parent)
-        : Download(id, path, url, hash, algo, metadata, headers, networkInfo,
-                nam, processFactory, parent),
+        : SingleDownload(id, path, url, hash, algo, metadata, headers,
+                networkInfo, nam, processFactory, parent),
         _canDownload(true) {
 }
 
@@ -74,7 +74,7 @@ FakeDownload::setThrottle(qulonglong speed) {
         MethodData methodData("setThrottle", params);
         _called.append(methodData);
     }
-    Download::setThrottle(speed);
+    SingleDownload::setThrottle(speed);
 }
 
 qulonglong
@@ -84,7 +84,7 @@ FakeDownload::throttle() {
         methodData.setMethodName("throttle");
         _called.append(methodData);
     }
-    return Download::throttle();
+    return SingleDownload::throttle();
 }
 
 void

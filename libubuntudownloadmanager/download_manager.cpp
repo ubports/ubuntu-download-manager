@@ -23,6 +23,7 @@
 #include "./process_factory.h"
 #include "./request_factory.h"
 #include "./system_network_info.h"
+#include "./single_download.h"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -166,13 +167,14 @@ DownloadManagerPrivate::createDownloadWithHash(const QString& url,
     if (_downloadsQueue->paths().contains(path)) {
         objectPath = QDBusObjectPath(path);
     } else {
-        Download* download;
+        Download* download = NULL;
         if (hash.isEmpty())
-            download = new Download(id, path, url, metadata, headers,
+            download = new SingleDownload(id, path, url, metadata, headers,
                 _networkInfo, _reqFactory, _processFactory);
         else
-            download = new Download(id, path, url, hash, algo, metadata,
+            download = new SingleDownload(id, path, url, hash, algo, metadata,
                 headers, _networkInfo, _reqFactory, _processFactory);
+
 
         download->setThrottle(_throttle);
         DownloadAdaptor* adaptor = new DownloadAdaptor(download);
