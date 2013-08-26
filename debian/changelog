@@ -1,3 +1,16 @@
+ubuntu-download-manager (0.2+13.10.20130826-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Middle step to fix #1211838 that refactors the code so that we have
+    a base Download class that is used by the DownloadQueue that can is
+    later extended by a single download class and a group download
+    class. (LP: #1211838)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 102
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 26 Aug 2013 18:03:57 +0000
+
 ubuntu-download-manager (0.2+13.10.20130823-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
