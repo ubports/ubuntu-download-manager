@@ -111,7 +111,7 @@ TestDownload::testNoHashConstructor() {
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
-    Download* download = new Download(id, path, url, _metadata,
+    SingleDownload* download = new SingleDownload(id, path, url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
 
     // assert that we did set the intial state correctly
@@ -157,7 +157,7 @@ TestDownload::testHashConstructor() {
     QFETCH(QString, hash);
     QFETCH(int, algo);
 
-    Download* download = new Download(id, path, url, hash,
+    SingleDownload* download = new SingleDownload(id, path, url, hash,
         (QCryptographicHash::Algorithm)algo, _metadata, _headers, _networkInfo,
         _reqFactory, _processFactory);
 
@@ -188,7 +188,7 @@ void
 TestDownload::testPath() {
     // create an app download and assert that the returned data is correct
     QFETCH(QString, path);
-    Download* download = new Download(_id, path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QCOMPARE(download->path(), path);
 }
@@ -208,7 +208,7 @@ void
 TestDownload::testUrl() {
     // create an app download and assert that the returned data is correct
     QFETCH(QUrl, url);
-    Download* download = new Download(_id, _path, url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QCOMPARE(download->url(), url);
     delete download;
@@ -233,7 +233,7 @@ TestDownload::testProgress() {
     QFETCH(qulonglong, total);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(progress(qulonglong, qulonglong)));
 
@@ -277,7 +277,7 @@ TestDownload::testProgressNotKnownSize() {
     QFETCH(int, total);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(progress(qulonglong, qulonglong)));
 
@@ -309,7 +309,7 @@ TestDownload::testTotalSize() {
     // assert that the total size is just set once
     // by emitting two signals with diff sizes
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(progress(qulonglong, qulonglong)));
 
@@ -330,7 +330,7 @@ TestDownload::testTotalSize() {
 
 void
 TestDownload::testTotalSizeNoProgress() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QCOMPARE(0ULL, download->totalSize());
     delete download;
@@ -349,7 +349,7 @@ TestDownload::testSetThrottleNoReply_data() {
 void
 TestDownload::testSetThrottleNoReply() {
     QFETCH(qulonglong, speed);
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->setThrottle(speed);
     QCOMPARE(speed, download->throttle());
@@ -370,7 +370,7 @@ TestDownload::testSetThrottle() {
     QFETCH(uint, speed);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->setThrottle(speed);
 
@@ -401,7 +401,7 @@ void
 TestDownload::testSetGSMDownloadSame() {
     QFETCH(bool, value);
 
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->allowGSMDownload(value);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
@@ -424,7 +424,7 @@ TestDownload::testSetGSMDownloadDiff() {
     QFETCH(bool, oldValue);
     QFETCH(bool, newValue);
 
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->allowGSMDownload(oldValue);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
@@ -467,7 +467,7 @@ TestDownload::testCanDownloadGSM() {
     _networkInfo->setMode(mode.value<QNetworkInfo::NetworkMode>());
     _networkInfo->record();
 
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->allowGSMDownload(true);
     QVERIFY(download->canDownload());
@@ -513,7 +513,7 @@ TestDownload::testCanDownloadNoGSM() {
     _networkInfo->setMode(mode.value<QNetworkInfo::NetworkMode>());
     _networkInfo->record();
 
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     download->allowGSMDownload(false);
 
@@ -524,7 +524,7 @@ TestDownload::testCanDownloadNoGSM() {
 
 void
 TestDownload::testCancel() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->cancel();
@@ -536,7 +536,7 @@ TestDownload::testCancel() {
 
 void
 TestDownload::testPause() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->pause();
@@ -548,7 +548,7 @@ TestDownload::testPause() {
 
 void
 TestDownload::testResume() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->resume();
@@ -560,7 +560,7 @@ TestDownload::testResume() {
 
 void
 TestDownload::testStart() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(stateChanged()));
     download->start();
@@ -575,7 +575,7 @@ TestDownload::testCancelDownload() {
     // tell the fake nam to record so that we can access the reply
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
@@ -607,7 +607,7 @@ TestDownload::testCancelDownload() {
 void
 TestDownload::testCancelDownloadNotStarted() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
@@ -628,7 +628,7 @@ TestDownload::testCancelDownloadNotStarted() {
 void
 TestDownload::testPauseDownload() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
@@ -665,7 +665,7 @@ TestDownload::testPauseDownload() {
 
 void
 TestDownload::testPauseDownloadNotStarted() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
@@ -682,7 +682,7 @@ TestDownload::testPauseDownloadNotStarted() {
 
 void
 TestDownload::testResumeRunning() {
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(resumed(bool)));  // NOLINT(readability/function)
@@ -702,7 +702,7 @@ TestDownload::testResumeRunning() {
 void
 TestDownload::testResumeDownload() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool result)));
 
@@ -740,7 +740,7 @@ TestDownload::testResumeDownload() {
 void
 TestDownload::testStartDownload() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(started(bool)));  // NOLINT(readability/function)
@@ -762,7 +762,7 @@ TestDownload::testStartDownload() {
 void
 TestDownload::testStartDownloadAlreadyStarted() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download,
         SIGNAL(started(bool)));  // NOLINT(readability/function)
@@ -786,8 +786,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
 void
 TestDownload::testOnSuccessNoHash() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        _metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(finished(QString)));
 
     download->start();  // change state
@@ -807,7 +807,7 @@ TestDownload::testOnSuccessNoHash() {
 void
 TestDownload::testOnSuccessHashError() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url,
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
         "imposible-hash-is-not-hex", _algo, _metadata, _headers,
         _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
@@ -868,7 +868,7 @@ TestDownload::testOnSuccessHash() {
     QFETCH(QString, hash);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, hash, _algo,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, hash, _algo,
         _metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(finished(QString)));
 
@@ -905,8 +905,8 @@ TestDownload::testOnSuccessHash() {
 void
 TestDownload::testOnHttpError() {
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        _metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
 
     download->start();  // change state
@@ -955,8 +955,8 @@ void
 TestDownload::testSetRawHeadersStart() {
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        _metadata, headers, _networkInfo, _reqFactory, _processFactory);
 
     download->start();  // change state
     download->startDownload();
@@ -1009,8 +1009,8 @@ TestDownload::testSetRawHeadersWithRangeStart() {
     // similar to the previous test but we want to ensure that range is not set
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        _metadata, headers, _networkInfo, _reqFactory, _processFactory);
 
     download->start();  // change state
     download->startDownload();
@@ -1058,8 +1058,8 @@ TestDownload::testSetRawHeadersResume() {
     QFETCH(StringMap, headers);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata, headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        _metadata, headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool result)));
 
     download->start();  // change state
@@ -1136,7 +1136,7 @@ TestDownload::testSetRawHeadersWithRangeResume() {
     QFETCH(StringMap, headers);
 
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, _metadata,
+    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
         headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(paused(bool result)));
 
@@ -1202,8 +1202,8 @@ TestDownload::testProcessExecutedNoParams() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
 
     download->start();  // change state
     download->startDownload();
@@ -1263,8 +1263,8 @@ TestDownload::testProcessExecutedWithParams() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
 
     download->start();  // change state
     download->startDownload();
@@ -1324,8 +1324,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
 
     download->start();  // change state
     download->startDownload();
@@ -1364,8 +1364,8 @@ TestDownload::testProcessFinishedNoError() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(finished(QString)));
 
     download->start();  // change state
@@ -1399,8 +1399,8 @@ TestDownload::testProcessFinishedWithError() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
 
     download->start();  // change state
@@ -1434,8 +1434,8 @@ TestDownload::testProcessFinishedCrash() {
 
     _processFactory->record();
     _reqFactory->record();
-    Download* download = new Download(_id, _path, _url, metadata, _headers,
-        _networkInfo, _reqFactory, _processFactory);
+    SingleDownload* download = new SingleDownload(_id, _path, _url,
+        metadata, _headers, _networkInfo, _reqFactory, _processFactory);
     QSignalSpy spy(download , SIGNAL(error(QString)));
 
     download->start();  // change state

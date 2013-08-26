@@ -16,16 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_DOWNLOAD_H
-#define DOWNLOADER_LIB_APP_DOWNLOAD_H
+#ifndef DOWNLOADER_LIB_DOWNLOAD_H
+#define DOWNLOADER_LIB_DOWNLOAD_H
 
 #include <QObject>
-#include <QByteArray>
-#include <QBuffer>
-#include <QCryptographicHash>
-#include <QNetworkReply>
 #include <QProcess>
-#include <QUrl>
 #include <QUuid>
 #include "./app-downloader-lib_global.h"
 #include "./process_factory.h"
@@ -48,52 +43,33 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
         ERROR
     };
 
-    explicit Download(const QUuid& id,
-                      const QString& path,
-                      const QUrl& url,
-                      const QVariantMap& metadata,
-                      const QMap<QString, QString>& headers,
-                      SystemNetworkInfo* networkInfo,
-                      RequestFactory* nam,
-                      ProcessFactory* processFactory,
-                      QObject* parent = 0);
-    explicit Download(const QUuid& id,
-                      const QString& path,
-                      const QUrl& url,
-                      const QString& hash,
-                      QCryptographicHash::Algorithm algo,
-                      const QVariantMap& metadata,
-                      const QMap<QString, QString>& headers,
-                      SystemNetworkInfo* networkInfo,
-                      RequestFactory* nam,
-                      ProcessFactory* processFactory,
-                      QObject* parent = 0);
+    Download(const QUuid& id,
+             const QString& path,
+             const QVariantMap& metadata,
+             const QMap<QString, QString>& headers,
+             SystemNetworkInfo* networkInfo,
+             QObject* parent = 0);
 
-    // gets for internal state
     QUuid downloadId();
+
     QString path();
-    QUrl url();
+
     Download::State state();
     void setState(Download::State state);
-    QString filePath();
-    QString hash();
-    QCryptographicHash::Algorithm hashAlgorithm();
+
     QMap<QString, QString> headers();
     virtual bool canDownload();
 
-    // methods that do perform the download
-    virtual void cancelDownload();
-    virtual void pauseDownload();
-    virtual void resumeDownload();
-    virtual void startDownload();
-    static Download* fromMetadata(const QString &path, RequestFactory* nam);
+    // methods to be overriden by the children
+    virtual void cancelDownload() = 0;
+    virtual void pauseDownload() = 0;
+    virtual void resumeDownload() = 0;
+    virtual void startDownload() = 0;
 
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
     // the downloader takes care of the actual download operations
     QVariantMap metadata();
-    qulonglong progress();
-    qulonglong totalSize();
     virtual void setThrottle(qulonglong speed);
     virtual qulonglong throttle();
     void allowGSMDownload(bool allowed);
@@ -103,33 +79,23 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void resume();
     void start();
 
+    // slots to be implemented by the children
+    virtual qulonglong progress() = 0;
+    virtual qulonglong totalSize() = 0;
+
  signals:
     // signals that are exposed via dbus
     void canceled(bool success);
     void error(const QString& error);
-    void finished(const QString& path);
     void paused(bool success);
-    void progress(qulonglong received, qulonglong total);
     void resumed(bool success);
     void started(bool success);
 
-    // internal signals used for the download queue
+    // internal signals
     void stateChanged();
 
- private:
-    explicit Download();
-    // private slots used to keep track of the qnetwork reply state
-
-    Q_PRIVATE_SLOT(d_func(), void onDownloadProgress(qint64, qint64))
-    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
-    Q_PRIVATE_SLOT(d_func(), void onFinished())
-    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
-
-    // private slots used to keep track of the post download command
-
-    Q_PRIVATE_SLOT(d_func(), void onProcessError(QProcess::ProcessError error))
-    Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode,
-                                              QProcess::ExitStatus exitStatus))
+ protected:
+    virtual void emitError(const QString& error);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

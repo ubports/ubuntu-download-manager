@@ -18,12 +18,12 @@
 
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
-#include <download.h>
+#include <single_download.h>
 #include <system_network_info.h>
 #include <metatypes.h>
 #include "./fake.h"
 
-class FakeDownload : public Download, public Fake {
+class FakeDownload : public SingleDownload, public Fake {
     Q_OBJECT
 
  public:
