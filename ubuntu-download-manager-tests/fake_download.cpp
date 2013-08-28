@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include "./fake_download.h"
 
 FakeDownload::FakeDownload(const QUuid& id,
@@ -125,14 +126,14 @@ FakeDownload::startDownload() {
 
 void
 FakeDownload::emitFinished(const QString& path) {
+    qDebug() << __PRETTY_FUNCTION__;
     setState(Download::FINISH);
-    emit stateChanged();
     emit finished(path);
 }
 
 void
 FakeDownload::emitError(const QString& errorMsg) {
+    qDebug() << __PRETTY_FUNCTION__;
     setState(Download::ERROR);
-    emit stateChanged();
     emit error(errorMsg);
 }

@@ -17,6 +17,10 @@ SOURCES += \
     download_manager.cpp \
     download_manager_adaptor.cpp \
     download_queue.cpp \
+    group_download.cpp \
+    group_download_struct.cpp \
+    group_download_adaptor.cpp \
+    hash_algorithm.cpp \
     logger.cpp \
     network_reply.cpp \
     process.cpp \
@@ -26,7 +30,9 @@ SOURCES += \
     system_network_info.cpp \
     timer.cpp \
     uuid_factory.cpp \
-    xdg_basedir.cpp
+    xdg_basedir.cpp \
+    download_factory.cpp \
+    file_manager.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -38,6 +44,10 @@ HEADERS +=\
     download_manager.h \
     download_manager_adaptor.h \
     download_queue.h \
+    group_download.h \
+    group_download_struct.h \
+    group_download_adaptor.h \
+    hash_algorithm.h \
     logger.h \
     metatypes.h \
     network_reply.h \
@@ -48,12 +58,15 @@ HEADERS +=\
     system_network_info.h \
     timer.h \
     uuid_factory.h \
-    xdg_basedir.h
+    xdg_basedir.h \
+    download_factory.h \
+    file_manager.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
     com.canonical.applications.download.xml \
-    com.canonical.applications.download_manager.xml
+    com.canonical.applications.download_manager.xml \
+    com.canonical.applications.group_download.xml
 
 target.path = /usr/lib/
 INSTALLS += target

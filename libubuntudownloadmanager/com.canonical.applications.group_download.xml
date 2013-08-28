@@ -1,0 +1,71 @@
+<node>
+  <interface name="com.canonical.applications.Download">
+
+    <method name="totalSize">
+        <arg name="total" type="t" direction="out"/>
+    </method>
+
+    <method name="progress">
+        <arg name="count" type="t" direction="out"/>
+        <arg name="started" type="t" direction="out"/>
+        <arg name="paused" type="t" direction="out"/>
+        <arg name="finished" type="t" direction="out"/>
+    </method>
+
+    <method name="metadata">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+        <arg name="data" type="a{sv}" direction="out" />
+    </method>
+
+    <method name="setThrottle">
+        <arg name="speed" type="t" direction="in"/>
+    </method>
+
+    <method name="throttle">
+        <arg name="speed" type="t" direction="out"/>
+    </method>
+
+    <method name="allowGSMDownload">
+        <arg name="allowed" type="b" direction="in"/>
+    </method>
+
+    <method name="isGSMDownloadAllowed">
+        <arg name="allowed" type="b" direction="out"/>
+    </method>
+
+    <method name="start" />
+    <method name="pause" />
+    <method name="resume" />
+    <method name="cancel" />
+
+    <signal name="started">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="paused">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="resumed">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="canceled">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="finished">
+        <arg name="path" type="as" direction="out"/>
+    </signal>
+
+    <signal name="error">
+        <arg name="error" type="s" direction="out"/>
+    </signal>
+
+    <signal name="progress">
+        <arg name="received" type="t" direction="out"/>
+        <arg name="total" type="t" direction="out"/>
+    </signal>
+
+ </interface>
+</node>
