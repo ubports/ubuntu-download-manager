@@ -229,7 +229,7 @@ class SingleDownloadPrivate {
             // we do not know the size of the download, simply return
             // the same for received and for total
             qDebug() << "EMIT progress" << received << received;
-            emit q->progress(received, received);
+            emit reinterpret_cast<Download*>(q)->progress(received, received);
             return;
         } else {
             if (_totalSize == 0) {
@@ -242,7 +242,7 @@ class SingleDownloadPrivate {
                 _totalSize = uBytestTotal;
             }
             qDebug() << "EMIT progress" << received << _totalSize;
-            emit q->progress(received, _totalSize);
+            emit reinterpret_cast<Download*>(q)->progress(received, _totalSize);
             return;
         }
     }

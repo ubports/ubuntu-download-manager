@@ -5,3 +5,7 @@ echo "generated"
 echo "DownloadAdaptor..."
 qdbusxml2cpp -c DownloadAdaptor -a download_adaptor.h:download_adaptor.cpp -i metatypes.h com.canonical.applications.download.xml
 echo "generated"
+
+echo "GroupDownloadAdaptor..."
+qdbusxml2cpp -c GroupDownloadAdaptor -a group_download_adaptor.h:group_download_adaptor.cpp -i metatypes.h com.canonical.applications.group_download.xml
+echo "generated"

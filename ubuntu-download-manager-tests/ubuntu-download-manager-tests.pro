@@ -34,7 +34,10 @@ SOURCES += \
     fake_process_factory.cpp \
     fake_application.cpp \
     fake_timer.cpp \
-    fake_download_manager.cpp
+    fake_download_manager.cpp \
+    test_group_download.cpp \
+    fake_download_factory.cpp \
+    fake_file_manager.cpp
 
 HEADERS += \
     fake.h \
@@ -57,7 +60,10 @@ HEADERS += \
     fake_process_factory.h \
     fake_application.h \
     fake_timer.h \
-    fake_download_manager.h
+    fake_download_manager.h \
+    test_group_download.h \
+    fake_download_factory.h \
+    fake_file_manager.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 

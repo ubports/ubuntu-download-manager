@@ -90,6 +90,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void paused(bool success);
     void resumed(bool success);
     void started(bool success);
+    void progress(qulonglong received, qulonglong total);
 
     // internal signals
     void stateChanged();

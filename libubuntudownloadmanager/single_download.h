@@ -33,26 +33,26 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     Q_DECLARE_PRIVATE(SingleDownload)
 
  public:
-    explicit SingleDownload(const QUuid& id,
-                      const QString& path,
-                      const QUrl& url,
-                      const QVariantMap& metadata,
-                      const QMap<QString, QString>& headers,
-                      SystemNetworkInfo* networkInfo,
-                      RequestFactory* nam,
-                      ProcessFactory* processFactory,
-                      QObject* parent = 0);
-    explicit SingleDownload(const QUuid& id,
-                      const QString& path,
-                      const QUrl& url,
-                      const QString& hash,
-                      QCryptographicHash::Algorithm algo,
-                      const QVariantMap& metadata,
-                      const QMap<QString, QString>& headers,
-                      SystemNetworkInfo* networkInfo,
-                      RequestFactory* nam,
-                      ProcessFactory* processFactory,
-                      QObject* parent = 0);
+    SingleDownload(const QUuid& id,
+                   const QString& path,
+                   const QUrl& url,
+                   const QVariantMap& metadata,
+                   const QMap<QString, QString>& headers,
+                   SystemNetworkInfo* networkInfo,
+                   RequestFactory* nam,
+                   ProcessFactory* processFactory,
+                   QObject* parent = 0);
+    SingleDownload(const QUuid& id,
+                   const QString& path,
+                   const QUrl& url,
+                   const QString& hash,
+                   QCryptographicHash::Algorithm algo,
+                   const QVariantMap& metadata,
+                   const QMap<QString, QString>& headers,
+                   SystemNetworkInfo* networkInfo,
+                   RequestFactory* nam,
+                   ProcessFactory* processFactory,
+                   QObject* parent = 0);
 
     // gets for internal state
     QUrl url();
@@ -72,7 +72,6 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     virtual void setThrottle(qulonglong speed) override;
 
  signals:
-    void progress(qulonglong received, qulonglong total);
     void finished(const QString& path);
 
  private:
