@@ -1,3 +1,15 @@
+ubuntu-download-manager (0.2+13.10.20130830-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Second part of the fix for #1211838. In this branch we add a
+    GroupDownload object that takes care of dealing with a collection of
+    urls to download as an atomic operation. (LP: #1211838)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 104
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 30 Aug 2013 02:03:56 +0000
+
 ubuntu-download-manager (0.2+13.10.20130826-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
