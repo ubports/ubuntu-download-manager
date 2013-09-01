@@ -26,6 +26,7 @@
 #include "./test_runner.h"
 #include "./fake_dbus_connection.h"
 #include "./fake_download_queue.h"
+#include "./fake_download_factory.h"
 #include "./fake_uuid_factory.h"
 #include "./fake_system_network_info.h"
 
@@ -63,6 +64,7 @@ class TestDownloadManager : public QObject {
 
  private:
     FakeSystemNetworkInfo* _networkInfo;
+    FakeDownloadFactory* _downloadFactory;
     QSharedPointer<FakeDBusConnection> _conn;
     FakeDownloadQueue* _q;
     FakeUuidFactory* _uuidFactory;

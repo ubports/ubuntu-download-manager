@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.canonical.applications.Download">
+  <interface name="com.canonical.applications.GroupDownload">
 
     <method name="totalSize">
         <arg name="total" type="t" direction="out"/>

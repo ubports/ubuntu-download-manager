@@ -34,8 +34,9 @@ TestGroupDownload::init() {
     _networkInfo = new FakeSystemNetworkInfo();
     _nam = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _downloadFactory = new FakeDownloadFactory(_networkInfo, _nam,
-        _processFactory);
+    _uuidFactory = new UuidFactory();
+    _downloadFactory = new FakeDownloadFactory(_uuidFactory, _networkInfo,
+        _nam, _processFactory);
     _fileManager = new FakeFileManager();
 }
 
@@ -73,7 +74,7 @@ TestGroupDownload::testCancelAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
     group->cancelDownload();
-    foreach(SingleDownload* download, _downloadFactory->downloads()) {
+    foreach(Download* download, _downloadFactory->downloads()) {
         QCOMPARE(Download::CANCEL, download->state());
     }
 }
@@ -94,11 +95,11 @@ TestGroupDownload::testCancelDownloadWithFinished() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->cancelDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::CANCEL, download->state());
@@ -126,11 +127,11 @@ TestGroupDownload::testCancelDownloadWithCancel() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
     group->cancelDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::CANCEL, download->state());
@@ -159,12 +160,12 @@ TestGroupDownload::testPauseAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
     // start all downlaods
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
-    foreach(SingleDownload* download, downloads) {
+    QList<Download*> downloads = _downloadFactory->downloads();
+    foreach(Download* download, downloads) {
         download->start();
     }
     group->pauseDownload();
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::PAUSE, download->state());
     }
 }
@@ -185,11 +186,11 @@ TestGroupDownload::testPauseDownloadWithFinished() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->pauseDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH && state != Download::IDLE)
             QCOMPARE(Download::PAUSE, download->state());
@@ -217,11 +218,11 @@ TestGroupDownload::testPauseDownloadWithCancel() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
     group->pauseDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL && state != Download::IDLE)
             QCOMPARE(Download::PAUSE, state);
@@ -256,14 +257,14 @@ TestGroupDownload::testResumeAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
-    foreach(SingleDownload* download, downloads) {
+    QList<Download*> downloads = _downloadFactory->downloads();
+    foreach(Download* download, downloads) {
         download->start();
         download->pause();
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::RESUME, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -286,7 +287,7 @@ TestGroupDownload::testResumeWithFinished() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     for (int index = 1; index < downloads.count(); index++) {
         downloads[index]->start();
@@ -294,7 +295,7 @@ TestGroupDownload::testResumeWithFinished() {
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::RESUME, download->state());
@@ -319,7 +320,7 @@ TestGroupDownload::testResumeWidhCancel() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     (downloads[0])->cancel();
     for (int index = 1; index < downloads.count(); index++) {
         downloads[index]->start();
@@ -327,7 +328,7 @@ TestGroupDownload::testResumeWidhCancel() {
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL)
             QCOMPARE(Download::RESUME, download->state());
@@ -352,10 +353,10 @@ TestGroupDownload::testReusmeNoStarted() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::IDLE, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -388,10 +389,10 @@ TestGroupDownload::testStartAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::START, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -414,14 +415,14 @@ TestGroupDownload::testStartAlreadyStarted() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         download->start();
     }
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::START, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -444,16 +445,16 @@ TestGroupDownload::testStartResume() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         download->start();
         download->pause();
         download->resume();
     }
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::RESUME, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -476,11 +477,11 @@ TestGroupDownload::testStartFinished() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::START, download->state());
@@ -505,11 +506,11 @@ TestGroupDownload::testStartCancel() {
         _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
         _downloadFactory, _fileManager);
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     downloads[0]->cancel();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL)
             QCOMPARE(Download::START, download->state());
@@ -536,7 +537,7 @@ TestGroupDownload::testSingleDownloadFinished() {
         _downloadFactory, _fileManager);
     QSignalSpy spy(group, SIGNAL(finished(QStringList)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
@@ -563,9 +564,9 @@ TestGroupDownload::testAllDownloadsFinished() {
         _downloadFactory, _fileManager);
     QSignalSpy spy(group, SIGNAL(finished(QStringList)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         reinterpret_cast<FakeDownload*>(download)->emitFinished(deleteFile);
     }
 
@@ -591,7 +592,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
         _downloadFactory, _fileManager);
     QSignalSpy spy(group, SIGNAL(error(QString)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitError("error");
@@ -618,7 +619,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
         _downloadFactory, _fileManager);
     QSignalSpy spy(group, SIGNAL(error(QString)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
     for (int index = 1; index < downloads.count(); index++) {
         reinterpret_cast<FakeDownload*>(downloads[index])->emitFinished("path");

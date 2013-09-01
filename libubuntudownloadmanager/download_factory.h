@@ -19,9 +19,12 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
+#include <QCryptographicHash>
 #include <QObject>
+#include "./metatypes.h"
 #include "./system_network_info.h"
-#include "./single_download.h"
+#include "./download.h"
+#include "./uuid_factory.h"
 
 class DownloadFactoryPrivate;
 class DownloadFactory : public QObject {
@@ -29,24 +32,29 @@ class DownloadFactory : public QObject {
     Q_DECLARE_PRIVATE(DownloadFactory)
 
  public:
-    DownloadFactory(SystemNetworkInfo* networkInfo,
+    explicit DownloadFactory(QObject *parent = 0);
+
+    DownloadFactory(UuidFactory* _uuidFactory,
+                    SystemNetworkInfo* networkInfo,
                     RequestFactory* nam,
                     ProcessFactory* processFactory,
                     QObject *parent = 0);
 
-    virtual SingleDownload* createDownload(const QUuid& id,
-                                         const QString& path,
-                                         const QUrl& url,
-                                         const QVariantMap& metadata,
-                                         const QMap<QString, QString>& headers);
+    virtual Download* createDownload(const QUrl& url,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
 
-    virtual SingleDownload* createDownload(const QUuid& id,
-                                         const QString& path,
-                                         const QUrl& url,
-                                         const QString& hash,
-                                         QCryptographicHash::Algorithm algo,
-                                         const QVariantMap& metadata,
-                                         const QMap<QString, QString>& headers);
+    virtual Download* createDownload(const QUrl& url,
+                                     const QString& hash,
+                                     QCryptographicHash::Algorithm algo,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
+
+    virtual Download* createDownload(StructList downloads,
+                                     QCryptographicHash::Algorithm algo,
+                                     bool allowed3G,
+                                     const QVariantMap& metadata,
+                                     StringMap headers);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

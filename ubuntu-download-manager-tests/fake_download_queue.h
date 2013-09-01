@@ -29,8 +29,7 @@ class FakeDownloadQueue : public DownloadQueue, public Fake {
     explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo,
                                QObject *parent = 0);
 
-    void add(Download* download, DownloadAdaptor* adaptor) override;
-    void add(const QPair<Download*, DownloadAdaptor*>& value) override;
+    void add(Download* download) override;
     int size() override;
     void setSize(int size);
 

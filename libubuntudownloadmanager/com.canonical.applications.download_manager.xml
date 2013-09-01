@@ -20,6 +20,18 @@
         <arg name="download" type="o" direction="out" />
     </method>
 
+    <method name="createDownloadGroup">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="StructList"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In3" value="QVariantMap"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In4" value="StringMap"/>
+        <arg name="downloads" type="a(sss)" direction="in"/>
+        <arg name="algorithm" type="s" direction="in"/>
+        <arg name="allowed3G" type="b" direction="in"/>
+        <arg name="metadata" type="a{sv}" direction="in"/>
+        <arg name="headers" type="a{ss}" direction="in"/>
+        <arg name="download" type="o" direction="out" />
+    </method>
+
     <method name="getAllDownloads">
         <arg name="downloads" type="ao" direction="out" />
     </method>

@@ -20,9 +20,13 @@
 #define DOWNLOADER_LIB_APP_METATYPES_H
 
 #include <QMap>
+#include <QList>
+#include "./group_download_struct.h"
 
 typedef QMap<QString, QString> StringMap;
+typedef QList<GroupDownloadStruct> StructList;
 
 Q_DECLARE_METATYPE(StringMap)
+Q_DECLARE_METATYPE(StructList)
 
 #endif  // DOWNLOADER_LIB_APP_METATYPES_H

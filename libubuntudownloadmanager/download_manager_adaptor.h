@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1377511556
-#define DOWNLOAD_MANAGER_ADAPTOR_H_1377511556
+#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1377700503
+#define DOWNLOAD_MANAGER_ADAPTOR_H_1377700503
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -51,6 +51,17 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"a{ss}\" name=\"headers\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
 "    </method>\n"
+"    <method name=\"createDownloadGroup\">\n"
+"      <annotation value=\"StructList\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
+"      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.In3\"/>\n"
+"      <annotation value=\"StringMap\" name=\"org.qtproject.QtDBus.QtTypeName.In4\"/>\n"
+"      <arg direction=\"in\" type=\"a(sss)\" name=\"downloads\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"algorithm\"/>\n"
+"      <arg direction=\"in\" type=\"b\" name=\"allowed3G\"/>\n"
+"      <arg direction=\"in\" type=\"a{sv}\" name=\"metadata\"/>\n"
+"      <arg direction=\"in\" type=\"a{ss}\" name=\"headers\"/>\n"
+"      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
+"    </method>\n"
 "    <method name=\"getAllDownloads\">\n"
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
@@ -84,6 +95,7 @@ public: // PROPERTIES
 public Q_SLOTS: // METHODS
     void allowGSMDownload(bool allowed);
     QDBusObjectPath createDownload(const QString &url, const QVariantMap &metadata, StringMap headers);
+    QDBusObjectPath createDownloadGroup(StructList downloads, const QString &algorithm, bool allowed3G, const QVariantMap &metadata, StringMap headers);
     QDBusObjectPath createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash, const QVariantMap &metadata, StringMap headers);
     qulonglong defaultThrottle();
     QList<QDBusObjectPath> getAllDownloads();

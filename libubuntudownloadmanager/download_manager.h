@@ -26,9 +26,9 @@
 #include "./dbus_connection.h"
 #include "./download.h"
 #include "./download_queue.h"
+#include "./download_factory.h"
 #include "./metatypes.h"
 #include "./system_network_info.h"
-#include "./uuid_factory.h"
 
 class DownloadManagerPrivate;
 class DownloadManager : public QObject {
@@ -36,13 +36,13 @@ class DownloadManager : public QObject {
     Q_DECLARE_PRIVATE(DownloadManager)
 
  public:
-    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
-                             QObject *parent = 0);
-    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
-                             SystemNetworkInfo* networkInfo,
-                             DownloadQueue* queue,
-                             UuidFactory* uuidFactory,
-                             QObject *parent = 0);
+    DownloadManager(QSharedPointer<DBusConnection> connection,
+                    QObject *parent = 0);
+    DownloadManager(QSharedPointer<DBusConnection> connection,
+                    SystemNetworkInfo* networkInfo,
+                    DownloadFactory* downloadFactory,
+                    DownloadQueue* queue,
+                    QObject *parent = 0);
     void loadPreviewsDownloads(const QString &path);
 
  public slots:  // NOLINT(whitespace/indent)
@@ -54,6 +54,12 @@ class DownloadManager : public QObject {
                                            const QString &hash,
                                            const QVariantMap &metadata,
                                            StringMap headers);
+    QDBusObjectPath createDownloadGroup(StructList downloads,
+                                        const QString& algorithm,
+                                        bool allowed3G,
+                                        const QVariantMap& metadata,
+                                        StringMap headers);
+
     qulonglong defaultThrottle();
     void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();

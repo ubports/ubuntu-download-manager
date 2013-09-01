@@ -57,7 +57,11 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     Download::State state();
     void setState(Download::State state);
 
+    QObject* adaptor();
+    void setAdaptor(QObject* adaptor);
+
     QMap<QString, QString> headers();
+
     virtual bool canDownload();
 
     // methods to be overriden by the children

@@ -20,6 +20,7 @@
 #define TEST_GROUP_DOWNLOAD_H
 
 #include <QObject>
+#include <uuid_factory.h>
 #include <group_download.h>
 #include "./fake_file_manager.h"
 #include "./fake_system_network_info.h"
@@ -70,6 +71,7 @@ class TestGroupDownload : public QObject {
     bool _isGSMDownloadAllowed;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
+    UuidFactory* _uuidFactory;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _nam;
     FakeProcessFactory* _processFactory;

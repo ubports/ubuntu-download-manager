@@ -27,32 +27,36 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownloadFactory(SystemNetworkInfo* networkInfo,
+    FakeDownloadFactory(UuidFactory* uuidFactory,
+                        SystemNetworkInfo* networkInfo,
                         RequestFactory* nam,
                         ProcessFactory* processFactory,
                         QObject *parent = 0);
 
-    SingleDownload* createDownload(const QUuid& id,
-                                   const QString& path,
-                                   const QUrl& url,
-                                   const QVariantMap& metadata,
-                                   const QMap<QString, QString>& headers);
+    Download* createDownload(const QUrl& url,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
 
-    SingleDownload* createDownload(const QUuid& id,
-                                   const QString& path,
-                                   const QUrl& url,
-                                   const QString& hash,
-                                   QCryptographicHash::Algorithm algo,
-                                   const QVariantMap& metadata,
-                                   const QMap<QString, QString>& headers);
+    Download* createDownload(const QUrl& url,
+                             const QString& hash,
+                             QCryptographicHash::Algorithm algo,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
 
-    QList<SingleDownload*> downloads();
+    Download* createDownload(StructList downloads,
+                             QCryptographicHash::Algorithm algo,
+                             bool allowed3G,
+                             const QVariantMap& metadata,
+                             StringMap headers) override;
+
+    QList<Download*> downloads();
 
  private:
+    UuidFactory* _uuidFactory;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _nam;
     ProcessFactory* _processFactory;
-    QList<SingleDownload*> _downloads;
+    QList<Download*> _downloads;
 };
 
 #endif  // FAKE_DOWNLOAD_FACTORY_H

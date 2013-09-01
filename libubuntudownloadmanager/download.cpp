@@ -45,7 +45,10 @@ class DownloadPrivate {
           q_ptr(parent) {
     }
 
-    ~DownloadPrivate() {}
+    ~DownloadPrivate() {
+        if (_adaptor != NULL)
+            _adaptor->deleteLater();
+    }
 
     QUuid downloadId() const {
         return _id;
@@ -63,6 +66,14 @@ class DownloadPrivate {
         Q_Q(Download);
         _state = state;
         emit q->stateChanged();
+    }
+
+    QObject* adaptor() {
+        return _adaptor;
+    }
+
+    void setAdaptor(QObject* adaptor) {
+        _adaptor = adaptor;
     }
 
     QMap<QString, QString> headers() const {
@@ -150,6 +161,7 @@ class DownloadPrivate {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
+    QObject* _adaptor;
     Download* q_ptr;
 };
 
@@ -190,6 +202,18 @@ void
 Download::setState(Download::State state) {
     Q_D(Download);
     d->setState(state);
+}
+
+QObject*
+Download::adaptor() {
+    Q_D(Download);
+    return d->adaptor();
+}
+
+void
+Download::setAdaptor(QObject* adaptor) {
+    Q_D(Download);
+    d->setAdaptor(adaptor);
 }
 
 QMap<QString, QString>
