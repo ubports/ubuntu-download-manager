@@ -1,3 +1,15 @@
+ubuntu-download-manager (0.2+13.10.20130902-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Added -testcase as a new commandline argument to the test
+    application. (LP: #1219787)
+  * Expose group download creation to clients using the session dbus.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 107
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Sep 2013 18:03:58 +0000
+
 ubuntu-download-manager (0.2+13.10.20130830-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
