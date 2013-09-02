@@ -49,11 +49,15 @@ class TestRunner {
 
         if (args.contains("-testcase")) {
             int index = args.indexOf("-testcase");
-            QString testcase = args[index + 1];
-            if (_tests.contains(testcase)) {
-                args.removeAt(index + 1);
-                args.removeAt(index);
-                return QTest::qExec(_tests[testcase].data(), args);
+            if (args.count() > index + 1) {
+                QString testcase = args[index + 1];
+                if (_tests.contains(testcase)) {
+                    args.removeAt(index + 1);
+                    args.removeAt(index);
+                    return QTest::qExec(_tests[testcase].data(), args);
+                } else {
+                    return -1;
+                }
             } else {
                 return -1;
             }
