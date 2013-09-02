@@ -205,7 +205,7 @@ TestDownloadManager::testCreateDownloadWithHash() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    DownloadStruct downStruct = DownloadStruct(url, algo, hash, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata, headers);
     _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
