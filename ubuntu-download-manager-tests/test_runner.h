@@ -43,12 +43,28 @@ class TestRunner {
     }
 
     int RunAll(int argc, char *argv[]) {
-        int errorCode = 0;
-        foreach (QString const &testName, _tests.keys()) {
-            errorCode |= QTest::qExec(_tests[testName].data(), argc, argv);
-            std::cout << std::endl;
-        }
+        // provide command line to run a single test case
+        QCoreApplication* app = QCoreApplication::instance();
+        QStringList args = app->arguments();
+
+        if (args.contains("-testcase")) {
+            int index = args.indexOf("-testcase");
+            QString testcase = args[index + 1];
+            if (_tests.contains(testcase)) {
+                args.removeAt(index + 1);
+                args.removeAt(index);
+                return QTest::qExec(_tests[testcase].data(), args);
+            } else {
+                return -1;
+            }
+        } else {
+            int errorCode = 0;
+            foreach (QString const &testName, _tests.keys()) {
+                errorCode |= QTest::qExec(_tests[testName].data(), argc, argv);
+                std::cout << std::endl;
+            }
         return errorCode;
+        }
     }
 
  private:
