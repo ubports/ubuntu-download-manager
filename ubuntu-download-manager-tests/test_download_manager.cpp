@@ -18,6 +18,7 @@
 
 #include <QSignalSpy>
 #include <download_factory.h>
+#include <download_struct.h>
 #include "./fake_process_factory.h"
 #include "./fake_request_factory.h"
 #include "./fake_system_network_info.h"
@@ -118,7 +119,8 @@ TestDownloadManager::testCreateDownload() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    _man->createDownload(url, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, metadata, headers);
+    _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
@@ -203,7 +205,8 @@ TestDownloadManager::testCreateDownloadWithHash() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    _man->createDownloadWithHash(url, algo, hash, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, algo, hash, metadata, headers);
+    _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
@@ -262,9 +265,12 @@ TestDownloadManager::testGetAllDownloads() {
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
@@ -310,9 +316,12 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
@@ -384,9 +393,12 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     _man->setDefaultThrottle(speed);
 

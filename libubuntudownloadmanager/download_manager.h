@@ -46,14 +46,8 @@ class DownloadManager : public QObject {
     void loadPreviewsDownloads(const QString &path);
 
  public slots:  // NOLINT(whitespace/indent)
-    QDBusObjectPath createDownload(const QString &url,
-                                   const QVariantMap &metadata,
-                                   StringMap headers);
-    QDBusObjectPath createDownloadWithHash(const QString &url,
-                                           const QString &algorithm,
-                                           const QString &hash,
-                                           const QVariantMap &metadata,
-                                           StringMap headers);
+    QDBusObjectPath createDownload(DownloadStruct download);
+
     QDBusObjectPath createDownloadGroup(StructList downloads,
                                         const QString& algorithm,
                                         bool allowed3G,
