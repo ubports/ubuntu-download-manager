@@ -19,21 +19,21 @@
 #include "./fake_download.h"
 #include "./fake_download_factory.h"
 
-FakeDownloadFactory::FakeDownloadFactory(SystemNetworkInfo* networkInfo,
+FakeDownloadFactory::FakeDownloadFactory(UuidFactory* uuidFactory,
+                                         SystemNetworkInfo* networkInfo,
                                          RequestFactory* nam,
                                          ProcessFactory* processFactory,
                                          QObject *parent)
-    : DownloadFactory(networkInfo, nam, processFactory, parent),
+    : DownloadFactory(_uuidFactory, networkInfo, nam, processFactory, parent),
       Fake(),
+      _uuidFactory(uuidFactory),
       _networkInfo(networkInfo),
       _nam(nam),
       _processFactory(processFactory) {
 }
 
-SingleDownload*
-FakeDownloadFactory::createDownload(const QUuid& id,
-                                    const QString& path,
-                                    const QUrl& url,
+Download*
+FakeDownloadFactory::createDownload(const QUrl& url,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
     if (_recording) {
@@ -41,16 +41,16 @@ FakeDownloadFactory::createDownload(const QUuid& id,
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    SingleDownload* down = new FakeDownload(id, path, url, metadata, headers,
+    QUuid id = _uuidFactory->createUuid();
+    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+    Download* down = new FakeDownload(id, uuidString, url, metadata, headers,
         _networkInfo, _nam, _processFactory);
     _downloads.append(down);
     return down;
 }
 
-SingleDownload*
-FakeDownloadFactory::createDownload(const QUuid& id,
-                                    const QString& path,
-                                    const QUrl& url,
+Download*
+FakeDownloadFactory::createDownload(const QUrl& url,
                                     const QString& hash,
                                     QCryptographicHash::Algorithm algo,
                                     const QVariantMap& metadata,
@@ -60,13 +60,36 @@ FakeDownloadFactory::createDownload(const QUuid& id,
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    SingleDownload* down = new FakeDownload(id, path, url, hash, algo,
+    QUuid id = _uuidFactory->createUuid();
+    QString path = id.toString().replace(QRegExp("[-{}]"), "");
+    Download* down = new FakeDownload(id, path, url, hash, algo,
         metadata, headers, _networkInfo, _nam, _processFactory);
     _downloads.append(down);
     return down;
 }
 
-QList<SingleDownload*>
+Download*
+FakeDownloadFactory::createDownload(StructList downloads,
+                                    QCryptographicHash::Algorithm algo,
+                                    bool allowed3G,
+                                    const QVariantMap& metadata,
+                                    StringMap headers) {
+    Q_UNUSED(allowed3G);
+    Q_UNUSED(downloads);
+    if (_recording) {
+        MethodData methodData;
+        methodData.setMethodName("createDownload");
+        _called.append(methodData);
+    }
+    QUuid id = _uuidFactory->createUuid();
+    QString path = id.toString().replace(QRegExp("[-{}]"), "");
+    Download* down = new FakeDownload(id, path, QUrl(), "", algo,
+        metadata, headers, _networkInfo, _nam, _processFactory);
+    _downloads.append(down);
+    return down;
+}
+
+QList<Download*>
 FakeDownloadFactory::downloads() {
     return _downloads;
 }

@@ -33,8 +33,7 @@ class DownloadQueue : public QObject {
  public:
     explicit DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent = 0);
 
-    virtual void add(Download* download, DownloadAdaptor* adaptor);
-    virtual void add(const QPair<Download*, DownloadAdaptor*>& value);
+    virtual void add(Download* download);
 
     // accessors for useful info
     QString currentDownload();

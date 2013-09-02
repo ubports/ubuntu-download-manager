@@ -61,9 +61,7 @@ class TestDownloadQueue : public QObject {
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
     FakeDownload* _first;
-    DownloadAdaptor* _firstAdaptor;
     FakeDownload* _second;
-    DownloadAdaptor* _secondAdaptor;
     DownloadQueue* _q;
 };
 

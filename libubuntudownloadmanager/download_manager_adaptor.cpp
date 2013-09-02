@@ -47,6 +47,14 @@ QDBusObjectPath DownloadManagerAdaptor::createDownload(const QString &url, const
     return download;
 }
 
+QDBusObjectPath DownloadManagerAdaptor::createDownloadGroup(StructList downloads, const QString &algorithm, bool allowed3G, const QVariantMap &metadata, StringMap headers)
+{
+    // handle method call com.canonical.applications.DownloaderManager.createDownloadGroup
+    QDBusObjectPath download;
+    QMetaObject::invokeMethod(parent(), "createDownloadGroup", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(StructList, downloads), Q_ARG(QString, algorithm), Q_ARG(bool, allowed3G), Q_ARG(QVariantMap, metadata), Q_ARG(StringMap, headers));
+    return download;
+}
+
 QDBusObjectPath DownloadManagerAdaptor::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash, const QVariantMap &metadata, StringMap headers)
 {
     // handle method call com.canonical.applications.DownloaderManager.createDownloadWithHash
