@@ -32,7 +32,8 @@ SOURCES += \
     uuid_factory.cpp \
     xdg_basedir.cpp \
     download_factory.cpp \
-    file_manager.cpp
+    file_manager.cpp \
+    download_struct.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -60,7 +61,8 @@ HEADERS +=\
     uuid_factory.h \
     xdg_basedir.h \
     download_factory.h \
-    file_manager.h
+    file_manager.h \
+    download_struct.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
