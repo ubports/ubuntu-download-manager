@@ -61,6 +61,7 @@ class DownloadManagerPrivate {
 
         // register the required types
         qDBusRegisterMetaType<StringMap>();
+        qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
         qDBusRegisterMetaType<StructList>();
 
