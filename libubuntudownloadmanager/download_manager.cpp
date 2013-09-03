@@ -61,6 +61,7 @@ class DownloadManagerPrivate {
 
         // register the required types
         qDBusRegisterMetaType<StringMap>();
+        qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
         qDBusRegisterMetaType<StructList>();
 
@@ -101,18 +102,10 @@ class DownloadManagerPrivate {
     }
 
     QDBusObjectPath createDownload(const QString& url,
+                                   const QString& hash,
+                                   QCryptographicHash::Algorithm algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
-        qDebug() << __FUNCTION__ << url << metadata << headers;
-        return createDownloadWithHash(url, "", QCryptographicHash::Md5,
-            metadata, headers);
-    }
-
-    QDBusObjectPath createDownloadWithHash(const QString& url,
-                                           const QString& hash,
-                                           QCryptographicHash::Algorithm algo,
-                                           const QVariantMap& metadata,
-                                           StringMap headers) {
         Download* download = NULL;
         if (hash.isEmpty())
             download = _downloadFactory->createDownload(url, metadata,
@@ -207,14 +200,6 @@ DownloadManager::loadPreviewsDownloads(const QString &path) {
     d->loadPreviewsDownloads(path);
 }
 
-QDBusObjectPath
-DownloadManager::createDownload(const QString &url,
-                                const QVariantMap &metadata,
-                                StringMap headers) {
-    Q_D(DownloadManager);
-    return d->createDownload(url, metadata, headers);
-}
-
 qulonglong
 DownloadManager::defaultThrottle() {
     Q_D(DownloadManager);
@@ -228,14 +213,11 @@ DownloadManager::setDefaultThrottle(qulonglong speed) {
 }
 
 QDBusObjectPath
-DownloadManager::createDownloadWithHash(const QString &url,
-                                        const QString &algorithm,
-                                        const QString &hash,
-                                        const QVariantMap &metadata,
-                                        StringMap headers) {
+DownloadManager::createDownload(DownloadStruct download) {
     Q_D(DownloadManager);
-    return d->createDownloadWithHash(url, hash,
-        HashAlgorithm::getHashAlgo(algorithm), metadata, headers);
+    return d->createDownload(download.getUrl(), download.getHash(),
+        HashAlgorithm::getHashAlgo(download.getAlgorithm()),
+        download.getMetadata(), download.getHeaders());
 }
 
 QDBusObjectPath

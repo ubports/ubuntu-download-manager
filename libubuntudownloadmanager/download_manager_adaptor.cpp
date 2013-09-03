@@ -39,12 +39,12 @@ void DownloadManagerAdaptor::allowGSMDownload(bool allowed)
     QMetaObject::invokeMethod(parent(), "allowGSMDownload", Q_ARG(bool, allowed));
 }
 
-QDBusObjectPath DownloadManagerAdaptor::createDownload(const QString &url, const QVariantMap &metadata, StringMap headers)
+QDBusObjectPath DownloadManagerAdaptor::createDownload(DownloadStruct download)
 {
     // handle method call com.canonical.applications.DownloaderManager.createDownload
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownload", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QVariantMap, metadata), Q_ARG(StringMap, headers));
-    return download;
+    QDBusObjectPath downloadPath;
+    QMetaObject::invokeMethod(parent(), "createDownload", Q_RETURN_ARG(QDBusObjectPath, downloadPath), Q_ARG(DownloadStruct, download));
+    return downloadPath;
 }
 
 QDBusObjectPath DownloadManagerAdaptor::createDownloadGroup(StructList downloads, const QString &algorithm, bool allowed3G, const QVariantMap &metadata, StringMap headers)
@@ -52,14 +52,6 @@ QDBusObjectPath DownloadManagerAdaptor::createDownloadGroup(StructList downloads
     // handle method call com.canonical.applications.DownloaderManager.createDownloadGroup
     QDBusObjectPath download;
     QMetaObject::invokeMethod(parent(), "createDownloadGroup", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(StructList, downloads), Q_ARG(QString, algorithm), Q_ARG(bool, allowed3G), Q_ARG(QVariantMap, metadata), Q_ARG(StringMap, headers));
-    return download;
-}
-
-QDBusObjectPath DownloadManagerAdaptor::createDownloadWithHash(const QString &url, const QString &algorithm, const QString &hash, const QVariantMap &metadata, StringMap headers)
-{
-    // handle method call com.canonical.applications.DownloaderManager.createDownloadWithHash
-    QDBusObjectPath download;
-    QMetaObject::invokeMethod(parent(), "createDownloadWithHash", Q_RETURN_ARG(QDBusObjectPath, download), Q_ARG(QString, url), Q_ARG(QString, algorithm), Q_ARG(QString, hash), Q_ARG(QVariantMap, metadata), Q_ARG(StringMap, headers));
     return download;
 }
 
