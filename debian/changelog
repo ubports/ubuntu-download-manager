@@ -1,3 +1,14 @@
+ubuntu-download-manager (0.2+13.10.20130903-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Adds a download structure that can be serialized over DBus to later
+    change API to have a single createDownload method. .
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 109
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 02:03:56 +0000
+
 ubuntu-download-manager (0.2+13.10.20130902-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
