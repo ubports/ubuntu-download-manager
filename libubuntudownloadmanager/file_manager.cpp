@@ -23,3 +23,8 @@ bool
 FileManager::remove(const QString& path) {
     return QFile::remove(path);
 }
+
+bool
+FileManager::exists(const QString& path) {
+    return QFile::exists(path);
+}

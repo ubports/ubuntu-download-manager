@@ -19,22 +19,27 @@
 #ifndef DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
 #define DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
 
+#include <QSqlDatabase>
 #include <QObject>
+#include "./file_manager.h"
 
-class DownloadsDBPrivate;
-class DownloasdDB : public QObject {
+class DownloadsDbPrivate;
+class DownloadsDb : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DownloasdDB)
+    Q_DECLARE_PRIVATE(DownloadsDb)
 
  public:
-    explicit DownloasdDB(QObject *parent = 0);
-    
+    explicit DownloadsDb(QObject *parent = 0);
+    DownloadsDb(FileManager* fileManager, QObject *parent = 0);
+
+    QSqlDatabase db();
+    QString filename();
     bool dbExists();  // return if the db is present and valid
     bool init();  // init or update the db
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloadsDBPrivate* d_ptr;
+    DownloadsDbPrivate* d_ptr;
 };
 
-#endif // DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
+#endif  // DOWNLOADER_LIB_DOWNLOADS_DATABASE_H

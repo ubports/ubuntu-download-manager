@@ -1,4 +1,4 @@
-QT       += network dbus systeminfo
+QT       += network dbus systeminfo sql
 QT       -= gui
 
 TARGET = ubuntudownloadmanager
