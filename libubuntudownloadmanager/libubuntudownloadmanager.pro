@@ -33,7 +33,8 @@ SOURCES += \
     xdg_basedir.cpp \
     download_factory.cpp \
     file_manager.cpp \
-    download_struct.cpp
+    download_struct.cpp \
+    downloads_db.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -62,7 +63,8 @@ HEADERS +=\
     xdg_basedir.h \
     download_factory.h \
     file_manager.h \
-    download_struct.h
+    download_struct.h \
+    downloads_db.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
