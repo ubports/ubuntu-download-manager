@@ -1,3 +1,16 @@
+ubuntu-download-manager (0.2+13.10.20130903.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Adds a new API that exposes the creation of a download as a struct
+    that way the clib will be more stable without changing the
+    parameters and will be able to provide a nice struct with default
+    values.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 111
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 18:04:00 +0000
+
 ubuntu-download-manager (0.2+13.10.20130903-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
