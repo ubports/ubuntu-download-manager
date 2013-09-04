@@ -55,6 +55,8 @@
     "FOREIGN KEY(group_id) REFERENCES GroupDownload(id), "\
     "FOREIGN KEY(download_id) REFERENCES SingleDownload(id))"
 
+#define STORE_SINGLE_DOWNLOAD ""
+
 class DownloadsDbPrivate {
     Q_DECLARE_PUBLIC(DownloadsDb)
 
@@ -114,6 +116,10 @@ class DownloadsDbPrivate {
         return success;
     }
 
+    bool storeSingleDownload(SingleDownload* download) {
+        return true;
+    }
+
  private:
     QString _dbName;
     FileManager* _fileManager;
@@ -157,4 +163,10 @@ bool
 DownloadsDb::init() {
     Q_D(DownloadsDb);
     return d->init();
+}
+
+bool
+DownloadsDb::storeSingleDownload(SingleDownload* download) {
+    Q_D(DownloadsDb);
+    return d->storeSingleDownload(download);
 }
