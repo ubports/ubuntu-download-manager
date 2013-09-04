@@ -16,19 +16,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_FILE_MANAGER_H
-#define DOWNLOADER_LIB_FILE_MANAGER_H
+#ifndef DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
+#define DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
 
+#include <QSqlDatabase>
 #include <QObject>
+#include "./file_manager.h"
 
-class FileManager : public QObject {
+class DownloadsDbPrivate;
+class DownloadsDb : public QObject {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(DownloadsDb)
 
  public:
-    explicit FileManager(QObject *parent = 0) : QObject(parent) {}
+    explicit DownloadsDb(QObject *parent = 0);
+    DownloadsDb(FileManager* fileManager, QObject *parent = 0);
 
-    virtual bool remove(const QString& path);
-    virtual bool exists(const QString& path);
+    QSqlDatabase db();
+    QString filename();
+    bool dbExists();  // return if the db is present and valid
+    bool init();  // init or update the db
+
+ private:
+    // use pimpl so that we can mantains ABI compatibility
+    DownloadsDbPrivate* d_ptr;
 };
 
-#endif  // DOWNLOADER_LIB_FILE_MANAGER_H
+#endif  // DOWNLOADER_LIB_DOWNLOADS_DATABASE_H

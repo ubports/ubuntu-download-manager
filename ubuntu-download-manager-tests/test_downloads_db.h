@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 2013 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -15,20 +15,37 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#ifndef TEST_DOWNLOADS_DB_H
+#define TEST_DOWNLOADS_DB_H
 
-#ifndef DOWNLOADER_LIB_FILE_MANAGER_H
-#define DOWNLOADER_LIB_FILE_MANAGER_H
-
+#include <QDir>
 #include <QObject>
+#include <QSqlDatabase>
+#include <downloads_db.h>
+#include "./test_runner.h"
 
-class FileManager : public QObject {
+class TestDownloadsDb : public QObject {
     Q_OBJECT
-
  public:
-    explicit FileManager(QObject *parent = 0) : QObject(parent) {}
+    explicit TestDownloadsDb(QObject *parent = 0);
 
-    virtual bool remove(const QString& path);
-    virtual bool exists(const QString& path);
+ private slots:  // NOLINT(whitespace/indent)
+
+    void init();
+    void cleanup();
+
+    void testTableCreations_data();
+    void testTableCreations();
+    void testTableExists();
+
+ private:
+    bool removeDir(const QString& dirName);
+
+ private:
+    QDir _testDir;
+    DownloadsDb* _db;
 };
 
-#endif  // DOWNLOADER_LIB_FILE_MANAGER_H
+DECLARE_TEST(TestDownloadsDb)
+
+#endif  // TEST_DOWNLOADS_DB_H

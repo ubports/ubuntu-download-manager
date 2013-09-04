@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += network core testlib dbus systeminfo
+QT       += network core testlib dbus systeminfo sql
 
 QT       -= gui
 
@@ -37,7 +37,8 @@ SOURCES += \
     fake_download_manager.cpp \
     test_group_download.cpp \
     fake_download_factory.cpp \
-    fake_file_manager.cpp
+    fake_file_manager.cpp \
+    test_downloads_db.cpp
 
 HEADERS += \
     fake.h \
@@ -63,7 +64,8 @@ HEADERS += \
     fake_download_manager.h \
     test_group_download.h \
     fake_download_factory.h \
-    fake_file_manager.h
+    fake_file_manager.h \
+    test_downloads_db.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 
