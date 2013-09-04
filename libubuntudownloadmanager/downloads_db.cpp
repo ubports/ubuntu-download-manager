@@ -26,34 +26,32 @@
 #include "./downloads_db.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\
-    "id INTERGER PRIMARY KEY, "\
-    "uuid TEXT NOT NULL UNIQUE, "\
+    "uuid VARCHAR(36) PRIMARY KEY, "\
     "url TEXT NOT NULL, "\
     "dbus_path TEXT NOT NULL UNIQUE, "\
     "local_path TEXT, "\
     "hash TEXT, "\
     "hash_algo TEXT, "\
-    "state INT NOT NULL, "\
+    "state INTEGER NOT NULL, "\
     "total_size TEXT, "\
     "throttle TEXT, "\
     "metadata TEXT, "\
     "headers TEXT)"
 
 #define GROUP_DOWNLOAD_TABLE "CREATE TABLE GroupDownload("\
-    "id INTERGER PRIMARY KEY, "\
-    "uuid TEXT NOT NULL UNIQUE, "\
+    "uuid VARCHAR(36) PRIMARY KEY, "\
     "dbus_path TEXT NOT NULL UNIQUE, "\
-    "state INT NOT NULL, "\
+    "state INTEGER NOT NULL, "\
     "total_size TEXT, "\
     "throttle TEXT, "\
     "metadata TEXT, "\
     "headers TEXT)"
 
 #define GROUP_DOWNLOAD_RELATION "CREATE TABLE GroupDownloadDownloads("\
-    "group_id INTEGER, "\
-    "download_id INTEGER, "\
-    "FOREIGN KEY(group_id) REFERENCES GroupDownload(id), "\
-    "FOREIGN KEY(download_id) REFERENCES SingleDownload(id))"
+    "group_id VARCHAR(36), "\
+    "download_id VARCHAR(36), "\
+    "FOREIGN KEY(group_id) REFERENCES GroupDownload(uuid), "\
+    "FOREIGN KEY(download_id) REFERENCES SingleDownload(uuid))"
 
 class DownloadsDbPrivate {
     Q_DECLARE_PUBLIC(DownloadsDb)
