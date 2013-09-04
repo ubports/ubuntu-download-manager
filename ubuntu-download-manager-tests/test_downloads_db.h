@@ -37,6 +37,10 @@ class TestDownloadsDb : public QObject {
     void testTableCreations_data();
     void testTableCreations();
     void testTableExists();
+    void testStoreSingleDownload_data();
+    void testStoreSingleDownload();
+    void testStoreSingleDownloadPresent_data();
+    void testStoreSingleDownloadPresent();
 
  private:
     bool removeDir(const QString& dirName);
