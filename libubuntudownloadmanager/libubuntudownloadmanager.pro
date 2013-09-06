@@ -34,7 +34,8 @@ SOURCES += \
     download_factory.cpp \
     file_manager.cpp \
     download_struct.cpp \
-    downloads_db.cpp
+    downloads_db.cpp \
+    app_armor.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -64,7 +65,8 @@ HEADERS +=\
     download_factory.h \
     file_manager.h \
     download_struct.h \
-    downloads_db.h
+    downloads_db.h \
+    app_armor.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
@@ -74,3 +76,10 @@ OTHER_FILES += \
 
 target.path = /usr/lib/
 INSTALLS += target
+
+LIBS += -lapparmor
+LIBS += -lnih-dbus
+
+CONFIG += link_pkgconfig
+PKGCONFIG += dbus-1
+
