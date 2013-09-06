@@ -1,3 +1,13 @@
+ubuntu-download-manager (0.2+13.10.20130906.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Added code to store single downloads in the new sqlite db.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 115
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 06 Sep 2013 10:03:50 +0000
+
 ubuntu-download-manager (0.2+13.10.20130904-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
