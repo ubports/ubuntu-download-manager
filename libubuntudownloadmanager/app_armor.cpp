@@ -78,7 +78,7 @@ class AppArmorPrivate {
             QString path = QString(appIdPath);
             qDebug() << "AppId path is " << appIdPath;
 
-            // fre nih data
+            // free nih data
             nih_free(appIdPath);
             // free app armor used data
             free(appId);
