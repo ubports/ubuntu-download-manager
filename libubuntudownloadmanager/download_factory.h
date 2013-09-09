@@ -40,17 +40,20 @@ class DownloadFactory : public QObject {
                     ProcessFactory* processFactory,
                     QObject *parent = 0);
 
-    virtual Download* createDownload(const QUrl& url,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers);
 
-    virtual Download* createDownload(const QUrl& url,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
                                      const QString& hash,
                                      QCryptographicHash::Algorithm algo,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers);
 
-    virtual Download* createDownload(StructList downloads,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     StructList downloads,
                                      QCryptographicHash::Algorithm algo,
                                      bool allowed3G,
                                      const QVariantMap& metadata,

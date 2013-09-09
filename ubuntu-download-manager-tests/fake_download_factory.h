@@ -33,17 +33,20 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
                         ProcessFactory* processFactory,
                         QObject *parent = 0);
 
-    Download* createDownload(const QUrl& url,
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
-    Download* createDownload(const QUrl& url,
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
                              const QString& hash,
                              QCryptographicHash::Algorithm algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
-    Download* createDownload(StructList downloads,
+    Download* createDownload(const QString& downloadOwner,
+                             StructList downloads,
                              QCryptographicHash::Algorithm algo,
                              bool allowed3G,
                              const QVariantMap& metadata,

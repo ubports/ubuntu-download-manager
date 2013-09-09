@@ -106,12 +106,19 @@ class DownloadManagerPrivate {
                                    QCryptographicHash::Algorithm algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
         Download* download = NULL;
         if (hash.isEmpty())
-            download = _downloadFactory->createDownload(url, metadata,
+            download = _downloadFactory->createDownload(owner, url, metadata,
                 headers);
         else
-            download = _downloadFactory->createDownload(url, hash, algo,
+            download = _downloadFactory->createDownload(owner, url, hash, algo,
                 metadata, headers);
         return registerDownload(download);
     }
@@ -121,9 +128,15 @@ class DownloadManagerPrivate {
                                         bool allowed3G,
                                         const QVariantMap& metadata,
                                         StringMap headers) {
-        QDBusObjectPath objectPath;
-        Download* download = _downloadFactory->createDownload(downloads, algo,
-            allowed3G, metadata, headers);
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
+        Download* download = _downloadFactory->createDownload(owner,
+            downloads, algo, allowed3G, metadata, headers);
         return registerDownload(download);
     }
 
@@ -187,6 +200,7 @@ DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
                                  DownloadQueue* queue,
                                  QObject* parent)
     : QObject(parent),
+      QDBusContext(),
       d_ptr(new DownloadManagerPrivate(connection,
                                        networkInfo,
                                        downloadFactory,

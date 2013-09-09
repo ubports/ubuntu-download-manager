@@ -33,9 +33,11 @@ FakeDownloadFactory::FakeDownloadFactory(UuidFactory* uuidFactory,
 }
 
 Download*
-FakeDownloadFactory::createDownload(const QUrl& url,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    const QUrl& url,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
+    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
@@ -50,11 +52,13 @@ FakeDownloadFactory::createDownload(const QUrl& url,
 }
 
 Download*
-FakeDownloadFactory::createDownload(const QUrl& url,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    const QUrl& url,
                                     const QString& hash,
                                     QCryptographicHash::Algorithm algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
+    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
@@ -69,11 +73,13 @@ FakeDownloadFactory::createDownload(const QUrl& url,
 }
 
 Download*
-FakeDownloadFactory::createDownload(StructList downloads,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    StructList downloads,
                                     QCryptographicHash::Algorithm algo,
                                     bool allowed3G,
                                     const QVariantMap& metadata,
                                     StringMap headers) {
+    Q_UNUSED(downloadOwner);
     Q_UNUSED(allowed3G);
     Q_UNUSED(downloads);
     if (_recording) {

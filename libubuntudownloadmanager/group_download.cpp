@@ -93,11 +93,11 @@ class GroupDownloadPrivate {
             if (hash.isEmpty()) {
                 qDebug() << "Creating SingleDownload with no hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(url, metadata, headers));
+                    _downFactory->createDownload("", url, metadata, headers));
             } else {
                 qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(url, hash, algo, metadata,
+                    _downFactory->createDownload("", url, hash, algo, metadata,
                     headers));
             }
 
