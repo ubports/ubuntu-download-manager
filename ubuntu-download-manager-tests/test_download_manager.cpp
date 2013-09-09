@@ -32,11 +32,13 @@ void
 TestDownloadManager::init() {
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
     _networkInfo = new FakeSystemNetworkInfo();
-    _q = new FakeDownloadQueue(_networkInfo);
+    _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
     _uuidFactory = new FakeUuidFactory();
-    _downloadFactory = new FakeDownloadFactory(_uuidFactory,
-        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
-        new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<UuidFactory>(_uuidFactory),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(qSharedPointerCast<DBusConnection>(_conn),
         _networkInfo, _downloadFactory, _q);
 }
@@ -205,7 +207,8 @@ TestDownloadManager::testCreateDownloadWithHash() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata,
+        headers);
     _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
@@ -252,9 +255,11 @@ TestDownloadManager::testGetAllDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _downloadFactory = new FakeDownloadFactory(new UuidFactory(),
-        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
-        new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -299,9 +304,11 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _downloadFactory = new FakeDownloadFactory(new UuidFactory(),
-        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
-        new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -378,9 +385,11 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _downloadFactory = new FakeDownloadFactory(new UuidFactory(),
-        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
-        new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),

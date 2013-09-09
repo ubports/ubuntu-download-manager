@@ -41,8 +41,8 @@ class SingleDownloadPrivate {
 
  public:
     SingleDownloadPrivate(const QUrl& url,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
         : _totalSize(0),
           _url(url),
@@ -57,8 +57,8 @@ class SingleDownloadPrivate {
     SingleDownloadPrivate(const QUrl& url,
                           const QString& hash,
                           QCryptographicHash::Algorithm algo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
 
         : _totalSize(0),
@@ -480,8 +480,8 @@ class SingleDownloadPrivate {
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply;
     QFile* _currentData;
-    RequestFactory* _requestFactory;
-    ProcessFactory* _processFactory;
+    QSharedPointer<RequestFactory> _requestFactory;
+    QSharedPointer<ProcessFactory> _processFactory;
     SingleDownload* q_ptr;
 };
 
@@ -494,9 +494,9 @@ SingleDownload::SingleDownload(const QUuid& id,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)
     : Download(id, path, metadata, headers, networkInfo, parent),
       d_ptr(new SingleDownloadPrivate(url, nam, processFactory, this)) {
@@ -509,9 +509,9 @@ SingleDownload::SingleDownload(const QUuid& id,
                    QCryptographicHash::Algorithm algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)
     : Download(id, path, metadata, headers, networkInfo, parent),
       d_ptr(new SingleDownloadPrivate(url, hash, algo, nam,

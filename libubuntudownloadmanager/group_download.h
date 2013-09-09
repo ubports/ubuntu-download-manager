@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QList>
 #include <QObject>
+#include <QSharedPointer>
 #include "./download.h"
 #include "./download_factory.h"
 #include "./file_manager.h"
@@ -40,9 +41,9 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  RequestFactory* nam,
-                  ProcessFactory* processFactory,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<RequestFactory> nam,
+                  QSharedPointer<ProcessFactory> processFactory,
                   QObject* parent = 0);
 
     GroupDownload(const QUuid& id,
@@ -52,9 +53,9 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  DownloadFactory* downFactory,
-                  FileManager* fileManager,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<FileManager> fileManager,
                   QObject* parent = 0);
 
     virtual void cancelDownload() override;

@@ -19,12 +19,13 @@
 #include "./fake_download.h"
 #include "./fake_download_factory.h"
 
-FakeDownloadFactory::FakeDownloadFactory(UuidFactory* uuidFactory,
-                                         SystemNetworkInfo* networkInfo,
-                                         RequestFactory* nam,
-                                         ProcessFactory* processFactory,
-                                         QObject *parent)
-    : DownloadFactory(_uuidFactory, networkInfo, nam, processFactory, parent),
+FakeDownloadFactory::FakeDownloadFactory(
+                                 QSharedPointer<UuidFactory> uuidFactory,
+                                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                                 QSharedPointer<RequestFactory> nam,
+                                 QSharedPointer<ProcessFactory> processFactory,
+                                 QObject *parent)
+    : DownloadFactory(networkInfo, nam, processFactory, parent),
       Fake(),
       _uuidFactory(uuidFactory),
       _networkInfo(networkInfo),

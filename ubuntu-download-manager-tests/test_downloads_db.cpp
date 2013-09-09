@@ -174,9 +174,12 @@ TestDownloadsDb::testStoreSingleDownload() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    FakeSystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
-    FakeRequestFactory* nam = new FakeRequestFactory();
-    ProcessFactory* processFactory = new FakeProcessFactory();
+    QSharedPointer<SystemNetworkInfo> networkInfo =
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo());
+    QSharedPointer<RequestFactory> nam =
+        QSharedPointer<RequestFactory>(new FakeRequestFactory());
+    QSharedPointer<ProcessFactory> processFactory =
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory());
 
     FakeDownload* download = new FakeDownload(id, path, url, hash,
         HashAlgorithm::getHashAlgo(hashAlgoString), metadata, headers,
@@ -269,9 +272,12 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    FakeSystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
-    FakeRequestFactory* nam = new FakeRequestFactory();
-    ProcessFactory* processFactory = new FakeProcessFactory();
+    QSharedPointer<SystemNetworkInfo> networkInfo =
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo());
+    QSharedPointer<RequestFactory> nam =
+        QSharedPointer<RequestFactory>(new FakeRequestFactory());
+    QSharedPointer<ProcessFactory> processFactory =
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory());
 
     FakeDownload* download = new FakeDownload(id, path, url, hash,
         HashAlgorithm::getHashAlgo(hashAlgoString), metadata, headers,

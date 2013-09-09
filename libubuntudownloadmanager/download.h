@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QSharedPointer>
 #include <QUuid>
 #include "./app-downloader-lib_global.h"
 #include "./process_factory.h"
@@ -47,7 +48,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
              const QString& path,
              const QVariantMap& metadata,
              const QMap<QString, QString>& headers,
-             SystemNetworkInfo* networkInfo,
+             QSharedPointer<SystemNetworkInfo> networkInfo,
              QObject* parent = 0);
 
     QUuid downloadId();

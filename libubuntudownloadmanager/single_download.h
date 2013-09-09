@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QProcess>
+#include <QSharedPointer>
 #include <QUrl>
 #include <QUuid>
 #include "./app-downloader-lib_global.h"
@@ -38,9 +39,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent = 0);
     SingleDownload(const QUuid& id,
                    const QString& path,
@@ -49,9 +50,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
                    QCryptographicHash::Algorithm algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent = 0);
 
     // gets for internal state

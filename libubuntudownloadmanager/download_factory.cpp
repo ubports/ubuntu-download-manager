@@ -35,20 +35,20 @@ class DownloadFactoryPrivate {
  public:
     explicit DownloadFactoryPrivate(DownloadFactory* parent)
         : q_ptr(parent) {
-        _apparmor = new AppArmor();
-        _uuidFactory = new UuidFactory();
-        _networkInfo = new SystemNetworkInfo();
-        _nam = new RequestFactory();
-        _processFactory = new ProcessFactory();
+        _apparmor = QSharedPointer<AppArmor>(new AppArmor());
+        _networkInfo = QSharedPointer<SystemNetworkInfo>(
+            new SystemNetworkInfo());
+        _nam = QSharedPointer<RequestFactory>(
+            new RequestFactory());
+        _processFactory = QSharedPointer<ProcessFactory>(
+            new ProcessFactory());
     }
 
-    DownloadFactoryPrivate(UuidFactory* uuidFactory,
-                           SystemNetworkInfo* networkInfo,
-                           RequestFactory* nam,
-                           ProcessFactory* processFactory,
+    DownloadFactoryPrivate(QSharedPointer<SystemNetworkInfo> networkInfo,
+                           QSharedPointer<RequestFactory> nam,
+                           QSharedPointer<ProcessFactory> processFactory,
                            DownloadFactory* parent)
-        : _uuidFactory(uuidFactory),
-          _networkInfo(networkInfo),
+        : _networkInfo(networkInfo),
           _nam(nam),
           _processFactory(processFactory),
           q_ptr(parent) {
@@ -97,11 +97,10 @@ class DownloadFactoryPrivate {
     }
 
  private:
-    AppArmor* _apparmor;
-    UuidFactory* _uuidFactory;
-    SystemNetworkInfo* _networkInfo;
-    RequestFactory* _nam;
-    ProcessFactory* _processFactory;
+    QSharedPointer<AppArmor> _apparmor;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<RequestFactory> _nam;
+    QSharedPointer<ProcessFactory> _processFactory;
     DownloadFactory* q_ptr;
 };
 
@@ -114,14 +113,12 @@ DownloadFactory::DownloadFactory(QObject *parent)
       d_ptr(new DownloadFactoryPrivate(this)) {
 }
 
-DownloadFactory::DownloadFactory(UuidFactory* uuidFactory,
-                                 SystemNetworkInfo* networkInfo,
-                                 RequestFactory* nam,
-                                 ProcessFactory* processFactory,
+DownloadFactory::DownloadFactory(QSharedPointer<SystemNetworkInfo> networkInfo,
+                                 QSharedPointer<RequestFactory> nam,
+                                 QSharedPointer<ProcessFactory> processFactory,
                                  QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadFactoryPrivate(uuidFactory, networkInfo, nam,
-      processFactory, this)) {
+     d_ptr(new DownloadFactoryPrivate(networkInfo, nam, processFactory, this)) {
 }
 
 
