@@ -47,6 +47,10 @@ class AppArmorPrivate {
     }
 
     QString getSecurePath(QString connectionName) {
+        if (connectionName.isEmpty()) {
+            return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
+        }
+
         QDBusPendingReply<QString> reply =
             _dbus->GetConnectionAppArmorSecurityContext(connectionName);
         // blocking but should be ok for now
@@ -59,13 +63,13 @@ class AppArmorPrivate {
             QString appId = reply.value();
             qDebug() << "AppId is " << appId;
 
-            if (appId.isEmpty()) {
+            if (appId.isEmpty() || appId == UNCOFINED_ID) {
                 return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
             } else {
                 QByteArray appIdBa = appId.toUtf8();
 
                 char * appIdPath;
-                appIdPath = nih_dbus_path(NULL, AppArmorPrivate::BASE_ACCOUNT_URL,
+                appIdPath = nih_dbus_path(NULL, BASE_ACCOUNT_URL,
                     appIdBa.data(), NULL);
 
                 if (appIdPath == NULL) {
@@ -84,11 +88,14 @@ class AppArmorPrivate {
 
  private:
     const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
+    static QString UNCOFINED_ID;
 
     DBusProxy* _dbus;
     UuidFactory* _uuidFactory;
     AppArmor* q_ptr;
 };
+
+QString AppArmorPrivate::UNCOFINED_ID = "unconfined";
 
 /*
  * PUBLIC IMPLEMENTATION
