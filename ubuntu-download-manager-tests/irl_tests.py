@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # ensure that download created works
     manager_dev_iface.connect_to_signal('downloadCreated', download_created)
 
-    down_path = manager_dev_iface.createDownload(IMAGE_FILE, {}, {})
+    down_path = manager_dev_iface.createDownload((IMAGE_FILE, "", "", {}, {}))
 
     download = bus.get_object('com.canonical.applications.Downloader',
             down_path)
