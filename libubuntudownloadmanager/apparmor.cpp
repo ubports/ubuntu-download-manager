@@ -17,13 +17,14 @@
  */
 
 #include <errno.h>
-#include <sys/apparmor.h>
 #include <nih/alloc.h>
 #include <libnih-dbus.h>
-#include <QRegExp>
+#include <QDBusConnection>
 #include <QDebug>
+#include <QRegExp>
+#include "./dbus_proxy.h"
 #include "./uuid_factory.h"
-#include "./app_armor.h"
+#include "./apparmor.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -35,6 +36,8 @@ class AppArmorPrivate {
  public:
     explicit AppArmorPrivate(AppArmor* parent)
         : q_ptr(parent) {
+        _dbus = new DBusProxy("org.freedesktop.DBus", "/",
+            QDBusConnection::sessionBus());
         _uuidFactory = new UuidFactory();
     }
 
@@ -43,36 +46,27 @@ class AppArmorPrivate {
         return id.toString().replace(QRegExp("[-{}]"), "");
     }
 
-    QString getSecurePath(uint pid) {
-        char* appId = NULL;
-        char* mode = NULL;
-
-        int success = aa_gettaskcon(pid, &appId, &mode);
-        if (success == EINVAL) {
-            qCritical() << "The apparmor kernel module is not loaded or the "
-                << "communication via the /proc/*/attr/file did not conform "
-                << "to protocol.";
-        } else if (success == ENOMEM) {
-            qCritical() << "Insufficient kernel memory was available.";
-        } else if (success ==  EACCES) {
-            qCritical() << "Access to the specified file/task was denied.";
-        } else if (success == ENOENT) {
-            qCritical() << "The specified file/task does not exist or is "
-                << "not visible.";
-        } else if (success == ERANGE) {
-            qCritical() << "The confinement data is too large to fit in the "
-                << "supplied buffer.";
+    QString getSecurePath(QString connectionName) {
+        QDBusPendingReply<QString> reply =
+            _dbus->GetConnectionAppArmorSecurityContext(connectionName);
+        // blocking but should be ok for now
+        reply.waitForFinished();
+        if (reply.isError()) {
+            qCritical() << reply.error();
+            return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
         } else {
-            // check create a QString for the app id and make it usuable for dbus
+            // use the returned value
+            QString appId = reply.value();
             qDebug() << "AppId is " << appId;
 
+            QByteArray appIdBa = appId.toUtf8();
+
             char * appIdPath;
-            appIdPath = nih_dbus_path(NULL, AppArmorPrivate::BASE_ACCOUNT_URL , appId, NULL);
+            appIdPath = nih_dbus_path(NULL, AppArmorPrivate::BASE_ACCOUNT_URL,
+                appIdBa.data(), NULL);
 
             if (appIdPath == NULL) {
                 qCritical() << "Unable to allocate memory for nih_dbus_path()";
-                free(appId);
-                free(mode);
                 return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
             }
             QString path = QString(appIdPath);
@@ -80,17 +74,14 @@ class AppArmorPrivate {
 
             // free nih data
             nih_free(appIdPath);
-            // free app armor used data
-            free(appId);
-            free(mode);
             return path + "/" + getUuidString();
         }
-        return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
     }
 
  private:
     const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
 
+    DBusProxy* _dbus;
     UuidFactory* _uuidFactory;
     AppArmor* q_ptr;
 };
@@ -106,7 +97,7 @@ AppArmor::AppArmor(QObject *parent)
 }
 
 QString
-AppArmor::getSecurePath(uint pid) {
+AppArmor::getSecurePath(QString connectionName) {
     Q_D(AppArmor);
-    return d->getSecurePath(pid);
+    return d->getSecurePath(connectionName);
 }

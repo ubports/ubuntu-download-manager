@@ -35,7 +35,8 @@ SOURCES += \
     file_manager.cpp \
     download_struct.cpp \
     downloads_db.cpp \
-    app_armor.cpp
+    dbus_proxy.cpp \
+    apparmor.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -66,18 +67,19 @@ HEADERS +=\
     file_manager.h \
     download_struct.h \
     downloads_db.h \
-    app_armor.h
+    dbus_proxy.h \
+    apparmor.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml \
-    com.canonical.applications.group_download.xml
+    com.canonical.applications.group_download.xml \
+    org.freedesktop.DBus.xml
 
 target.path = /usr/lib/
 INSTALLS += target
 
-LIBS += -lapparmor
 LIBS += -lnih-dbus
 
 CONFIG += link_pkgconfig

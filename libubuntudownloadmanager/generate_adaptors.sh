@@ -9,3 +9,7 @@ echo "generated"
 echo "GroupDownloadAdaptor..."
 qdbusxml2cpp -c GroupDownloadAdaptor -a group_download_adaptor.h:group_download_adaptor.cpp -i metatypes.h com.canonical.applications.group_download.xml
 echo "generated"
+
+echo "DBusProxy"
+qdbusxml2cpp -p dbus_proxy.h:dbus_proxy.cpp -c DBusProxy -i metatypes.h org.freedesktop.DBus.xml
+echo "generated"

@@ -30,7 +30,7 @@ class AppArmor : public QObject {
  public:
     explicit AppArmor(QObject *parent = 0);
 
-    virtual QString getSecurePath(uint pid);
+    virtual QString getSecurePath(QString connName);
 
  private:
     // use pimpl so that we can mantains ABI compatibility
