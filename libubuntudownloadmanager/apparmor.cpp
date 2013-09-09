@@ -59,23 +59,27 @@ class AppArmorPrivate {
             QString appId = reply.value();
             qDebug() << "AppId is " << appId;
 
-            QByteArray appIdBa = appId.toUtf8();
-
-            char * appIdPath;
-            appIdPath = nih_dbus_path(NULL, AppArmorPrivate::BASE_ACCOUNT_URL,
-                appIdBa.data(), NULL);
-
-            if (appIdPath == NULL) {
-                qCritical() << "Unable to allocate memory for nih_dbus_path()";
+            if (appId.isEmpty()) {
                 return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
-            }
-            QString path = QString(appIdPath);
-            qDebug() << "AppId path is " << appIdPath;
+            } else {
+                QByteArray appIdBa = appId.toUtf8();
 
-            // free nih data
-            nih_free(appIdPath);
-            return path + "/" + getUuidString();
-        }
+                char * appIdPath;
+                appIdPath = nih_dbus_path(NULL, AppArmorPrivate::BASE_ACCOUNT_URL,
+                    appIdBa.data(), NULL);
+
+                if (appIdPath == NULL) {
+                    qCritical() << "Unable to allocate memory for nih_dbus_path()";
+                    return QString(BASE_ACCOUNT_URL) + "/" + getUuidString();
+                }
+                QString path = QString(appIdPath);
+                qDebug() << "AppId path is " << appIdPath;
+
+                // free nih data
+                nih_free(appIdPath);
+                return path + "/" + getUuidString();
+            } // not empty appid string
+        } // no dbus error
     }
 
  private:
