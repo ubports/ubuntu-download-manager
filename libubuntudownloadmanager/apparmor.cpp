@@ -41,9 +41,8 @@ class AppArmorPrivate {
         _uuidFactory = new UuidFactory();
     }
 
-    QPair<QUuid, QString> getUuidString(QString path) {
+    QPair<QUuid, QString> getUuidString(QUuid id, QString path) {
         qDebug() << __PRETTY_FUNCTION__ << path;
-        QUuid id = _uuidFactory->createUuid();
         QString idString = path + "/" + id.toString().replace(
             QRegExp("[-{}]"), "");
         qDebug() << "Download path is" << idString;
@@ -51,8 +50,13 @@ class AppArmorPrivate {
     }
 
     QPair<QUuid, QString> getSecurePath(QString connectionName) {
+        QUuid id = _uuidFactory->createUuid();
+        return getSecurePath(id, connectionName);
+    }
+
+    QPair<QUuid, QString> getSecurePath(QUuid id, QString connectionName) {
         if (connectionName.isEmpty()) {
-            return getUuidString(QString(BASE_ACCOUNT_URL));
+            return getUuidString(id, QString(BASE_ACCOUNT_URL));
         }
 
         QDBusPendingReply<QString> reply =
@@ -61,14 +65,14 @@ class AppArmorPrivate {
         reply.waitForFinished();
         if (reply.isError()) {
             qCritical() << reply.error();
-            return getUuidString(QString(BASE_ACCOUNT_URL));
+            return getUuidString(id, QString(BASE_ACCOUNT_URL));
         } else {
             // use the returned value
             QString appId = reply.value();
             qDebug() << "AppId is " << appId;
 
             if (appId.isEmpty() || appId == UNCONFINED_ID) {
-                return getUuidString(QString(BASE_ACCOUNT_URL));
+                return getUuidString(id, QString(BASE_ACCOUNT_URL));
             } else {
                 QByteArray appIdBa = appId.toUtf8();
 
@@ -77,17 +81,18 @@ class AppArmorPrivate {
                     appIdBa.data(), NULL);
 
                 if (appIdPath == NULL) {
-                    qCritical() << "Unable to allocate memory for nih_dbus_path()";
-                    return getUuidString(QString(BASE_ACCOUNT_URL));
+                    qCritical() << "Unable to allocate memory for "
+                        << "nih_dbus_path()";
+                    return getUuidString(id, QString(BASE_ACCOUNT_URL));
                 }
                 QString path = QString(appIdPath);
                 qDebug() << "AppId path is " << appIdPath;
 
                 // free nih data
                 nih_free(appIdPath);
-                return getUuidString(path);
-            } // not empty appid string
-        } // no dbus error
+                return getUuidString(id, path);
+            }  // not empty appid string
+        }  // no dbus error
     }
 
  private:
@@ -115,4 +120,10 @@ QPair<QUuid, QString>
 AppArmor::getSecurePath(QString connectionName) {
     Q_D(AppArmor);
     return d->getSecurePath(connectionName);
+}
+
+QPair<QUuid, QString>
+AppArmor::getSecurePath(QUuid id, QString connectionName) {
+    Q_D(AppArmor);
+    return d->getSecurePath(id, connectionName);
 }

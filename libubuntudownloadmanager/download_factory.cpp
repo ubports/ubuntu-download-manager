@@ -23,6 +23,7 @@
 #include "./single_download.h"
 #include "./download_factory.h"
 
+#define OBJECT_PATH_KEY "objectpath"
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -45,11 +46,30 @@ class DownloadFactoryPrivate {
           q_ptr(parent) {
     }
 
+    QPair<QUuid, QString> getDownloadPath(const QString& dbusOwner,
+                                          const QVariantMap& metadata) {
+        qDebug() << __PRETTY_FUNCTION__ << dbusOwner << metadata;
+        if (metadata.contains(OBJECT_PATH_KEY)) {
+            // create a uuid using the string value form the metadata
+            QUuid id = QUuid(metadata[OBJECT_PATH_KEY].toString());
+            if (id.isNull()) {
+                qCritical() << "Uuid sent by client is NULL";
+                return _apparmor->getSecurePath(dbusOwner);
+            } else {
+                qDebug() << "Using the id from the client" << id;
+                return _apparmor->getSecurePath(id, dbusOwner);
+            }
+        } else {
+            qDebug() << "DownloadFactory assigns the Download Uuid.";
+            return _apparmor->getSecurePath(dbusOwner);
+        }
+    }
+
     Download* createDownload(const QString& dbusOwner,
                              const QUrl& url,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) {
-        QPair<QUuid, QString> idData = _apparmor->getSecurePath(dbusOwner);
+        QPair<QUuid, QString> idData = getDownloadPath(dbusOwner, metadata);
         Download* down = new SingleDownload(idData.first, idData.second, url,
             metadata, headers, _networkInfo, _nam, _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);
@@ -63,7 +83,7 @@ class DownloadFactoryPrivate {
                              QCryptographicHash::Algorithm algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) {
-        QPair<QUuid, QString> idData = _apparmor->getSecurePath(dbusOwner);
+        QPair<QUuid, QString> idData = getDownloadPath(dbusOwner, metadata);
         Download* down = new SingleDownload(idData.first, idData.second, url,
             hash, algo, metadata, headers, _networkInfo, _nam,
             _processFactory);
@@ -78,7 +98,7 @@ class DownloadFactoryPrivate {
                              bool allowed3G,
                              const QVariantMap& metadata,
                              StringMap headers) {
-        QPair<QUuid, QString> idData = _apparmor->getSecurePath(dbusOwner);
+        QPair<QUuid, QString> idData = getDownloadPath(dbusOwner, metadata);
         Download* down = new GroupDownload(idData.first, idData.second,
             downloads, algo, allowed3G, metadata, headers, _networkInfo,
             _self);

@@ -105,3 +105,149 @@ TestDownloadFactory::testCreateGroupDownload() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
+
+void
+TestDownloadFactory::testCreateDownloadWithValidUuid() {
+    _apparmor->record();
+
+    // create a download, assert that it was
+    // created and that the id and the path are correctly set
+    QUuid id = QUuid::createUuid();
+
+    QVariantMap metadata;
+    metadata["objectpath"] = id.toString();
+
+    Download* download = _downFactory->createDownload("", QUrl(),
+        metadata, QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->path(), path->value());
+}
+
+void
+TestDownloadFactory::testCreateDownloadWithNullUuid() {
+    _apparmor->record();
+
+    // create a download, assert that it was
+    // created and that the id and the path are correctly set
+    QVariantMap metadata;
+    metadata["objectpath"] = "bad-id";
+
+    Download* download = _downFactory->createDownload("", QUrl(),
+        QVariantMap(), QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+        calledMethods[0].params().outParams()[0]);
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->path(), path->value());
+}
+
+void
+TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
+    _apparmor->record();
+
+    QUuid id = QUuid::createUuid();
+
+    QVariantMap metadata;
+    metadata["objectpath"] = id.toString();
+
+    QString hash = "my-hash";
+    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+
+    // same as above but assert hash and hash algo
+    Download* download = _downFactory->createDownload("", QUrl(),
+        hash, algo, metadata, QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->path(), path->value());
+
+    SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
+    QCOMPARE(hash, single->hash());
+    QCOMPARE(algo, single->hashAlgorithm());
+}
+
+void
+TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
+    _apparmor->record();
+
+    QVariantMap metadata;
+    metadata["objectpath"] = "bad-id";
+
+    QString hash = "my-hash";
+    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+
+    // same as above but assert hash and hash algo
+    Download* download = _downFactory->createDownload("", QUrl(),
+        hash, algo, metadata, QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+        calledMethods[0].params().outParams()[0]);
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->path(), path->value());
+
+    SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
+    QCOMPARE(hash, single->hash());
+    QCOMPARE(algo, single->hashAlgorithm());
+}
+
+void
+TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
+    _apparmor->record();
+
+    // create a download, assert that it was
+    // created and that the id and the path are correctly set
+    QUuid id = QUuid::createUuid();
+
+    QVariantMap metadata;
+    metadata["objectpath"] = id.toString();
+
+    Download* download = _downFactory->createDownload("",
+        QList<GroupDownloadStruct>(), QCryptographicHash::Md5,
+        true, metadata, QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->path(), path->value());
+}
+
+void
+TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
+    _apparmor->record();
+
+    // create a download, assert that it was
+    // created and that the id and the path are correctly set
+    QVariantMap metadata;
+    metadata["objectpath"] = "bad-id";
+
+    Download* download = _downFactory->createDownload("",
+        QList<GroupDownloadStruct>(), QCryptographicHash::Md5,
+        true, metadata, QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+        calledMethods[0].params().outParams()[0]);
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->path(), path->value());
+}

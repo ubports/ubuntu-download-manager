@@ -32,6 +32,7 @@ class FakeAppArmor : public AppArmor, public Fake {
                  QObject *parent = 0);
 
     QPair<QUuid, QString> getSecurePath(QString connName) override;
+    QPair<QUuid, QString> getSecurePath(QUuid id, QString connName) override;
 
  private:
     QSharedPointer<UuidFactory> _uuidFactory;

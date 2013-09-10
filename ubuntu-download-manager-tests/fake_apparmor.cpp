@@ -42,3 +42,22 @@ FakeAppArmor::getSecurePath(QString connName) {
 
     return QPair<QUuid, QString>(id, uuidString);
 }
+
+QPair<QUuid, QString>
+FakeAppArmor::getSecurePath(QUuid id, QString connName) {
+    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+    if (_recording) {
+        QList<QObject*> inParams;
+        inParams.append(new UuidWrapper(id));
+        inParams.append(new StringWrapper(connName));
+
+        QList<QObject*> outParams;
+        outParams.append(new UuidWrapper(id));
+        outParams.append(new StringWrapper(uuidString));
+        MethodParams params(inParams, outParams);
+        MethodData methodData("getSecurePath", params);
+        _called.append(methodData);
+    }
+
+    return QPair<QUuid, QString>(id, uuidString);
+}
