@@ -17,7 +17,6 @@
  */
 
 #include <QPair>
-#include "./apparmor.h"
 #include "./download_adaptor.h"
 #include "./group_download.h"
 #include "./group_download_adaptor.h"
@@ -33,24 +32,16 @@ class DownloadFactoryPrivate {
     Q_DECLARE_PUBLIC(DownloadFactory)
 
  public:
-    explicit DownloadFactoryPrivate(DownloadFactory* parent)
-        : q_ptr(parent) {
-        _apparmor = QSharedPointer<AppArmor>(new AppArmor());
-        _networkInfo = QSharedPointer<SystemNetworkInfo>(
-            new SystemNetworkInfo());
-        _nam = QSharedPointer<RequestFactory>(
-            new RequestFactory());
-        _processFactory = QSharedPointer<ProcessFactory>(
-            new ProcessFactory());
-    }
-
-    DownloadFactoryPrivate(QSharedPointer<SystemNetworkInfo> networkInfo,
+    DownloadFactoryPrivate(QSharedPointer<AppArmor> apparmor,
+                           QSharedPointer<SystemNetworkInfo> networkInfo,
                            QSharedPointer<RequestFactory> nam,
                            QSharedPointer<ProcessFactory> processFactory,
                            DownloadFactory* parent)
-        : _networkInfo(networkInfo),
+        : _apparmor(apparmor),
+          _networkInfo(networkInfo),
           _nam(nam),
           _processFactory(processFactory),
+          _self(parent),
           q_ptr(parent) {
     }
 
@@ -90,7 +81,7 @@ class DownloadFactoryPrivate {
         QPair<QUuid, QString> idData = _apparmor->getSecurePath(dbusOwner);
         Download* down = new GroupDownload(idData.first, idData.second,
             downloads, algo, allowed3G, metadata, headers, _networkInfo,
-            _nam, _processFactory);
+            _self);
         GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
         down->setAdaptor(adaptor);
         return down;
@@ -101,6 +92,7 @@ class DownloadFactoryPrivate {
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<RequestFactory> _nam;
     QSharedPointer<ProcessFactory> _processFactory;
+    QSharedPointer<DownloadFactory> _self;
     DownloadFactory* q_ptr;
 };
 
@@ -108,17 +100,14 @@ class DownloadFactoryPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadFactory::DownloadFactory(QObject *parent)
-    : QObject(parent),
-      d_ptr(new DownloadFactoryPrivate(this)) {
-}
-
-DownloadFactory::DownloadFactory(QSharedPointer<SystemNetworkInfo> networkInfo,
+DownloadFactory::DownloadFactory(QSharedPointer<AppArmor> apparmor,
+                                 QSharedPointer<SystemNetworkInfo> networkInfo,
                                  QSharedPointer<RequestFactory> nam,
                                  QSharedPointer<ProcessFactory> processFactory,
                                  QObject* parent)
     : QObject(parent),
-     d_ptr(new DownloadFactoryPrivate(networkInfo, nam, processFactory, this)) {
+      d_ptr(new DownloadFactoryPrivate(apparmor, networkInfo, nam,
+        processFactory, this)) {
 }
 
 

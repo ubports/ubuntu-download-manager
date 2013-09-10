@@ -34,8 +34,9 @@ TestDownloadManager::init() {
     _networkInfo = new FakeSystemNetworkInfo();
     _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
     _uuidFactory = new FakeUuidFactory();
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<UuidFactory>(_uuidFactory),
+        QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
@@ -255,8 +256,10 @@ TestDownloadManager::testGetAllDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
@@ -304,8 +307,10 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
@@ -385,8 +390,10 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<UuidFactory>(new UuidFactory()),
+        QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
@@ -432,7 +439,8 @@ TestDownloadManager::testSizeChangedEmittedOnAddition_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnAddition() {
     QFETCH(int, size);
-    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
+    QSignalSpy spy(_man,
+        SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadAdded("");
 
@@ -454,7 +462,8 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QFETCH(int, size);
-    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
+    QSignalSpy spy(_man,
+        SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadRemoved("");
 

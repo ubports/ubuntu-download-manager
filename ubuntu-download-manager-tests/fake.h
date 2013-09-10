@@ -22,6 +22,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QUuid>
 #include <QStringList>
 #include <string>
 
@@ -90,6 +91,17 @@ class UintWrapper : public QObject {
 
  private:
     uint _value;
+};
+
+class UuidWrapper : public QObject {
+ public:
+    UuidWrapper(QUuid value, QObject* parent = 0);
+
+    QUuid value();
+    void setValue(QUuid value);
+
+ private:
+    QUuid _value;
 };
 
 class MethodParams : public QPair<QList<QObject*>, QList<QObject*> > {

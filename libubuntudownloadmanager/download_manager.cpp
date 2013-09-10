@@ -17,8 +17,10 @@
  */
 
 #include <QRegExp>
+#include "./apparmor.h"
 #include "./download_queue.h"
 #include "./hash_algorithm.h"
+#include "./request_factory.h"
 #include "./system_network_info.h"
 #include "./download_manager.h"
 
@@ -35,10 +37,14 @@ class DownloadManagerPrivate {
         : _throttle(0),
           q_ptr(parent) {
         _conn = connection;
+        _apparmor = QSharedPointer<AppArmor>(new AppArmor());
         _networkInfo = QSharedPointer<SystemNetworkInfo>(
             new SystemNetworkInfo());
+        _nam = QSharedPointer<RequestFactory>(new RequestFactory());
+        _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
         _downloadFactory = QSharedPointer<DownloadFactory>(
-            new DownloadFactory());
+            new DownloadFactory(_apparmor, _networkInfo, _nam,
+                _processFactory));
         _downloadsQueue = QSharedPointer<DownloadQueue>(
             new DownloadQueue(_networkInfo));
         init();
@@ -180,7 +186,10 @@ class DownloadManagerPrivate {
 
  private:
     qulonglong _throttle;
+    QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<RequestFactory> _nam;
+    QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<DownloadFactory> _downloadFactory;
     QSharedPointer<DownloadQueue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;

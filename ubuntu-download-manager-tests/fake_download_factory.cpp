@@ -20,14 +20,14 @@
 #include "./fake_download_factory.h"
 
 FakeDownloadFactory::FakeDownloadFactory(
-                                 QSharedPointer<UuidFactory> uuidFactory,
+                                 QSharedPointer<AppArmor> apparmor,
                                  QSharedPointer<SystemNetworkInfo> networkInfo,
                                  QSharedPointer<RequestFactory> nam,
                                  QSharedPointer<ProcessFactory> processFactory,
                                  QObject *parent)
-    : DownloadFactory(networkInfo, nam, processFactory, parent),
+    : DownloadFactory(apparmor, networkInfo, nam, processFactory, parent),
       Fake(),
-      _uuidFactory(uuidFactory),
+      _apparmor(apparmor),
       _networkInfo(networkInfo),
       _nam(nam),
       _processFactory(processFactory) {
@@ -38,16 +38,14 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
                                     const QUrl& url,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
-    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    QUuid id = _uuidFactory->createUuid();
-    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
-    Download* down = new FakeDownload(id, uuidString, url, metadata, headers,
-        _networkInfo, _nam, _processFactory);
+    QPair<QUuid, QString> idData = _apparmor->getSecurePath(downloadOwner);
+    Download* down = new FakeDownload(idData.first, idData.second, url,
+        metadata, headers, _networkInfo, _nam, _processFactory);
     _downloads.append(down);
     return down;
 }
@@ -59,16 +57,14 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
                                     QCryptographicHash::Algorithm algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
-    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    QUuid id = _uuidFactory->createUuid();
-    QString path = id.toString().replace(QRegExp("[-{}]"), "");
-    Download* down = new FakeDownload(id, path, url, hash, algo,
-        metadata, headers, _networkInfo, _nam, _processFactory);
+    QPair<QUuid, QString> idData = _apparmor->getSecurePath(downloadOwner);
+    Download* down = new FakeDownload(idData.first, idData.second, url,
+        hash, algo, metadata, headers, _networkInfo, _nam, _processFactory);
     _downloads.append(down);
     return down;
 }
@@ -80,7 +76,6 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
                                     bool allowed3G,
                                     const QVariantMap& metadata,
                                     StringMap headers) {
-    Q_UNUSED(downloadOwner);
     Q_UNUSED(allowed3G);
     Q_UNUSED(downloads);
     if (_recording) {
@@ -88,10 +83,10 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    QUuid id = _uuidFactory->createUuid();
-    QString path = id.toString().replace(QRegExp("[-{}]"), "");
-    Download* down = new FakeDownload(id, path, QUrl(), "", algo,
-        metadata, headers, _networkInfo, _nam, _processFactory);
+    QPair<QUuid, QString> idData = _apparmor->getSecurePath(downloadOwner);
+    Download* down = new FakeDownload(idData.first, idData.second,
+        QUrl(), "", algo, metadata, headers, _networkInfo, _nam,
+        _processFactory);
     _downloads.append(down);
     return down;
 }

@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 #include <download_manager.h>
 #include <single_download.h>
+#include "./fake_apparmor.h"
 #include "./test_runner.h"
 #include "./fake_dbus_connection.h"
 #include "./fake_download_queue.h"
@@ -68,6 +69,7 @@ class TestDownloadManager : public QObject {
     QSharedPointer<FakeDBusConnection> _conn;
     FakeDownloadQueue* _q;
     FakeUuidFactory* _uuidFactory;
+    FakeAppArmor* _apparmor;
     DownloadManager* _man;
 };
 

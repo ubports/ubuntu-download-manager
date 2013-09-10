@@ -22,6 +22,7 @@
 #include <QCryptographicHash>
 #include <QObject>
 #include <QSharedPointer>
+#include "./apparmor.h"
 #include "./metatypes.h"
 #include "./system_network_info.h"
 #include "./download.h"
@@ -33,9 +34,8 @@ class DownloadFactory : public QObject {
     Q_DECLARE_PRIVATE(DownloadFactory)
 
  public:
-    explicit DownloadFactory(QObject *parent = 0);
-
-    DownloadFactory(QSharedPointer<SystemNetworkInfo> networkInfo,
+    DownloadFactory(QSharedPointer<AppArmor> apparmor,
+                    QSharedPointer<SystemNetworkInfo> networkInfo,
                     QSharedPointer<RequestFactory> nam,
                     QSharedPointer<ProcessFactory> processFactory,
                     QObject *parent = 0);

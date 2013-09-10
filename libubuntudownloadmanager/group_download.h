@@ -42,8 +42,7 @@ class GroupDownload : public Download {
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<RequestFactory> nam,
-                  QSharedPointer<ProcessFactory> processFactory,
+                  QSharedPointer<DownloadFactory> downFactory,
                   QObject* parent = 0);
 
     GroupDownload(const QUuid& id,
