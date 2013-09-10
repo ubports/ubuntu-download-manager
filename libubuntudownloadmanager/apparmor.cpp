@@ -67,7 +67,7 @@ class AppArmorPrivate {
             QString appId = reply.value();
             qDebug() << "AppId is " << appId;
 
-            if (appId.isEmpty() || appId == UNCOFINED_ID) {
+            if (appId.isEmpty() || appId == UNCONFINED_ID) {
                 return getUuidString(QString(BASE_ACCOUNT_URL));
             } else {
                 QByteArray appIdBa = appId.toUtf8();
@@ -92,14 +92,14 @@ class AppArmorPrivate {
 
  private:
     const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
-    static QString UNCOFINED_ID;
+    static QString UNCONFINED_ID;
 
     DBusProxy* _dbus;
     UuidFactory* _uuidFactory;
     AppArmor* q_ptr;
 };
 
-QString AppArmorPrivate::UNCOFINED_ID = "unconfined";
+QString AppArmorPrivate::UNCONFINED_ID = "unconfined";
 
 /*
  * PUBLIC IMPLEMENTATION
