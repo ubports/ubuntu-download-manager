@@ -32,7 +32,7 @@ class DownloadPrivate {
                     const QString& path,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
-                    SystemNetworkInfo* networkInfo,
+                    QSharedPointer<SystemNetworkInfo> networkInfo,
                     Download* parent)
         : _id(id),
           _throttle(0),
@@ -160,7 +160,7 @@ class DownloadPrivate {
     QString _dbusPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    SystemNetworkInfo* _networkInfo;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
     QObject* _adaptor;
     Download* q_ptr;
 };
@@ -173,7 +173,7 @@ Download::Download(const QUuid& id,
                    const QString& path,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
                    QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadPrivate(id, path, metadata, headers,

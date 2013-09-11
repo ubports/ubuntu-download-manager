@@ -30,12 +30,16 @@ TestDownloadQueue::init() {
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
     _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
-        _processFactory);
+        QVariantMap(), QMap<QString, QString>(),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
     _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
-        _processFactory);
-    _q = new DownloadQueue(_networkInfo);
+        QVariantMap(), QMap<QString, QString>(),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    _q = new DownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
 }
 
 void

@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
+#include <QtDBus/QDBusContext>
 #include <QSharedPointer>
 #include "./dbus_connection.h"
 #include "./download.h"
@@ -31,7 +32,7 @@
 #include "./system_network_info.h"
 
 class DownloadManagerPrivate;
-class DownloadManager : public QObject {
+class DownloadManager : public QObject, public QDBusContext {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadManager)
 

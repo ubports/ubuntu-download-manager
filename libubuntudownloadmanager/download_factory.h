@@ -21,6 +21,7 @@
 
 #include <QCryptographicHash>
 #include <QObject>
+#include <QSharedPointer>
 #include "./metatypes.h"
 #include "./system_network_info.h"
 #include "./download.h"
@@ -34,23 +35,25 @@ class DownloadFactory : public QObject {
  public:
     explicit DownloadFactory(QObject *parent = 0);
 
-    DownloadFactory(UuidFactory* _uuidFactory,
-                    SystemNetworkInfo* networkInfo,
-                    RequestFactory* nam,
-                    ProcessFactory* processFactory,
+    DownloadFactory(QSharedPointer<SystemNetworkInfo> networkInfo,
+                    QSharedPointer<RequestFactory> nam,
+                    QSharedPointer<ProcessFactory> processFactory,
                     QObject *parent = 0);
 
-    virtual Download* createDownload(const QUrl& url,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers);
 
-    virtual Download* createDownload(const QUrl& url,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
                                      const QString& hash,
                                      QCryptographicHash::Algorithm algo,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers);
 
-    virtual Download* createDownload(StructList downloads,
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     StructList downloads,
                                      QCryptographicHash::Algorithm algo,
                                      bool allowed3G,
                                      const QVariantMap& metadata,

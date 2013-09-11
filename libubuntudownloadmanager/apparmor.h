@@ -19,8 +19,10 @@
 #ifndef DOWNLOADER_LIB_APP_ARMOR_H
 #define DOWNLOADER_LIB_APP_ARMOR_H
 
-#include <QString>
 #include <QObject>
+#include <QPair>
+#include <QString>
+#include <QUuid>
 
 class AppArmorPrivate;
 class AppArmor : public QObject {
@@ -30,7 +32,7 @@ class AppArmor : public QObject {
  public:
     explicit AppArmor(QObject *parent = 0);
 
-    virtual QString getSecurePath(QString connName);
+    virtual QPair<QUuid, QString> getSecurePath(QString connName);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

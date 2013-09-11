@@ -35,9 +35,12 @@ class DownloadManagerPrivate {
         : _throttle(0),
           q_ptr(parent) {
         _conn = connection;
-        _networkInfo = new SystemNetworkInfo();
-        _downloadFactory = new DownloadFactory();
-        _downloadsQueue = new DownloadQueue(_networkInfo);
+        _networkInfo = QSharedPointer<SystemNetworkInfo>(
+            new SystemNetworkInfo());
+        _downloadFactory = QSharedPointer<DownloadFactory>(
+            new DownloadFactory());
+        _downloadsQueue = QSharedPointer<DownloadQueue>(
+            new DownloadQueue(_networkInfo));
         init();
     }
 
@@ -65,9 +68,9 @@ class DownloadManagerPrivate {
         qDBusRegisterMetaType<GroupDownloadStruct>();
         qDBusRegisterMetaType<StructList>();
 
-        q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
+        q->connect(_downloadsQueue.data(), SIGNAL(downloadRemoved(QString)),
             q, SLOT(onDownloadsChanged(QString)));
-        q->connect(_downloadsQueue, SIGNAL(downloadAdded(QString)),
+        q->connect(_downloadsQueue.data(), SIGNAL(downloadAdded(QString)),
             q, SLOT(onDownloadsChanged(QString)));
     }
 
@@ -106,12 +109,19 @@ class DownloadManagerPrivate {
                                    QCryptographicHash::Algorithm algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
         Download* download = NULL;
         if (hash.isEmpty())
-            download = _downloadFactory->createDownload(url, metadata,
+            download = _downloadFactory->createDownload(owner, url, metadata,
                 headers);
         else
-            download = _downloadFactory->createDownload(url, hash, algo,
+            download = _downloadFactory->createDownload(owner, url, hash, algo,
                 metadata, headers);
         return registerDownload(download);
     }
@@ -121,9 +131,15 @@ class DownloadManagerPrivate {
                                         bool allowed3G,
                                         const QVariantMap& metadata,
                                         StringMap headers) {
-        QDBusObjectPath objectPath;
-        Download* download = _downloadFactory->createDownload(downloads, algo,
-            allowed3G, metadata, headers);
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
+        Download* download = _downloadFactory->createDownload(owner,
+            downloads, algo, allowed3G, metadata, headers);
         return registerDownload(download);
     }
 
@@ -164,9 +180,9 @@ class DownloadManagerPrivate {
 
  private:
     qulonglong _throttle;
-    SystemNetworkInfo* _networkInfo;
-    DownloadFactory* _downloadFactory;
-    DownloadQueue* _downloadsQueue;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<DownloadFactory> _downloadFactory;
+    QSharedPointer<DownloadQueue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;
     DownloadManager* q_ptr;
 };
@@ -187,6 +203,7 @@ DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
                                  DownloadQueue* queue,
                                  QObject* parent)
     : QObject(parent),
+      QDBusContext(),
       d_ptr(new DownloadManagerPrivate(connection,
                                        networkInfo,
                                        downloadFactory,

@@ -18,6 +18,7 @@
 
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
+#include <QSharedPointer>
 #include <single_download.h>
 #include <system_network_info.h>
 #include <metatypes.h>
@@ -32,9 +33,9 @@ class FakeDownload : public SingleDownload, public Fake {
                           const QUrl& url,
                           const QVariantMap& metadata,
                           const QMap<QString, QString>& headers,
-                          SystemNetworkInfo* networkInfo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<SystemNetworkInfo> networkInfo,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           QObject* parent = 0);
     explicit FakeDownload(const QUuid& id,
                           const QString& path,
@@ -43,9 +44,9 @@ class FakeDownload : public SingleDownload, public Fake {
                           QCryptographicHash::Algorithm algo,
                           const QVariantMap& metadata,
                           const QMap<QString, QString> &headers,
-                          SystemNetworkInfo* networkInfo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<SystemNetworkInfo> networkInfo,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           QObject* parent = 0);
 
     bool canDownload() override;

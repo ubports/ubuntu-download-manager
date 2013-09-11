@@ -19,12 +19,13 @@
 #include "./fake_download.h"
 #include "./fake_download_factory.h"
 
-FakeDownloadFactory::FakeDownloadFactory(UuidFactory* uuidFactory,
-                                         SystemNetworkInfo* networkInfo,
-                                         RequestFactory* nam,
-                                         ProcessFactory* processFactory,
-                                         QObject *parent)
-    : DownloadFactory(_uuidFactory, networkInfo, nam, processFactory, parent),
+FakeDownloadFactory::FakeDownloadFactory(
+                                 QSharedPointer<UuidFactory> uuidFactory,
+                                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                                 QSharedPointer<RequestFactory> nam,
+                                 QSharedPointer<ProcessFactory> processFactory,
+                                 QObject *parent)
+    : DownloadFactory(networkInfo, nam, processFactory, parent),
       Fake(),
       _uuidFactory(uuidFactory),
       _networkInfo(networkInfo),
@@ -33,9 +34,11 @@ FakeDownloadFactory::FakeDownloadFactory(UuidFactory* uuidFactory,
 }
 
 Download*
-FakeDownloadFactory::createDownload(const QUrl& url,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    const QUrl& url,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
+    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
@@ -50,11 +53,13 @@ FakeDownloadFactory::createDownload(const QUrl& url,
 }
 
 Download*
-FakeDownloadFactory::createDownload(const QUrl& url,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    const QUrl& url,
                                     const QString& hash,
                                     QCryptographicHash::Algorithm algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
+    Q_UNUSED(downloadOwner);
     if (_recording) {
         MethodData methodData;
         methodData.setMethodName("createDownload");
@@ -69,11 +74,13 @@ FakeDownloadFactory::createDownload(const QUrl& url,
 }
 
 Download*
-FakeDownloadFactory::createDownload(StructList downloads,
+FakeDownloadFactory::createDownload(const QString& downloadOwner,
+                                    StructList downloads,
                                     QCryptographicHash::Algorithm algo,
                                     bool allowed3G,
                                     const QVariantMap& metadata,
                                     StringMap headers) {
+    Q_UNUSED(downloadOwner);
     Q_UNUSED(allowed3G);
     Q_UNUSED(downloads);
     if (_recording) {

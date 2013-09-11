@@ -20,6 +20,7 @@
 #define FAKE_DOWNLOAD_FACTORY_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include <download_factory.h>
 #include "./fake.h"
 
@@ -27,23 +28,26 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownloadFactory(UuidFactory* uuidFactory,
-                        SystemNetworkInfo* networkInfo,
-                        RequestFactory* nam,
-                        ProcessFactory* processFactory,
+    FakeDownloadFactory(QSharedPointer<UuidFactory> uuidFactory,
+                        QSharedPointer<SystemNetworkInfo> networkInfo,
+                        QSharedPointer<RequestFactory> nam,
+                        QSharedPointer<ProcessFactory> processFactory,
                         QObject *parent = 0);
 
-    Download* createDownload(const QUrl& url,
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
-    Download* createDownload(const QUrl& url,
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
                              const QString& hash,
                              QCryptographicHash::Algorithm algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
-    Download* createDownload(StructList downloads,
+    Download* createDownload(const QString& downloadOwner,
+                             StructList downloads,
                              QCryptographicHash::Algorithm algo,
                              bool allowed3G,
                              const QVariantMap& metadata,
@@ -52,10 +56,10 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     QList<Download*> downloads();
 
  private:
-    UuidFactory* _uuidFactory;
-    SystemNetworkInfo* _networkInfo;
-    RequestFactory* _nam;
-    ProcessFactory* _processFactory;
+    QSharedPointer<UuidFactory> _uuidFactory;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<RequestFactory> _nam;
+    QSharedPointer<ProcessFactory> _processFactory;
     QList<Download*> _downloads;
 };
 

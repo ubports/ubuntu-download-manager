@@ -34,28 +34,27 @@ class GroupDownloadPrivate {
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
-                  SystemNetworkInfo* networkInfo,
-                  RequestFactory* nam,
-                  ProcessFactory* processFactory,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<RequestFactory> nam,
+                  QSharedPointer<ProcessFactory> processFactory,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
           _downloadsProgress(),
           _networkInfo(networkInfo),
           q_ptr(parent) {
-        _uuidFactory = new UuidFactory();
-        _downFactory = new DownloadFactory(_uuidFactory, networkInfo, nam,
-            processFactory);
-        _fileManager = new FileManager();
+        _downFactory = QSharedPointer<DownloadFactory>(
+            new DownloadFactory(networkInfo, nam, processFactory));
+        _fileManager = QSharedPointer<FileManager>(new FileManager());
         init(downloads, algo, isGSMDownloadAllowed);
     }
 
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
-                  SystemNetworkInfo* networkInfo,
-                  DownloadFactory* downFactory,
-                  FileManager* fileManager,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<FileManager> fileManager,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
@@ -67,18 +66,11 @@ class GroupDownloadPrivate {
         init(downloads, algo, isGSMDownloadAllowed);
     }
 
-    ~GroupDownloadPrivate() {
-        if (_uuidFactory != NULL)
-            delete _uuidFactory;
-        if (_q != NULL)
-            delete _q;
-    }
-
     void init(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed) {
         Q_Q(GroupDownload);
-        _q = new DownloadQueue(_networkInfo);
+        _q = QSharedPointer<DownloadQueue>(new DownloadQueue(_networkInfo));
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
 
@@ -93,11 +85,11 @@ class GroupDownloadPrivate {
             if (hash.isEmpty()) {
                 qDebug() << "Creating SingleDownload with no hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(url, metadata, headers));
+                    _downFactory->createDownload("", url, metadata, headers));
             } else {
                 qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(url, hash, algo, metadata,
+                    _downFactory->createDownload("", url, hash, algo, metadata,
                     headers));
             }
 
@@ -289,11 +281,10 @@ class GroupDownloadPrivate {
     QList<SingleDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
-    SystemNetworkInfo* _networkInfo;
-    UuidFactory* _uuidFactory;
-    DownloadQueue* _q;
-    DownloadFactory* _downFactory;
-    FileManager* _fileManager;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<DownloadQueue> _q;
+    QSharedPointer<DownloadFactory> _downFactory;
+    QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;
 };
 
@@ -308,9 +299,9 @@ GroupDownload::GroupDownload(const QUuid& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  RequestFactory* nam,
-                  ProcessFactory* processFactory,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<RequestFactory> nam,
+                  QSharedPointer<ProcessFactory> processFactory,
                   QObject* parent)
     : Download(id, path, metadata, headers, networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
@@ -324,9 +315,9 @@ GroupDownload::GroupDownload(const QUuid& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  DownloadFactory* downFactory,
-                  FileManager* fileManager,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<FileManager> fileManager,
                   QObject* parent)
     : Download(id, path, metadata, headers, networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
