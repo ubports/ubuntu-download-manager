@@ -33,6 +33,7 @@ class AppArmor : public QObject {
     explicit AppArmor(QObject *parent = 0);
 
     virtual QPair<QUuid, QString> getSecurePath(QString connName);
+    virtual QPair<QUuid, QString> getSecurePath(QUuid id, QString connName);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

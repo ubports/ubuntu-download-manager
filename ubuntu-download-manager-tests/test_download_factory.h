@@ -30,6 +30,7 @@
 
 class TestDownloadFactory : public QObject {
     Q_OBJECT
+
  public:
     explicit TestDownloadFactory(QObject *parent = 0);
 
@@ -41,6 +42,12 @@ class TestDownloadFactory : public QObject {
     void testCreateDownload();
     void testCreateDownloadWithHash();
     void testCreateGroupDownload();
+    void testCreateDownloadWithValidUuid();
+    void testCreateDownloadWithNullUuid();
+    void testCreateDownloadWithHashAndUuid();
+    void testCreateDownloadWithHashAndNullUuid();
+    void testCreateGroupDownloadWithValidUuid();
+    void testCreateGroupDownloadWithNullUuid();
 
  private:
     FakeAppArmor* _apparmor;
