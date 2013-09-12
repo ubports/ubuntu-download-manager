@@ -35,16 +35,14 @@ class GroupDownloadPrivate {
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<RequestFactory> nam,
-                  QSharedPointer<ProcessFactory> processFactory,
+                  QSharedPointer<DownloadFactory> downloadFactory,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
           _downloadsProgress(),
           _networkInfo(networkInfo),
+          _downFactory(downloadFactory),
           q_ptr(parent) {
-        _downFactory = QSharedPointer<DownloadFactory>(
-            new DownloadFactory(networkInfo, nam, processFactory));
         _fileManager = QSharedPointer<FileManager>(new FileManager());
         init(downloads, algo, isGSMDownloadAllowed);
     }
@@ -252,7 +250,7 @@ class GroupDownloadPrivate {
         QList<QPair<qulonglong, qulonglong> > progressList =
             _downloadsProgress.values();
 
-        for(int index = 0; index < progressList.count(); index++) {
+        for (int index = 0; index < progressList.count(); index++) {
             totalReceived += progressList[index].first;
             totalTotal += progressList[index].second;
         }
@@ -300,12 +298,11 @@ GroupDownload::GroupDownload(const QUuid& id,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<RequestFactory> nam,
-                  QSharedPointer<ProcessFactory> processFactory,
+                  QSharedPointer<DownloadFactory> downFactory,
                   QObject* parent)
     : Download(id, path, metadata, headers, networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
-            networkInfo, nam, processFactory, this)) {
+            networkInfo, downFactory, this)) {
 }
 
 GroupDownload::GroupDownload(const QUuid& id,

@@ -28,7 +28,7 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownloadFactory(QSharedPointer<UuidFactory> uuidFactory,
+    FakeDownloadFactory(QSharedPointer<AppArmor> apparmor,
                         QSharedPointer<SystemNetworkInfo> networkInfo,
                         QSharedPointer<RequestFactory> nam,
                         QSharedPointer<ProcessFactory> processFactory,
@@ -56,7 +56,7 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     QList<Download*> downloads();
 
  private:
-    QSharedPointer<UuidFactory> _uuidFactory;
+    QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<RequestFactory> _nam;
     QSharedPointer<ProcessFactory> _processFactory;

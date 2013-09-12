@@ -22,6 +22,7 @@
 #include <QObject>
 #include <uuid_factory.h>
 #include <group_download.h>
+#include "./fake_apparmor.h"
 #include "./fake_file_manager.h"
 #include "./fake_system_network_info.h"
 #include "./fake_request_factory.h"
@@ -72,6 +73,7 @@ class TestGroupDownload : public QObject {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     UuidFactory* _uuidFactory;
+    FakeAppArmor* _apparmor;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _nam;
     FakeProcessFactory* _processFactory;

@@ -35,8 +35,9 @@ TestGroupDownload::init() {
     _nam = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
     _uuidFactory = new UuidFactory();
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<UuidFactory>(_uuidFactory),
+        QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_nam),
         QSharedPointer<ProcessFactory>(_processFactory));
