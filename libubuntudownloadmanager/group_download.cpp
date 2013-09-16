@@ -226,11 +226,11 @@ class GroupDownloadPrivate {
         // TODO (mandel): the result is not real, we need to be smarter make
         // a head request get size and name and the do all this, but atm is
         // 'good enough' get the sender and check if we received
-        // progress from it, update its data and recanculate
+        // progress from it, update its data and recalculate
         QUrl url = sender->url();
         qDebug() << "Progress from" << url;
         if (_downloadsProgress.contains(url)) {
-            QPair<qulonglong, qulonglong> data = _downloadsProgress[url];
+            QPair<qulonglong, qulonglong>& data = _downloadsProgress[url];
             data.first = received;
             if (data.second != total) {
                 qDebug() << "Updating total!";
@@ -256,6 +256,7 @@ class GroupDownloadPrivate {
         }
 
         Download* down_q = reinterpret_cast<Download*>(q);
+        qDebug() << "EMIT group progress" << totalReceived << totalTotal;
         emit down_q->progress(totalReceived, totalTotal);
     }
 
