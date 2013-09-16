@@ -32,8 +32,17 @@ class AppArmor : public QObject {
  public:
     explicit AppArmor(QObject *parent = 0);
 
-    virtual QPair<QUuid, QString> getSecurePath(QString connName);
-    virtual QPair<QUuid, QString> getSecurePath(QUuid id, QString connName);
+    virtual void getDBusPath(QUuid& id, QString& dbusPath);
+
+    virtual QUuid getSecurePath(const QString& connName,
+                                QString& dbusPath,
+                                QString& localPath,
+                                bool& isContained);
+    virtual void getSecurePath(const QString& connName,
+                               const QUuid& id,
+                               QString& dbusPath,
+                               QString& localPath,
+                               bool& isContained);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

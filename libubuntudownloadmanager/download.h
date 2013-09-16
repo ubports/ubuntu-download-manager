@@ -46,6 +46,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
 
     Download(const QUuid& id,
              const QString& path,
+             bool isConfined,
+             const QString& rootPath,
              const QVariantMap& metadata,
              const QMap<QString, QString>& headers,
              QSharedPointer<SystemNetworkInfo> networkInfo,
@@ -54,6 +56,10 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     QUuid downloadId();
 
     QString path();
+
+    bool isConfined();
+
+    QString rootPath();
 
     Download::State state();
     void setState(Download::State state);

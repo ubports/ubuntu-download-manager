@@ -40,6 +40,8 @@ class DownloadFactory : public QObject {
                     QSharedPointer<ProcessFactory> processFactory,
                     QObject *parent = 0);
 
+    // create downloads comming from a dbus call
+
     virtual Download* createDownload(const QString& dbusOwner,
                                      const QUrl& url,
                                      const QVariantMap& metadata,
@@ -58,6 +60,22 @@ class DownloadFactory : public QObject {
                                      bool allowed3G,
                                      const QVariantMap& metadata,
                                      StringMap headers);
+
+    // create downloads from a group download
+
+    virtual Download* createDownload(bool isConfined,
+                                     const QString& rootPath,
+                                     const QUrl& url,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
+
+    virtual Download* createDownload(bool isConfined,
+                                     const QString& rootPath,
+                                     const QUrl& url,
+                                     const QString& hash,
+                                     QCryptographicHash::Algorithm algo,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

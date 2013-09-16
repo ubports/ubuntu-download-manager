@@ -26,15 +26,19 @@ TestDownloadQueue::TestDownloadQueue(QObject *parent)
 
 void
 TestDownloadQueue::init() {
+    _isConfined = true;
+    _rootPath = "/random/root/path";
     _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(),
+    _first = new FakeDownload(QUuid::createUuid(), "first-path",
+        _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(),
+    _second = new FakeDownload(QUuid::createUuid(), "second-path",
+        _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),

@@ -80,15 +80,22 @@ class GroupDownloadPrivate {
             QString hash = download.getHash();
 
             SingleDownload* singleDownload;
+            QVariantMap downloadMetadata = QVariantMap(metadata);
+            downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
+            qDebug() << "Download metadata is" << downloadMetadata;
+            qDebug() << "Group metadata is" << metadata;
+
             if (hash.isEmpty()) {
                 qDebug() << "Creating SingleDownload with no hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload("", url, metadata, headers));
+                    _downFactory->createDownload(q->isConfined(),
+                        q->rootPath(), url, downloadMetadata, headers));
             } else {
                 qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload("", url, hash, algo, metadata,
-                    headers));
+                    _downFactory->createDownload(q->isConfined(),
+                        q->rootPath(), url, hash, algo, downloadMetadata,
+                        headers));
             }
 
             singleDownload->allowGSMDownload(isGSMDownloadAllowed);
@@ -223,7 +230,7 @@ class GroupDownloadPrivate {
         Q_Q(GroupDownload);
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
         qDebug() << __PRETTY_FUNCTION__;
-        // TODO (mandel): the result is not real, we need to be smarter make
+        // TODO(mandel): the result is not real, we need to be smarter make
         // a head request get size and name and the do all this, but atm is
         // 'good enough' get the sender and check if we received
         // progress from it, update its data and recanculate
@@ -292,6 +299,8 @@ class GroupDownloadPrivate {
 
 GroupDownload::GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
@@ -300,13 +309,16 @@ GroupDownload::GroupDownload(const QUuid& id,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
                   QSharedPointer<DownloadFactory> downFactory,
                   QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers,
+            networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
             networkInfo, downFactory, this)) {
 }
 
 GroupDownload::GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
@@ -316,7 +328,8 @@ GroupDownload::GroupDownload(const QUuid& id,
                   QSharedPointer<DownloadFactory> downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers,
+            networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
             networkInfo, downFactory, fileManager, this)) {
 }

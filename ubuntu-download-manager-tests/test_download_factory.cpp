@@ -251,3 +251,37 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
+
+void
+TestDownloadFactory::testCreateDownloadForGroup() {
+    _apparmor->record();
+    Download* download = _downFactory->createDownload(true, "", QUrl(),
+        QVariantMap(), QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+        calledMethods[0].params().outParams()[0]);
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+
+    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->path(), path->value());
+}
+
+void
+TestDownloadFactory::testCreateDownloadForGroupWithHash() {
+    _apparmor->record();
+    Download* download = _downFactory->createDownload(true, "", QUrl(),
+        "", QCryptographicHash::Md5, QVariantMap(), QMap<QString, QString>());
+
+    QList<MethodData> calledMethods = _apparmor->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+        calledMethods[0].params().outParams()[0]);
+    StringWrapper* path = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().outParams()[1]);
+
+    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->path(), path->value());
+}
