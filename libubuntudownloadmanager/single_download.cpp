@@ -460,7 +460,7 @@ class SingleDownloadPrivate {
                 continue;
             request.setRawHeader(header.toUtf8(), data.toUtf8());
         }
-        // very important we must ensure that we do not extract any download
+        // very important we must ensure that we do not decompress any download
         // else we will have an error in the checksum for example #1224678
         request.setRawHeader("Accept-Encoding", "identity");
         return request;
