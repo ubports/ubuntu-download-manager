@@ -478,10 +478,9 @@ TestDownloadManager::testSetSelfSignedCerts() {
     _requestFactory->record();
     QList<QSslCertificate> certs;
     _man->setAcceptedCertificates(certs);
-/*
+
     QList<MethodData> calledMethods = _requestFactory->calledMethods();
     qDebug() << calledMethods;
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
-    */
 }
