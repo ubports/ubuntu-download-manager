@@ -456,7 +456,7 @@ class SingleDownloadPrivate {
             QString data = headers[header];
             if (header.toLower() == "range"
                     || header.toLower() == "accept-encoding")
-                // do no add the range
+                // do no add the header
                 continue;
             request.setRawHeader(header.toUtf8(), data.toUtf8());
         }
