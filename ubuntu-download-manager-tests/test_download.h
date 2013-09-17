@@ -111,6 +111,10 @@ class TestDownload: public QObject {
     void testProcessFinishedWithError();
     void testProcessFinishedCrash();
 
+    // test related to bug #1224678
+    void testSetRawHeaderAcceptEncoding_data();
+    void testSetRawHeaderAcceptEncoding();
+
  private:
     bool removeDir(const QString& dirName);
 
