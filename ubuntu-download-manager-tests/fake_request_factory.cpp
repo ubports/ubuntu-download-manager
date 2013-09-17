@@ -56,3 +56,28 @@ FakeRequestFactory::get(const QNetworkRequest& request) {
     }
     return reply;
 }
+
+QList<QSslCertificate>
+FakeRequestFactory::acceptedCertificates() {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("acceptedCertificates", params);
+        _called.append(methodData);
+    }
+    return RequestFactory::acceptedCertificates();
+}
+
+void
+FakeRequestFactory::setAcceptedCertificates(
+                                const QList<QSslCertificate>& certs) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("setAcceptedCertificates", params);
+        _called.append(methodData);
+    }
+    RequestFactory::setAcceptedCertificates(certs);
+}

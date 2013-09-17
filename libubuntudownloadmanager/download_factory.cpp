@@ -107,6 +107,14 @@ class DownloadFactoryPrivate {
         return down;
     }
 
+    QList<QSslCertificate> acceptedCertificates() {
+        return _nam->acceptedCertificates();
+    }
+
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        _nam->setAcceptedCertificates(certs);
+    }
+
  private:
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
@@ -161,4 +169,16 @@ DownloadFactory::createDownload(const QString& dbusOwner,
     Q_D(DownloadFactory);
     return d->createDownload(dbusOwner, downloads, algo, allowed3G, metadata,
         headers);
+}
+
+QList<QSslCertificate>
+DownloadFactory::acceptedCertificates() {
+    Q_D(DownloadFactory);
+    return d->acceptedCertificates();
+}
+
+void
+DownloadFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(DownloadFactory);
+    d->setAcceptedCertificates(certs);
 }

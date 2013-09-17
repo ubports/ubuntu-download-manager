@@ -141,3 +141,46 @@ TestDownloadDaemon::testTimeoutExit() {
     QCOMPARE(QString("exit"), calledMethods[0].methodName());
 }
 
+void
+TestDownloadDaemon::testDisableTimeout() {
+    _timer->record();
+
+    // set the args so that we disable the timeout
+    QStringList args;
+    args << "-disable-timeout";
+    _app->setArguments(args);
+
+    // assert that start is never called
+    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    QList<MethodData> calledMethods = _timer->calledMethods();
+    QCOMPARE(0, calledMethods.count());
+}
+
+void
+TestDownloadDaemon::testSelfSignedCerts() {
+    _man->record();
+    // set the args so that we disable the timeout
+    QStringList args;
+    args << "-self-signed-certs" << "*.pem";
+    _app->setArguments(args);
+
+    // assert that we set the certs
+    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    QList<MethodData> calledMethods = _man->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
+}
+
+void
+TestDownloadDaemon::testSelfSignedCertsMissingPath() {
+    _man->record();
+    // set the args so that we disable the timeout
+    QStringList args;
+    args << "-self-signed-certs";
+    _app->setArguments(args);
+
+    // assert that we do not crash
+    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    QList<MethodData> calledMethods = _man->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+}

@@ -59,6 +59,10 @@ class DownloadFactory : public QObject {
                                      const QVariantMap& metadata,
                                      StringMap headers);
 
+    // mainly for testing purposes
+    virtual QList<QSslCertificate> acceptedCertificates();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+
  private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadFactoryPrivate* d_ptr;

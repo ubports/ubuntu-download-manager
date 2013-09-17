@@ -33,11 +33,11 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
 
  public:
     explicit DownloadDaemon(QObject *parent = 0);
-    explicit DownloadDaemon(Application* app,
-                            DBusConnection* conn,
-                            Timer* timer,
-                            DownloadManager* man,
-                            QObject *parent = 0);
+    DownloadDaemon(Application* app,
+                   DBusConnection* conn,
+                   Timer* timer,
+                   DownloadManager* man,
+                   QObject *parent = 0);
 
  public slots:  // NOLINT (whitespace/indent)
     void start();
