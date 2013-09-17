@@ -266,8 +266,7 @@ class SingleDownloadPrivate {
                 QCryptographicHash::hash(data, _algo).toHex());
             if (fileSig != _hash) {
                 qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
-                q->setState(Download::FINISH);
-                emit q->error("HASH ERROR");
+                emitError("HASH ERROR");
                 return;
             }
         }
@@ -284,8 +283,7 @@ class SingleDownloadPrivate {
             if (commandData.count() == 0) {
                 // raise error, command metadata was passed without the commnad
                 qCritical() << "COMMAND DATA MISSING";
-                q->setState(Download::FINISH);
-                emit q->error("COMMAND ERROR");
+                emitError("COMMAND ERROR");
                 return;
             } else {
                 // first item of the string list is the commnad
@@ -469,6 +467,7 @@ class SingleDownloadPrivate {
         _reply->deleteLater();
         _reply = NULL;
         cleanUpCurrentData();
+        q->setState(Download::ERROR);
         q->emitError(error);
     }
 
