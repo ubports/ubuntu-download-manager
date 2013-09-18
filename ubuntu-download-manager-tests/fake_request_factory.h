@@ -46,6 +46,8 @@ class FakeRequestFactory : public RequestFactory, public Fake {
 
     // overriden methods used to fake the nam
     NetworkReply* get(const QNetworkRequest& request);
+    QList<QSslCertificate> acceptedCertificates() override;
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) override;
 };
 
 #endif  // FAKE_QNETWORK_ACCESS_MANAGER_H

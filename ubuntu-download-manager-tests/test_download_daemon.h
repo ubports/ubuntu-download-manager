@@ -43,6 +43,9 @@ class TestDownloadDaemon : public QObject {
     void testTimerStop();
     void testTimerStart();
     void testTimeoutExit();
+    void testDisableTimeout();
+    void testSelfSignedCerts();
+    void testSelfSignedCertsMissingPath();
 
  private:
     FakeTimer* _timer;

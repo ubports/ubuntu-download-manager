@@ -166,6 +166,14 @@ class DownloadFactoryPrivate {
         return down;
     }
 
+    QList<QSslCertificate> acceptedCertificates() {
+        return _nam->acceptedCertificates();
+    }
+
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        _nam->setAcceptedCertificates(certs);
+    }
+
  private:
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
@@ -244,4 +252,16 @@ DownloadFactory::createDownloadForGroup(bool isConfined,
     Q_D(DownloadFactory);
     return d->createDownloadForGroup(isConfined, rootPath, url, hash, algo,
         metadata, headers);
+}
+
+QList<QSslCertificate>
+DownloadFactory::acceptedCertificates() {
+    Q_D(DownloadFactory);
+    return d->acceptedCertificates();
+}
+
+void
+DownloadFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(DownloadFactory);
+    d->setAcceptedCertificates(certs);
 }

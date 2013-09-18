@@ -20,7 +20,6 @@
 #include <download_factory.h>
 #include <download_struct.h>
 #include "./fake_process_factory.h"
-#include "./fake_request_factory.h"
 #include "./fake_system_network_info.h"
 #include "./test_download_manager.h"
 
@@ -35,10 +34,11 @@ TestDownloadManager::init() {
     _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
     _uuidFactory = new FakeUuidFactory();
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
+    _requestFactory = new FakeRequestFactory();
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
-        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<RequestFactory>(_requestFactory),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(qSharedPointerCast<DBusConnection>(_conn),
         _networkInfo, _downloadFactory, _q);
@@ -470,4 +470,17 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
+}
+
+void
+TestDownloadManager::testSetSelfSignedCerts() {
+    // assert that the factory does get the certs
+    _requestFactory->record();
+    QList<QSslCertificate> certs;
+    _man->setAcceptedCertificates(certs);
+
+    QList<MethodData> calledMethods = _requestFactory->calledMethods();
+    qDebug() << calledMethods;
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
 }

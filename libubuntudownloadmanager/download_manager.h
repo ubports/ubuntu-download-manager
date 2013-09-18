@@ -24,6 +24,7 @@
 #include <QtDBus/QDBusObjectPath>
 #include <QtDBus/QDBusContext>
 #include <QSharedPointer>
+#include <QSslCertificate>
 #include "./dbus_connection.h"
 #include "./download.h"
 #include "./download_queue.h"
@@ -44,7 +45,12 @@ class DownloadManager : public QObject, public QDBusContext {
                     DownloadFactory* downloadFactory,
                     DownloadQueue* queue,
                     QObject *parent = 0);
+
     void loadPreviewsDownloads(const QString &path);
+
+    // mainly for testing purposes
+    virtual QList<QSslCertificate> acceptedCertificates();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  public slots:  // NOLINT(whitespace/indent)
     QDBusObjectPath createDownload(DownloadStruct download);
