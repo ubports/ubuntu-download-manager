@@ -30,6 +30,8 @@ class DownloadPrivate {
  public:
     DownloadPrivate(const QUuid& id,
                     const QString& path,
+                    bool isConfined,
+                    const QString& rootPath,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
                     QSharedPointer<SystemNetworkInfo> networkInfo,
@@ -39,6 +41,8 @@ class DownloadPrivate {
           _allowGSMDownload(true),
           _state(Download::IDLE),
           _dbusPath(path),
+          _isConfined(isConfined),
+          _rootPath(rootPath),
           _metadata(metadata),
           _headers(headers),
           _networkInfo(networkInfo),
@@ -56,6 +60,14 @@ class DownloadPrivate {
 
     QString path() const {
         return _dbusPath;
+    }
+
+    bool isConfined() const {
+        return _isConfined;
+    }
+
+    QString rootPath() const {
+        return _rootPath;
     }
 
     Download::State state() {
@@ -158,6 +170,8 @@ class DownloadPrivate {
     bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
+    bool _isConfined;
+    QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
@@ -171,13 +185,15 @@ class DownloadPrivate {
 
 Download::Download(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QSharedPointer<SystemNetworkInfo> networkInfo,
                    QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadPrivate(id, path, metadata, headers,
-                  networkInfo, this)) {
+      d_ptr(new DownloadPrivate(id, path, isConfined, rootPath, metadata,
+            headers, networkInfo, this)) {
 }
 
 QUuid
@@ -190,6 +206,18 @@ QString
 Download::path() {
     Q_D(Download);
     return d->path();
+}
+
+bool
+Download::isConfined() {
+    Q_D(Download);
+    return d->isConfined();
+}
+
+QString
+Download::rootPath() {
+    Q_D(Download);
+    return d->rootPath();
 }
 
 Download::State

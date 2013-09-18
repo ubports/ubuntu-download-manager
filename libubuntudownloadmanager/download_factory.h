@@ -40,6 +40,8 @@ class DownloadFactory : public QObject {
                     QSharedPointer<ProcessFactory> processFactory,
                     QObject *parent = 0);
 
+    // create downloads comming from a dbus call
+
     virtual Download* createDownload(const QString& dbusOwner,
                                      const QUrl& url,
                                      const QVariantMap& metadata,
@@ -59,7 +61,24 @@ class DownloadFactory : public QObject {
                                      const QVariantMap& metadata,
                                      StringMap headers);
 
+    // create downloads from a group download
+
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
+                                         const QUrl& url,
+                                         const QVariantMap& metadata,
+                                         const QMap<QString, QString>& headers);
+
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
+                                         const QUrl& url,
+                                         const QString& hash,
+                                         QCryptographicHash::Algorithm algo,
+                                         const QVariantMap& metadata,
+                                         const QMap<QString, QString>& headers);
+
     // mainly for testing purposes
+
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
