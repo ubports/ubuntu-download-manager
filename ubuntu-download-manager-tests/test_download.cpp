@@ -1541,7 +1541,9 @@ void
 TestDownload::testSetRawHeaderAcceptEncoding_data() {
     QTest::addColumn<QMap<QString, QString> >("headers");
 
-    // create a number of headers to assert that thy are added in the request
+    // create a number of headers to assert that they are added in the request
+    // and that the value is ignore. We used diff lower-upper combination
+    // to ensure that it does not really matter
     StringMap first, second, third;
 
     // add headers to be added except range
@@ -1576,10 +1578,6 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
         calledMethods[0].params().inParams()[0]);
     QNetworkRequest request = requestWrapper->request();
 
-    // assert that all headers are present
-    foreach(const QString& header, headers.keys()) {
-        QByteArray headerName = header.toUtf8();
-        QVERIFY(request.hasRawHeader(headerName));
-        QCOMPARE(QString("identity").toUtf8(), request.rawHeader(headerName));
-    }
+    QCOMPARE(QString("identity").toUtf8(),
+        request.rawHeader("Accept-Encoding"));
 }
