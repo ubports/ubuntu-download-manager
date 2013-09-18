@@ -505,8 +505,9 @@ TestDownload::testCanDownloadGSM() {
     _networkInfo->setMode(mode.value<QNetworkInfo::NetworkMode>());
     _networkInfo->record();
 
-    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
-        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     download->allowGSMDownload(true);
@@ -630,8 +631,9 @@ TestDownload::testCancelDownload() {
     // tell the fake nam to record so that we can access the reply
 
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
-        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download,
@@ -664,8 +666,9 @@ TestDownload::testCancelDownload() {
 void
 TestDownload::testCancelDownloadNotStarted() {
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
-        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download,
@@ -687,8 +690,9 @@ TestDownload::testCancelDownloadNotStarted() {
 void
 TestDownload::testPauseDownload() {
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url, _metadata,
-        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download,
@@ -886,7 +890,8 @@ TestDownload::testOnSuccessNoHash() {
 void
 TestDownload::testOnSuccessHashError() {
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url,
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url,
         "imposible-hash-is-not-hex", _algo, _metadata, _headers,
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
@@ -949,7 +954,8 @@ TestDownload::testOnSuccessHash() {
     QFETCH(QString, hash);
 
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url, hash, _algo,
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, hash, _algo,
         _metadata, _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
@@ -988,8 +994,8 @@ TestDownload::testOnSuccessHash() {
 void
 TestDownload::testOnHttpError() {
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url,
-        _metadata, _headers,
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
@@ -1021,7 +1027,6 @@ TestDownload::testSetRawHeadersStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1041,8 +1046,9 @@ void
 TestDownload::testSetRawHeadersStart() {
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url,
-        _metadata, headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
 
@@ -1073,7 +1079,6 @@ TestDownload::testSetRawHeadersWithRangeStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1128,7 +1133,6 @@ TestDownload::testSetRawHeadersResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1205,7 +1209,6 @@ TestDownload::testSetRawHeadersWithRangeResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1602,8 +1605,9 @@ void
 TestDownload::testSetRawHeaderAcceptEncoding() {
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _url,
-        _metadata, headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
 
