@@ -159,7 +159,6 @@ TestDownloadDaemon::testDisableTimeout() {
 void
 TestDownloadDaemon::testSelfSignedCerts() {
     _man->record();
-    // set the args so that we disable the timeout
     QStringList args;
     args << "-self-signed-certs" << "*.pem";
     _app->setArguments(args);
@@ -174,7 +173,6 @@ TestDownloadDaemon::testSelfSignedCerts() {
 void
 TestDownloadDaemon::testSelfSignedCertsMissingPath() {
     _man->record();
-    // set the args so that we disable the timeout
     QStringList args;
     args << "-self-signed-certs";
     _app->setArguments(args);

@@ -26,7 +26,7 @@
 #include "./download_manager_adaptor.h"
 #include "./download_daemon.h"
 
-#define DISABPLE_TIMEOUT "-disable-timeout"
+#define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"
 
 /**
@@ -127,7 +127,7 @@ class DownloadDaemonPrivate {
                 qCritical() << "Missing certs path";
             }
         }  // certs
-        _isTimeoutEnabled = !args.contains(DISABPLE_TIMEOUT);
+        _isTimeoutEnabled = !args.contains(DISABLE_TIMEOUT);
         qDebug() << "Timeout is enabled:" << _isTimeoutEnabled;
     }
 
