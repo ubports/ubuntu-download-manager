@@ -255,7 +255,7 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
 void
 TestDownloadFactory::testCreateDownloadForGroup() {
     _apparmor->record();
-    Download* download = _downFactory->createDownload(true, "", QUrl(),
+    Download* download = _downFactory->createDownloadForGroup(true, "", QUrl(),
         QVariantMap(), QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
@@ -272,7 +272,7 @@ TestDownloadFactory::testCreateDownloadForGroup() {
 void
 TestDownloadFactory::testCreateDownloadForGroupWithHash() {
     _apparmor->record();
-    Download* download = _downFactory->createDownload(true, "", QUrl(),
+    Download* download = _downFactory->createDownloadForGroup(true, "", QUrl(),
         "", QCryptographicHash::Md5, QVariantMap(), QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();

@@ -63,19 +63,19 @@ class DownloadFactory : public QObject {
 
     // create downloads from a group download
 
-    virtual Download* createDownload(bool isConfined,
-                                     const QString& rootPath,
-                                     const QUrl& url,
-                                     const QVariantMap& metadata,
-                                     const QMap<QString, QString>& headers);
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
+                                         const QUrl& url,
+                                         const QVariantMap& metadata,
+                                         const QMap<QString, QString>& headers);
 
-    virtual Download* createDownload(bool isConfined,
-                                     const QString& rootPath,
-                                     const QUrl& url,
-                                     const QString& hash,
-                                     QCryptographicHash::Algorithm algo,
-                                     const QVariantMap& metadata,
-                                     const QMap<QString, QString>& headers);
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
+                                         const QUrl& url,
+                                         const QString& hash,
+                                         QCryptographicHash::Algorithm algo,
+                                         const QVariantMap& metadata,
+                                         const QMap<QString, QString>& headers);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

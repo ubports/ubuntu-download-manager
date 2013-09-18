@@ -80,7 +80,7 @@ class DownloadFactoryPrivate {
         QUuid id;
         QString dbusPath;
         QString rootPath;
-        bool isConfined;
+        bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
         qDebug() << "Download secure data is " << id << dbusPath << rootPath;
@@ -100,7 +100,7 @@ class DownloadFactoryPrivate {
         QUuid id;
         QString dbusPath;
         QString rootPath;
-        bool isConfined;
+        bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
         qDebug() << "Download secure data is " << id << dbusPath << rootPath;
@@ -121,7 +121,7 @@ class DownloadFactoryPrivate {
         QUuid id;
         QString dbusPath;
         QString rootPath;
-        bool isConfined;
+        bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
         qDebug() << "Download secure data is " << id << dbusPath << rootPath;
@@ -133,11 +133,11 @@ class DownloadFactoryPrivate {
         return down;
     }
 
-    Download* createDownload(bool isConfined,
-                             const QString& rootPath,
-                             const QUrl& url,
-                             const QVariantMap& metadata,
-                             const QMap<QString, QString>& headers) {
+    Download* createDownloadForGroup(bool isConfined,
+                                     const QString& rootPath,
+                                     const QUrl& url,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers) {
         QUuid id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
@@ -148,13 +148,13 @@ class DownloadFactoryPrivate {
         return down;
     }
 
-    Download* createDownload(bool isConfined,
-                             const QString& rootPath,
-                             const QUrl& url,
-                             const QString& hash,
-                             QCryptographicHash::Algorithm algo,
-                             const QVariantMap& metadata,
-                             const QMap<QString, QString>& headers) {
+    Download* createDownloadForGroup(bool isConfined,
+                                     const QString& rootPath,
+                                     const QUrl& url,
+                                     const QString& hash,
+                                     QCryptographicHash::Algorithm algo,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers) {
         QUuid id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
@@ -223,24 +223,25 @@ DownloadFactory::createDownload(const QString& dbusOwner,
 }
 
 Download*
-DownloadFactory::createDownload(bool isConfined,
-                                const QString& rootPath,
-                                const QUrl& url,
-                                const QVariantMap& metadata,
-                                const QMap<QString, QString>& headers) {
+DownloadFactory::createDownloadForGroup(bool isConfined,
+                                        const QString& rootPath,
+                                        const QUrl& url,
+                                        const QVariantMap& metadata,
+                                        const QMap<QString, QString>& headers) {
     Q_D(DownloadFactory);
-    return d->createDownload(isConfined, rootPath, url, metadata, headers);
+    return d->createDownloadForGroup(isConfined, rootPath, url, metadata,
+        headers);
 }
 
 Download*
-DownloadFactory::createDownload(bool isConfined,
-                                const QString& rootPath,
-                                const QUrl& url,
-                                const QString& hash,
-                                QCryptographicHash::Algorithm algo,
-                                const QVariantMap& metadata,
-                                const QMap<QString, QString>& headers) {
+DownloadFactory::createDownloadForGroup(bool isConfined,
+                                        const QString& rootPath,
+                                        const QUrl& url,
+                                        const QString& hash,
+                                        QCryptographicHash::Algorithm algo,
+                                        const QVariantMap& metadata,
+                                        const QMap<QString, QString>& headers) {
     Q_D(DownloadFactory);
-    return d->createDownload(isConfined, rootPath, url, hash, algo,
+    return d->createDownloadForGroup(isConfined, rootPath, url, hash, algo,
         metadata, headers);
 }

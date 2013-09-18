@@ -37,12 +37,12 @@ class AppArmor : public QObject {
     virtual QUuid getSecurePath(const QString& connName,
                                 QString& dbusPath,
                                 QString& localPath,
-                                bool& isContained);
+                                bool& isConfined);
     virtual void getSecurePath(const QString& connName,
                                const QUuid& id,
                                QString& dbusPath,
                                QString& localPath,
-                               bool& isContained);
+                               bool& isConfined);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

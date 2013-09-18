@@ -88,12 +88,12 @@ class GroupDownloadPrivate {
             if (hash.isEmpty()) {
                 qDebug() << "Creating SingleDownload with no hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(q->isConfined(),
+                    _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, downloadMetadata, headers));
             } else {
                 qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
-                    _downFactory->createDownload(q->isConfined(),
+                    _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
             }

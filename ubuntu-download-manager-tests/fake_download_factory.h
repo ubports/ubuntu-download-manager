@@ -53,13 +53,13 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
                              const QVariantMap& metadata,
                              StringMap headers) override;
 
-    Download* createDownload(bool isConfined,
+    Download* createDownloadForGroup(bool isConfined,
                              const QString& rootPath,
                              const QUrl& url,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
-    Download* createDownload(bool isConfined,
+    Download* createDownloadForGroup(bool isConfined,
                              const QString& rootPath,
                              const QUrl& url,
                              const QString& hash,

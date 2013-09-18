@@ -58,9 +58,9 @@ class AppArmorPrivate {
     QUuid getSecurePath(const QString& connName,
                         QString& dbusPath,
                         QString& localPath,
-                        bool& isContained) {
+                        bool& isConfined) {
         QUuid id = _uuidFactory->createUuid();
-        getSecurePath(connName, id, dbusPath, localPath, isContained);
+        getSecurePath(connName, id, dbusPath, localPath, isConfined);
         return id;
     }
 
@@ -169,9 +169,9 @@ QUuid
 AppArmor::getSecurePath(const QString& connName,
                         QString& dbusPath,
                         QString& localPath,
-                        bool& isContained) {
+                        bool& isConfined) {
     Q_D(AppArmor);
-    return d->getSecurePath(connName, dbusPath, localPath, isContained);
+    return d->getSecurePath(connName, dbusPath, localPath, isConfined);
 }
 
 void
@@ -179,7 +179,7 @@ AppArmor::getSecurePath(const QString& connName,
                         const QUuid& id,
                         QString& dbusPath,
                         QString& localPath,
-                        bool& isContained) {
+                        bool& isConfined) {
     Q_D(AppArmor);
-    d->getSecurePath(connName, id, dbusPath, localPath, isContained);
+    d->getSecurePath(connName, id, dbusPath, localPath, isConfined);
 }

@@ -111,7 +111,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
 }
 
 Download*
-FakeDownloadFactory::createDownload(bool isConfined,
+FakeDownloadFactory::createDownloadForGroup(bool isConfined,
                                     const QString& rootPath,
                                     const QUrl& url,
                                     const QVariantMap& metadata,
@@ -133,7 +133,7 @@ FakeDownloadFactory::createDownload(bool isConfined,
 }
 
 Download*
-FakeDownloadFactory::createDownload(bool isConfined,
+FakeDownloadFactory::createDownloadForGroup(bool isConfined,
                                     const QString& rootPath,
                                     const QUrl& url,
                                     const QString& hash,
