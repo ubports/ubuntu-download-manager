@@ -181,7 +181,7 @@ TestDownloadsDb::testStoreSingleDownload() {
     QSharedPointer<ProcessFactory> processFactory =
         QSharedPointer<ProcessFactory>(new FakeProcessFactory());
 
-    FakeDownload* download = new FakeDownload(id, path, url, hash,
+    FakeDownload* download = new FakeDownload(id, path, false, "", url, hash,
         HashAlgorithm::getHashAlgo(hashAlgoString), metadata, headers,
         networkInfo, nam, processFactory);
 
@@ -279,7 +279,7 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QSharedPointer<ProcessFactory> processFactory =
         QSharedPointer<ProcessFactory>(new FakeProcessFactory());
 
-    FakeDownload* download = new FakeDownload(id, path, url, hash,
+    FakeDownload* download = new FakeDownload(id, path, true, "", url, hash,
         HashAlgorithm::getHashAlgo(hashAlgoString), metadata, headers,
         networkInfo, nam, processFactory);
 
@@ -287,9 +287,9 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
-    FakeDownload* secondDownload = new FakeDownload(id, newPath, url, hash,
-        HashAlgorithm::getHashAlgo(hashAlgoString), metadata, headers,
-        networkInfo, nam, processFactory);
+    FakeDownload* secondDownload = new FakeDownload(id, newPath, true, "",
+        url, hash, HashAlgorithm::getHashAlgo(hashAlgoString), metadata,
+        headers, networkInfo, nam, processFactory);
 
     _db->storeSingleDownload(secondDownload);
 
