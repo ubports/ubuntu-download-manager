@@ -1027,7 +1027,6 @@ TestDownload::testSetRawHeadersStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1080,7 +1079,6 @@ TestDownload::testSetRawHeadersWithRangeStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1135,7 +1133,6 @@ TestDownload::testSetRawHeadersResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1212,7 +1209,6 @@ TestDownload::testSetRawHeadersWithRangeResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
-    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1582,6 +1578,51 @@ TestDownload::testProcessFinishedCrash() {
     QCOMPARE(spy.count(), 1);
 }
 
+void
+TestDownload::testSetRawHeaderAcceptEncoding_data() {
+    QTest::addColumn<QMap<QString, QString> >("headers");
+
+    // create a number of headers to assert that they are added in the request
+    // and that the value is ignore. We used diff lower-upper combination
+    // to ensure that it does not really matter
+    StringMap first, second, third;
+
+    // add headers to be added except range
+    first["Accept-Encoding"] = "text/plain";
+
+    QTest::newRow("First row") << first;
+
+    second["Accept-encoding"] = "en-US";
+
+    QTest::newRow("Second row") << second;
+
+    third["Accept-encoding"] = "348";
+
+    QTest::newRow("Third row") << third;
+}
+
+void
+TestDownload::testSetRawHeaderAcceptEncoding() {
+    QFETCH(StringMap, headers);
+    _reqFactory->record();
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    RequestWrapper* requestWrapper = reinterpret_cast<RequestWrapper*>(
+        calledMethods[0].params().inParams()[0]);
+    QNetworkRequest request = requestWrapper->request();
+
+    QCOMPARE(QString("identity").toUtf8(),
+        request.rawHeader("Accept-Encoding"));
+}
 
 void
 TestDownload::testLocalPathConfined() {

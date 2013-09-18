@@ -434,11 +434,15 @@ class SingleDownloadPrivate {
         QMap<QString, QString> headers = q->headers();
         foreach(const QString& header, headers.keys()) {
             QString data = headers[header];
-            if (header.toLower() == "range")
-                // do no add the range
+            if (header.toLower() == "range"
+                    || header.toLower() == "accept-encoding")
+                // do not add the header
                 continue;
-            request.setRawHeader(header.toUtf8(), headers[header].toUtf8());
+            request.setRawHeader(header.toUtf8(), data.toUtf8());
         }
+        // very important we must ensure that we do not decompress any download
+        // else we will have an error in the checksum for example #1224678
+        request.setRawHeader("Accept-Encoding", "identity");
         return request;
     }
 
