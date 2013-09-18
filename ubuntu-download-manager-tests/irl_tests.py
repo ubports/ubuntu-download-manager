@@ -36,7 +36,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default=True)
 
 MANAGER_PATH = '/'
-MANAGER_IFACE = 'com.canonical.applications.DownloaderManager'
+MANAGER_IFACE = 'com.canonical.applications.DownloadManager'
 DOWNLOAD_IFACE = 'com.canonical.applications.Download'
 IMAGE_FILE = 'http://i.imgur.com/y51njgu.jpg'
 
