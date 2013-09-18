@@ -40,10 +40,11 @@ class DownloadManagerPrivate {
         _apparmor = QSharedPointer<AppArmor>(new AppArmor());
         _networkInfo = QSharedPointer<SystemNetworkInfo>(
             new SystemNetworkInfo());
-        _nam = QSharedPointer<RequestFactory>(new RequestFactory());
+        QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
+            new RequestFactory());
         _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
         _downloadFactory = QSharedPointer<DownloadFactory>(
-            new DownloadFactory(_apparmor, _networkInfo, _nam,
+            new DownloadFactory(_apparmor, _networkInfo, nam,
                 _processFactory));
         _downloadsQueue = QSharedPointer<DownloadQueue>(
             new DownloadQueue(_networkInfo));
@@ -91,8 +92,17 @@ class DownloadManagerPrivate {
         Q_UNUSED(path);
     }
 
+    QList<QSslCertificate> acceptedCertificates() {
+        return _downloadFactory->acceptedCertificates();
+    }
+
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        qDebug() << __PRETTY_FUNCTION__ << certs;
+        _downloadFactory->setAcceptedCertificates(certs);
+    }
+
     void onDownloadsChanged(QString path) {
-        qDebug() << __FUNCTION__ << path;
+        qDebug() << __PRETTY_FUNCTION__ << path;
         Q_Q(DownloadManager);
         emit q->sizeChanged(_downloadsQueue->size());
     }
@@ -188,7 +198,6 @@ class DownloadManagerPrivate {
     qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
-    QSharedPointer<RequestFactory> _nam;
     QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<DownloadFactory> _downloadFactory;
     QSharedPointer<DownloadQueue> _downloadsQueue;
@@ -224,6 +233,19 @@ void
 DownloadManager::loadPreviewsDownloads(const QString &path) {
     Q_D(DownloadManager);
     d->loadPreviewsDownloads(path);
+}
+
+QList<QSslCertificate>
+DownloadManager::acceptedCertificates() {
+    Q_D(DownloadManager);
+    return d->acceptedCertificates();
+}
+
+
+void
+DownloadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(DownloadManager);
+    return d->setAcceptedCertificates(certs);
 }
 
 qulonglong

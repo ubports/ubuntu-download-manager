@@ -996,6 +996,7 @@ TestDownload::testSetRawHeadersStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
+    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1047,6 +1048,7 @@ TestDownload::testSetRawHeadersWithRangeStart_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
+    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1100,6 +1102,7 @@ TestDownload::testSetRawHeadersResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
+    first["Accept-Encoding"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
 
@@ -1175,6 +1178,7 @@ TestDownload::testSetRawHeadersWithRangeResume_data() {
     // add headers to be added except range
     first["Accept"] = "text/plain";
     first["Accept-Charset"] = "utf-8";
+    first["Accept-Encoding"] = "gzip, deflate";
     first["Range"] = "gzip, deflate";
 
     QTest::newRow("First row") << first;
@@ -1580,4 +1584,37 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
 
     QCOMPARE(QString("identity").toUtf8(),
         request.rawHeader("Accept-Encoding"));
+}
+
+void
+TestDownload::testLocalPathConfined() {
+    // assert that the root path used is not the one in the metadata
+    QVariantMap metadata;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    SingleDownload* download = new SingleDownload(_id, _path, true,
+        _rootPath, _url, metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    qDebug() << download->filePath();
+    QVERIFY(download->filePath() != localPath);
+}
+
+void
+TestDownload::testLocalPathNotConfined() {
+    QVariantMap metadata;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    SingleDownload* download = new SingleDownload(_id, _path, false,
+        _rootPath, _url, metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    qDebug() << download->filePath();
+    QCOMPARE(download->filePath(), localPath);
 }

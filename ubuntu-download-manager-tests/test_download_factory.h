@@ -48,6 +48,8 @@ class TestDownloadFactory : public QObject {
     void testCreateDownloadWithHashAndNullUuid();
     void testCreateGroupDownloadWithValidUuid();
     void testCreateGroupDownloadWithNullUuid();
+    void testCreateDownloadForGroup();
+    void testCreateDownloadForGroupWithHash();
 
  private:
     FakeAppArmor* _apparmor;

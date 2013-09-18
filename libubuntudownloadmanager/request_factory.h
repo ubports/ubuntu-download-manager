@@ -21,6 +21,7 @@
 
 #include <QNetworkRequest>
 #include <QObject>
+#include <QSslCertificate>
 #include "./app-downloader-lib_global.h"
 #include "./network_reply.h"
 
@@ -33,6 +34,10 @@ class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     explicit RequestFactory(QObject *parent = 0);
 
     virtual NetworkReply* get(const QNetworkRequest& request);
+
+    // mainly for testing purposes
+    virtual QList<QSslCertificate> acceptedCertificates();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

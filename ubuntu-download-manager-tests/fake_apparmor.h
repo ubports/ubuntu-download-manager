@@ -31,10 +31,23 @@ class FakeAppArmor : public AppArmor, public Fake {
     FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,
                  QObject *parent = 0);
 
-    QPair<QUuid, QString> getSecurePath(QString connName) override;
-    QPair<QUuid, QString> getSecurePath(QUuid id, QString connName) override;
+    void getDBusPath(QUuid& id, QString& dbusPath) override;
+
+    QUuid getSecurePath(const QString& connName,
+                        QString& dbusPath,
+                        QString& localPath,
+                        bool& isConfined) override;
+    void getSecurePath(const QString& connName,
+                       const QUuid& id,
+                       QString& dbusPath,
+                       QString& localPath,
+                       bool& isConfined) override;
+
+    bool isConfined();
+    void setIsConfined();
 
  private:
+    bool _isConfined;
     QSharedPointer<UuidFactory> _uuidFactory;
 };
 

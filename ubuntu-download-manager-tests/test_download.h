@@ -115,6 +115,10 @@ class TestDownload: public QObject {
     void testSetRawHeaderAcceptEncoding_data();
     void testSetRawHeaderAcceptEncoding();
 
+    // local path generation tests
+    void testLocalPathConfined();
+    void testLocalPathNotConfined();
+
  private:
     bool removeDir(const QString& dirName);
 

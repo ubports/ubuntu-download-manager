@@ -32,6 +32,8 @@ class FakeDownloadManager : public DownloadManager, public Fake {
                                  QObject *parent = 0);
 
     void emitSizeChaged(int size);
+    QList<QSslCertificate> acceptedCertificates() override;
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) override;
 };
 
 #endif  // FAKE_DOWNLOAD_MANAGER_H

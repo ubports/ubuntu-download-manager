@@ -17,6 +17,7 @@
  */
 
 #include <QNetworkAccessManager>
+#include <QSslError>
 #include "./request_factory.h"
 
 /*
@@ -27,23 +28,40 @@ class RequestFactoryPrivate {
     Q_DECLARE_PUBLIC(RequestFactory)
 
  public:
-    explicit RequestFactoryPrivate(RequestFactory* parent);
+    explicit RequestFactoryPrivate(RequestFactory* parent)
+        : q_ptr(parent) {
+        _nam = new QNetworkAccessManager();
+    }
 
-    NetworkReply* get(const QNetworkRequest& request);
+    NetworkReply* get(const QNetworkRequest& request) {
+        QNetworkReply* reply = _nam->get(request);
+
+        if (_certs.count() > 0) {
+            // build the expected ssl errors
+            QList<QSslError> expectedSslErrors;
+            foreach(const QSslCertificate& certificate, _certs) {
+                QSslError error(QSslError::SelfSignedCertificate, certificate);
+                expectedSslErrors.append(error);
+            }
+            reply->ignoreSslErrors(expectedSslErrors);
+        }
+
+        return new NetworkReply(reply);
+    }
+
+    QList<QSslCertificate> acceptedCertificates() {
+        return _certs;
+    }
+
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        _certs = certs;
+    }
+
  private:
+    QList<QSslCertificate> _certs;
     QNetworkAccessManager* _nam;
     RequestFactory* q_ptr;
 };
-
-RequestFactoryPrivate::RequestFactoryPrivate(RequestFactory* parent)
-    : q_ptr(parent) {
-    _nam = new QNetworkAccessManager();
-}
-
-NetworkReply*
-RequestFactoryPrivate::get(const QNetworkRequest& request) {
-    return new NetworkReply(_nam->get(request));
-}
 
 /*
  * PUBLIC IMPLEMENTATION
@@ -58,4 +76,16 @@ NetworkReply*
 RequestFactory::get(const QNetworkRequest& request) {
     Q_D(RequestFactory);
     return d->get(request);
+}
+
+QList<QSslCertificate>
+RequestFactory::acceptedCertificates() {
+    Q_D(RequestFactory);
+    return d->acceptedCertificates();
+}
+
+void
+RequestFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(RequestFactory);
+    d->setAcceptedCertificates(certs);
 }
