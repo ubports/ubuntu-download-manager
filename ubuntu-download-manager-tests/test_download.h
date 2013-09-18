@@ -125,6 +125,8 @@ class TestDownload: public QObject {
  private:
     QDir _testDir;
     QUuid _id;
+    bool _isConfined;
+    QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     QString _path;
