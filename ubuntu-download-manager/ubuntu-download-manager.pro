@@ -23,7 +23,7 @@ dbus_session_activation.files = ubuntu-download-manager.service
 INSTALLS += dbus_session_activation
 
 dbus_system_activation.path = /usr/share/dbus-1/system-services/
-dbus_system_activation.files = ubuntu-download-manager.service
+dbus_system_activation.files = com.canonical.applications.Downloader.service
 INSTALLS += dbus_system_activation
 
 target.path = /usr/bin/

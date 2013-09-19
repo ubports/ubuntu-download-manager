@@ -58,7 +58,7 @@ def progress_callback(total, progress):
 
 if __name__ == '__main__':
 
-    bus = dbus.SessionBus()
+    bus = dbus.SystemBus()
     loop = gobject.MainLoop()
     manager = bus.get_object('com.canonical.applications.Downloader',
             MANAGER_PATH)

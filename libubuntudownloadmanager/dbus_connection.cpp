@@ -27,8 +27,8 @@ class DBusConnectionPrivate {
     Q_DECLARE_PUBLIC(DBusConnection)
  public:
     DBusConnectionPrivate(DBusConnection* parent)
-        : q_ptr(parent) {
-        _conn = QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "");
+        : _conn(QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "DBUS")),
+         q_ptr(parent) {
     }
 
     bool registerService(const QString& serviceName) {
