@@ -32,8 +32,11 @@ class NetworkReplyPrivate {
     QByteArray readAll();
     void abort();
     void setReadBufferSize(uint size);
+    void setIgnoreSslErrors(QList<QSslError> expectedSslErrors);
+    bool ignoreSslErrors();
 
  private:
+    QList<QSslError> _sslErrors;
     QNetworkReply* _reply;
     NetworkReply* q_ptr;
 };
@@ -71,6 +74,20 @@ NetworkReplyPrivate::setReadBufferSize(uint size) {
     _reply->setReadBufferSize(size);
 }
 
+void
+NetworkReplyPrivate::setIgnoreSslErrors(QList<QSslError> expectedSslErrors) {
+    _sslErrors = expectedSslErrors;
+}
+
+bool
+NetworkReplyPrivate::ignoreSslErrors() {
+    if (_sslErrors.count() > 0) {
+        _reply->ignoreSslErrors(_sslErrors);
+        return true;
+    }
+    return false;
+}
+
 /*
  * PUBLIC IMPLEMENTATION
  */
@@ -97,6 +114,18 @@ void
 NetworkReply::setReadBufferSize(uint size) {
     Q_D(NetworkReply);
     d->setReadBufferSize(size);
+}
+
+void
+NetworkReply::setIgnoreSslErrors(QList<QSslError> expectedSslErrors) {
+    Q_D(NetworkReply);
+    d->setIgnoreSslErrors(expectedSslErrors);
+}
+
+bool
+NetworkReply::ignoreSslErrors() {
+    Q_D(NetworkReply);
+    return d->ignoreSslErrors();
 }
 
 #include "moc_network_reply.cpp"
