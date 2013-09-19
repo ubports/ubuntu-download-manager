@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <unistd.h>
+#include <sys/types.h>
 #include <QDateTime>
 #include <QDir>
 #include <QStandardPaths>
@@ -37,6 +39,22 @@ _realMessageHandler(QtMsgType type,
 }
 
 Logger::Logger(const QString filename) {
+    // decide if we are dealing with a system bus (that should use syslog)
+    // or a session bus
+    _isSystemBus = getuid() == 0;
+    if (_isSystemBus) {
+        initSystemBus();
+    } else {
+        initSessionBus(filename);
+    }
+
+    qInstallMessageHandler(_realMessageHandler);
+
+    _initialized = true;
+}
+
+void
+Logger::initSessionBus(const QString& filename) {
     if (filename == "") {
         _logFileName = getLogDir() + "/ubuntu-download-manager.log";
     } else {
@@ -48,10 +66,11 @@ Logger::Logger(const QString filename) {
         _logStream.setDevice(&_logFile);
         _logStream.flush();
     }
+}
 
-    qInstallMessageHandler(_realMessageHandler);
-
-    _initialized = true;
+void
+Logger::initSystemBus() {
+    // TODO(mandel): init syslog
 }
 
 void
@@ -106,9 +125,9 @@ Logger::getLogDir() {
 }
 
 void
-Logger::logMessage(QtMsgType type,
-                   const QMessageLogContext &context,
-                   const QString &message) {
+Logger::logSessionMessage(QtMsgType type,
+                          const QMessageLogContext &context,
+                          const QString &message) {
     Q_UNUSED(context);
     if (type < _logLevel)
         return;
@@ -137,4 +156,25 @@ Logger::logMessage(QtMsgType type,
 
     if (type == QtFatalMsg)
         abort();
+}
+
+void
+Logger::logSystemMessage(QtMsgType type,
+                         const QMessageLogContext &context,
+                         const QString &message) {
+    Q_UNUSED(type);
+    Q_UNUSED(context);
+    Q_UNUSED(message);
+    //TODO(mandel): use syslog
+}
+
+void
+Logger::logMessage(QtMsgType type,
+                   const QMessageLogContext &context,
+                   const QString &message) {
+    if (_isSystemBus) {
+        logSystemMessage(type, context, message);
+    } else {
+        logSessionMessage(type, context, message);
+    }
 }

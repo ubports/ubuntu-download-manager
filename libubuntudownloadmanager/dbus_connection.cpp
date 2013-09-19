@@ -48,6 +48,10 @@ class DBusConnectionPrivate {
         return _conn.unregisterObject(path, mode);
     }
 
+    QDBusConnection connection() {
+        return _conn;
+    }
+
  private:
     QDBusConnection _conn;
     DBusConnection* q_ptr;
@@ -83,3 +87,8 @@ DBusConnection::unregisterObject(const QString& path,
     d->unregisterObject(path, mode);
 }
 
+QDBusConnection
+DBusConnection::connection() {
+    Q_D(DBusConnection);
+    return d->connection();
+}

@@ -19,6 +19,8 @@
 #include <errno.h>
 #include <nih/alloc.h>
 #include <libnih-dbus.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <QDBusConnection>
 #include <QDebug>
 #include <QRegExp>
@@ -35,10 +37,18 @@ class AppArmorPrivate {
     Q_DECLARE_PUBLIC(AppArmor)
 
  public:
-    explicit AppArmorPrivate(AppArmor* parent)
+    AppArmorPrivate(AppArmor* parent)
         : q_ptr(parent) {
         _dbus = new DBusProxy("org.freedesktop.DBus", "/",
             QDBusConnection::sessionBus());
+        _uuidFactory = new UuidFactory();
+    }
+
+    AppArmorPrivate(QSharedPointer<DBusConnection> connection,
+                    AppArmor* parent)
+        : q_ptr(parent) {
+        _dbus = new DBusProxy("org.freedesktop.DBus", "/",
+            connection->connection());
         _uuidFactory = new UuidFactory();
     }
 
@@ -65,17 +75,24 @@ class AppArmorPrivate {
     }
 
     QString getLocalPath(const QString& appId) {
-        QStringList pathComponents;
-        if (!appId.isEmpty()) {
-            QStringList appIdInfo = appId.split("_");
-            if (appIdInfo.count() > 0)
-                pathComponents << appIdInfo[0];
-        }
+        // if the service is running as root we will always return /tmp
+        // as the local path root
+        if (getuid() == 0){
+            qDebug() << "Running as system bus using /tmp for downloads";
+            return QString("/tmp");
+        } else {
+            QStringList pathComponents;
+            if (!appId.isEmpty()) {
+                QStringList appIdInfo = appId.split("_");
+                if (appIdInfo.count() > 0)
+                    pathComponents << appIdInfo[0];
+            }
 
-        pathComponents << "Downloads";
-        QString localPath = XDGBasedir::saveDataPath(pathComponents);
-        qDebug() << "Local path is" << localPath;
-        return localPath;
+            pathComponents << "Downloads";
+            QString localPath = XDGBasedir::saveDataPath(pathComponents);
+            qDebug() << "Local path is" << localPath;
+            return localPath;
+        }  // not root
     }
 
     void getSecurePath(const QString& connName,
@@ -157,6 +174,12 @@ QString AppArmorPrivate::UNCONFINED_ID = "unconfined";
 AppArmor::AppArmor(QObject *parent)
     : QObject(parent),
       d_ptr(new AppArmorPrivate(this)) {
+}
+
+AppArmor::AppArmor(QSharedPointer<DBusConnection> connection,
+                   QObject *parent)
+    : QObject(parent),
+      d_ptr(new AppArmorPrivate(connection, this)) {
 }
 
 void

@@ -34,6 +34,7 @@ class DBusConnection : public QObject {
         QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
     virtual void unregisterObject(const QString& path,
         QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
+    virtual QDBusConnection connection();
 
  private:
     DBusConnectionPrivate* d_ptr;
