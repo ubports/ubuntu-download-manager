@@ -28,24 +28,23 @@ class ApplicationPrivate {
     Q_DECLARE_PUBLIC(Application)
 
  public:
-    explicit ApplicationPrivate(Application* parent);
+    explicit ApplicationPrivate(Application* parent)
+        : q_ptr(parent) {
+    }
 
-    virtual void exit(int returnCode);
+    void exit(int returnCode) {
+        // get the application instance and exit
+        QCoreApplication* app = QCoreApplication::instance();
+        app->exit(returnCode);
+    }
+
+    QStringList arguments() {
+        return QCoreApplication::arguments();
+    }
 
  private:
     Application* q_ptr;
 };
-
-ApplicationPrivate::ApplicationPrivate(Application* parent)
-    : q_ptr(parent) {
-}
-
-void
-ApplicationPrivate::exit(int returnCode) {
-    // get the application instance and exit
-    QCoreApplication* app = QCoreApplication::instance();
-    app->exit(returnCode);
-}
 
 /*
  * PUBLIC IMPLEMENTATION
@@ -62,4 +61,10 @@ Application::exit(int returnCode) {
     Q_D(Application);
     qDebug() << "Exit app" << returnCode;
     d->exit(returnCode);
+}
+
+QStringList
+Application::arguments() {
+    Q_D(Application);
+    return d->arguments();
 }

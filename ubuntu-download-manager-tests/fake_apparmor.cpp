@@ -21,31 +21,46 @@
 FakeAppArmor::FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,
                            QObject *parent)
     : AppArmor(parent),
+      _isConfined(true),
       _uuidFactory(uuidFactory) {
 }
 
-QPair<QUuid, QString>
-FakeAppArmor::getSecurePath(QString connName) {
-    QUuid id = _uuidFactory->createUuid();
-    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+void
+FakeAppArmor::getDBusPath(QUuid& id, QString& dbusPath) {
+    id = _uuidFactory->createUuid();
+    dbusPath = id.toString().replace(QRegExp("[-{}]"), "");
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(connName));
 
         QList<QObject*> outParams;
         outParams.append(new UuidWrapper(id));
-        outParams.append(new StringWrapper(uuidString));
+        outParams.append(new StringWrapper(dbusPath));
         MethodParams params(inParams, outParams);
-        MethodData methodData("getSecurePath", params);
+        MethodData methodData("getDBusPath", params);
         _called.append(methodData);
     }
-
-    return QPair<QUuid, QString>(id, uuidString);
 }
 
-QPair<QUuid, QString>
-FakeAppArmor::getSecurePath(QUuid id, QString connName) {
+QUuid
+FakeAppArmor::getSecurePath(const QString& connName,
+                        QString& dbusPath,
+                        QString& localPath,
+                        bool& isConfined) {
+    QUuid id = _uuidFactory->createUuid();
+    getSecurePath(connName, id, dbusPath, localPath, isConfined);
+    return id;
+}
+
+void
+FakeAppArmor::getSecurePath(const QString& connName,
+                       const QUuid& id,
+                       QString& dbusPath,
+                       QString& localPath,
+                       bool& isConfined) {
     QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+    dbusPath = "dbus/" + uuidString;
+    localPath = "local/"+ uuidString;
+    isConfined = _isConfined;
     if (_recording) {
         QList<QObject*> inParams;
         inParams.append(new UuidWrapper(id));
@@ -53,11 +68,20 @@ FakeAppArmor::getSecurePath(QUuid id, QString connName) {
 
         QList<QObject*> outParams;
         outParams.append(new UuidWrapper(id));
-        outParams.append(new StringWrapper(uuidString));
+        outParams.append(new StringWrapper(dbusPath));
+        outParams.append(new StringWrapper(localPath));
         MethodParams params(inParams, outParams);
         MethodData methodData("getSecurePath", params);
         _called.append(methodData);
     }
+}
 
-    return QPair<QUuid, QString>(id, uuidString);
+bool
+FakeAppArmor::isConfined() {
+    return _isConfined;
+}
+
+void
+FakeAppArmor::setIsConfined() {
+    _isConfined = true;
 }

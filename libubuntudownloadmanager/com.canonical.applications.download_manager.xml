@@ -1,5 +1,5 @@
 <node>
-  <interface name="com.canonical.applications.DownloaderManager">
+  <interface name="com.canonical.applications.DownloadManager">
     <method name="createDownload">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="DownloadStruct"/>
         <arg name="download" type="(sssa{sv}a{ss})" direction="in" />
