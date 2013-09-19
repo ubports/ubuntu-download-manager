@@ -329,8 +329,7 @@ class SingleDownloadPrivate {
     void onSslErrors(const QList<QSslError>& errors) {
         qDebug() << __PRETTY_FUNCTION__ << _url;
         Q_UNUSED(errors);
-        Q_Q(SingleDownload);
-        emit q->error("SSL ERROR");
+        emitError("SSL ERROR");
     }
 
     // slots executed to keep track of the post download process
@@ -467,7 +466,6 @@ class SingleDownloadPrivate {
         _reply->deleteLater();
         _reply = NULL;
         cleanUpCurrentData();
-        q->setState(Download::ERROR);
         q->emitError(error);
     }
 
