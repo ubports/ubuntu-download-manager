@@ -30,3 +30,27 @@ FakeDownloadManager::emitSizeChaged(int size) {
     emit sizeChanged(size);
 }
 
+QList<QSslCertificate>
+FakeDownloadManager::acceptedCertificates() {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("acceptedCertificates", params);
+        _called.append(methodData);
+    }
+    return DownloadManager::acceptedCertificates();
+}
+
+void
+FakeDownloadManager::setAcceptedCertificates(
+                                const QList<QSslCertificate>& certs) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("setAcceptedCertificates", params);
+        _called.append(methodData);
+    }
+    DownloadManager::setAcceptedCertificates(certs);
+}

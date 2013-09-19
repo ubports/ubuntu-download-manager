@@ -15,33 +15,41 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
+#ifndef TEST_DOWNLOADS_DB_H
+#define TEST_DOWNLOADS_DB_H
 
-#ifndef DOWNLOADER_LIB_REQUEST_FACTORY_H
-#define DOWNLOADER_LIB_REQUEST_FACTORY_H
-
-#include <QNetworkRequest>
+#include <QDir>
 #include <QObject>
-#include <QSslCertificate>
-#include "./app-downloader-lib_global.h"
-#include "./network_reply.h"
+#include <QSqlDatabase>
+#include <downloads_db.h>
+#include "./test_runner.h"
 
-class RequestFactoryPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
+class TestDownloadsDb : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(RequestFactory)
-
  public:
-    explicit RequestFactory(QObject *parent = 0);
+    explicit TestDownloadsDb(QObject *parent = 0);
 
-    virtual NetworkReply* get(const QNetworkRequest& request);
+ private slots:  // NOLINT(whitespace/indent)
 
-    // mainly for testing purposes
-    virtual QList<QSslCertificate> acceptedCertificates();
-    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+    void init();
+    void cleanup();
+
+    void testTableCreations_data();
+    void testTableCreations();
+    void testTableExists();
+    void testStoreSingleDownload_data();
+    void testStoreSingleDownload();
+    void testStoreSingleDownloadPresent_data();
+    void testStoreSingleDownloadPresent();
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    RequestFactoryPrivate* d_ptr;
+    bool removeDir(const QString& dirName);
+
+ private:
+    QDir _testDir;
+    DownloadsDb* _db;
 };
 
-#endif  // DOWNLOADER_LIB_REQUEST_FACTORY_H
+DECLARE_TEST(TestDownloadsDb)
+
+#endif  // TEST_DOWNLOADS_DB_H

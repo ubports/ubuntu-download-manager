@@ -18,18 +18,18 @@
 
 #include "./fake_download_queue.h"
 
-FakeDownloadQueue::FakeDownloadQueue(SystemNetworkInfo* networkInfo,
-                                     QObject *parent)
+FakeDownloadQueue::FakeDownloadQueue(
+                               QSharedPointer<SystemNetworkInfo> networkInfo,
+                               QObject *parent)
     : DownloadQueue(networkInfo, parent),
     Fake() {
 }
 
 void
-FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor) {
+FakeDownloadQueue::add(Download* download) {
     if (_recording) {
         QList<QObject*> inParams;
         inParams.append(download);
-        inParams.append(adaptor);
 
         QList<QObject*> outParams;
 
@@ -38,24 +38,7 @@ FakeDownloadQueue::add(Download* download, DownloadAdaptor* adaptor) {
         MethodData methodData("add", params);
         _called.append(methodData);
     }
-    DownloadQueue::add(download, adaptor);
-}
-
-void
-FakeDownloadQueue::add(const QPair<Download*, DownloadAdaptor*>& value) {
-    if (_recording) {
-        QList<QObject*> inParams;
-        inParams.append(value.first);
-        inParams.append(value.second);
-
-        QList<QObject*> outParams;
-
-        MethodParams params(inParams, outParams);
-
-        MethodData methodData("add", params);
-        _called.append(methodData);
-    }
-    DownloadQueue::add(value);
+    DownloadQueue::add(download);
 }
 
 int

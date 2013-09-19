@@ -1,4 +1,4 @@
-QT       += network dbus systeminfo
+QT       += network dbus systeminfo sql
 QT       -= gui
 
 TARGET = ubuntudownloadmanager
@@ -32,7 +32,11 @@ SOURCES += \
     uuid_factory.cpp \
     xdg_basedir.cpp \
     download_factory.cpp \
-    file_manager.cpp
+    file_manager.cpp \
+    download_struct.cpp \
+    downloads_db.cpp \
+    dbus_proxy.cpp \
+    apparmor.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -60,13 +64,24 @@ HEADERS +=\
     uuid_factory.h \
     xdg_basedir.h \
     download_factory.h \
-    file_manager.h
+    file_manager.h \
+    download_struct.h \
+    downloads_db.h \
+    dbus_proxy.h \
+    apparmor.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml \
-    com.canonical.applications.group_download.xml
+    com.canonical.applications.group_download.xml \
+    org.freedesktop.DBus.xml
 
 target.path = /usr/lib/
 INSTALLS += target
+
+LIBS += -lnih-dbus
+
+CONFIG += link_pkgconfig
+PKGCONFIG += dbus-1
+

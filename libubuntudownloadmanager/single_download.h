@@ -22,10 +22,13 @@
 #include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QProcess>
+#include <QSharedPointer>
 #include <QUrl>
 #include <QUuid>
 #include "./app-downloader-lib_global.h"
 #include "./download.h"
+
+#define LOCAL_PATH_KEY "local-path"
 
 class SingleDownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
@@ -35,23 +38,27 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
  public:
     SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent = 0);
     SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
                    QCryptographicHash::Algorithm algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent = 0);
 
     // gets for internal state

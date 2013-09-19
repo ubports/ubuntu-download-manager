@@ -21,6 +21,7 @@
 
 #include <QList>
 #include <QPair>
+#include <QSharedPointer>
 #include "./download.h"
 #include "./download_adaptor.h"
 #include "./system_network_info.h"
@@ -31,10 +32,10 @@ class DownloadQueue : public QObject {
     Q_DECLARE_PRIVATE(DownloadQueue)
 
  public:
-    explicit DownloadQueue(SystemNetworkInfo* networkInfo, QObject* parent = 0);
+    explicit DownloadQueue(QSharedPointer<SystemNetworkInfo> networkInfo,
+                           QObject* parent = 0);
 
-    virtual void add(Download* download, DownloadAdaptor* adaptor);
-    virtual void add(const QPair<Download*, DownloadAdaptor*>& value);
+    virtual void add(Download* download);
 
     // accessors for useful info
     QString currentDownload();

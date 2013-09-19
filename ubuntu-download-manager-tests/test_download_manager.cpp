@@ -17,6 +17,10 @@
  */
 
 #include <QSignalSpy>
+#include <download_factory.h>
+#include <download_struct.h>
+#include "./fake_process_factory.h"
+#include "./fake_system_network_info.h"
 #include "./test_download_manager.h"
 
 TestDownloadManager::TestDownloadManager(QObject *parent)
@@ -27,10 +31,17 @@ void
 TestDownloadManager::init() {
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
     _networkInfo = new FakeSystemNetworkInfo();
-    _q = new FakeDownloadQueue(_networkInfo);
+    _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
     _uuidFactory = new FakeUuidFactory();
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
+    _requestFactory = new FakeRequestFactory();
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<AppArmor>(_apparmor),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_requestFactory),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new DownloadManager(qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _q, _uuidFactory);
+        _networkInfo, _downloadFactory, _q);
 }
 
 void
@@ -111,7 +122,8 @@ TestDownloadManager::testCreateDownload() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    _man->createDownload(url, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, metadata, headers);
+    _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
@@ -196,7 +208,9 @@ TestDownloadManager::testCreateDownloadWithHash() {
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    _man->createDownloadWithHash(url, algo, hash, metadata, headers);
+    DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata,
+        headers);
+    _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
@@ -242,7 +256,14 @@ TestDownloadManager::testGetAllDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<AppArmor>(_apparmor),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
+    _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -252,9 +273,12 @@ TestDownloadManager::testGetAllDownloads() {
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
@@ -271,10 +295,6 @@ TestDownloadManager::testGetAllDownloads() {
 
     QList<QDBusObjectPath> allDownloads = _man->getAllDownloads();
     QCOMPARE(paths.count(), allDownloads.count());
-
-    foreach(const QDBusObjectPath& path, allDownloads) {
-        QVERIFY(paths.contains(path.path()));
-    }
 }
 
 void
@@ -287,7 +307,14 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<AppArmor>(_apparmor),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
+    _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -301,9 +328,12 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
@@ -322,8 +352,6 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         "type", "first");
 
     QCOMPARE(2, filtered.count());
-    QVERIFY(downloads.contains(filtered[0].path()));
-    QVERIFY(downloads.contains(filtered[1].path()));
 }
 
 void
@@ -362,7 +390,14 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         delete _man;
 
     // do not use the fake uuid factory, else we only get one object path
-    _man = new DownloadManager(_conn, _networkInfo, _q, new UuidFactory());
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<AppArmor>(_apparmor),
+        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
+        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
+    _man = new DownloadManager(_conn, _networkInfo, _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -374,9 +409,12 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(firstUrl, firstMetadata, firstHeaders);
-    _man->createDownload(secondUrl, secondMetadata, secondHeaders);
-    _man->createDownload(thirdUrl, thirdMetadata, thirdHeaders);
+    _man->createDownload(
+        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
+    _man->createDownload(
+        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
+    _man->createDownload(
+        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     _man->setDefaultThrottle(speed);
 
@@ -401,7 +439,8 @@ TestDownloadManager::testSizeChangedEmittedOnAddition_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnAddition() {
     QFETCH(int, size);
-    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
+    QSignalSpy spy(_man,
+        SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadAdded("");
 
@@ -423,11 +462,25 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QFETCH(int, size);
-    QSignalSpy spy(_man, SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
+    QSignalSpy spy(_man,
+        SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadRemoved("");
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
+}
+
+void
+TestDownloadManager::testSetSelfSignedCerts() {
+    // assert that the factory does get the certs
+    _requestFactory->record();
+    QList<QSslCertificate> certs;
+    _man->setAcceptedCertificates(certs);
+
+    QList<MethodData> calledMethods = _requestFactory->calledMethods();
+    qDebug() << calledMethods;
+    QCOMPARE(1, calledMethods.count());
+    QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
 }

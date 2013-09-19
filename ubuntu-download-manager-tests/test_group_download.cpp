@@ -29,13 +29,20 @@ void
 TestGroupDownload::init() {
     _id = QUuid::createUuid();
     _path = "/group/dbus/path";
+    _isConfined = true;
+    _rootPath = "/random/dbus/path";
     _algo = QCryptographicHash::Md5;
     _isGSMDownloadAllowed = true;
     _networkInfo = new FakeSystemNetworkInfo();
     _nam = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _downloadFactory = new FakeDownloadFactory(_networkInfo, _nam,
-        _processFactory);
+    _uuidFactory = new UuidFactory();
+    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
+    _downloadFactory = new FakeDownloadFactory(
+        QSharedPointer<AppArmor>(_apparmor),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_nam),
+        QSharedPointer<ProcessFactory>(_processFactory));
     _fileManager = new FakeFileManager();
 }
 
@@ -49,15 +56,19 @@ TestGroupDownload::cleanup() {
         delete _processFactory;
     if (_downloadFactory != NULL)
         delete _downloadFactory;
+    if (_fileManager != NULL)
+        delete _fileManager;
 }
 
 void
 TestGroupDownload::testCancelNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloads, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo, _nam,
-        _processFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+        _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
+        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     group->cancelDownload();
 }
 
@@ -69,11 +80,13 @@ TestGroupDownload::testCancelAllDownloads() {
     downloads.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloads, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloads, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     group->cancelDownload();
-    foreach(SingleDownload* download, _downloadFactory->downloads()) {
+    foreach(Download* download, _downloadFactory->downloads()) {
         QCOMPARE(Download::CANCEL, download->state());
     }
 }
@@ -90,15 +103,17 @@ TestGroupDownload::testCancelDownloadWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->cancelDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::CANCEL, download->state());
@@ -122,15 +137,17 @@ TestGroupDownload::testCancelDownloadWithCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
     group->cancelDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::CANCEL, download->state());
@@ -141,9 +158,11 @@ void
 TestGroupDownload::testPauseNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloads, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo, _nam,
-        _processFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+        _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
+        _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     group->pauseDownload();
 }
 
@@ -155,16 +174,18 @@ TestGroupDownload::testPauseAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     // start all downlaods
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
-    foreach(SingleDownload* download, downloads) {
+    QList<Download*> downloads = _downloadFactory->downloads();
+    foreach(Download* download, downloads) {
         download->start();
     }
     group->pauseDownload();
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::PAUSE, download->state());
     }
 }
@@ -181,15 +202,17 @@ TestGroupDownload::testPauseDownloadWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->pauseDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH && state != Download::IDLE)
             QCOMPARE(Download::PAUSE, download->state());
@@ -213,15 +236,17 @@ TestGroupDownload::testPauseDownloadWithCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
     group->pauseDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL && state != Download::IDLE)
             QCOMPARE(Download::PAUSE, state);
@@ -234,9 +259,11 @@ void
 TestGroupDownload::testResumeNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloads, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo, _nam,
-        _processFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloads, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     group->cancelDownload();
 }
 
@@ -252,18 +279,20 @@ TestGroupDownload::testResumeAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
-    foreach(SingleDownload* download, downloads) {
+    QList<Download*> downloads = _downloadFactory->downloads();
+    foreach(Download* download, downloads) {
         download->start();
         download->pause();
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::RESUME, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -282,11 +311,14 @@ TestGroupDownload::testResumeWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
+    qDebug() << "Downloads" << downloads;
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     for (int index = 1; index < downloads.count(); index++) {
         downloads[index]->start();
@@ -294,7 +326,7 @@ TestGroupDownload::testResumeWithFinished() {
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::RESUME, download->state());
@@ -315,11 +347,14 @@ TestGroupDownload::testResumeWidhCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     (downloads[0])->cancel();
     for (int index = 1; index < downloads.count(); index++) {
         downloads[index]->start();
@@ -327,7 +362,7 @@ TestGroupDownload::testResumeWidhCancel() {
     }
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL)
             QCOMPARE(Download::RESUME, download->state());
@@ -348,14 +383,17 @@ TestGroupDownload::testReusmeNoStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->resumeDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::IDLE, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -366,9 +404,12 @@ void
 TestGroupDownload::testStartNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloads, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo, _nam,
-        _processFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+        _rootPath, downloads, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     group->startDownload();
 }
 
@@ -384,14 +425,16 @@ TestGroupDownload::testStartAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::START, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -410,18 +453,20 @@ TestGroupDownload::testStartAlreadyStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         download->start();
     }
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::START, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -440,20 +485,22 @@ TestGroupDownload::testStartResume() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         download->start();
         download->pause();
         download->resume();
     }
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         QCOMPARE(Download::RESUME, download->state());
     }
     QList<MethodData> calledMethods = _fileManager->calledMethods();
@@ -472,15 +519,17 @@ TestGroupDownload::testStartFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH)
             QCOMPARE(Download::START, download->state());
@@ -501,15 +550,17 @@ TestGroupDownload::testStartCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     downloads[0]->cancel();
     group->startDownload();
 
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         Download::State state = download->state();
         if (state != Download::CANCEL)
             QCOMPARE(Download::START, download->state());
@@ -531,12 +582,14 @@ TestGroupDownload::testSingleDownloadFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     QSignalSpy spy(group, SIGNAL(finished(QStringList)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
@@ -558,14 +611,16 @@ TestGroupDownload::testAllDownloadsFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     QSignalSpy spy(group, SIGNAL(finished(QStringList)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
-    foreach(SingleDownload* download, downloads) {
+    foreach(Download* download, downloads) {
         reinterpret_cast<FakeDownload*>(download)->emitFinished(deleteFile);
     }
 
@@ -586,12 +641,14 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     QSignalSpy spy(group, SIGNAL(error(QString)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitError("error");
@@ -613,12 +670,14 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupDownload* group = new GroupDownload(_id, _path, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _networkInfo,
-        _downloadFactory, _fileManager);
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
     QSignalSpy spy(group, SIGNAL(error(QString)));
 
-    QList<SingleDownload*> downloads = _downloadFactory->downloads();
+    QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
     for (int index = 1; index < downloads.count(); index++) {
         reinterpret_cast<FakeDownload*>(downloads[index])->emitFinished("path");
@@ -629,4 +688,76 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(2, calledMethods.count());
     QCOMPARE(spy.count(), 1);
+}
+
+void
+TestGroupDownload::testLocalPathSingleDownload() {
+    // assert that the local path of the download was set in the metadata
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, _isConfined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    Q_UNUSED(group);
+
+    QList<Download*> downloads = _downloadFactory->downloads();
+
+    // assert that each metadata has the local file set
+    QVariantMap downMeta = downloads[0]->metadata();
+    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+        downloadsStruct[0].getLocalFile());
+
+    downMeta = downloads[1]->metadata();
+    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+        downloadsStruct[1].getLocalFile());
+
+    downMeta = downloads[2]->metadata();
+    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+        downloadsStruct[2].getLocalFile());
+}
+
+void
+TestGroupDownload::testConfinedSingleDownload_data() {
+    QTest::addColumn<bool>("confined");
+
+    QTest::newRow("Confined") << true;
+    QTest::newRow("Unconfined") << false;
+}
+
+void
+TestGroupDownload::testConfinedSingleDownload() {
+    // assert that the created downloads are confined
+    QFETCH(bool, confined);
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, confined, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    Q_UNUSED(group);
+
+    foreach(Download* download, _downloadFactory->downloads()) {
+        QCOMPARE(confined, download->isConfined());
+    }
 }

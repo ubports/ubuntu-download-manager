@@ -30,6 +30,11 @@ class FakeApplication : public Application, public Fake {
     explicit FakeApplication(QObject *parent = 0);
 
     void exit(int returnCode = 0) override;
+
+    QStringList arguments() override;
+    void setArguments(QStringList args);
+ private:
+    QStringList _args;
 };
 
 #endif  // FAKE_APPLICATION_H

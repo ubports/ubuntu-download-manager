@@ -57,13 +57,13 @@ class TestDownloadQueue : public QObject {
     void testDownloadErrorWithOtherReady();
 
  private:
+    bool _isConfined;
+    QString _rootPath;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
     FakeDownload* _first;
-    DownloadAdaptor* _firstAdaptor;
     FakeDownload* _second;
-    DownloadAdaptor* _secondAdaptor;
     DownloadQueue* _q;
 };
 

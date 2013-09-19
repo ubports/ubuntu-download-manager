@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "fake_application.h"
+#include "./fake_application.h"
 
 FakeApplication::FakeApplication(QObject *parent)
     : Application(parent),
@@ -34,4 +34,21 @@ FakeApplication::exit(int returnCode) {
         MethodData methodData("exit", params);
         _called.append(methodData);
     }
+}
+
+QStringList
+FakeApplication::arguments() {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("arguments", params);
+        _called.append(methodData);
+    }
+    return _args;
+}
+
+void
+FakeApplication::setArguments(QStringList args) {
+    _args = args;
 }

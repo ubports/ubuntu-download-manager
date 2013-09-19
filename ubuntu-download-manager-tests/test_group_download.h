@@ -20,7 +20,9 @@
 #define TEST_GROUP_DOWNLOAD_H
 
 #include <QObject>
+#include <uuid_factory.h>
 #include <group_download.h>
+#include "./fake_apparmor.h"
 #include "./fake_file_manager.h"
 #include "./fake_system_network_info.h"
 #include "./fake_request_factory.h"
@@ -62,14 +64,21 @@ class TestGroupDownload : public QObject {
     void testAllDownloadsFinished();
     void testSingleDownloadErrorNoFinished();
     void testSingleDownloadErrorWithFinished();
+    void testLocalPathSingleDownload();
+    void testConfinedSingleDownload_data();
+    void testConfinedSingleDownload();
 
  private:
     QUuid _id;
     QString _path;
+    bool _isConfined;
+    QString _rootPath;
     QCryptographicHash::Algorithm _algo;
     bool _isGSMDownloadAllowed;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
+    UuidFactory* _uuidFactory;
+    FakeAppArmor* _apparmor;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _nam;
     FakeProcessFactory* _processFactory;

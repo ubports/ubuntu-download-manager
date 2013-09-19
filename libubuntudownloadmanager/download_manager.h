@@ -22,38 +22,45 @@
 #include <QObject>
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
+#include <QtDBus/QDBusContext>
 #include <QSharedPointer>
+#include <QSslCertificate>
 #include "./dbus_connection.h"
 #include "./download.h"
 #include "./download_queue.h"
+#include "./download_factory.h"
 #include "./metatypes.h"
 #include "./system_network_info.h"
-#include "./uuid_factory.h"
 
 class DownloadManagerPrivate;
-class DownloadManager : public QObject {
+class DownloadManager : public QObject, public QDBusContext {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadManager)
 
  public:
-    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
-                             QObject *parent = 0);
-    explicit DownloadManager(QSharedPointer<DBusConnection> connection,
-                             SystemNetworkInfo* networkInfo,
-                             DownloadQueue* queue,
-                             UuidFactory* uuidFactory,
-                             QObject *parent = 0);
+    DownloadManager(QSharedPointer<DBusConnection> connection,
+                    QObject *parent = 0);
+    DownloadManager(QSharedPointer<DBusConnection> connection,
+                    SystemNetworkInfo* networkInfo,
+                    DownloadFactory* downloadFactory,
+                    DownloadQueue* queue,
+                    QObject *parent = 0);
+
     void loadPreviewsDownloads(const QString &path);
 
+    // mainly for testing purposes
+    virtual QList<QSslCertificate> acceptedCertificates();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+
  public slots:  // NOLINT(whitespace/indent)
-    QDBusObjectPath createDownload(const QString &url,
-                                   const QVariantMap &metadata,
-                                   StringMap headers);
-    QDBusObjectPath createDownloadWithHash(const QString &url,
-                                           const QString &algorithm,
-                                           const QString &hash,
-                                           const QVariantMap &metadata,
-                                           StringMap headers);
+    QDBusObjectPath createDownload(DownloadStruct download);
+
+    QDBusObjectPath createDownloadGroup(StructList downloads,
+                                        const QString& algorithm,
+                                        bool allowed3G,
+                                        const QVariantMap& metadata,
+                                        StringMap headers);
+
     qulonglong defaultThrottle();
     void setDefaultThrottle(qulonglong speed);
     QList<QDBusObjectPath> getAllDownloads();

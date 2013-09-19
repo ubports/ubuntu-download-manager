@@ -18,6 +18,7 @@
 
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
+#include <QSharedPointer>
 #include <download_queue.h>
 #include <system_network_info.h>
 #include "./fake.h"
@@ -26,11 +27,10 @@ class FakeDownloadQueue : public DownloadQueue, public Fake {
     Q_OBJECT
 
  public:
-    explicit FakeDownloadQueue(SystemNetworkInfo* networkInfo,
-                               QObject *parent = 0);
+    FakeDownloadQueue(QSharedPointer<SystemNetworkInfo> networkInfo,
+                      QObject *parent = 0);
 
-    void add(Download* download, DownloadAdaptor* adaptor) override;
-    void add(const QPair<Download*, DownloadAdaptor*>& value) override;
+    void add(Download* download) override;
     int size() override;
     void setSize(int size);
 

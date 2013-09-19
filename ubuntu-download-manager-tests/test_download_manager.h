@@ -23,9 +23,12 @@
 #include <QSharedPointer>
 #include <download_manager.h>
 #include <single_download.h>
+#include "./fake_apparmor.h"
 #include "./test_runner.h"
 #include "./fake_dbus_connection.h"
 #include "./fake_download_queue.h"
+#include "./fake_download_factory.h"
+#include "./fake_request_factory.h"
 #include "./fake_uuid_factory.h"
 #include "./fake_system_network_info.h"
 
@@ -57,15 +60,19 @@ class TestDownloadManager : public QObject {
     void testSetThrottleWithDownloads();
     void testSizeChangedEmittedOnAddition();
     void testSizeChangedEmittedOnRemoval();
+    void testSetSelfSignedCerts();
 
  private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
  private:
     FakeSystemNetworkInfo* _networkInfo;
+    FakeRequestFactory* _requestFactory;
+    FakeDownloadFactory* _downloadFactory;
     QSharedPointer<FakeDBusConnection> _conn;
     FakeDownloadQueue* _q;
     FakeUuidFactory* _uuidFactory;
+    FakeAppArmor* _apparmor;
     DownloadManager* _man;
 };
 

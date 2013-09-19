@@ -34,26 +34,25 @@ class GroupDownloadPrivate {
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
-                  SystemNetworkInfo* networkInfo,
-                  RequestFactory* nam,
-                  ProcessFactory* processFactory,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downloadFactory,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
           _downloadsProgress(),
           _networkInfo(networkInfo),
+          _downFactory(downloadFactory),
           q_ptr(parent) {
-        _downFactory = new DownloadFactory(networkInfo, nam, processFactory);
-        _fileManager = new FileManager();
+        _fileManager = QSharedPointer<FileManager>(new FileManager());
         init(downloads, algo, isGSMDownloadAllowed);
     }
 
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
-                  SystemNetworkInfo* networkInfo,
-                  DownloadFactory* downFactory,
-                  FileManager* fileManager,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<FileManager> fileManager,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
@@ -65,19 +64,11 @@ class GroupDownloadPrivate {
         init(downloads, algo, isGSMDownloadAllowed);
     }
 
-    ~GroupDownloadPrivate() {
-        if (_uuidFactory != NULL)
-            delete _uuidFactory;
-        if (_q != NULL)
-            delete _q;
-    }
-
     void init(QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed) {
         Q_Q(GroupDownload);
-        _q = new DownloadQueue(_networkInfo);
-        _uuidFactory = new UuidFactory();
+        _q = QSharedPointer<DownloadQueue>(new DownloadQueue(_networkInfo));
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
 
@@ -85,24 +76,32 @@ class GroupDownloadPrivate {
         // starting them etc..
         foreach(GroupDownloadStruct download, downloads) {
             qDebug() << "Creating download for" << download.getUrl();
-            QUuid id = _uuidFactory->createUuid();
-            QString path = id.toString().replace(QRegExp("[-{}]"), "");
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
             SingleDownload* singleDownload;
+            QVariantMap downloadMetadata = QVariantMap(metadata);
+            downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
+            qDebug() << "Download metadata is" << downloadMetadata;
+            qDebug() << "Group metadata is" << metadata;
+
             if (hash.isEmpty()) {
                 qDebug() << "Creating SingleDownload with no hash.";
-                singleDownload = _downFactory->createDownload(id, path,
-                    url, metadata, headers);
+                singleDownload = qobject_cast<SingleDownload*>(
+                    _downFactory->createDownloadForGroup(q->isConfined(),
+                        q->rootPath(), url, downloadMetadata, headers));
             } else {
                 qDebug() << "Creating SingleDownload with hash.";
-                singleDownload = _downFactory->createDownload(id, path,
-                    url, hash, algo, metadata, headers);
+                singleDownload = qobject_cast<SingleDownload*>(
+                    _downFactory->createDownloadForGroup(q->isConfined(),
+                        q->rootPath(), url, hash, algo, downloadMetadata,
+                        headers));
             }
 
             singleDownload->allowGSMDownload(isGSMDownloadAllowed);
             _downloads.append(singleDownload);
+            _downloadsProgress[singleDownload->url()] =
+                QPair<qulonglong, qulonglong>(0, singleDownload->totalSize());
             // connect to signals to keep track of the download
             q->connect(singleDownload, SIGNAL(error(const QString&)),
                 q, SLOT(onError(const QString&)));
@@ -111,9 +110,7 @@ class GroupDownloadPrivate {
             q->connect(singleDownload, SIGNAL(finished(const QString&)),
                 q, SLOT(onFinished(const QString&)));
             qDebug() << "Signals connected.";
-
-            DownloadAdaptor* adaptor = new DownloadAdaptor(singleDownload);
-            _q->add(singleDownload, adaptor);
+            _q->add(singleDownload);
         }
     }
 
@@ -233,18 +230,21 @@ class GroupDownloadPrivate {
         Q_Q(GroupDownload);
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
         qDebug() << __PRETTY_FUNCTION__;
-        // TODO (mandel): the result is not real, we need to be smarter make
+        // TODO(mandel): the result is not real, we need to be smarter make
         // a head request get size and name and the do all this, but atm is
         // 'good enough' get the sender and check if we received
-        // progress from it, update its data and recanculate
+        // progress from it, update its data and recalculate
         QUrl url = sender->url();
+        qDebug() << "Progress from" << url;
         if (_downloadsProgress.contains(url)) {
-            QPair<qulonglong, qulonglong> data = _downloadsProgress[url];
+            QPair<qulonglong, qulonglong>& data = _downloadsProgress[url];
             data.first = received;
             if (data.second != total) {
+                qDebug() << "Updating total!";
                 data.second = total;
             }
         } else {
+            qDebug() << "First progress signal";
             _downloadsProgress[url] = QPair<qulonglong, qulonglong>(received,
                 total);
         }
@@ -252,42 +252,33 @@ class GroupDownloadPrivate {
         // progress is equal to the total and is not in the finishedDownloads
         // it means that the total is not known and we have to return received
         // == total
-        bool isIncomplete = false;
         qulonglong totalReceived = 0;
         qulonglong totalTotal = 0;
+        QList<QPair<qulonglong, qulonglong> > progressList =
+            _downloadsProgress.values();
 
-        foreach(SingleDownload* download, _downloads) {
-            QUrl currentUrl = download->url();
-            if (_downloadsProgress.contains(url)) {
-                QPair<qulonglong, qulonglong> data = _downloadsProgress[
-                    currentUrl];
-                isIncomplete = data.first == data.second
-                    && !_finishedDownloads.contains(download->filePath());
-                totalReceived += data.first;
-                totalTotal += data.second;
-            } else {
-                // we had no progress, get the total size and add it
-                totalTotal += download->totalSize();
-            }
+        for (int index = 0; index < progressList.count(); index++) {
+            totalReceived += progressList[index].first;
+            totalTotal += progressList[index].second;
         }
-        if (isIncomplete) {
-            Download* down_q = reinterpret_cast<Download*>(q);
-            emit down_q->progress(totalReceived, totalReceived);
-        } else {
-            Download* down_q = reinterpret_cast<Download*>(q);
-            emit down_q->progress(totalReceived, totalTotal);
-        }
+
+        Download* down_q = reinterpret_cast<Download*>(q);
+        qDebug() << "EMIT group progress" << totalReceived << totalTotal;
+        emit down_q->progress(totalReceived, totalTotal);
     }
 
     void onFinished(const QString& file) {
         Q_Q(GroupDownload);
         qDebug() << __PRETTY_FUNCTION__ << file;
-
+        SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
+        _downloadsProgress[sender->url()] = QPair<qulonglong, qulonglong>(
+            sender->totalSize(), sender->totalSize());
         _finishedDownloads.append(file);
         qDebug() << "Finished downloads" << _finishedDownloads;
         // if we have the same number of downloads finished
         // that downloads we are done :)
         if (_downloads.count() == _finishedDownloads.count()) {
+            q->setState(Download::FINISH);
             emit q->finished(_finishedDownloads);
         }
     }
@@ -296,11 +287,10 @@ class GroupDownloadPrivate {
     QList<SingleDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
-    SystemNetworkInfo* _networkInfo;
-    UuidFactory* _uuidFactory;
-    DownloadQueue* _q;
-    DownloadFactory* _downFactory;
-    FileManager* _fileManager;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<DownloadQueue> _q;
+    QSharedPointer<DownloadFactory> _downFactory;
+    QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;
 };
 
@@ -310,32 +300,37 @@ class GroupDownloadPrivate {
 
 GroupDownload::GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  RequestFactory* nam,
-                  ProcessFactory* processFactory,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
                   QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers,
+            networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
-            networkInfo, nam, processFactory, this)) {
+            networkInfo, downFactory, this)) {
 }
 
 GroupDownload::GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  DownloadFactory* downFactory,
-                  FileManager* fileManager,
+                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<FileManager> fileManager,
                   QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers,
+            networkInfo, parent),
       d_ptr(new GroupDownloadPrivate(downloads, algo, isGSMDownloadAllowed,
             networkInfo, downFactory, fileManager, this)) {
 }

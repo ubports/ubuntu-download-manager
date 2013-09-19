@@ -18,6 +18,7 @@
 
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
+#include <QSharedPointer>
 #include <single_download.h>
 #include <system_network_info.h>
 #include <metatypes.h>
@@ -27,26 +28,30 @@ class FakeDownload : public SingleDownload, public Fake {
     Q_OBJECT
 
  public:
-    explicit FakeDownload(const QUuid& id,
-                          const QString& path,
-                          const QUrl& url,
-                          const QVariantMap& metadata,
-                          const QMap<QString, QString>& headers,
-                          SystemNetworkInfo* networkInfo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
-                          QObject* parent = 0);
-    explicit FakeDownload(const QUuid& id,
-                          const QString& path,
-                          const QUrl& url,
-                          const QString& hash,
-                          QCryptographicHash::Algorithm algo,
-                          const QVariantMap& metadata,
-                          const QMap<QString, QString> &headers,
-                          SystemNetworkInfo* networkInfo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
-                          QObject* parent = 0);
+    FakeDownload(const QUuid& id,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 QSharedPointer<RequestFactory> nam,
+                 QSharedPointer<ProcessFactory> processFactory,
+                 QObject* parent = 0);
+    FakeDownload(const QUuid& id,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QString& hash,
+                 QCryptographicHash::Algorithm algo,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString> &headers,
+                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 QSharedPointer<RequestFactory> nam,
+                 QSharedPointer<ProcessFactory> processFactory,
+                 QObject* parent = 0);
 
     bool canDownload() override;
     void setCanDownload(bool canDownload);

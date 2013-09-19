@@ -20,6 +20,7 @@
 #define FAKE_DOWNLOAD_FACTORY_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include <download_factory.h>
 #include "./fake.h"
 
@@ -27,32 +28,53 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownloadFactory(SystemNetworkInfo* networkInfo,
-                        RequestFactory* nam,
-                        ProcessFactory* processFactory,
+    FakeDownloadFactory(QSharedPointer<AppArmor> apparmor,
+                        QSharedPointer<SystemNetworkInfo> networkInfo,
+                        QSharedPointer<RequestFactory> nam,
+                        QSharedPointer<ProcessFactory> processFactory,
                         QObject *parent = 0);
 
-    SingleDownload* createDownload(const QUuid& id,
-                                   const QString& path,
-                                   const QUrl& url,
-                                   const QVariantMap& metadata,
-                                   const QMap<QString, QString>& headers);
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
 
-    SingleDownload* createDownload(const QUuid& id,
-                                   const QString& path,
-                                   const QUrl& url,
-                                   const QString& hash,
-                                   QCryptographicHash::Algorithm algo,
-                                   const QVariantMap& metadata,
-                                   const QMap<QString, QString>& headers);
+    Download* createDownload(const QString& downloadOwner,
+                             const QUrl& url,
+                             const QString& hash,
+                             QCryptographicHash::Algorithm algo,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
 
-    QList<SingleDownload*> downloads();
+    Download* createDownload(const QString& downloadOwner,
+                             StructList downloads,
+                             QCryptographicHash::Algorithm algo,
+                             bool allowed3G,
+                             const QVariantMap& metadata,
+                             StringMap headers) override;
+
+    Download* createDownloadForGroup(bool isConfined,
+                             const QString& rootPath,
+                             const QUrl& url,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
+
+    Download* createDownloadForGroup(bool isConfined,
+                             const QString& rootPath,
+                             const QUrl& url,
+                             const QString& hash,
+                             QCryptographicHash::Algorithm algo,
+                             const QVariantMap& metadata,
+                             const QMap<QString, QString>& headers) override;
+
+    QList<Download*> downloads();
 
  private:
-    SystemNetworkInfo* _networkInfo;
-    RequestFactory* _nam;
-    ProcessFactory* _processFactory;
-    QList<SingleDownload*> _downloads;
+    QSharedPointer<AppArmor> _apparmor;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<RequestFactory> _nam;
+    QSharedPointer<ProcessFactory> _processFactory;
+    QList<Download*> _downloads;
 };
 
 #endif  // FAKE_DOWNLOAD_FACTORY_H

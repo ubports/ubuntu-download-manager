@@ -30,22 +30,29 @@ class DownloadPrivate {
  public:
     DownloadPrivate(const QUuid& id,
                     const QString& path,
+                    bool isConfined,
+                    const QString& rootPath,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
-                    SystemNetworkInfo* networkInfo,
+                    QSharedPointer<SystemNetworkInfo> networkInfo,
                     Download* parent)
         : _id(id),
           _throttle(0),
           _allowGSMDownload(true),
           _state(Download::IDLE),
           _dbusPath(path),
+          _isConfined(isConfined),
+          _rootPath(rootPath),
           _metadata(metadata),
           _headers(headers),
           _networkInfo(networkInfo),
           q_ptr(parent) {
     }
 
-    ~DownloadPrivate() {}
+    ~DownloadPrivate() {
+        if (_adaptor != NULL)
+            _adaptor->deleteLater();
+    }
 
     QUuid downloadId() const {
         return _id;
@@ -53,6 +60,14 @@ class DownloadPrivate {
 
     QString path() const {
         return _dbusPath;
+    }
+
+    bool isConfined() const {
+        return _isConfined;
+    }
+
+    QString rootPath() const {
+        return _rootPath;
     }
 
     Download::State state() {
@@ -63,6 +78,14 @@ class DownloadPrivate {
         Q_Q(Download);
         _state = state;
         emit q->stateChanged();
+    }
+
+    QObject* adaptor() {
+        return _adaptor;
+    }
+
+    void setAdaptor(QObject* adaptor) {
+        _adaptor = adaptor;
     }
 
     QMap<QString, QString> headers() const {
@@ -147,9 +170,12 @@ class DownloadPrivate {
     bool _allowGSMDownload;
     Download::State _state;
     QString _dbusPath;
+    bool _isConfined;
+    QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    SystemNetworkInfo* _networkInfo;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QObject* _adaptor;
     Download* q_ptr;
 };
 
@@ -159,13 +185,15 @@ class DownloadPrivate {
 
 Download::Download(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
                    QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadPrivate(id, path, metadata, headers,
-                  networkInfo, this)) {
+      d_ptr(new DownloadPrivate(id, path, isConfined, rootPath, metadata,
+            headers, networkInfo, this)) {
 }
 
 QUuid
@@ -180,6 +208,18 @@ Download::path() {
     return d->path();
 }
 
+bool
+Download::isConfined() {
+    Q_D(Download);
+    return d->isConfined();
+}
+
+QString
+Download::rootPath() {
+    Q_D(Download);
+    return d->rootPath();
+}
+
 Download::State
 Download::state() {
     Q_D(Download);
@@ -190,6 +230,18 @@ void
 Download::setState(Download::State state) {
     Q_D(Download);
     d->setState(state);
+}
+
+QObject*
+Download::adaptor() {
+    Q_D(Download);
+    return d->adaptor();
+}
+
+void
+Download::setAdaptor(QObject* adaptor) {
+    Q_D(Download);
+    d->setAdaptor(adaptor);
 }
 
 QMap<QString, QString>

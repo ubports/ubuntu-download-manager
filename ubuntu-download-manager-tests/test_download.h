@@ -111,12 +111,22 @@ class TestDownload: public QObject {
     void testProcessFinishedWithError();
     void testProcessFinishedCrash();
 
+    // test related to bug #1224678
+    void testSetRawHeaderAcceptEncoding_data();
+    void testSetRawHeaderAcceptEncoding();
+
+    // local path generation tests
+    void testLocalPathConfined();
+    void testLocalPathNotConfined();
+
  private:
     bool removeDir(const QString& dirName);
 
  private:
     QDir _testDir;
     QUuid _id;
+    bool _isConfined;
+    QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     QString _path;

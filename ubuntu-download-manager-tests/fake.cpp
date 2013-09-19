@@ -119,6 +119,25 @@ UintWrapper::setValue(uint value) {
 }
 
 /*
+ * QUuid Wrapper
+ */
+
+UuidWrapper::UuidWrapper(QUuid value, QObject* parent)
+    : QObject(parent) {
+    _value = value;
+}
+
+QUuid
+UuidWrapper::value() {
+    return _value;
+}
+
+void
+UuidWrapper::setValue(QUuid value) {
+    _value = value;
+}
+
+/*
  * METHOD PARAMS
  */
 

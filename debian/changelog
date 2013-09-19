@@ -1,3 +1,60 @@
+ubuntu-download-manager (0.2+13.10.20130906.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Added code to store single downloads in the new sqlite db.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 115
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 06 Sep 2013 10:03:50 +0000
+
+ubuntu-download-manager (0.2+13.10.20130904-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Move to store the metadata in a sqlite db in disk rather than using
+    a dir tree.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 113
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 04 Sep 2013 15:57:41 +0000
+
+ubuntu-download-manager (0.2+13.10.20130903.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Adds a new API that exposes the creation of a download as a struct
+    that way the clib will be more stable without changing the
+    parameters and will be able to provide a nice struct with default
+    values.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 111
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 18:04:00 +0000
+
+ubuntu-download-manager (0.2+13.10.20130903-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Adds a download structure that can be serialized over DBus to later
+    change API to have a single createDownload method. .
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 109
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Sep 2013 02:03:56 +0000
+
+ubuntu-download-manager (0.2+13.10.20130902-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Added -testcase as a new commandline argument to the test
+    application. (LP: #1219787)
+  * Expose group download creation to clients using the session dbus.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 107
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Sep 2013 18:03:58 +0000
+
 ubuntu-download-manager (0.2+13.10.20130830-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]

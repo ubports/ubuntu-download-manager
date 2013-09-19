@@ -26,18 +26,24 @@ TestDownloadQueue::TestDownloadQueue(QObject *parent)
 
 void
 TestDownloadQueue::init() {
+    _isConfined = true;
+    _rootPath = "/random/root/path";
     _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _first = new FakeDownload(QUuid::createUuid(), "first-path", QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
-        _processFactory);
-    _firstAdaptor = new DownloadAdaptor(_first);
-    _second = new FakeDownload(QUuid::createUuid(), "second-path", QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _networkInfo, _reqFactory,
-        _processFactory);
-    _secondAdaptor = new DownloadAdaptor(_second);
-    _q = new DownloadQueue(_networkInfo);
+    _first = new FakeDownload(QUuid::createUuid(), "first-path",
+        _isConfined, _rootPath, QUrl(),
+        QVariantMap(), QMap<QString, QString>(),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    _second = new FakeDownload(QUuid::createUuid(), "second-path",
+        _isConfined, _rootPath, QUrl(),
+        QVariantMap(), QMap<QString, QString>(),
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    _q = new DownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
 }
 
 void
@@ -59,7 +65,7 @@ void
 TestDownloadQueue::testAddDownload() {
     // test that when a download added the add signals is raised
     QSignalSpy spy(_q, SIGNAL(downloadAdded(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     QCOMPARE(spy.count(), 1);
 
@@ -72,7 +78,7 @@ TestDownloadQueue::testStartDownloadWithNoCurrent() {
     // add a download, set the state to start and assert that it will be started
     _first->record();
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -97,9 +103,9 @@ TestDownloadQueue::testStartDownloadWithCurrent() {
     _second->record();
 
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
     _first->start();  // emit signal
-    _q->add(_second, _secondAdaptor);
+    _q->add(_second);
     _second->start();
 
     QCOMPARE(spy.count(), 1);  // just raised by the first change of state
@@ -123,7 +129,7 @@ TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload() {
     _first->setCanDownload(false);
     _first->record();
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -147,7 +153,7 @@ TestDownloadQueue::testPauseDownloadNoOtherReady() {
     // signals and execute the required methods
     _first->record();
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
 
@@ -178,8 +184,8 @@ TestDownloadQueue::testPauseDownloadOtherReady() {
     _second->record();
 
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -216,8 +222,8 @@ TestDownloadQueue::testResumeDownloadNoOtherPresent() {
     _second->record();
 
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -260,8 +266,8 @@ TestDownloadQueue::testResumeDownloadOtherPresent() {
     _second->record();
 
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -305,8 +311,8 @@ TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload() {
     _second->record();
 
     QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -345,7 +351,7 @@ TestDownloadQueue::testCancelDownloadNoOtherReady() {
     // cancel the download and expect it to be done
     _first->record();
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
 
@@ -374,8 +380,8 @@ TestDownloadQueue::testCancelDownloadOtherReady() {
     _second->record();
 
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -412,8 +418,8 @@ TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload() {
     _second->record();
 
     QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
@@ -446,7 +452,7 @@ TestDownloadQueue::testCancelDownloadNotStarted() {
     // cancel not started and ensure that it is removed
     _first->record();
     QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
-    _q->add(_first, _firstAdaptor);
+    _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
 
@@ -457,8 +463,8 @@ TestDownloadQueue::testCancelDownloadNotStarted() {
 void
 TestDownloadQueue::testDownloads() {
     // add the downloads to the q and assert that they are all returned
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _secondAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     QHash<QString, Download*> downloads = _q->downloads();
     QCOMPARE(downloads[_first->path()], _first);
@@ -470,8 +476,8 @@ TestDownloadQueue::testDownloadFinishedOtherReady() {
     _first->record();
     _second->record();
 
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     _first->start();
     _second->start();
@@ -493,8 +499,8 @@ TestDownloadQueue::testDownloadErrorWithOtherReady() {
     _first->record();
     _second->record();
 
-    _q->add(_first, _firstAdaptor);
-    _q->add(_second, _firstAdaptor);
+    _q->add(_first);
+    _q->add(_second);
 
     _first->start();
     _second->start();

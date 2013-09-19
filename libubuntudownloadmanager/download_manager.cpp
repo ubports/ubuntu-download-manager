@@ -17,13 +17,12 @@
  */
 
 #include <QRegExp>
-#include "./download_adaptor.h"
+#include "./apparmor.h"
 #include "./download_queue.h"
-#include "./download_manager.h"
-#include "./process_factory.h"
+#include "./hash_algorithm.h"
 #include "./request_factory.h"
 #include "./system_network_info.h"
-#include "./single_download.h"
+#include "./download_manager.h"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -33,203 +32,178 @@ class DownloadManagerPrivate {
     Q_DECLARE_PUBLIC(DownloadManager)
 
  public:
-    explicit DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
-                                    DownloadManager* parent);
-    explicit DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
-                                    SystemNetworkInfo* networkInfo,
-                                    DownloadQueue* queue,
-                                    UuidFactory* uuidFactory,
-                                    DownloadManager* parent = 0);
+    DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
+                           DownloadManager* parent)
+        : _throttle(0),
+          q_ptr(parent) {
+        _conn = connection;
+        _apparmor = QSharedPointer<AppArmor>(new AppArmor());
+        _networkInfo = QSharedPointer<SystemNetworkInfo>(
+            new SystemNetworkInfo());
+        QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
+            new RequestFactory());
+        _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
+        _downloadFactory = QSharedPointer<DownloadFactory>(
+            new DownloadFactory(_apparmor, _networkInfo, nam,
+                _processFactory));
+        _downloadsQueue = QSharedPointer<DownloadQueue>(
+            new DownloadQueue(_networkInfo));
+        init();
+    }
 
- private:
-    void init();
-    void addDownload(Download* download);
-    void loadPreviewsDownloads(QString path);
-    void onDownloadsChanged(QString path);
-
-    QDBusObjectPath createDownload(const QString& url,
-                                   const QVariantMap& metadata,
-                                   StringMap headers);
-    QDBusObjectPath createDownloadWithHash(const QString& url,
-                                           const QString& hash,
-                                           QCryptographicHash::Algorithm algo,
-                                           const QVariantMap& metadata,
-                                           StringMap headers);
-    qulonglong defaultThrottle();
-    void setDefaultThrottle(qulonglong speed);
-    QList<QDBusObjectPath> getAllDownloads();
-    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name,
-                                                       const QString &value);
-
- private:
-    static QString BASE_ACCOUNT_URL;
-
-    qulonglong _throttle;
-    SystemNetworkInfo* _networkInfo;
-    DownloadQueue* _downloadsQueue;
-    QSharedPointer<DBusConnection> _conn;
-    RequestFactory* _reqFactory;
-    ProcessFactory* _processFactory;
-    UuidFactory* _uuidFactory;
-    DownloadManager* q_ptr;
-};
-
-QString DownloadManagerPrivate::BASE_ACCOUNT_URL =
-    "/com/canonical/applications/download/%1";
-
-DownloadManagerPrivate::DownloadManagerPrivate(
-                                QSharedPointer<DBusConnection> connection,
-                                DownloadManager* parent)
-    : _throttle(0),
-      q_ptr(parent) {
-    _conn = connection;
-    _networkInfo = new SystemNetworkInfo();
-    _downloadsQueue = new DownloadQueue(_networkInfo);
-    _uuidFactory = new UuidFactory();
-    init();
-}
-
-DownloadManagerPrivate::DownloadManagerPrivate(
-                                QSharedPointer<DBusConnection> connection,
-                                SystemNetworkInfo* networkInfo,
-                                DownloadQueue* queue,
-                                UuidFactory* uuidFactory,
-                                DownloadManager* parent)
+    DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
+                           SystemNetworkInfo* networkInfo,
+                           DownloadFactory* downloadFactory,
+                           DownloadQueue* queue,
+                           DownloadManager* parent = 0)
         : _throttle(0),
           _networkInfo(networkInfo),
+          _downloadFactory(downloadFactory),
           _downloadsQueue(queue),
-          _uuidFactory(uuidFactory),
           q_ptr(parent) {
-    _conn = connection;
-    init();
-}
+        _conn = connection;
+        init();
+    }
 
-void
-DownloadManagerPrivate::init() {
-    Q_Q(DownloadManager);
+ private:
+    void init() {
+        Q_Q(DownloadManager);
 
-    // register the required types
-    qDBusRegisterMetaType<StringMap>();
+        // register the required types
+        qDBusRegisterMetaType<StringMap>();
+        qDBusRegisterMetaType<DownloadStruct>();
+        qDBusRegisterMetaType<GroupDownloadStruct>();
+        qDBusRegisterMetaType<StructList>();
 
-    q->connect(_downloadsQueue, SIGNAL(downloadRemoved(QString)),
-        q, SLOT(onDownloadsChanged(QString)));
-    q->connect(_downloadsQueue, SIGNAL(downloadAdded(QString)),
-        q, SLOT(onDownloadsChanged(QString)));
+        q->connect(_downloadsQueue.data(), SIGNAL(downloadRemoved(QString)),
+            q, SLOT(onDownloadsChanged(QString)));
+        q->connect(_downloadsQueue.data(), SIGNAL(downloadAdded(QString)),
+            q, SLOT(onDownloadsChanged(QString)));
+    }
 
-    _reqFactory = new RequestFactory();
-    _processFactory = new ProcessFactory();
-}
+    void addDownload(Download* download) {
+        Q_UNUSED(download);
+        // TODO(mandel): Implement this.
+    }
 
-void
-DownloadManagerPrivate::addDownload(Download* download) {
-    Q_UNUSED(download);
-    // TODO(mandel): Implement this.
-}
+    void loadPreviewsDownloads(QString path) {
+        // TODO(mandel): list the dirs of the different downloads that we
+        // can find, loop and create each of them
+        Q_UNUSED(path);
+    }
 
-void
-DownloadManagerPrivate::loadPreviewsDownloads(QString path) {
-    // TODO(mandel): list the dirs of the different downloads that we
-    // can find, loop and create each of them
-    Q_UNUSED(path);
-}
+    QList<QSslCertificate> acceptedCertificates() {
+        return _downloadFactory->acceptedCertificates();
+    }
 
-void
-DownloadManagerPrivate::onDownloadsChanged(QString path) {
-    qDebug() << __FUNCTION__ << path;
-    Q_Q(DownloadManager);
-    emit q->sizeChanged(_downloadsQueue->size());
-}
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        qDebug() << __PRETTY_FUNCTION__ << certs;
+        _downloadFactory->setAcceptedCertificates(certs);
+    }
 
-QDBusObjectPath
-DownloadManagerPrivate::createDownload(const QString& url,
-                                       const QVariantMap& metadata,
-                                       StringMap headers) {
-    qDebug() << __FUNCTION__ << url << metadata << headers;
-    return createDownloadWithHash(url, "", QCryptographicHash::Md5,
-        metadata, headers);
-}
+    void onDownloadsChanged(QString path) {
+        qDebug() << __PRETTY_FUNCTION__ << path;
+        Q_Q(DownloadManager);
+        emit q->sizeChanged(_downloadsQueue->size());
+    }
 
-QDBusObjectPath
-DownloadManagerPrivate::createDownloadWithHash(const QString& url,
-                                               const QString& hash,
-                                               QCryptographicHash::Algorithm algo,  // NOLINT(whitespace/line_length)
-                                               const QVariantMap& metadata,
-                                               StringMap headers) {
-    Q_Q(DownloadManager);
+    QDBusObjectPath registerDownload(Download* download) {
+        Q_Q(DownloadManager);
+        download->setThrottle(_throttle);
+        _downloadsQueue->add(download);
+        _conn->registerObject(download->path(), download);
+        QDBusObjectPath objectPath = QDBusObjectPath(download->path());
 
-    // only create a download if the application is not already being downloaded
-    QUuid id = _uuidFactory->createUuid();
-    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
+        // emit that the download was created. Usefull in case other
+        // processes are interested in them
+        emit q->downloadCreated(objectPath);
+        return objectPath;
+    }
 
-    QString path = DownloadManagerPrivate::BASE_ACCOUNT_URL.arg(uuidString);
-    QDBusObjectPath objectPath;
-
-    if (_downloadsQueue->paths().contains(path)) {
-        objectPath = QDBusObjectPath(path);
-    } else {
+    QDBusObjectPath createDownload(const QString& url,
+                                   const QString& hash,
+                                   QCryptographicHash::Algorithm algo,
+                                   const QVariantMap& metadata,
+                                   StringMap headers) {
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
         Download* download = NULL;
         if (hash.isEmpty())
-            download = new SingleDownload(id, path, url, metadata, headers,
-                _networkInfo, _reqFactory, _processFactory);
+            download = _downloadFactory->createDownload(owner, url, metadata,
+                headers);
         else
-            download = new SingleDownload(id, path, url, hash, algo, metadata,
-                headers, _networkInfo, _reqFactory, _processFactory);
-
-
-        download->setThrottle(_throttle);
-        DownloadAdaptor* adaptor = new DownloadAdaptor(download);
-
-        // we need to store the ref of both objects, else the mem management
-        // will delete them
-        _downloadsQueue->add(download, adaptor);
-        _conn->registerObject(download->path(), download);
-        objectPath = QDBusObjectPath(download->path());
+            download = _downloadFactory->createDownload(owner, url, hash, algo,
+                metadata, headers);
+        return registerDownload(download);
     }
 
-    // emit that the download was created. Usefull in case other
-    // processes are interested in them
-    emit q->downloadCreated(objectPath);
-    return objectPath;
-}
-
-qulonglong
-DownloadManagerPrivate::defaultThrottle() {
-    return _throttle;
-}
-
-void
-DownloadManagerPrivate::setDefaultThrottle(qulonglong speed) {
-    _throttle = speed;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
-    foreach(const QString& path, downloads.keys()) {
-        downloads[path]->setThrottle(speed);
+    QDBusObjectPath createDownloadGroup(StructList downloads,
+                                        QCryptographicHash::Algorithm algo,
+                                        bool allowed3G,
+                                        const QVariantMap& metadata,
+                                        StringMap headers) {
+        Q_Q(DownloadManager);
+        QString owner = "";
+        if (q->calledFromDBus()) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
+        Download* download = _downloadFactory->createDownload(owner,
+            downloads, algo, allowed3G, metadata, headers);
+        return registerDownload(download);
     }
-}
 
+    qulonglong defaultThrottle() {
+        return _throttle;
+    }
 
-QList<QDBusObjectPath>
-DownloadManagerPrivate::getAllDownloads() {
-    QList<QDBusObjectPath> paths;
-    foreach(const QString& path, _downloadsQueue->paths())
-        paths << QDBusObjectPath(path);
-    return paths;
-}
-
-QList<QDBusObjectPath>
-DownloadManagerPrivate::getAllDownloadsWithMetadata(const QString& name,
-                                                    const QString& value) {
-    QList<QDBusObjectPath> paths;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
-    foreach(const QString& path, downloads.keys()) {
-        QVariantMap metadata = downloads[path]->metadata();
-        if (metadata.contains(name)) {
-            QVariant data = metadata[name];
-            if (data.canConvert(QMetaType::QString) && data.toString() == value)
-                paths << QDBusObjectPath(path);
+    void setDefaultThrottle(qulonglong speed) {
+        _throttle = speed;
+        QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+        foreach(const QString& path, downloads.keys()) {
+            downloads[path]->setThrottle(speed);
         }
     }
-    return paths;
-}
+
+    QList<QDBusObjectPath> getAllDownloads() {
+        QList<QDBusObjectPath> paths;
+        foreach(const QString& path, _downloadsQueue->paths())
+            paths << QDBusObjectPath(path);
+        return paths;
+    }
+
+    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name,
+                                                       const QString &value) {
+        QList<QDBusObjectPath> paths;
+        QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+        foreach(const QString& path, downloads.keys()) {
+            QVariantMap metadata = downloads[path]->metadata();
+            if (metadata.contains(name)) {
+                QVariant data = metadata[name];
+                if (data.canConvert(QMetaType::QString)
+                        && data.toString() == value)
+                    paths << QDBusObjectPath(path);
+            }
+        }
+        return paths;
+    }
+
+ private:
+    qulonglong _throttle;
+    QSharedPointer<AppArmor> _apparmor;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<ProcessFactory> _processFactory;
+    QSharedPointer<DownloadFactory> _downloadFactory;
+    QSharedPointer<DownloadQueue> _downloadsQueue;
+    QSharedPointer<DBusConnection> _conn;
+    DownloadManager* q_ptr;
+};
 
 /**
  * PUBLIC IMPLEMENTATION
@@ -243,14 +217,15 @@ DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
 
 DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
                                  SystemNetworkInfo* networkInfo,
+                                 DownloadFactory* downloadFactory,
                                  DownloadQueue* queue,
-                                 UuidFactory* uuidFactory,
                                  QObject* parent)
     : QObject(parent),
+      QDBusContext(),
       d_ptr(new DownloadManagerPrivate(connection,
                                        networkInfo,
+                                       downloadFactory,
                                        queue,
-                                       uuidFactory,
                                        this)) {
 }
 
@@ -260,12 +235,17 @@ DownloadManager::loadPreviewsDownloads(const QString &path) {
     d->loadPreviewsDownloads(path);
 }
 
-QDBusObjectPath
-DownloadManager::createDownload(const QString &url,
-                                const QVariantMap &metadata,
-                                StringMap headers) {
+QList<QSslCertificate>
+DownloadManager::acceptedCertificates() {
     Q_D(DownloadManager);
-    return d->createDownload(url, metadata, headers);
+    return d->acceptedCertificates();
+}
+
+
+void
+DownloadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(DownloadManager);
+    return d->setAcceptedCertificates(certs);
 }
 
 qulonglong
@@ -281,30 +261,22 @@ DownloadManager::setDefaultThrottle(qulonglong speed) {
 }
 
 QDBusObjectPath
-DownloadManager::createDownloadWithHash(const QString &url,
-                                        const QString &algorithm,
-                                        const QString &hash,
-                                        const QVariantMap &metadata,
-                                        StringMap headers) {
+DownloadManager::createDownload(DownloadStruct download) {
     Q_D(DownloadManager);
-    // lowercase the algorithm just in case
-    QString algoLower = algorithm.toLower();
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+    return d->createDownload(download.getUrl(), download.getHash(),
+        HashAlgorithm::getHashAlgo(download.getAlgorithm()),
+        download.getMetadata(), download.getHeaders());
+}
 
-    if (algoLower == "md5")
-        algo = QCryptographicHash::Md5;
-    else if (algoLower == "sha1")
-        algo = QCryptographicHash::Sha1;
-    else if (algoLower == "sha224")
-        algo = QCryptographicHash::Sha224;
-    else if (algoLower == "sha256")
-        algo = QCryptographicHash::Sha256;
-    else if (algoLower == "sha384")
-        algo = QCryptographicHash::Sha384;
-    else if (algoLower == "sha512")
-        algo = QCryptographicHash::Sha512;
-
-    return d->createDownloadWithHash(url, hash, algo, metadata, headers);
+QDBusObjectPath
+DownloadManager::createDownloadGroup(StructList downloads,
+                                     const QString& algorithm,
+                                     bool allowed3G,
+                                     const QVariantMap& metadata,
+                                     StringMap headers) {
+    Q_D(DownloadManager);
+    return d->createDownloadGroup(downloads,
+        HashAlgorithm::getHashAlgo(algorithm), allowed3G, metadata, headers);
 }
 
 QList<QDBusObjectPath>

@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QSharedPointer>
 #include <QUuid>
 #include "./app-downloader-lib_global.h"
 #include "./process_factory.h"
@@ -45,19 +46,29 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
 
     Download(const QUuid& id,
              const QString& path,
+             bool isConfined,
+             const QString& rootPath,
              const QVariantMap& metadata,
              const QMap<QString, QString>& headers,
-             SystemNetworkInfo* networkInfo,
+             QSharedPointer<SystemNetworkInfo> networkInfo,
              QObject* parent = 0);
 
     QUuid downloadId();
 
     QString path();
 
+    bool isConfined();
+
+    QString rootPath();
+
     Download::State state();
     void setState(Download::State state);
 
+    QObject* adaptor();
+    void setAdaptor(QObject* adaptor);
+
     QMap<QString, QString> headers();
+
     virtual bool canDownload();
 
     // methods to be overriden by the children

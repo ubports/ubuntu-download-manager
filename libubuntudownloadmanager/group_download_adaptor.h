@@ -30,9 +30,9 @@ QT_END_NAMESPACE
 class GroupDownloadAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.Download")
+    Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.GroupDownload")
     Q_CLASSINFO("D-Bus Introspection", ""
-"  <interface name=\"com.canonical.applications.Download\">\n"
+"  <interface name=\"com.canonical.applications.GroupDownload\">\n"
 "    <method name=\"totalSize\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
 "    </method>\n"

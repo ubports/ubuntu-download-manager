@@ -19,9 +19,14 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
+#include <QCryptographicHash>
 #include <QObject>
+#include <QSharedPointer>
+#include "./apparmor.h"
+#include "./metatypes.h"
 #include "./system_network_info.h"
-#include "./single_download.h"
+#include "./download.h"
+#include "./uuid_factory.h"
 
 class DownloadFactoryPrivate;
 class DownloadFactory : public QObject {
@@ -29,24 +34,53 @@ class DownloadFactory : public QObject {
     Q_DECLARE_PRIVATE(DownloadFactory)
 
  public:
-    DownloadFactory(SystemNetworkInfo* networkInfo,
-                    RequestFactory* nam,
-                    ProcessFactory* processFactory,
+    DownloadFactory(QSharedPointer<AppArmor> apparmor,
+                    QSharedPointer<SystemNetworkInfo> networkInfo,
+                    QSharedPointer<RequestFactory> nam,
+                    QSharedPointer<ProcessFactory> processFactory,
                     QObject *parent = 0);
 
-    virtual SingleDownload* createDownload(const QUuid& id,
-                                         const QString& path,
+    // create downloads comming from a dbus call
+
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
+
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     const QUrl& url,
+                                     const QString& hash,
+                                     QCryptographicHash::Algorithm algo,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
+
+    virtual Download* createDownload(const QString& dbusOwner,
+                                     StructList downloads,
+                                     QCryptographicHash::Algorithm algo,
+                                     bool allowed3G,
+                                     const QVariantMap& metadata,
+                                     StringMap headers);
+
+    // create downloads from a group download
+
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
                                          const QUrl& url,
                                          const QVariantMap& metadata,
                                          const QMap<QString, QString>& headers);
 
-    virtual SingleDownload* createDownload(const QUuid& id,
-                                         const QString& path,
+    virtual Download* createDownloadForGroup(bool isConfined,
+                                         const QString& rootPath,
                                          const QUrl& url,
                                          const QString& hash,
                                          QCryptographicHash::Algorithm algo,
                                          const QVariantMap& metadata,
                                          const QMap<QString, QString>& headers);
+
+    // mainly for testing purposes
+
+    virtual QList<QSslCertificate> acceptedCertificates();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  private:
     // use pimpl so that we can mantains ABI compatibility

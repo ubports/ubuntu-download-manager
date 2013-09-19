@@ -41,8 +41,8 @@ class SingleDownloadPrivate {
 
  public:
     SingleDownloadPrivate(const QUrl& url,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
         : _totalSize(0),
           _url(url),
@@ -57,8 +57,8 @@ class SingleDownloadPrivate {
     SingleDownloadPrivate(const QUrl& url,
                           const QString& hash,
                           QCryptographicHash::Algorithm algo,
-                          RequestFactory* nam,
-                          ProcessFactory* processFactory,
+                          QSharedPointer<RequestFactory> nam,
+                          QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
 
         : _totalSize(0),
@@ -85,9 +85,7 @@ class SingleDownloadPrivate {
     }
 
     QString filePath() {
-        if (_currentData)
-            return _currentData->fileName();
-        return saveFileName();
+        return _filePath;
     }
 
     QString hash() const {
@@ -188,7 +186,7 @@ class SingleDownloadPrivate {
         qDebug() << "Starting download.";
         // create file that will be used to mantain the state of the
         // download when resumed.
-        _currentData = new QFile(saveFileName());
+        _currentData = new QFile(_filePath);
         _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
         // signals should take care or calling deleteLater on the
@@ -356,12 +354,8 @@ class SingleDownloadPrivate {
 
  private:
     void init() {
-        Q_Q(SingleDownload);
-        QStringList pathComponents;
-        pathComponents << "download_manager" << q->downloadId().toString();
-        _localPath = XDGBasedir::saveDataPath(pathComponents);
-        qDebug() << "File will be downloaded to" << _localPath;
-
+        _filePath = saveFileName();
+        qDebug() << "Download path is" << _filePath;
         _reply = NULL;
         _currentData = NULL;
     }
@@ -395,39 +389,25 @@ class SingleDownloadPrivate {
     }
 
     QString saveFileName() {
+        Q_Q(SingleDownload);
+
         QString path = _url.path();
         QString basename = QFileInfo(path).fileName();
 
         if (basename.isEmpty())
             basename = DATA_FILE_NAME;
 
-        QString final_path = _localPath + QDir::separator() + basename;
-        return final_path;
-    }
+        QVariantMap metadata = q->metadata();
+        QString finalPath;
 
-    bool removeDir(const QString& dirName) {
-        bool result = true;
-        QDir dir(dirName);
-
-        QFlags<QDir::Filter> filter =  QDir::NoDotAndDotDot | QDir::System
-            | QDir::Hidden  | QDir::AllDirs | QDir::Files;
-        if (dir.exists(dirName)) {
-            foreach(QFileInfo info,
-                    dir.entryInfoList(filter, QDir::DirsFirst)) {
-                if (info.isDir()) {
-                result = removeDir(info.absoluteFilePath());
-                } else {
-                    result = QFile::remove(info.absoluteFilePath());
-                }
-
-                if (!result) {
-                    return result;
-                }
-            }
-            result = dir.rmdir(dirName);
+        if (!q->isConfined() && metadata.contains(LOCAL_PATH_KEY)) {
+            qDebug() << "App is not confined and provided a local path";
+            finalPath = metadata[LOCAL_PATH_KEY].toString();
+        } else {
+            finalPath = q->rootPath() + QDir::separator() + basename;
         }
 
-        return result;
+        return finalPath;
     }
 
     void cleanUpCurrentData() {
@@ -442,9 +422,9 @@ class SingleDownloadPrivate {
             if (!success)
                 qWarning() << "Error removing" << fileName;
         }
-        success = removeDir(_localPath);
+        success = QFile::remove(_filePath);
         if (!success)
-            qWarning() << "Error removing" << _localPath;
+            qWarning() << "Error removing" << _filePath;
     }
 
     QNetworkRequest buildRequest() {
@@ -454,11 +434,15 @@ class SingleDownloadPrivate {
         QMap<QString, QString> headers = q->headers();
         foreach(const QString& header, headers.keys()) {
             QString data = headers[header];
-            if (header.toLower() == "range")
-                // do no add the range
+            if (header.toLower() == "range"
+                    || header.toLower() == "accept-encoding")
+                // do not add the header
                 continue;
-            request.setRawHeader(header.toUtf8(), headers[header].toUtf8());
+            request.setRawHeader(header.toUtf8(), data.toUtf8());
         }
+        // very important we must ensure that we do not decompress any download
+        // else we will have an error in the checksum for example #1224678
+        request.setRawHeader("Accept-Encoding", "identity");
         return request;
     }
 
@@ -474,14 +458,14 @@ class SingleDownloadPrivate {
 
  private:
     qulonglong _totalSize;
-    QString _localPath;
     QUrl _url;
+    QString _filePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply;
     QFile* _currentData;
-    RequestFactory* _requestFactory;
-    ProcessFactory* _processFactory;
+    QSharedPointer<RequestFactory> _requestFactory;
+    QSharedPointer<ProcessFactory> _processFactory;
     SingleDownload* q_ptr;
 };
 
@@ -491,29 +475,35 @@ class SingleDownloadPrivate {
 
 SingleDownload::SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
+            parent),
       d_ptr(new SingleDownloadPrivate(url, nam, processFactory, this)) {
 }
 
 SingleDownload::SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
                    QCryptographicHash::Algorithm algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)
-    : Download(id, path, metadata, headers, networkInfo, parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
+            parent),
       d_ptr(new SingleDownloadPrivate(url, hash, algo, nam,
             processFactory, this)) {
 }
