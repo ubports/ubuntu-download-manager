@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
+#include <QSslError>
 #include "./single_download.h"
 #include "./network_reply.h"
 #include "./xdg_basedir.h"
