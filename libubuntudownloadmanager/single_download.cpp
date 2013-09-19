@@ -328,6 +328,7 @@ class SingleDownloadPrivate {
 
     void onSslErrors(const QList<QSslError>& errors) {
         qDebug() << __PRETTY_FUNCTION__ << _url;
+        qDebug() << "Found errors" << errors;
         Q_UNUSED(errors);
         emitError("SSL ERROR");
     }
