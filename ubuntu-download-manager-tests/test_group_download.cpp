@@ -656,6 +656,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(0, calledMethods.count());
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(Download::ERROR, group->state());
 }
 
 void
@@ -688,6 +689,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(2, calledMethods.count());
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(Download::ERROR, group->state());
 }
 
 void

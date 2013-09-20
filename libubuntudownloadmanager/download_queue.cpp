@@ -145,7 +145,7 @@ class DownloadQueuePrivate {
             Download::State state = currentDownload->state();
             if (state == Download::CANCEL || state == Download::FINISH
                 || state == Download::ERROR) {
-                qDebug() << "States is CANCEL || FINISH";
+                qDebug() << "State is CANCEL || FINISH || ERROR";
                 remove(_current);
                 _current = "";
             } else if (!currentDownload->canDownload()

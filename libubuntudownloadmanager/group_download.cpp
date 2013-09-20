@@ -223,7 +223,7 @@ class GroupDownloadPrivate {
             _fileManager->remove(file);
         }
         QString errorMsg = sender->url().toString() + ":" + error;
-        emit q->error(errorMsg);
+        q->emitError(errorMsg);
     }
 
     void onProgress(qulonglong received, qulonglong total) {
