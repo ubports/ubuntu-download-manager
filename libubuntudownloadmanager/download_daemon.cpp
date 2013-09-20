@@ -63,8 +63,6 @@ class DownloadDaemonPrivate {
         // no need to delete the adaptor because the interface is its parent
         if (_downInterface)
             delete _downInterface;
-        if (_app)
-            delete _app;
         if (_shutDownTimer)
             delete _shutDownTimer;
 
@@ -131,7 +129,7 @@ class DownloadDaemonPrivate {
         }  // certs
         _isTimeoutEnabled = !args.contains(DISABLE_TIMEOUT);
         qDebug() << "Timeout is enabled:" << _isTimeoutEnabled;
-        _stoppable = args.cotains(STOPPABLE);
+        _stoppable = args.contains(STOPPABLE);
         qDebug() << "Daemon is stoppable" << _stoppable;
     }
 
@@ -189,7 +187,7 @@ DownloadDaemon::DownloadDaemon(QObject *parent)
       d_ptr(new DownloadDaemonPrivate(this)) {
 }
 
-DownloadDaemon::DownloadDaemon(Application* app,
+DownloadDaemon::DownloadDaemon(QSharedPointer<Application> app,
                                DBusConnection* conn,
                                Timer* timer,
                                DownloadManager* man,

@@ -62,12 +62,15 @@ class TestDownloadManager : public QObject {
     void testSizeChangedEmittedOnAddition();
     void testSizeChangedEmittedOnRemoval();
     void testSetSelfSignedCerts();
+    void testStoppable();
+    void testNotStoppable();
 
  private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
  private:
     FakeApplication* _app;
+    QSharedPointer<Application> _appPointer;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _requestFactory;
     FakeDownloadFactory* _downloadFactory;

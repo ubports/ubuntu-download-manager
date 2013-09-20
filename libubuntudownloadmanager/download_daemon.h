@@ -20,6 +20,7 @@
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
 #include <QObject>
+#include <QSharedPointer>
 #include "./app-downloader-lib_global.h"
 #include "./application.h"
 #include "./dbus_connection.h"
@@ -33,7 +34,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
 
  public:
     explicit DownloadDaemon(QObject *parent = 0);
-    DownloadDaemon(Application* app,
+    DownloadDaemon(QSharedPointer<Application> app,
                    DBusConnection* conn,
                    Timer* timer,
                    DownloadManager* man,

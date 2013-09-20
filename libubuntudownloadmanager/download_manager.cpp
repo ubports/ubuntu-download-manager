@@ -208,14 +208,16 @@ class DownloadManagerPrivate {
         if (_stoppable) {
             _app->exit(0);
         } else {
-            q->sendErrorReply(QDBusError::NotSupported,
-                "Daemon should have been started with -stoppable");
+            if (q->calledFromDBus()) {
+                q->sendErrorReply(QDBusError::NotSupported,
+                    "Daemon should have been started with -stoppable");
+            } // dbus call
         }
     }
 
  private:
-    qulonglong _throttle;
     QSharedPointer<Application> _app;
+    qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<ProcessFactory> _processFactory;
