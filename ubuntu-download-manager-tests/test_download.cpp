@@ -896,7 +896,7 @@ TestDownload::testOnSuccessHashError() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    QSignalSpy spy(download , SIGNAL(error(QString)));
+    QSignalSpy errorSpy(download , SIGNAL(error(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -919,11 +919,16 @@ TestDownload::testOnSuccessHashError() {
     calledMethods = _reqFactory->calledMethods();
     reply = reinterpret_cast<FakeNetworkReply*>(
         calledMethods[0].params().outParams()[0]);
+
+    // create the spy here else we will register other not interesting
+    // signals
+    QSignalSpy stateSpy(download , SIGNAL(stateChanged()));
     emit reply->finished();
 
     // the has is a random string so we should get an error signal
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(errorSpy.count(), 1);
+    QCOMPARE(stateSpy.count(), 1);
+    QCOMPARE(download->state(), Download::ERROR);
 
     delete download;
 }
