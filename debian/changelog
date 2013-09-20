@@ -1,3 +1,34 @@
+ubuntu-download-manager (0.2+13.10.20130920.1-0ubuntu1) saucy; urgency=low
+
+  [ Barry Warsaw ]
+  * When extracting the QPair from _downloadProgress, use a reference
+    local variable so that a new QPair isn't created, thus throwing away
+    the update. (LP: #1226243)
+
+  [ Manuel de la Pena ]
+  * Fixes the irl example in the test folder. (LP: #1221598)
+  * Added a class that provides a way to generate secure paths to
+    appamor confined applications.
+  * Make use of the apparmor class to build secure dbus paths. (LP:
+    #1222901)
+  * Increases the test coverage of the download factory class.
+  * Added the new metadata key 'objectpath' where the client can propose
+    a uuid for the download that will be used to create the path. (LP:
+    #1215904)
+  * Change the interface name so that is less confusing. (LP: #1224538)
+  * Fixed the location where the file is stored. If the local-file
+    metadata is provided and the app is not cofined that would be the
+    used file else the XDG/APP_ID one will be used. (LP: #1224641,
+    #1222914)
+  * Provide two command line args to be used in tests. (LP: #1202809)
+  * Set the accept-encoding header to 'identity' so that we do not
+    expand any download. (LP: #1224678)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 126
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 20 Sep 2013 10:03:28 +0000
+
 ubuntu-download-manager (0.2+13.10.20130906.1-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
