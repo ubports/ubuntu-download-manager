@@ -119,6 +119,10 @@ class TestDownload: public QObject {
     void testLocalPathConfined();
     void testLocalPathNotConfined();
 
+    // ssl error management
+    void testSslErrorsIgnored();
+    void testSslErrorsNotIgnored();
+
  private:
     bool removeDir(const QString& dirName);
 
