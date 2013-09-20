@@ -18,7 +18,6 @@
 
 #include <QDebug>
 #include "./download_adaptor.h"
-#include "./download_queue.h"
 #include "./single_download.h"
 #include "./uuid_factory.h"
 #include "./group_download.h"
@@ -68,7 +67,6 @@ class GroupDownloadPrivate {
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed) {
         Q_Q(GroupDownload);
-        _q = QSharedPointer<DownloadQueue>(new DownloadQueue(_networkInfo));
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
 
@@ -110,23 +108,19 @@ class GroupDownloadPrivate {
             q->connect(singleDownload, SIGNAL(finished(const QString&)),
                 q, SLOT(onFinished(const QString&)));
             qDebug() << "Signals connected.";
-            _q->add(singleDownload);
         }
     }
 
     void cancelDownload() {
         qDebug() << __PRETTY_FUNCTION__;
         Q_Q(GroupDownload);
-        // loop over the events in reverse order and if the downloads and
-        // if the are no cancelled do it
-        for (int index = _downloads.count() - 1; index >= 0; index--) {
-            qDebug() << "Index is" << index;
-            SingleDownload* download = _downloads[index];
+        foreach(SingleDownload* download, _downloads) {
             Download::State state = download->state();
             if (state != Download::FINISH && state != Download::ERROR
                     && state != Download::CANCEL) {
                 qDebug() << "Canceling download of " << download->url();
                 download->cancel();
+                download->cancelDownload();
             }
         }
 
@@ -142,14 +136,12 @@ class GroupDownloadPrivate {
 
     void pauseDownload() {
         Q_Q(GroupDownload);
-        // loop over the events in reverse order and if the downloads and
-        // if the are no paused or canceled do it
-        for (int index = _downloads.count() - 1; index >= 0; index--) {
-            SingleDownload* download = _downloads[index];
+        foreach(SingleDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::START || state == Download::RESUME) {
                 qDebug() << "Pausing download of " << download->url();
                 download->pause();
+                download->pauseDownload();
             }
         }
         emit q->paused(true);
@@ -161,6 +153,7 @@ class GroupDownloadPrivate {
             Download::State state = download->state();
             if (state == Download::PAUSE) {
                 download->resume();
+                download->resumeDownload();
             }
         }
         emit q->resumed(true);
@@ -172,6 +165,7 @@ class GroupDownloadPrivate {
             Download::State state = download->state();
             if (state == Download::IDLE) {
                 download->start();
+                download->startDownload();
             }
         }
         emit q->started(true);
@@ -223,7 +217,7 @@ class GroupDownloadPrivate {
             _fileManager->remove(file);
         }
         QString errorMsg = sender->url().toString() + ":" + error;
-        emit q->error(errorMsg);
+        q->emitError(errorMsg);
     }
 
     void onProgress(qulonglong received, qulonglong total) {
@@ -288,7 +282,6 @@ class GroupDownloadPrivate {
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
-    QSharedPointer<DownloadQueue> _q;
     QSharedPointer<DownloadFactory> _downFactory;
     QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;

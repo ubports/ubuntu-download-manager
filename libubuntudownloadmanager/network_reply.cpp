@@ -26,50 +26,53 @@ class NetworkReplyPrivate {
     Q_DECLARE_PUBLIC(NetworkReply)
 
  public:
-    explicit NetworkReplyPrivate(QNetworkReply* reply, NetworkReply* parent);
+    NetworkReplyPrivate(QNetworkReply* reply, NetworkReply* parent)
+        : _reply(reply),
+          q_ptr(parent) {
+        // connect to all the signals so that we foward them
+        Q_Q(NetworkReply);
+        if (_reply != NULL) {
+            q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
+                q, SIGNAL(downloadProgress(qint64, qint64)));
+            q->connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                q, SIGNAL(error(QNetworkReply::NetworkError)));
+            q->connect(_reply, SIGNAL(finished()),
+                q, SIGNAL(finished()));
+            q->connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)),
+                q, SIGNAL(sslErrors(const QList<QSslError>&)));
+        }
+    }
 
     // public methods used by other parts of the code
-    QByteArray readAll();
-    void abort();
-    void setReadBufferSize(uint size);
+    QByteArray readAll() {
+        return _reply->readAll();
+    }
+
+    void abort() {
+        _reply->abort();
+    }
+
+    void setReadBufferSize(uint size) {
+        _reply->setReadBufferSize(size);
+    }
+
+    void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) {
+        _sslErrors = expectedSslErrors;
+    }
+
+    bool ignoreSslErrors() {
+        if (_sslErrors.count() > 0) {
+            _reply->ignoreSslErrors(_sslErrors);
+            return true;
+        }
+        return false;
+    }
 
  private:
+    QList<QSslError> _sslErrors;
     QNetworkReply* _reply;
     NetworkReply* q_ptr;
 };
-
-NetworkReplyPrivate::NetworkReplyPrivate(QNetworkReply* reply,
-                                         NetworkReply* parent)
-    : _reply(reply),
-      q_ptr(parent) {
-    // connect to all the signals so that we foward them
-    Q_Q(NetworkReply);
-    if (_reply != NULL) {
-        q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
-            q, SIGNAL(downloadProgress(qint64, qint64)));
-        q->connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            q, SIGNAL(error(QNetworkReply::NetworkError)));
-        q->connect(_reply, SIGNAL(finished()),
-            q, SIGNAL(finished()));
-        q->connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)),
-            q, SIGNAL(sslErrors(const QList<QSslError>&)));
-    }
-}
-
-QByteArray
-NetworkReplyPrivate::readAll() {
-    return _reply->readAll();
-}
-
-void
-NetworkReplyPrivate::abort() {
-    _reply->abort();
-}
-
-void
-NetworkReplyPrivate::setReadBufferSize(uint size) {
-    _reply->setReadBufferSize(size);
-}
 
 /*
  * PUBLIC IMPLEMENTATION
@@ -99,4 +102,14 @@ NetworkReply::setReadBufferSize(uint size) {
     d->setReadBufferSize(size);
 }
 
-#include "moc_network_reply.cpp"
+void
+NetworkReply::setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) {
+    Q_D(NetworkReply);
+    d->setIgnoreSslErrors(expectedSslErrors);
+}
+
+bool
+NetworkReply::ignoreSslErrors() {
+    Q_D(NetworkReply);
+    return d->ignoreSslErrors();
+}

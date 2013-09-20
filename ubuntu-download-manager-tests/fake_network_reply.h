@@ -23,6 +23,20 @@
 #include <network_reply.h>
 #include "./fake.h"
 
+
+class SslErrorsListWrapper : public QObject {
+    Q_OBJECT
+
+ public:
+    SslErrorsListWrapper(QList<QSslError> value, QObject* parent = 0);
+
+    QList<QSslError> value();
+    void setValue(QList<QSslError> value);
+
+ private:
+    QList<QSslError> _value;
+};
+
 class FakeNetworkReply : public NetworkReply, public Fake {
     Q_OBJECT
 
@@ -39,9 +53,13 @@ class FakeNetworkReply : public NetworkReply, public Fake {
     void abort() override;
     void setReadBufferSize(uint size) override;
     void emitFinished();
+    void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) override;
+    bool ignoreSslErrors() override;
+    void emitSslErrors(const QList<QSslError>& errors);
 
  private:
     QByteArray _data;
+    QList<QSslError> _sslErrors;
 };
 
 #endif  // FAKE_NETWORK_REPLY_H

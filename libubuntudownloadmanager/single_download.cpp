@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
+#include <QSslError>
 #include "./single_download.h"
 #include "./network_reply.h"
 #include "./xdg_basedir.h"
@@ -264,8 +265,7 @@ class SingleDownloadPrivate {
                 QCryptographicHash::hash(data, _algo).toHex());
             if (fileSig != _hash) {
                 qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
-                q->setState(Download::FINISH);
-                emit q->error("HASH ERROR");
+                emitError("HASH ERROR");
                 return;
             }
         }
@@ -282,8 +282,7 @@ class SingleDownloadPrivate {
             if (commandData.count() == 0) {
                 // raise error, command metadata was passed without the commnad
                 qCritical() << "COMMAND DATA MISSING";
-                q->setState(Download::FINISH);
-                emit q->error("COMMAND ERROR");
+                emitError("COMMAND ERROR");
                 return;
             } else {
                 // first item of the string list is the commnad
@@ -328,9 +327,10 @@ class SingleDownloadPrivate {
 
     void onSslErrors(const QList<QSslError>& errors) {
         qDebug() << __PRETTY_FUNCTION__ << _url;
+        qDebug() << "Found errors" << errors;
         Q_UNUSED(errors);
-        Q_Q(SingleDownload);
-        emit q->error("SSL ERROR");
+        if (!_reply->ignoreSslErrors())
+            emitError("SSL ERROR");
     }
 
     // slots executed to keep track of the post download process

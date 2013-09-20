@@ -22,6 +22,7 @@
 #include <QByteArray>
 #include <QObject>
 #include <QNetworkReply>
+#include <QSslError>
 
 class NetworkReplyPrivate;
 class NetworkReply : public QObject {
@@ -34,6 +35,8 @@ class NetworkReply : public QObject {
     virtual QByteArray readAll();
     virtual void abort();
     virtual void setReadBufferSize(uint size);
+    virtual void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors);
+    virtual bool ignoreSslErrors();
 
  signals:
     // signals fowarded from the real reply object
