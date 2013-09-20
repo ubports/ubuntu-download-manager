@@ -162,9 +162,32 @@ void
 Logger::logSystemMessage(QtMsgType type,
                          const QMessageLogContext &context,
                          const QString &message) {
-    Q_UNUSED(type);
     Q_UNUSED(context);
-    Q_UNUSED(message);
+    if (type < _logLevel)
+        return;
+
+    QString logMessage;
+    QTextStream _logMessage(&logMessage);
+    _logMessage << QDateTime::currentDateTime().toString(
+        _datetimeFormat).toUtf8().data()
+        << " - " << getMessageTypeString(type).toUtf8().data()
+        << " - " << message.toUtf8().data() << "\n";
+
+    QTextStream _stdErr(stderr, QIODevice::WriteOnly);
+    switch (type) {
+        case QtDebugMsg:
+        case QtCriticalMsg:
+        case QtFatalMsg:
+            _stdErr << logMessage;
+            break;
+        default:
+            break;
+    }
+    _stdErr.device()->close();
+
+    if (type == QtFatalMsg)
+        abort();
+
     //TODO(mandel): use syslog
 }
 
