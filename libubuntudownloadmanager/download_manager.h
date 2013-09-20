@@ -25,6 +25,7 @@
 #include <QtDBus/QDBusContext>
 #include <QSharedPointer>
 #include <QSslCertificate>
+#include "./application.h"
 #include "./dbus_connection.h"
 #include "./download.h"
 #include "./download_queue.h"
@@ -38,12 +39,16 @@ class DownloadManager : public QObject, public QDBusContext {
     Q_DECLARE_PRIVATE(DownloadManager)
 
  public:
-    DownloadManager(QSharedPointer<DBusConnection> connection,
+    DownloadManager(QSharedPointer<Application> app,
+                    QSharedPointer<DBusConnection> connection,
+                    bool stoppable = false,
                     QObject *parent = 0);
-    DownloadManager(QSharedPointer<DBusConnection> connection,
+    DownloadManager(QSharedPointer<Application> app,
+                    QSharedPointer<DBusConnection> connection,
                     SystemNetworkInfo* networkInfo,
                     DownloadFactory* downloadFactory,
                     DownloadQueue* queue,
+                    bool stoppable = false,
                     QObject *parent = 0);
 
     void loadPreviewsDownloads(const QString &path);
@@ -66,6 +71,7 @@ class DownloadManager : public QObject, public QDBusContext {
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name,
                                                        const QString& value);
+    void exit();
 
  signals:
     void downloadCreated(const QDBusObjectPath& path);

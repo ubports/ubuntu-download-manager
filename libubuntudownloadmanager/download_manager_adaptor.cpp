@@ -63,6 +63,12 @@ qulonglong DownloadManagerAdaptor::defaultThrottle()
     return speed;
 }
 
+void DownloadManagerAdaptor::exit()
+{
+    // handle method call com.canonical.applications.DownloadManager.exit
+    QMetaObject::invokeMethod(parent(), "exit");
+}
+
 QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloads()
 {
     // handle method call com.canonical.applications.DownloadManager.getAllDownloads

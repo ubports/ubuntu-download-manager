@@ -29,6 +29,7 @@ TestDownloadManager::TestDownloadManager(QObject *parent)
 
 void
 TestDownloadManager::init() {
+    _app = new FakeApplication();
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
     _networkInfo = new FakeSystemNetworkInfo();
     _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
@@ -40,7 +41,9 @@ TestDownloadManager::init() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_requestFactory),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
-    _man = new DownloadManager(qSharedPointerCast<DBusConnection>(_conn),
+    _man = new DownloadManager(
+        QSharedPointer<Application>(_app),
+        qSharedPointerCast<DBusConnection>(_conn),
         _networkInfo, _downloadFactory, _q);
 }
 
