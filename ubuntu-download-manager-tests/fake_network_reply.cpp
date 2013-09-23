@@ -89,33 +89,35 @@ FakeNetworkReply::emitFinished() {
 }
 
 void
-FakeNetworkReply::setIgnoreSslErrors(
-                              const QList<QSslError>& expectedSslErrors) {
-    _sslErrors = expectedSslErrors;
+FakeNetworkReply::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new SslErrorsListWrapper(expectedSslErrors));
-
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
-        MethodData methodData("setIgnoreSslErrors", params);
+        MethodData methodData("setAcceptedCertificates", params);
         _called.append(methodData);
     }
+    NetworkReply::setAcceptedCertificates(certs);
 }
 
 bool
-FakeNetworkReply::ignoreSslErrors() {
-    bool result = _sslErrors.count() > 0;
+FakeNetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
     if (_recording) {
         QList<QObject*> inParams;
+        inParams.append(new SslErrorsListWrapper(errors));
 
         QList<QObject*> outParams;
-        outParams.append(new BoolWrapper(result));
+        outParams.append(new BoolWrapper(_canIgnoreSsl));
         MethodParams params(inParams, outParams);
-        MethodData methodData("ignoreSslErrors", params);
+        MethodData methodData("canIgnoreSslErrors", params);
         _called.append(methodData);
     }
-    return result;
+    return _canIgnoreSsl;
+}
+
+void
+FakeNetworkReply::setCanIgnoreSslErrors(bool canIgnore) {
+    _canIgnoreSsl = canIgnore;
 }
 
 void

@@ -1684,12 +1684,12 @@ TestDownload::testSslErrorsIgnored() {
     QCOMPARE(1, calledMethods.count());
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
         calledMethods[0].params().outParams()[0]);
-    reply->setIgnoreSslErrors(errors);
+    reply->setCanIgnoreSslErrors(true);
     reply->emitSslErrors(errors);
 
     calledMethods = reply->calledMethods();
     // assert last method called is ignoreSslErors
-    QCOMPARE(QString("ignoreSslErrors"),
+    QCOMPARE(QString("canIgnoreSslErrors"),
         calledMethods[calledMethods.count() -1].methodName());
     QCOMPARE(0, stateSpy.count());  // we did not set it to error
 }
@@ -1716,11 +1716,12 @@ TestDownload::testSslErrorsNotIgnored() {
     QCOMPARE(1, calledMethods.count());
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
         calledMethods[0].params().outParams()[0]);
+    reply->setCanIgnoreSslErrors(false);
     reply->emitSslErrors(errors);
 
     calledMethods = reply->calledMethods();
     // assert last method called is ignoreSslErors
-    QCOMPARE(QString("ignoreSslErrors"),
+    QCOMPARE(QString("canIgnoreSslErrors"),
         calledMethods[calledMethods.count() -1].methodName());
     QCOMPARE(1, stateSpy.count());  // we did not set it to error
     QCOMPARE(Download::ERROR, download->state());

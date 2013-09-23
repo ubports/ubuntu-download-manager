@@ -35,8 +35,8 @@ class NetworkReply : public QObject {
     virtual QByteArray readAll();
     virtual void abort();
     virtual void setReadBufferSize(uint size);
-    virtual void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors);
-    virtual bool ignoreSslErrors();
+    virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+    virtual bool canIgnoreSslErrors(const QList<QSslError>& errors);
 
  signals:
     // signals fowarded from the real reply object
