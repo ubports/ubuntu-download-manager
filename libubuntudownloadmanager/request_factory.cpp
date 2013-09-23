@@ -34,19 +34,13 @@ class RequestFactoryPrivate {
     }
 
     NetworkReply* get(const QNetworkRequest& request) {
-        QNetworkReply* reply = _nam->get(request);
+        QNetworkReply* qreply = _nam->get(request);
+        NetworkReply* reply = new NetworkReply(qreply);
 
         if (_certs.count() > 0) {
-            // build the expected ssl errors
-            QList<QSslError> expectedSslErrors;
-            foreach(const QSslCertificate& certificate, _certs) {
-                QSslError error(QSslError::SelfSignedCertificate, certificate);
-                expectedSslErrors.append(error);
-            }
-            reply->ignoreSslErrors(expectedSslErrors);
+            reply->setAcceptedCertificates(_certs);
         }
-
-        return new NetworkReply(reply);
+        return reply;
     }
 
     QList<QSslCertificate> acceptedCertificates() {

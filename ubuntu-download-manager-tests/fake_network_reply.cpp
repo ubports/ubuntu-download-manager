@@ -19,6 +19,23 @@
 #include "./fake_qnetwork_reply.h"
 #include "./fake_network_reply.h"
 
+
+SslErrorsListWrapper::SslErrorsListWrapper(QList<QSslError> value,
+                                           QObject* parent)
+    : QObject(parent) {
+    _value = value;
+}
+
+QList<QSslError>
+SslErrorsListWrapper::value() {
+    return _value;
+}
+
+void
+SslErrorsListWrapper::setValue(QList<QSslError> value) {
+    _value = value;
+}
+
 FakeNetworkReply::FakeNetworkReply(QObject *parent)
     : NetworkReply(new FakeQNetworkReply(parent)),
       Fake() {
@@ -69,4 +86,41 @@ FakeNetworkReply::setReadBufferSize(uint size) {
 void
 FakeNetworkReply::emitFinished() {
     emit finished();
+}
+
+void
+FakeNetworkReply::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("setAcceptedCertificates", params);
+        _called.append(methodData);
+    }
+    NetworkReply::setAcceptedCertificates(certs);
+}
+
+bool
+FakeNetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
+    if (_recording) {
+        QList<QObject*> inParams;
+        inParams.append(new SslErrorsListWrapper(errors));
+
+        QList<QObject*> outParams;
+        outParams.append(new BoolWrapper(_canIgnoreSsl));
+        MethodParams params(inParams, outParams);
+        MethodData methodData("canIgnoreSslErrors", params);
+        _called.append(methodData);
+    }
+    return _canIgnoreSsl;
+}
+
+void
+FakeNetworkReply::setCanIgnoreSslErrors(bool canIgnore) {
+    _canIgnoreSsl = canIgnore;
+}
+
+void
+FakeNetworkReply::emitSslErrors(const QList<QSslError>& errors) {
+    emit sslErrors(errors);
 }

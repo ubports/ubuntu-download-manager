@@ -329,7 +329,8 @@ class SingleDownloadPrivate {
         qDebug() << __PRETTY_FUNCTION__ << _url;
         qDebug() << "Found errors" << errors;
         Q_UNUSED(errors);
-        emitError("SSL ERROR");
+        if (!_reply->canIgnoreSslErrors(errors))
+            emitError("SSL ERROR");
     }
 
     // slots executed to keep track of the post download process

@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include "./network_reply.h"
 
 /*
@@ -26,50 +27,79 @@ class NetworkReplyPrivate {
     Q_DECLARE_PUBLIC(NetworkReply)
 
  public:
-    explicit NetworkReplyPrivate(QNetworkReply* reply, NetworkReply* parent);
+    NetworkReplyPrivate(QNetworkReply* reply, NetworkReply* parent)
+        : _reply(reply),
+          q_ptr(parent) {
+        // connect to all the signals so that we foward them
+        Q_Q(NetworkReply);
+        if (_reply != NULL) {
+            q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
+                q, SIGNAL(downloadProgress(qint64, qint64)));
+            q->connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+                q, SIGNAL(error(QNetworkReply::NetworkError)));
+            q->connect(_reply, SIGNAL(finished()),
+                q, SIGNAL(finished()));
+            q->connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)),
+                q, SIGNAL(sslErrors(const QList<QSslError>&)));
+        }
+    }
 
     // public methods used by other parts of the code
-    QByteArray readAll();
-    void abort();
-    void setReadBufferSize(uint size);
+    QByteArray readAll() {
+        return _reply->readAll();
+    }
+
+    void abort() {
+        _reply->abort();
+    }
+
+    void setReadBufferSize(uint size) {
+        _reply->setReadBufferSize(size);
+    }
+
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        _certs = certs;
+        // build possible errors
+        foreach(const QSslCertificate& certificate, _certs) {
+            QSslError error(QSslError::SelfSignedCertificate, certificate);
+            _sslErrors.append(error);
+        }
+    }
+
+    bool canIgnoreSslErrors(const QList<QSslError>& errors) {
+        if (_sslErrors.count() > 0 && errors.count() > 0) {
+            foreach(QSslError error, errors) {
+                QSslError::SslError type = error.error();
+                if (type != QSslError::NoError &&
+                    type != QSslError::SelfSignedCertificate) {
+                    // we only support self signed certificates all errors
+                    // will not be ignored
+                    qDebug() << "SSL error type not ignored";
+                    return false;
+                } else if (type == QSslError::SelfSignedCertificate) {
+                    // just ignore those errors of the added errors
+                    if (!_certs.contains(error.certificate())) {
+                        qDebug() << "SSL certificate not ignored";
+                        return false;
+                    }
+                }
+            }
+
+            if (_reply != NULL) {
+                _reply->ignoreSslErrors(_sslErrors);
+            }
+
+            return true;
+        }
+        return false;
+    }
 
  private:
+    QList<QSslCertificate> _certs;
+    QList<QSslError> _sslErrors;
     QNetworkReply* _reply;
     NetworkReply* q_ptr;
 };
-
-NetworkReplyPrivate::NetworkReplyPrivate(QNetworkReply* reply,
-                                         NetworkReply* parent)
-    : _reply(reply),
-      q_ptr(parent) {
-    // connect to all the signals so that we foward them
-    Q_Q(NetworkReply);
-    if (_reply != NULL) {
-        q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
-            q, SIGNAL(downloadProgress(qint64, qint64)));
-        q->connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            q, SIGNAL(error(QNetworkReply::NetworkError)));
-        q->connect(_reply, SIGNAL(finished()),
-            q, SIGNAL(finished()));
-        q->connect(_reply, SIGNAL(sslErrors(const QList<QSslError>&)),
-            q, SIGNAL(sslErrors(const QList<QSslError>&)));
-    }
-}
-
-QByteArray
-NetworkReplyPrivate::readAll() {
-    return _reply->readAll();
-}
-
-void
-NetworkReplyPrivate::abort() {
-    _reply->abort();
-}
-
-void
-NetworkReplyPrivate::setReadBufferSize(uint size) {
-    _reply->setReadBufferSize(size);
-}
 
 /*
  * PUBLIC IMPLEMENTATION
@@ -99,4 +129,14 @@ NetworkReply::setReadBufferSize(uint size) {
     d->setReadBufferSize(size);
 }
 
-#include "moc_network_reply.cpp"
+void
+NetworkReply::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(NetworkReply);
+    d->setAcceptedCertificates(certs);
+}
+
+bool
+NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
+    Q_D(NetworkReply);
+    return d->canIgnoreSslErrors(errors);
+}
