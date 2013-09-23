@@ -12,6 +12,9 @@ Build-Depends: debhelper (>= 9),
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-system-image
+# if you don't have have commit access to this branch but would like to upload
+# directly to Ubuntu, don't worry: your changes will be automatically merged
+# back into the upstream branch
 Vcs-Bzr: lp:ubuntu-download-manager
 
 Package: libubuntudownloadmanager1
