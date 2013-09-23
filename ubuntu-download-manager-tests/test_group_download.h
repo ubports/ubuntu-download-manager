@@ -64,10 +64,15 @@ class TestGroupDownload : public QObject {
     void testAllDownloadsFinished();
     void testSingleDownloadErrorNoFinished();
     void testSingleDownloadErrorWithFinished();
+    void testLocalPathSingleDownload();
+    void testConfinedSingleDownload_data();
+    void testConfinedSingleDownload();
 
  private:
     QUuid _id;
     QString _path;
+    bool _isConfined;
+    QString _rootPath;
     QCryptographicHash::Algorithm _algo;
     bool _isGSMDownloadAllowed;
     QVariantMap _metadata;

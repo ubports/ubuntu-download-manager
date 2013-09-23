@@ -28,6 +28,8 @@
 #include "./app-downloader-lib_global.h"
 #include "./download.h"
 
+#define LOCAL_PATH_KEY "local-path"
+
 class SingleDownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     Q_OBJECT
@@ -36,6 +38,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
  public:
     SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
@@ -45,6 +49,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
                    QObject* parent = 0);
     SingleDownload(const QUuid& id,
                    const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
                    QCryptographicHash::Algorithm algo,

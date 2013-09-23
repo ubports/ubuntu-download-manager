@@ -25,14 +25,14 @@ class QVariant;
 QT_END_NAMESPACE
 
 /*
- * Adaptor class for interface com.canonical.applications.DownloaderManager
+ * Adaptor class for interface com.canonical.applications.DownloadManager
  */
 class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.DownloaderManager")
+    Q_CLASSINFO("D-Bus Interface", "com.canonical.applications.DownloadManager")
     Q_CLASSINFO("D-Bus Introspection", ""
-"  <interface name=\"com.canonical.applications.DownloaderManager\">\n"
+"  <interface name=\"com.canonical.applications.DownloadManager\">\n"
 "    <method name=\"createDownload\">\n"
 "      <annotation value=\"DownloadStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
 "      <arg direction=\"in\" type=\"(sssa{sv}a{ss})\" name=\"download\"/>\n"

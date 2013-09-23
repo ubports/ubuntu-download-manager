@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_APPLICATION_H
 #define DOWNLOADER_LIB_APPLICATION_H
 
+#include <QStringList>
 #include <QObject>
 
 class ApplicationPrivate;
@@ -30,6 +31,7 @@ class Application : public QObject {
     explicit Application(QObject *parent = 0);
 
     virtual void exit(int returnCode = 0);
+    virtual QStringList arguments();
 
  private:
     // use pimpl so that we can mantains ABI compatibility

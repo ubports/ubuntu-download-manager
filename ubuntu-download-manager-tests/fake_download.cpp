@@ -21,6 +21,8 @@
 
 FakeDownload::FakeDownload(const QUuid& id,
                            const QString& path,
+                           bool isConfined,
+                           const QString& rootPath,
                            const QUrl& url,
                            const QVariantMap& metadata,
                            const QMap<QString, QString> &headers,
@@ -28,13 +30,15 @@ FakeDownload::FakeDownload(const QUuid& id,
                            QSharedPointer<RequestFactory> nam,
                            QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
-        : SingleDownload(id, path, url, metadata, headers, networkInfo, nam,
-                processFactory, parent),
+        : SingleDownload(id, path, isConfined, rootPath, url, metadata,
+                headers, networkInfo, nam, processFactory, parent),
         _canDownload(true) {
 }
 
 FakeDownload::FakeDownload(const QUuid& id,
                            const QString& path,
+                           bool isConfined,
+                           const QString& rootPath,
                            const QUrl& url,
                            const QString& hash,
                            QCryptographicHash::Algorithm algo,
@@ -44,8 +48,8 @@ FakeDownload::FakeDownload(const QUuid& id,
                            QSharedPointer<RequestFactory> nam,
                            QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
-        : SingleDownload(id, path, url, hash, algo, metadata, headers,
-                networkInfo, nam, processFactory, parent),
+        : SingleDownload(id, path, isConfined, rootPath, url, hash, algo,
+                metadata, headers, networkInfo, nam, processFactory, parent),
         _canDownload(true) {
 }
 

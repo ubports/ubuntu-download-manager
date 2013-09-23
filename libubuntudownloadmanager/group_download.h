@@ -36,6 +36,8 @@ class GroupDownload : public Download {
  public:
     GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
@@ -47,6 +49,8 @@ class GroupDownload : public Download {
 
     GroupDownload(const QUuid& id,
                   const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
                   QCryptographicHash::Algorithm algo,
                   bool isGSMDownloadAllowed,
