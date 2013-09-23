@@ -45,17 +45,13 @@ class Logger : public QObject {
     static QString getLogDir();
 
  private:
-    void initSessionBus(const QString& filename);
+    void openLogFile(const QString& filename);
 
-    void initSystemBus();
+    void openSyslogConnection();
 
-    void logSessionMessage(QtMsgType type,
-                           const QMessageLogContext &context,
-                           const QString &message);
+    void logSessionMessage(const QString &message);
 
-    void logSystemMessage(QtMsgType type,
-                           const QMessageLogContext &context,
-                           const QString &message);
+    void logSystemMessage(const QString &message);
 
  private:
     bool _isSystemBus = false;

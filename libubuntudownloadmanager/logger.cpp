@@ -43,9 +43,9 @@ Logger::Logger(const QString filename) {
     // or a session bus
     _isSystemBus = getuid() == 0;
     if (_isSystemBus) {
-        initSystemBus();
+        openSyslogConnection();
     } else {
-        initSessionBus(filename);
+        openLogFile(filename);
     }
 
     qInstallMessageHandler(_realMessageHandler);
@@ -54,7 +54,7 @@ Logger::Logger(const QString filename) {
 }
 
 void
-Logger::initSessionBus(const QString& filename) {
+Logger::openLogFile(const QString& filename) {
     if (filename == "") {
         _logFileName = getLogDir() + "/ubuntu-download-manager.log";
     } else {
@@ -69,7 +69,7 @@ Logger::initSessionBus(const QString& filename) {
 }
 
 void
-Logger::initSystemBus() {
+Logger::openSyslogConnection() {
     // TODO(mandel): init syslog
 }
 
@@ -125,79 +125,49 @@ Logger::getLogDir() {
 }
 
 void
-Logger::logSessionMessage(QtMsgType type,
-                          const QMessageLogContext &context,
-                          const QString &message) {
-    Q_UNUSED(context);
-    if (type < _logLevel)
-        return;
-
-    QString logMessage;
-    QTextStream _logMessage(&logMessage);
-    _logMessage << QDateTime::currentDateTime().toString(
-        _datetimeFormat).toUtf8().data()
-        << " - " << getMessageTypeString(type).toUtf8().data()
-        << " - " << message.toUtf8().data() << "\n";
-
-    QTextStream _stdErr(stderr, QIODevice::WriteOnly);
-    switch (type) {
-        case QtDebugMsg:
-        case QtCriticalMsg:
-        case QtFatalMsg:
-            _stdErr << logMessage;
-            break;
-        default:
-            break;
-    }
-    _stdErr.device()->close();
-
-    _logStream << logMessage;
+Logger::logSessionMessage(const QString &message) {
+    _logStream << message;
     _logStream.flush();
-
-    if (type == QtFatalMsg)
-        abort();
 }
 
 void
-Logger::logSystemMessage(QtMsgType type,
-                         const QMessageLogContext &context,
-                         const QString &message) {
-    Q_UNUSED(context);
-    if (type < _logLevel)
-        return;
-
-    QString logMessage;
-    QTextStream _logMessage(&logMessage);
-    _logMessage << QDateTime::currentDateTime().toString(
-        _datetimeFormat).toUtf8().data()
-        << " - " << getMessageTypeString(type).toUtf8().data()
-        << " - " << message.toUtf8().data() << "\n";
-
-    QTextStream _stdErr(stderr, QIODevice::WriteOnly);
-    switch (type) {
-        case QtDebugMsg:
-        case QtCriticalMsg:
-        case QtFatalMsg:
-            _stdErr << logMessage;
-            break;
-        default:
-            break;
-    }
-    _stdErr.device()->close();
-
-    if (type == QtFatalMsg)
-        abort();
-
-    //TODO(mandel): use syslog
+Logger::logSystemMessage(const QString &message) {
+    Q_UNUSED(message);
 }
 
 void
 Logger::logMessage(QtMsgType type,
                    const QMessageLogContext &context,
                    const QString &message) {
-    if (_isSystemBus) {
-        logSystemMessage(type, context, message);
-    } else {
-        logSessionMessage(type, context, message);
+    Q_UNUSED(context);
+    if (type < _logLevel)
+        return;
+
+    QString logMessage;
+    QTextStream _logMessage(&logMessage);
+    _logMessage << QDateTime::currentDateTime().toString(
+        _datetimeFormat).toUtf8().data()
+        << " - " << getMessageTypeString(type).toUtf8().data()
+        << " - " << message.toUtf8().data() << "\n";
+
+    QTextStream _stdErr(stderr, QIODevice::WriteOnly);
+    switch (type) {
+        case QtDebugMsg:
+        case QtCriticalMsg:
+        case QtFatalMsg:
+            _stdErr << logMessage;
+            break;
+        default:
+            break;
     }
+    _stdErr.device()->close();
+
+    if (_isSystemBus) {
+        logSystemMessage(logMessage);
+    } else {
+        logSessionMessage(logMessage);
+    }
+
+    if (type == QtFatalMsg)
+        abort();
 }
