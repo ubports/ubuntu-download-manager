@@ -329,7 +329,7 @@ class SingleDownloadPrivate {
         qDebug() << __PRETTY_FUNCTION__ << _url;
         qDebug() << "Found errors" << errors;
         Q_UNUSED(errors);
-        if (!_reply->ignoreSslErrors())
+        if (!_reply->canIgnoreSslErrors(errors))
             emitError("SSL ERROR");
     }
 
