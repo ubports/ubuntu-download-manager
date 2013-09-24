@@ -37,7 +37,7 @@ class DownloadManagerPrivate {
         : _throttle(0),
           q_ptr(parent) {
         _conn = connection;
-        _apparmor = QSharedPointer<AppArmor>(new AppArmor());
+        _apparmor = QSharedPointer<AppArmor>(new AppArmor(connection));
         _networkInfo = QSharedPointer<SystemNetworkInfo>(
             new SystemNetworkInfo());
         QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(

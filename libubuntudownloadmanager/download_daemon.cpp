@@ -83,12 +83,14 @@ class DownloadDaemonPrivate {
             ret = _conn->registerObject("/", _downInterface);
             qDebug() << ret;
             if (!ret) {
-                qDebug() << "Could not register interface";
+                qDebug() << "Could not register interface"
+                    << _conn->connection().lastError();
                 _app->exit(-1);
             }
             return;
         }
-        qDebug() << "Could not register service";
+        qDebug() << "Could not register service"
+            << _conn->connection().lastError();
         _app->exit(-1);
     }
 

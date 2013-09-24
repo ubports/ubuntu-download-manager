@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <unistd.h>
+#include <sys/types.h>
 #include <QDateTime>
 #include <QDir>
 #include <QStandardPaths>
@@ -37,6 +39,22 @@ _realMessageHandler(QtMsgType type,
 }
 
 Logger::Logger(const QString filename) {
+    // decide if we are dealing with a system bus (that should use syslog)
+    // or a session bus
+    _isSystemBus = getuid() == 0;
+    if (_isSystemBus) {
+        openSyslogConnection();
+    } else {
+        openLogFile(filename);
+    }
+
+    qInstallMessageHandler(_realMessageHandler);
+
+    _initialized = true;
+}
+
+void
+Logger::openLogFile(const QString& filename) {
     if (filename == "") {
         _logFileName = getLogDir() + "/ubuntu-download-manager.log";
     } else {
@@ -48,10 +66,11 @@ Logger::Logger(const QString filename) {
         _logStream.setDevice(&_logFile);
         _logStream.flush();
     }
+}
 
-    qInstallMessageHandler(_realMessageHandler);
-
-    _initialized = true;
+void
+Logger::openSyslogConnection() {
+    // TODO(mandel): init syslog
 }
 
 void
@@ -106,6 +125,17 @@ Logger::getLogDir() {
 }
 
 void
+Logger::logSessionMessage(const QString &message) {
+    _logStream << message;
+    _logStream.flush();
+}
+
+void
+Logger::logSystemMessage(const QString &message) {
+    Q_UNUSED(message);
+}
+
+void
 Logger::logMessage(QtMsgType type,
                    const QMessageLogContext &context,
                    const QString &message) {
@@ -132,8 +162,11 @@ Logger::logMessage(QtMsgType type,
     }
     _stdErr.device()->close();
 
-    _logStream << logMessage;
-    _logStream.flush();
+    if (_isSystemBus) {
+        logSystemMessage(logMessage);
+    } else {
+        logSessionMessage(logMessage);
+    }
 
     if (type == QtFatalMsg)
         abort();
