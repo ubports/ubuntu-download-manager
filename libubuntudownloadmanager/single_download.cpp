@@ -200,14 +200,6 @@ class SingleDownloadPrivate {
         emit q->started(true);
     }
 
-    bool isValid() {
-        return _isValid;
-    }
-
-    QString lastError() {
-        return _lastError;
-    }
-
     qulonglong progress() {
         return (_currentData == NULL)?0:_currentData->size();
     }
@@ -362,6 +354,7 @@ class SingleDownloadPrivate {
 
  private:
     void init() {
+        Q_Q(SingleDownload);
         _filePath = saveFileName();
         qDebug() << "Download path is" << _filePath;
         _reply = NULL;
@@ -369,8 +362,8 @@ class SingleDownloadPrivate {
 
         // ensure that the download is valid
         if (!_url.isValid()) {
-            _isValid = false;
-            _lastError = QString("Invalid URL: '%1'").arg(_url.toString());
+            q->setIsValid(false);
+            q->setLastError(QString("Invalid URL: '%1'").arg(_url.toString()));
         }
     }
 
@@ -471,12 +464,10 @@ class SingleDownloadPrivate {
     }
 
  private:
-    bool _isValid = true;
     qulonglong _totalSize;
     QUrl _url;
     QString _filePath;
     QString _hash;
-    QString _lastError;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply;
     QFile* _currentData;
@@ -570,18 +561,6 @@ void
 SingleDownload::startDownload() {
     Q_D(SingleDownload);
     d->startDownload();
-}
-
-bool
-SingleDownload::isValid() {
-    Q_D(SingleDownload);
-    return d->isValid();
-}
-
-QString
-SingleDownload::lastError() {
-    Q_D(SingleDownload);
-    return d->lastError();
 }
 
 qulonglong

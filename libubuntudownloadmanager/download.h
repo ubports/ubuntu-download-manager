@@ -71,14 +71,14 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
 
     virtual bool canDownload();
 
+    virtual bool isValid();
+    virtual QString lastError();
+
     // methods to be overriden by the children
     virtual void cancelDownload() = 0;
     virtual void pauseDownload() = 0;
     virtual void resumeDownload() = 0;
     virtual void startDownload() = 0;
-
-    virtual bool isValid() = 0;
-    virtual QString lastError() = 0;
 
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
@@ -110,6 +110,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void stateChanged();
 
  protected:
+    void setIsValid(bool isValid);
+    void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);
 
  private:
