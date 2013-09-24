@@ -80,8 +80,9 @@ class GroupDownloadPrivate {
             // before we create the download ensure that the url is valid
             // if not we set the error and stop the loop
             if (!url.isValid()) {
-                _isValid = false;
-                _lastError = QString("Invalid URL: '%1'").arg(url.toString());
+                q->setIsValid(false);
+                q->setLastError(QString("Invalid URL: '%1'").arg(
+                    url.toString()));
                 break;
             }
 
@@ -178,14 +179,6 @@ class GroupDownloadPrivate {
             }
         }
         emit q->started(true);
-    }
-
-    bool isValid() {
-        return _isValid;
-    }
-
-    QString lastError() {
-        return _lastError;
     }
 
     qulonglong progress() {
@@ -293,7 +286,6 @@ class GroupDownloadPrivate {
     }
 
  private:
-    bool _isValid = true;
     QString _lastError;
     QList<SingleDownload*> _downloads;
     QStringList _finishedDownloads;
@@ -367,18 +359,6 @@ void
 GroupDownload::startDownload() {
     Q_D(GroupDownload);
     d->startDownload();
-}
-
-bool
-GroupDownload::isValid() {
-    Q_D(GroupDownload);
-    return d->isValid();
-}
-
-QString
-GroupDownload::lastError() {
-    Q_D(GroupDownload);
-    return d->lastError();
 }
 
 qulonglong
