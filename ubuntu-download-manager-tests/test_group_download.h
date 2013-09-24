@@ -68,6 +68,10 @@ class TestGroupDownload : public QObject {
     void testConfinedSingleDownload_data();
     void testConfinedSingleDownload();
 
+    // isValid tests
+    void testInvalidUrl();
+    void testValidUrl();
+
  private:
     QUuid _id;
     QString _path;

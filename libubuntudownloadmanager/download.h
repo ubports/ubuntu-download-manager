@@ -77,6 +77,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     virtual void resumeDownload() = 0;
     virtual void startDownload() = 0;
 
+    virtual bool isValid() = 0;
+    virtual QString lastError() = 0;
+
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
     // the downloader takes care of the actual download operations

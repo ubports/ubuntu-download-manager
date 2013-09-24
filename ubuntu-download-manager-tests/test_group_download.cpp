@@ -763,3 +763,41 @@ TestGroupDownload::testConfinedSingleDownload() {
         QCOMPARE(confined, download->isConfined());
     }
 }
+
+void
+TestGroupDownload::testInvalidUrl() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(!group->isValid());
+}
+
+void
+TestGroupDownload::testValidUrl() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(group->isValid());
+}

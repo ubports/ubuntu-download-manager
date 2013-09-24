@@ -66,6 +66,9 @@ class GroupDownload : public Download {
     virtual void resumeDownload() override;
     virtual void startDownload() override;
 
+    virtual bool isValid() override;
+    virtual QString lastError() override;
+
  public slots:  // NOLINT(whitespace/indent)
     virtual qulonglong progress() override;
     virtual qulonglong progress(qulonglong &started, qulonglong &paused,
