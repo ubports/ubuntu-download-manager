@@ -60,7 +60,7 @@ Download*
 FakeDownloadFactory::createDownload(const QString& downloadOwner,
                                     const QUrl& url,
                                     const QString& hash,
-                                    QCryptographicHash::Algorithm algo,
+                                    const QString& algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
     qDebug() << __PRETTY_FUNCTION__;
@@ -84,7 +84,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
 Download*
 FakeDownloadFactory::createDownload(const QString& downloadOwner,
                                     StructList downloads,
-                                    QCryptographicHash::Algorithm algo,
+                                    const QString& algo,
                                     bool allowed3G,
                                     const QVariantMap& metadata,
                                     StringMap headers) {
@@ -137,7 +137,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
                                     const QString& rootPath,
                                     const QUrl& url,
                                     const QString& hash,
-                                    QCryptographicHash::Algorithm algo,
+                                    const QString& algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
     QUuid id;

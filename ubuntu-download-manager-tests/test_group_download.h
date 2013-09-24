@@ -71,13 +71,16 @@ class TestGroupDownload : public QObject {
     // isValid tests
     void testInvalidUrl();
     void testValidUrl();
+    void testInvalidHashAlgorithm();
+    void testValidHashAlgorithm_data();
+    void testValidHashAlgorithm();
 
  private:
     QUuid _id;
     QString _path;
     bool _isConfined;
     QString _rootPath;
-    QCryptographicHash::Algorithm _algo;
+    QString _algo;
     bool _isGSMDownloadAllowed;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;

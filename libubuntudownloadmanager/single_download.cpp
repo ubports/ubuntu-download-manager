@@ -70,18 +70,13 @@ class SingleDownloadPrivate {
           _requestFactory(nam),
           _processFactory(processFactory),
           q_ptr(parent) {
+        Q_Q(SingleDownload);
         init();
+        _algo = HashAlgorithm::getHashAlgo(algo);
         // check that the algorithm is correct if the hash is not emtpy
-        if (!_hash.isEmpty()) {
-            if (!HashAlgorithm::isValidAlgo(algo)) {
-                _isValid = false;
-                _lastError = QString("Invalid hash algorithm: '%1'").arg(algo);
-                _algo = QCryptographicHash::Md5;
-            } else {
-                _algo = HashAlgorithm::getHashAlgo(algo);
-            }
-        } else {
-            _algo = QCryptographicHash::Md5;
+        if (!_hash.isEmpty() && !HashAlgorithm::isValidAlgo(algo)) {
+            q->setIsValid(false);
+            q->setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
         }
     }
 
@@ -378,7 +373,6 @@ class SingleDownloadPrivate {
             q->setIsValid(false);
             q->setLastError(QString("Invalid URL: '%1'").arg(_url.toString()));
         }
-
     }
 
     void connectToReplySignals() {

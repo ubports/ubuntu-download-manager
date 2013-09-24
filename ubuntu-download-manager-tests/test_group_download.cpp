@@ -31,7 +31,7 @@ TestGroupDownload::init() {
     _path = "/group/dbus/path";
     _isConfined = true;
     _rootPath = "/random/dbus/path";
-    _algo = QCryptographicHash::Md5;
+    _algo = "Md5";
     _isGSMDownloadAllowed = true;
     _networkInfo = new FakeSystemNetworkInfo();
     _nam = new FakeRequestFactory();
@@ -795,6 +795,57 @@ TestGroupDownload::testValidUrl() {
 
     GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(group->isValid());
+}
+
+void
+TestGroupDownload::testInvalidHashAlgorithm() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, "wrong", _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(!group->isValid());
+}
+
+void
+TestGroupDownload::testValidHashAlgorithm_data() {
+    QTest::addColumn<QString>("algo");
+
+    QTest::newRow("md5") << "md5";
+    QTest::newRow("sha1") << "sha1";
+    QTest::newRow("sha224") << "sha224";
+    QTest::newRow("sha256") << "sha256";
+    QTest::newRow("sha384") << "sha384";
+    QTest::newRow("sha512") << "sha512";
+}
+
+void
+TestGroupDownload::testValidHashAlgorithm() {
+    QFETCH(QString, algo);
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, algo, _isGSMDownloadAllowed, _metadata, _headers,
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<DownloadFactory>(_downloadFactory),
         QSharedPointer<FileManager>(_fileManager));

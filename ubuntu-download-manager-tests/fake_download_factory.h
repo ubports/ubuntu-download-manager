@@ -42,13 +42,13 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
     Download* createDownload(const QString& downloadOwner,
                              const QUrl& url,
                              const QString& hash,
-                             QCryptographicHash::Algorithm algo,
+                             const QString& algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 
     Download* createDownload(const QString& downloadOwner,
                              StructList downloads,
-                             QCryptographicHash::Algorithm algo,
+                             const QString& algo,
                              bool allowed3G,
                              const QVariantMap& metadata,
                              StringMap headers) override;
@@ -63,7 +63,7 @@ class FakeDownloadFactory : public DownloadFactory, public Fake {
                              const QString& rootPath,
                              const QUrl& url,
                              const QString& hash,
-                             QCryptographicHash::Algorithm algo,
+                             const QString& algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) override;
 

@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include "./download_adaptor.h"
+#include "./hash_algorithm.h"
 #include "./single_download.h"
 #include "./uuid_factory.h"
 #include "./group_download.h"
@@ -31,7 +32,7 @@ class GroupDownloadPrivate {
 
  public:
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
-                  QCryptographicHash::Algorithm algo,
+                  const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
                   QSharedPointer<DownloadFactory> downloadFactory,
@@ -47,7 +48,7 @@ class GroupDownloadPrivate {
     }
 
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
-                  QCryptographicHash::Algorithm algo,
+                  const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
                   QSharedPointer<DownloadFactory> downFactory,
@@ -64,11 +65,20 @@ class GroupDownloadPrivate {
     }
 
     void init(QList<GroupDownloadStruct> downloads,
-                  QCryptographicHash::Algorithm algo,
+                  const QString& algo,
                   bool isGSMDownloadAllowed) {
         Q_Q(GroupDownload);
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
+
+        // check if the algo is correct if not do not even build the
+        // single downloads
+        if (!HashAlgorithm::isValidAlgo(algo)) {
+            q->setIsValid(false);
+            q->setLastError(
+                QString("Invalid hash algorithm: '%1'").arg(algo));
+            return;
+        }
 
         // build downloads and add them to the q, it will take care of
         // starting them etc..
@@ -305,7 +315,7 @@ GroupDownload::GroupDownload(const QUuid& id,
                   bool isConfined,
                   const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
-                  QCryptographicHash::Algorithm algo,
+                  const QString& algo,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
@@ -323,7 +333,7 @@ GroupDownload::GroupDownload(const QUuid& id,
                   bool isConfined,
                   const QString& rootPath,
                   QList<GroupDownloadStruct> downloads,
-                  QCryptographicHash::Algorithm algo,
+                  const QString& algo,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,

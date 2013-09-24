@@ -126,6 +126,9 @@ class TestDownload: public QObject {
     // isValid tests
     void testInvalidUrl();
     void testValidUrl();
+    void testInvalidHashAlgorithm();
+    void testValidHashAlgorithm_data();
+    void testValidHashAlgorithm();
 
  private:
     bool removeDir(const QString& dirName);
@@ -139,7 +142,7 @@ class TestDownload: public QObject {
     QMap<QString, QString> _headers;
     QString _path;
     QUrl _url;
-    QCryptographicHash::Algorithm _algo;
+    QString _algo;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
