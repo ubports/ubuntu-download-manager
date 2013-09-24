@@ -94,7 +94,7 @@ class DownloadFactoryPrivate {
     Download* createDownload(const QString& dbusOwner,
                              const QUrl& url,
                              const QString& hash,
-                             QCryptographicHash::Algorithm algo,
+                             const QString& algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) {
         QUuid id;
@@ -114,7 +114,7 @@ class DownloadFactoryPrivate {
 
     Download* createDownload(const QString& dbusOwner,
                              StructList downloads,
-                             QCryptographicHash::Algorithm algo,
+                             const QString& algo,
                              bool allowed3G,
                              const QVariantMap& metadata,
                              StringMap headers) {
@@ -152,7 +152,7 @@ class DownloadFactoryPrivate {
                                      const QString& rootPath,
                                      const QUrl& url,
                                      const QString& hash,
-                                     QCryptographicHash::Algorithm algo,
+                                     const QString& algo,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers) {
         QUuid id;
@@ -211,7 +211,7 @@ Download*
 DownloadFactory::createDownload(const QString& dbusOwner,
                                 const QUrl& url,
                                 const QString& hash,
-                                QCryptographicHash::Algorithm algo,
+                                const QString& algo,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
     Q_D(DownloadFactory);
@@ -221,7 +221,7 @@ DownloadFactory::createDownload(const QString& dbusOwner,
 Download*
 DownloadFactory::createDownload(const QString& dbusOwner,
                                 StructList downloads,
-                                QCryptographicHash::Algorithm algo,
+                                const QString& algo,
                                 bool allowed3G,
                                 const QVariantMap& metadata,
                                 StringMap headers) {
@@ -246,7 +246,7 @@ DownloadFactory::createDownloadForGroup(bool isConfined,
                                         const QString& rootPath,
                                         const QUrl& url,
                                         const QString& hash,
-                                        QCryptographicHash::Algorithm algo,
+                                        const QString& algo,
                                         const QVariantMap& metadata,
                                         const QMap<QString, QString>& headers) {
     Q_D(DownloadFactory);

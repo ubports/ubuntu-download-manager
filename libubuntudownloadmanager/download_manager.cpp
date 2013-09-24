@@ -20,7 +20,6 @@
 #include <QRegExp>
 #include "./apparmor.h"
 #include "./download_queue.h"
-#include "./hash_algorithm.h"
 #include "./request_factory.h"
 #include "./system_network_info.h"
 #include "./download_manager.h"

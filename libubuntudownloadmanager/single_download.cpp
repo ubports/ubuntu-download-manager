@@ -17,12 +17,14 @@
  */
 
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QDir>
 #include <QDebug>
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+#include "./hash_algorithm.h"
 #include "./single_download.h"
 #include "./network_reply.h"
 #include "./xdg_basedir.h"
@@ -57,7 +59,7 @@ class SingleDownloadPrivate {
 
     SingleDownloadPrivate(const QUrl& url,
                           const QString& hash,
-                          QCryptographicHash::Algorithm algo,
+                          const QString& algo,
                           QSharedPointer<RequestFactory> nam,
                           QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
@@ -65,11 +67,22 @@ class SingleDownloadPrivate {
         : _totalSize(0),
           _url(url),
           _hash(hash),
-          _algo(algo),
           _requestFactory(nam),
           _processFactory(processFactory),
           q_ptr(parent) {
         init();
+        // check that the algorithm is correct if the hash is not emtpy
+        if (!_hash.isEmpty()) {
+            if (!HashAlgorithm::isValidAlgo(algo)) {
+                _isValid = false;
+                _lastError = QString("Invalid hash algorithm: '%1'").arg(algo);
+                _algo = QCryptographicHash::Md5;
+            } else {
+                _algo = HashAlgorithm::getHashAlgo(algo);
+            }
+        } else {
+            _algo = QCryptographicHash::Md5;
+        }
     }
 
     ~SingleDownloadPrivate() {
@@ -372,6 +385,7 @@ class SingleDownloadPrivate {
             _isValid = false;
             _lastError = QString("Invalid URL: '%1'").arg(_url.toString());
         }
+
     }
 
     void connectToReplySignals() {
@@ -511,7 +525,7 @@ SingleDownload::SingleDownload(const QUuid& id,
                    const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
-                   QCryptographicHash::Algorithm algo,
+                   const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
                    QSharedPointer<SystemNetworkInfo> networkInfo,

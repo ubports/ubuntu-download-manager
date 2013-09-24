@@ -19,7 +19,6 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
-#include <QCryptographicHash>
 #include <QNetworkReply>
 #include <QProcess>
 #include <QSharedPointer>
@@ -53,7 +52,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
                    const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
-                   QCryptographicHash::Algorithm algo,
+                   const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QSharedPointer<SystemNetworkInfo> networkInfo,
