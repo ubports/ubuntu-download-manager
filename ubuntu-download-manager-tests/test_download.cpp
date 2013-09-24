@@ -1630,6 +1630,71 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
 }
 
 void
+TestDownload::testSslErrorsIgnored() {
+    QList<QSslError> errors;
+    errors.append(QSslError(QSslError::CertificateExpired));
+
+    _reqFactory->record();
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QSignalSpy stateSpy(download , SIGNAL(stateChanged()));
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+    reply->setCanIgnoreSslErrors(true);
+    reply->emitSslErrors(errors);
+
+    calledMethods = reply->calledMethods();
+    // assert last method called is ignoreSslErors
+    QCOMPARE(QString("canIgnoreSslErrors"),
+        calledMethods[calledMethods.count() -1].methodName());
+    QCOMPARE(0, stateSpy.count());  // we did not set it to error
+}
+
+void
+TestDownload::testSslErrorsNotIgnored() {
+    QList<QSslError> errors;
+    errors.append(QSslError(QSslError::CertificateExpired));
+
+    _reqFactory->record();
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QSignalSpy stateSpy(download , SIGNAL(stateChanged()));
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+    reply->setCanIgnoreSslErrors(false);
+    reply->emitSslErrors(errors);
+
+    calledMethods = reply->calledMethods();
+    // assert last method called is ignoreSslErors
+    QCOMPARE(QString("canIgnoreSslErrors"),
+        calledMethods[calledMethods.count() -1].methodName());
+    QCOMPARE(1, stateSpy.count());  // we did not set it to error
+    QCOMPARE(Download::ERROR, download->state());
+}
+
+void
 TestDownload::testLocalPathConfined() {
     // assert that the root path used is not the one in the metadata
     QVariantMap metadata;
@@ -1660,68 +1725,4 @@ TestDownload::testLocalPathNotConfined() {
 
     qDebug() << download->filePath();
     QCOMPARE(download->filePath(), localPath);
-}
-
-void
-TestDownload::testSslErrorsIgnored() {
-    QList<QSslError> errors;
-    errors.append(QSslError(QSslError::CertificateExpired));
-
-    _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers,
-        QSharedPointer<SystemNetworkInfo>(_networkInfo),
-        QSharedPointer<RequestFactory>(_reqFactory),
-        QSharedPointer<ProcessFactory>(_processFactory));
-
-    download->start();  // change state
-    download->startDownload();
-
-    QSignalSpy stateSpy(download , SIGNAL(stateChanged()));
-
-    // we need to set the data before we pause!!!
-    QList<MethodData> calledMethods = _reqFactory->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
-        calledMethods[0].params().outParams()[0]);
-    reply->setIgnoreSslErrors(errors);
-    reply->emitSslErrors(errors);
-
-    calledMethods = reply->calledMethods();
-    // assert last method called is ignoreSslErors
-    QCOMPARE(QString("ignoreSslErrors"),
-        calledMethods[calledMethods.count() -1].methodName());
-    QCOMPARE(0, stateSpy.count());  // we did not set it to error
-}
-
-void
-TestDownload::testSslErrorsNotIgnored() {
-    QList<QSslError> errors;
-    errors.append(QSslError(QSslError::CertificateExpired));
-
-    _reqFactory->record();
-    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers,
-        QSharedPointer<SystemNetworkInfo>(_networkInfo),
-        QSharedPointer<RequestFactory>(_reqFactory),
-        QSharedPointer<ProcessFactory>(_processFactory));
-
-    download->start();  // change state
-    download->startDownload();
-
-    QSignalSpy stateSpy(download , SIGNAL(stateChanged()));
-
-    // we need to set the data before we pause!!!
-    QList<MethodData> calledMethods = _reqFactory->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
-        calledMethods[0].params().outParams()[0]);
-    reply->emitSslErrors(errors);
-
-    calledMethods = reply->calledMethods();
-    // assert last method called is ignoreSslErors
-    QCOMPARE(QString("ignoreSslErrors"),
-        calledMethods[calledMethods.count() -1].methodName());
-    QCOMPARE(1, stateSpy.count());  // we did not set it to error
-    QCOMPARE(Download::ERROR, download->state());
 }
