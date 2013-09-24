@@ -1,3 +1,19 @@
+ubuntu-download-manager (0.2+13.10.20130924.1-0ubuntu1) saucy; urgency=low
+
+  [ Loïc Minier ]
+  * Vcs-Bzr branch in control was out of date; use the alias which
+    should always point at the right one.
+
+  [ Manuel de la Pena ]
+  * Ensure that when there is a hash error the state change is emitted
+    and is the correct download state. (LP: #1224676)
+  * Correctly manage SSL errors. (LP: #1228057)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 130
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 24 Sep 2013 06:03:38 +0000
+
 ubuntu-download-manager (0.2+13.10.20130920.1-0ubuntu1) saucy; urgency=low
 
   [ Barry Warsaw ]
