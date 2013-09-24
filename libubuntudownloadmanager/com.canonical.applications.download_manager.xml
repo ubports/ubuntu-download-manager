@@ -44,6 +44,8 @@
         <arg name="allowed" type="b" direction="out"/>
     </method>
 
+    <method name="exit" />
+
     <signal name="downloadCreated">
         <arg name="path" type="o" direction="out"/>
     </signal>

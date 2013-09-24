@@ -23,6 +23,7 @@
 #include <QSharedPointer>
 #include <download_manager.h>
 #include <single_download.h>
+#include "./fake_application.h"
 #include "./fake_apparmor.h"
 #include "./test_runner.h"
 #include "./fake_dbus_connection.h"
@@ -61,11 +62,15 @@ class TestDownloadManager : public QObject {
     void testSizeChangedEmittedOnAddition();
     void testSizeChangedEmittedOnRemoval();
     void testSetSelfSignedCerts();
+    void testStoppable();
+    void testNotStoppable();
 
  private:
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
  private:
+    FakeApplication* _app;
+    QSharedPointer<Application> _appPointer;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _requestFactory;
     FakeDownloadFactory* _downloadFactory;

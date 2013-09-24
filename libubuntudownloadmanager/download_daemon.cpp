@@ -28,6 +28,7 @@
 
 #define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"
+#define STOPPABLE "-stoppable"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -39,14 +40,13 @@ class DownloadDaemonPrivate {
  public:
     explicit DownloadDaemonPrivate(DownloadDaemon* parent)
         : q_ptr(parent) {
-        _app = new Application();
+        _app = QSharedPointer<Application>(new Application());
         _conn = QSharedPointer<DBusConnection>(new DBusConnection());
         _shutDownTimer = new Timer();
-        _downInterface = new DownloadManager(_conn, q_ptr);
         init();
     }
 
-    DownloadDaemonPrivate(Application* app,
+    DownloadDaemonPrivate(QSharedPointer<Application> app,
                           DBusConnection* conn,
                           Timer* timer,
                           DownloadManager* man,
@@ -63,8 +63,6 @@ class DownloadDaemonPrivate {
         // no need to delete the adaptor because the interface is its parent
         if (_downInterface)
             delete _downInterface;
-        if (_app)
-            delete _app;
         if (_shutDownTimer)
             delete _shutDownTimer;
 
@@ -131,6 +129,8 @@ class DownloadDaemonPrivate {
         }  // certs
         _isTimeoutEnabled = !args.contains(DISABLE_TIMEOUT);
         qDebug() << "Timeout is enabled:" << _isTimeoutEnabled;
+        _stoppable = args.contains(STOPPABLE);
+        qDebug() << "Daemon is stoppable" << _stoppable;
     }
 
     void init() {
@@ -143,6 +143,11 @@ class DownloadDaemonPrivate {
             q->connect(_shutDownTimer, SIGNAL(timeout()),
                 q, SLOT(onTimeout()));
             _shutDownTimer->start(timeout);
+        }
+
+        if (_downInterface == NULL) {
+            _downInterface = new DownloadManager(_app, _conn, _stoppable,
+                q_ptr);
         }
 
         _downInterface->setAcceptedCertificates(_certs);
@@ -162,9 +167,10 @@ class DownloadDaemonPrivate {
     }
 
  private:
-    bool _isTimeoutEnabled;
+    bool _isTimeoutEnabled = true;
+    bool _stoppable = false;
     QList<QSslCertificate> _certs;
-    Application* _app;
+    QSharedPointer<Application> _app;
     Timer* _shutDownTimer;
     QSharedPointer<DBusConnection> _conn;
     DownloadManager* _downInterface;
@@ -181,7 +187,7 @@ DownloadDaemon::DownloadDaemon(QObject *parent)
       d_ptr(new DownloadDaemonPrivate(this)) {
 }
 
-DownloadDaemon::DownloadDaemon(Application* app,
+DownloadDaemon::DownloadDaemon(QSharedPointer<Application> app,
                                DBusConnection* conn,
                                Timer* timer,
                                DownloadManager* man,

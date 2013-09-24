@@ -50,6 +50,7 @@ class TestDownloadDaemon : public QObject {
  private:
     FakeTimer* _timer;
     FakeApplication* _app;
+    QSharedPointer<Application> _appPointer;
     FakeDownloadManager* _man;
     FakeDBusConnection* _conn;
     DownloadDaemon* _daemon;

@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1378114841
-#define DOWNLOAD_MANAGER_ADAPTOR_H_1378114841
+#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1379689315
+#define DOWNLOAD_MANAGER_ADAPTOR_H_1379689315
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -69,6 +69,7 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"isGSMDownloadAllowed\">\n"
 "      <arg direction=\"out\" type=\"b\" name=\"allowed\"/>\n"
 "    </method>\n"
+"    <method name=\"exit\"/>\n"
 "    <signal name=\"downloadCreated\">\n"
 "      <arg direction=\"out\" type=\"o\" name=\"path\"/>\n"
 "    </signal>\n"
@@ -84,6 +85,7 @@ public Q_SLOTS: // METHODS
     QDBusObjectPath createDownload(DownloadStruct download);
     QDBusObjectPath createDownloadGroup(StructList downloads, const QString &algorithm, bool allowed3G, const QVariantMap &metadata, StringMap headers);
     qulonglong defaultThrottle();
+    void exit();
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
     bool isGSMDownloadAllowed();

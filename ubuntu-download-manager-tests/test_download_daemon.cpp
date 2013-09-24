@@ -26,9 +26,12 @@ void
 TestDownloadDaemon::init() {
     _timer = new FakeTimer();
     _app = new FakeApplication();
+    _appPointer = QSharedPointer<Application>(_app);
     _conn = new FakeDBusConnection();
-    _man = new FakeDownloadManager(QSharedPointer<DBusConnection>(_conn));
-    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    _man = new FakeDownloadManager(_appPointer,
+        QSharedPointer<DBusConnection>(_conn));
+    _daemon = new DownloadDaemon(_appPointer,
+        _conn, _timer, _man, this);
 }
 
 void
@@ -151,7 +154,7 @@ TestDownloadDaemon::testDisableTimeout() {
     _app->setArguments(args);
 
     // assert that start is never called
-    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _timer->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
@@ -164,7 +167,7 @@ TestDownloadDaemon::testSelfSignedCerts() {
     _app->setArguments(args);
 
     // assert that we set the certs
-    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
@@ -178,7 +181,7 @@ TestDownloadDaemon::testSelfSignedCertsMissingPath() {
     _app->setArguments(args);
 
     // assert that we do not crash
-    _daemon = new DownloadDaemon(_app, _conn, _timer, _man, this);
+    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }

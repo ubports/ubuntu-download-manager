@@ -28,7 +28,8 @@ class FakeDownloadManager : public DownloadManager, public Fake {
     Q_OBJECT
 
  public:
-    explicit FakeDownloadManager(QSharedPointer<DBusConnection> connection,
+    explicit FakeDownloadManager(QSharedPointer<Application> app,
+                                 QSharedPointer<DBusConnection> connection,
                                  QObject *parent = 0);
 
     void emitSizeChaged(int size);

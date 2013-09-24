@@ -32,9 +32,13 @@ class DownloadManagerPrivate {
     Q_DECLARE_PUBLIC(DownloadManager)
 
  public:
-    DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
+    DownloadManagerPrivate(QSharedPointer<Application> app,
+                           QSharedPointer<DBusConnection> connection,
+                           bool stoppable,
                            DownloadManager* parent)
-        : _throttle(0),
+        : _app(app),
+          _throttle(0),
+          _stoppable(stoppable),
           q_ptr(parent) {
         _conn = connection;
         _apparmor = QSharedPointer<AppArmor>(new AppArmor(connection));
@@ -51,15 +55,19 @@ class DownloadManagerPrivate {
         init();
     }
 
-    DownloadManagerPrivate(QSharedPointer<DBusConnection> connection,
+    DownloadManagerPrivate(QSharedPointer<Application> app,
+                           QSharedPointer<DBusConnection> connection,
                            SystemNetworkInfo* networkInfo,
                            DownloadFactory* downloadFactory,
                            DownloadQueue* queue,
-                           DownloadManager* parent = 0)
-        : _throttle(0),
+                           bool stoppable,
+                           DownloadManager* parent)
+        : _app(app),
+          _throttle(0),
           _networkInfo(networkInfo),
           _downloadFactory(downloadFactory),
           _downloadsQueue(queue),
+          _stoppable(stoppable),
           q_ptr(parent) {
         _conn = connection;
         init();
@@ -194,7 +202,21 @@ class DownloadManagerPrivate {
         return paths;
     }
 
+
+    void exit() {
+        Q_Q(DownloadManager);
+        if (_stoppable) {
+            _app->exit(0);
+        } else {
+            if (q->calledFromDBus()) {
+                q->sendErrorReply(QDBusError::NotSupported,
+                    "Daemon should have been started with -stoppable");
+            } // dbus call
+        }
+    }
+
  private:
+    QSharedPointer<Application> _app;
     qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
@@ -202,6 +224,7 @@ class DownloadManagerPrivate {
     QSharedPointer<DownloadFactory> _downloadFactory;
     QSharedPointer<DownloadQueue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;
+    bool _stoppable;
     DownloadManager* q_ptr;
 };
 
@@ -209,23 +232,29 @@ class DownloadManagerPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
+DownloadManager::DownloadManager(QSharedPointer<Application> app,
+                                 QSharedPointer<DBusConnection> connection,
+                                 bool stoppable,
                                  QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadManagerPrivate(connection, this)) {
+      d_ptr(new DownloadManagerPrivate(app, connection, stoppable, this)) {
 }
 
-DownloadManager::DownloadManager(QSharedPointer<DBusConnection> connection,
+DownloadManager::DownloadManager(QSharedPointer<Application> app,
+                                 QSharedPointer<DBusConnection> connection,
                                  SystemNetworkInfo* networkInfo,
                                  DownloadFactory* downloadFactory,
                                  DownloadQueue* queue,
+                                 bool stoppable,
                                  QObject* parent)
     : QObject(parent),
       QDBusContext(),
-      d_ptr(new DownloadManagerPrivate(connection,
+      d_ptr(new DownloadManagerPrivate(app,
+                                       connection,
                                        networkInfo,
                                        downloadFactory,
                                        queue,
+                                       stoppable,
                                        this)) {
 }
 
@@ -290,6 +319,12 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value) {
     Q_D(DownloadManager);
     return d->getAllDownloadsWithMetadata(name, value);
+}
+
+void
+DownloadManager::exit() {
+    Q_D(DownloadManager);
+    return d->exit();
 }
 
 #include "moc_download_manager.cpp"
