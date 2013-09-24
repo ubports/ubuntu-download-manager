@@ -77,6 +77,14 @@ class GroupDownloadPrivate {
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
+            // before we create the download ensure that the url is valid
+            // if not we set the error and stop the loop
+            if (!url.isValid()) {
+                _isValid = false;
+                _lastError = QString("Invalid URL: '%1'").arg(url.toString());
+                break;
+            }
+
             SingleDownload* singleDownload;
             QVariantMap downloadMetadata = QVariantMap(metadata);
             downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
@@ -170,6 +178,14 @@ class GroupDownloadPrivate {
             }
         }
         emit q->started(true);
+    }
+
+    bool isValid() {
+        return _isValid;
+    }
+
+    QString lastError() {
+        return _lastError;
     }
 
     qulonglong progress() {
@@ -277,6 +293,8 @@ class GroupDownloadPrivate {
     }
 
  private:
+    bool _isValid = true;
+    QString _lastError;
     QList<SingleDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
@@ -349,6 +367,18 @@ void
 GroupDownload::startDownload() {
     Q_D(GroupDownload);
     d->startDownload();
+}
+
+bool
+GroupDownload::isValid() {
+    Q_D(GroupDownload);
+    return d->isValid();
+}
+
+QString
+GroupDownload::lastError() {
+    Q_D(GroupDownload);
+    return d->lastError();
 }
 
 qulonglong

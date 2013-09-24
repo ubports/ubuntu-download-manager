@@ -1726,3 +1726,25 @@ TestDownload::testLocalPathNotConfined() {
     qDebug() << download->filePath();
     QCOMPARE(download->filePath(), localPath);
 }
+
+void
+TestDownload::testInvalidUrl() {
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, QUrl(), _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    QVERIFY(!download->isValid());
+}
+
+void
+TestDownload::testValidUrl() {
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    QVERIFY(download->isValid());
+}

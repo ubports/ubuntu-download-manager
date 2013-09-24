@@ -123,6 +123,10 @@ class TestDownload: public QObject {
     void testSslErrorsIgnored();
     void testSslErrorsNotIgnored();
 
+    // isValid tests
+    void testInvalidUrl();
+    void testValidUrl();
+
  private:
     bool removeDir(const QString& dirName);
 

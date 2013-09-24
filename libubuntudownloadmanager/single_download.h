@@ -73,6 +73,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     virtual void resumeDownload() override;
     virtual void startDownload() override;
 
+    virtual bool isValid() override;
+    virtual QString lastError() override;
+
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
     qulonglong totalSize() override;
