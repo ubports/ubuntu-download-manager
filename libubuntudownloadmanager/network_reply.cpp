@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include "./network_reply.h"
 
 /*
@@ -56,19 +57,45 @@ class NetworkReplyPrivate {
         _reply->setReadBufferSize(size);
     }
 
-    void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) {
-        _sslErrors = expectedSslErrors;
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+        _certs = certs;
+        // build possible errors
+        foreach(const QSslCertificate& certificate, _certs) {
+            QSslError error(QSslError::SelfSignedCertificate, certificate);
+            _sslErrors.append(error);
+        }
     }
 
-    bool ignoreSslErrors() {
-        if (_sslErrors.count() > 0) {
-            _reply->ignoreSslErrors(_sslErrors);
+    bool canIgnoreSslErrors(const QList<QSslError>& errors) {
+        if (_sslErrors.count() > 0 && errors.count() > 0) {
+            foreach(QSslError error, errors) {
+                QSslError::SslError type = error.error();
+                if (type != QSslError::NoError &&
+                    type != QSslError::SelfSignedCertificate) {
+                    // we only support self signed certificates all errors
+                    // will not be ignored
+                    qDebug() << "SSL error type not ignored";
+                    return false;
+                } else if (type == QSslError::SelfSignedCertificate) {
+                    // just ignore those errors of the added errors
+                    if (!_certs.contains(error.certificate())) {
+                        qDebug() << "SSL certificate not ignored";
+                        return false;
+                    }
+                }
+            }
+
+            if (_reply != NULL) {
+                _reply->ignoreSslErrors(_sslErrors);
+            }
+
             return true;
         }
         return false;
     }
 
  private:
+    QList<QSslCertificate> _certs;
     QList<QSslError> _sslErrors;
     QNetworkReply* _reply;
     NetworkReply* q_ptr;
@@ -103,13 +130,13 @@ NetworkReply::setReadBufferSize(uint size) {
 }
 
 void
-NetworkReply::setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) {
+NetworkReply::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     Q_D(NetworkReply);
-    d->setIgnoreSslErrors(expectedSslErrors);
+    d->setAcceptedCertificates(certs);
 }
 
 bool
-NetworkReply::ignoreSslErrors() {
+NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
     Q_D(NetworkReply);
-    return d->ignoreSslErrors();
+    return d->canIgnoreSslErrors(errors);
 }

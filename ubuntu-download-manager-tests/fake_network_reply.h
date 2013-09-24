@@ -53,13 +53,14 @@ class FakeNetworkReply : public NetworkReply, public Fake {
     void abort() override;
     void setReadBufferSize(uint size) override;
     void emitFinished();
-    void setIgnoreSslErrors(const QList<QSslError>& expectedSslErrors) override;
-    bool ignoreSslErrors() override;
+    void setAcceptedCertificates(const QList<QSslCertificate>& certs) override;
+    bool canIgnoreSslErrors(const QList<QSslError>& errors) override;
+    void setCanIgnoreSslErrors(bool canIgnore);
     void emitSslErrors(const QList<QSslError>& errors);
 
  private:
+    bool _canIgnoreSsl = false;
     QByteArray _data;
-    QList<QSslError> _sslErrors;
 };
 
 #endif  // FAKE_NETWORK_REPLY_H
