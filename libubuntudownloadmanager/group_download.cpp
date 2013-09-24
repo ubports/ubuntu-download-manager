@@ -111,7 +111,7 @@ class GroupDownloadPrivate {
         }
     }
 
-    void cancelDownload() {
+    void cancelDownload(bool emitSignal = true) {
         qDebug() << __PRETTY_FUNCTION__;
         Q_Q(GroupDownload);
         foreach(SingleDownload* download, _downloads) {
@@ -131,7 +131,8 @@ class GroupDownloadPrivate {
             _fileManager->remove(path);
         }
 
-        emit q->canceled(true);
+        if (emitSignal)
+            emit q->canceled(true);
     }
 
     void pauseDownload() {
@@ -208,14 +209,12 @@ class GroupDownloadPrivate {
  private:
     // slots to keep track of the downloads
     void onError(const QString& error) {
+        qDebug() << __PRETTY_FUNCTION__;
         Q_Q(GroupDownload);
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
-        qDebug() << __PRETTY_FUNCTION__;
-        // we got an error, we remove all the files that have already
-        // been downloaded and emit the error signal
-        foreach(const QString& file, _finishedDownloads) {
-            _fileManager->remove(file);
-        }
+        // we got an error, cancel all downloads and later remove all the
+        // files that we managed to download
+        cancelDownload(false);
         QString errorMsg = sender->url().toString() + ":" + error;
         q->emitError(errorMsg);
     }
