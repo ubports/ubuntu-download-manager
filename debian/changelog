@@ -1,3 +1,19 @@
+ubuntu-download-manager (0.2+13.10.20130924.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Ensure that when there is a network error the state of the
+    GroupDownload is correctly set. (LP: #1227850, #1227907, #1218031)
+  * Provide system dbus API to be used by apps such as the image
+    updates. (LP: #1211486)
+  * Provide new arg and new method to simplify tests. (LP: #1228233)
+  * Ensure that all downloads are canceled and that the files are
+    correctly removed. (LP: #1229413)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 135
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 24 Sep 2013 22:03:24 +0000
+
 ubuntu-download-manager (0.2+13.10.20130924.1-0ubuntu1) saucy; urgency=low
 
   [ Loïc Minier ]
