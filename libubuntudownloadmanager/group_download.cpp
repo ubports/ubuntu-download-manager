@@ -295,7 +295,6 @@ class GroupDownloadPrivate {
     }
 
  private:
-    QString _lastError;
     QList<SingleDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
