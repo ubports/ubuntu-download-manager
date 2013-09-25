@@ -26,7 +26,6 @@ SOURCES += \
     test_download_manager.cpp \
     test_download_queue.cpp \
     test_network_reply.cpp \
-    test_xdg_basedir.cpp \
     fake_download_queue.cpp \
     fake_uuid_factory.cpp \
     fake_system_network_info.cpp \
@@ -55,7 +54,6 @@ HEADERS += \
     test_download_queue.h \
     test_network_reply.h \
     test_runner.h \
-    test_xdg_basedir.h \
     fake_download_queue.h \
     fake_uuid_factory.h \
     fake_system_network_info.h \

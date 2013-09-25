@@ -23,10 +23,11 @@
 #include <unistd.h>
 #include <QDBusConnection>
 #include <QDebug>
+#include <QDir>
 #include <QRegExp>
+#include <QStandardPaths>
 #include "./dbus_proxy.h"
 #include "./uuid_factory.h"
-#include "./xdg_basedir.h"
 #include "./apparmor.h"
 
 /*
@@ -79,9 +80,14 @@ class AppArmorPrivate {
         // as the local path root
         if (getuid() == 0){
             qDebug() << "Running as system bus using /tmp for downloads";
-            return QString("/tmp");
+            return QStandardPaths::writableLocation(
+                QStandardPaths::TempLocation);
         } else {
+            QString dataPath = QStandardPaths::writableLocation(
+                QStandardPaths::DataLocation);
             QStringList pathComponents;
+            pathComponents << dataPath;
+
             if (!appId.isEmpty()) {
                 QStringList appIdInfo = appId.split("_");
                 if (appIdInfo.count() > 0)
@@ -89,9 +95,15 @@ class AppArmorPrivate {
             }
 
             pathComponents << "Downloads";
-            QString localPath = XDGBasedir::saveDataPath(pathComponents);
-            qDebug() << "Local path is" << localPath;
-            return localPath;
+
+            QString path = pathComponents.join(QDir::separator());
+
+            bool wasCreated = QDir().mkpath(path);
+            if (!wasCreated) {
+                qCritical() << "Could not create the data path" << path;
+            }
+            qDebug() << "Local path is" << path;
+            return path;
         }  // not root
     }
 
