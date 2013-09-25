@@ -28,7 +28,7 @@
  * PRIVATE IMPLEMENATION
  */
 
-typedef std::function<Download*(QString)> DownloadCreation;
+typedef std::function<Download*(QString)> DownloadCreationFunc;
 
 class DownloadManagerPrivate {
     Q_DECLARE_PUBLIC(DownloadManager)
@@ -130,7 +130,7 @@ class DownloadManagerPrivate {
         return objectPath;
     }
 
-    QDBusObjectPath createDownload(DownloadCreation createDownloadFunc) {
+    QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc) {
         Q_Q(DownloadManager);
         QString owner = "";
 
@@ -157,7 +157,7 @@ class DownloadManagerPrivate {
                                    const QString& algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
-        DownloadCreation createDownloadFunc =
+        DownloadCreationFunc createDownloadFunc =
             [this, url, hash, algo, metadata, headers](QString owner) {
             Download* download = NULL;
             if (hash.isEmpty())
@@ -176,7 +176,7 @@ class DownloadManagerPrivate {
                                         bool allowed3G,
                                         const QVariantMap& metadata,
                                         StringMap headers) {
-        DownloadCreation createDownloadFunc =
+        DownloadCreationFunc createDownloadFunc =
             [this, downloads, algo, allowed3G, metadata,
                 headers] (QString owner) {
             Download* download = _downloadFactory->createDownload(owner,
