@@ -50,10 +50,12 @@ TestDownloadsDb::init() {
 void
 TestDownloadsDb::cleanup() {
     BaseTestCase::cleanup();
+    QString dbFile = _db->filename();
 
-    // try to remove the test dir
     if (_db != NULL)
         delete _db;
+
+    QFile::remove(dbFile);
 }
 
 void

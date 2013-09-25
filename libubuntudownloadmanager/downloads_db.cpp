@@ -247,11 +247,13 @@ class DownloadsDbPrivate {
         query.bindValue(":headers",
             headersToString(download->headers()));
 
-        bool successs = query.exec();
+        bool success = query.exec();
+        if (!success)
+            qDebug() << query.lastError();
 
         _db.close();
 
-        return successs;
+        return success;
     }
 
  private:
