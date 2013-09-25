@@ -39,7 +39,8 @@ SOURCES += \
     fake_file_manager.cpp \
     test_downloads_db.cpp \
     test_download_factory.cpp \
-    fake_apparmor.cpp
+    fake_apparmor.cpp \
+    base_testcase.cpp
 
 HEADERS += \
     fake.h \
@@ -67,7 +68,8 @@ HEADERS += \
     fake_file_manager.h \
     test_downloads_db.h \
     test_download_factory.h \
-    fake_apparmor.h
+    fake_apparmor.h \
+    base_testcase.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 

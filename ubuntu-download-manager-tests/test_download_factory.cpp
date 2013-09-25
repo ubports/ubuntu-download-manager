@@ -21,11 +21,12 @@
 #include "./test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestDownloadFactory::init() {
+    BaseTestCase::init();
     _uuidFactory = QSharedPointer<UuidFactory>(new FakeUuidFactory());
     _apparmor = new FakeAppArmor(_uuidFactory);
     _networkInfo = QSharedPointer<SystemNetworkInfo>(

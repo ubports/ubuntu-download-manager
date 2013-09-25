@@ -16,37 +16,24 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_NETWORK_REPLY_H
-#define TEST_NETWORK_REPLY_H
-
-#include <QObject>
-#include <network_reply.h>
+#include <QtGlobal>
 #include "./base_testcase.h"
-#include "./test_runner.h"
 
-class TestNetworkReply : public BaseTestCase {
-    Q_OBJECT
+void
+noMessageOutput(QtMsgType type,
+                const QMessageLogContext& context,
+                const QString &message) {
+    Q_UNUSED(type);
+    Q_UNUSED(context);
+    Q_UNUSED(message);
+    // do nothing
+}
 
-  public:
-    explicit TestNetworkReply(QObject *parent = 0);
+BaseTestCase::BaseTestCase(QObject *parent)
+    : QObject(parent) {
+}
 
- private slots:  // NOLINT(whitespace/indent)
-
-    void init() override;
-    void cleanup();
-
-    // data functions used in the tests
-    void testDownloadProgressForwarded_data();
-
-    void testDownloadProgressForwarded();
-    void testErrorForwarded();
-    void testFinishedForwarded();
-    void testSslErrorsForwarded();
- private:
-    QNetworkReply* _qReply;
-    NetworkReply* _reply;
-};
-
-DECLARE_TEST(TestNetworkReply)
-
-#endif  // TEST_NETWORK_REPLY_H
+void
+BaseTestCase::init() {
+    qInstallMessageHandler(noMessageOutput);
+}
