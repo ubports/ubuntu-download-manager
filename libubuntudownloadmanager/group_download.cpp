@@ -77,6 +77,15 @@ class GroupDownloadPrivate {
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
+            // before we create the download ensure that the url is valid
+            // if not we set the error and stop the loop
+            if (!url.isValid()) {
+                q->setIsValid(false);
+                q->setLastError(QString("Invalid URL: '%1'").arg(
+                    url.toString()));
+                break;
+            }
+
             SingleDownload* singleDownload;
             QVariantMap downloadMetadata = QVariantMap(metadata);
             downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();

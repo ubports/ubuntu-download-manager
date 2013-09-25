@@ -354,10 +354,17 @@ class SingleDownloadPrivate {
 
  private:
     void init() {
+        Q_Q(SingleDownload);
         _filePath = saveFileName();
         qDebug() << "Download path is" << _filePath;
         _reply = NULL;
         _currentData = NULL;
+
+        // ensure that the download is valid
+        if (!_url.isValid()) {
+            q->setIsValid(false);
+            q->setLastError(QString("Invalid URL: '%1'").arg(_url.toString()));
+        }
     }
 
     void connectToReplySignals() {

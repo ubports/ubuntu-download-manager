@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <functional>
 #include <QRegExp>
 #include "./apparmor.h"
 #include "./download_queue.h"
@@ -27,6 +28,8 @@
 /**
  * PRIVATE IMPLEMENATION
  */
+
+typedef std::function<Download*(QString)> DownloadCreationFunc;
 
 class DownloadManagerPrivate {
     Q_DECLARE_PUBLIC(DownloadManager)
@@ -128,26 +131,45 @@ class DownloadManagerPrivate {
         return objectPath;
     }
 
+    QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc) {
+        Q_Q(DownloadManager);
+        QString owner = "";
+
+        bool calledFromDBus = q->calledFromDBus();
+        if (calledFromDBus) {
+            owner = q->connection().interface()->serviceOwner(
+                q->message().service());
+            qDebug() << "Owner is: " << owner;
+        }
+
+        Download* download = createDownloadFunc(owner);
+
+        if (calledFromDBus && !download->isValid()) {
+            q->sendErrorReply(QDBusError::InvalidArgs, download->lastError());
+            // the result will be ignored thanks to the sendErrorReply
+            return QDBusObjectPath();
+        }
+
+        return registerDownload(download);
+    }
+
     QDBusObjectPath createDownload(const QString& url,
                                    const QString& hash,
                                    QCryptographicHash::Algorithm algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
-        Q_Q(DownloadManager);
-        QString owner = "";
-        if (q->calledFromDBus()) {
-            owner = q->connection().interface()->serviceOwner(
-                q->message().service());
-            qDebug() << "Owner is: " << owner;
-        }
-        Download* download = NULL;
-        if (hash.isEmpty())
-            download = _downloadFactory->createDownload(owner, url, metadata,
-                headers);
-        else
-            download = _downloadFactory->createDownload(owner, url, hash, algo,
-                metadata, headers);
-        return registerDownload(download);
+        DownloadCreationFunc createDownloadFunc =
+            [this, url, hash, algo, metadata, headers](QString owner) {
+            Download* download = NULL;
+            if (hash.isEmpty())
+                download = _downloadFactory->createDownload(owner, url,
+                    metadata, headers);
+            else
+                download = _downloadFactory->createDownload(owner, url, hash,
+                    algo, metadata, headers);
+            return download;
+        };
+        return createDownload(createDownloadFunc);
     }
 
     QDBusObjectPath createDownloadGroup(StructList downloads,
@@ -155,16 +177,15 @@ class DownloadManagerPrivate {
                                         bool allowed3G,
                                         const QVariantMap& metadata,
                                         StringMap headers) {
-        Q_Q(DownloadManager);
-        QString owner = "";
-        if (q->calledFromDBus()) {
-            owner = q->connection().interface()->serviceOwner(
-                q->message().service());
-            qDebug() << "Owner is: " << owner;
-        }
-        Download* download = _downloadFactory->createDownload(owner,
-            downloads, algo, allowed3G, metadata, headers);
-        return registerDownload(download);
+        DownloadCreationFunc createDownloadFunc =
+            [this, downloads, algo, allowed3G, metadata,
+                headers] (QString owner) {
+            Download* download = _downloadFactory->createDownload(owner,
+                downloads, algo, allowed3G, metadata, headers);
+            return download;
+        };
+
+        return createDownload(createDownloadFunc);
     }
 
     qulonglong defaultThrottle() {
@@ -211,7 +232,7 @@ class DownloadManagerPrivate {
             if (q->calledFromDBus()) {
                 q->sendErrorReply(QDBusError::NotSupported,
                     "Daemon should have been started with -stoppable");
-            } // dbus call
+            }  // dbus call
         }
     }
 

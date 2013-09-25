@@ -71,6 +71,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
 
     virtual bool canDownload();
 
+    virtual bool isValid();
+    virtual QString lastError();
+
     // methods to be overriden by the children
     virtual void cancelDownload() = 0;
     virtual void pauseDownload() = 0;
@@ -107,6 +110,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void stateChanged();
 
  protected:
+    void setIsValid(bool isValid);
+    void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);
 
  private:

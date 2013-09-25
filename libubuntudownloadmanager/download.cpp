@@ -116,6 +116,22 @@ class DownloadPrivate {
         }
     }
 
+    bool isValid() {
+        return _isValid;
+    }
+
+    void setIsValid(bool isValid) {
+        _isValid = isValid;
+    }
+
+    QString lastError() {
+        return _lastError;
+    }
+
+    void setLastError(const QString& lastError) {
+        _lastError = lastError;
+    }
+
     QVariantMap metadata() {
         return _metadata;
     }
@@ -165,6 +181,8 @@ class DownloadPrivate {
     }
 
  private:
+    bool _isValid = true;
+    QString _lastError = "";
     QUuid _id;
     qulonglong _throttle;
     bool _allowGSMDownload;
@@ -254,6 +272,30 @@ bool
 Download::canDownload() {
     Q_D(Download);
     return d->canDownload();
+}
+
+bool
+Download::isValid() {
+    Q_D(Download);
+    return d->isValid();
+}
+
+void
+Download::setIsValid(bool isValid) {
+    Q_D(Download);
+    d->setIsValid(isValid);
+}
+
+QString
+Download::lastError() {
+    Q_D(Download);
+    return d->lastError();
+}
+
+void
+Download::setLastError(const QString& lastError) {
+    Q_D(Download);
+    d->setLastError(lastError);
 }
 
 QVariantMap
