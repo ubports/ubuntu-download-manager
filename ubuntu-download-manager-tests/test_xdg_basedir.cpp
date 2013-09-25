@@ -24,11 +24,12 @@
 
 
 TestXDGBasedir::TestXDGBasedir(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestXDGBasedir::init() {
+    BaseTestCase::init();
     QList<QString> envVars;
     envVars << "XDG_CACHE_HOME" << "XDG_CONFIG_HOME" << "XDG_DATA_HOME"
         << "XDG_CONFIG_DIRS" << "XDG_DATA_DIRS";

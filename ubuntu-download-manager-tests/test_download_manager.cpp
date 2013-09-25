@@ -24,11 +24,12 @@
 #include "./test_download_manager.h"
 
 TestDownloadManager::TestDownloadManager(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestDownloadManager::init() {
+    BaseTestCase::init();
     _app = new FakeApplication();
     _appPointer = QSharedPointer<Application>(_app);
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());

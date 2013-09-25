@@ -22,16 +22,17 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <downloads_db.h>
+#include "./base_testcase.h"
 #include "./test_runner.h"
 
-class TestDownloadsDb : public QObject {
+class TestDownloadsDb : public BaseTestCase {
     Q_OBJECT
  public:
     explicit TestDownloadsDb(QObject *parent = 0);
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init();
+    void init() override;
     void cleanup();
 
     void testTableCreations_data();

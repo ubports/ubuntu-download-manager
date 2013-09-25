@@ -26,9 +26,10 @@
 #include "./fake_system_network_info.h"
 #include "./fake_request_factory.h"
 #include "./fake_process_factory.h"
+#include "./base_testcase.h"
 #include "./test_runner.h"
 
-class TestDownload: public QObject {
+class TestDownload: public BaseTestCase {
     Q_OBJECT
 
  public:
@@ -36,7 +37,7 @@ class TestDownload: public QObject {
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init();
+    void init() override;
     void cleanup();
 
     // constructors tests

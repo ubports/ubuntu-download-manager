@@ -27,8 +27,9 @@
 #include "./fake_request_factory.h"
 #include "./fake_process_factory.h"
 #include "./fake_system_network_info.h"
+#include "./base_testcase.h"
 
-class TestDownloadQueue : public QObject {
+class TestDownloadQueue : public BaseTestCase {
     Q_OBJECT
 
  public:
@@ -36,7 +37,7 @@ class TestDownloadQueue : public QObject {
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init();
+    void init() override;
     void cleanup();
 
     void testAddDownload();

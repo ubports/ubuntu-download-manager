@@ -22,10 +22,11 @@
 #include <functional>
 #include <QHash>
 #include <QObject>
+#include "./base_testcase.h"
 #include "./xdg_basedir.h"
 #include "./test_runner.h"
 
-class TestXDGBasedir : public QObject {
+class TestXDGBasedir : public BaseTestCase {
     Q_OBJECT
 
  public:

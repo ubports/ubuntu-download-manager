@@ -21,11 +21,12 @@
 #include "./test_download_queue.h"
 
 TestDownloadQueue::TestDownloadQueue(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestDownloadQueue::init() {
+    BaseTestCase::init();
     _isConfined = true;
     _rootPath = "/random/root/path";
     _networkInfo = new FakeSystemNetworkInfo();

@@ -27,7 +27,7 @@
 #include "./test_download.h"
 
 TestDownload::TestDownload(QObject* parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 bool
@@ -57,6 +57,7 @@ TestDownload::removeDir(const QString& dirName) {
 
 void
 TestDownload::init() {
+    BaseTestCase::init();
     // set the xdg path so that we have control over it
     _testDir = QDir("./tests");
     _testDir.makeAbsolute();
