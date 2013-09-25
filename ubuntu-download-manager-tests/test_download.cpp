@@ -54,7 +54,6 @@ TestDownload::cleanup() {
         delete _reqFactory;
     if (_processFactory)
         delete _processFactory;
-
 }
 
 void
@@ -1748,4 +1747,66 @@ TestDownload::testValidHashAlgorithm() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QVERIFY(download->isValid());
+}
+
+void
+TestDownload::testInvalidFilePresent() {
+    // create a file so that we get an error
+    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+    QFile* file = new QFile(filePath);
+    file->open(QIODevice::ReadWrite | QFile::Append);
+    file->write("data data data!");
+    file->close();
+
+    QVariantMap metadata;
+    metadata["local-path"] = filePath;
+
+    SingleDownload* download = new SingleDownload(_id, _path, false,
+        _rootPath, _url, metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    QVERIFY(!download->isValid());
+}
+
+void
+TestDownload::testValidFileNotPresent() {
+    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+
+    QVariantMap metadata;
+    metadata["local-path"] = filePath;
+
+    SingleDownload* download = new SingleDownload(_id, _path, false,
+        _rootPath, _url, metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    QVERIFY(download->isValid());
+}
+
+void
+TestDownload::testDownloadPresent() {
+    // create a download and get the filename to use, then write it
+    // and create the same download and assert that the filename is diff
+
+    SingleDownload* download = new SingleDownload(_id, _path, true,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    QString filePath = download->filePath();
+
+    QFile* file = new QFile(filePath);
+    file->open(QIODevice::ReadWrite | QFile::Append);
+    file->write("data data data!");
+    file->close();
+
+    download = new SingleDownload(_id, _path, true,
+        _rootPath, _url, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    QVERIFY(filePath != download->filePath());
 }
