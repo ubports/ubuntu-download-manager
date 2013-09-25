@@ -17,7 +17,6 @@
  */
 
 #include <QDebug>
-#include <stdlib.h>
 #include <QNetworkRequest>
 #include <QSignalSpy>
 #include <QSslError>
@@ -27,50 +26,16 @@
 #include "./test_download.h"
 
 TestDownload::TestDownload(QObject* parent)
-    : BaseTestCase(parent) {
-}
-
-bool
-TestDownload::removeDir(const QString& dirName) {
-    bool result = true;
-    QDir dir(dirName);
-
-    QFlags<QDir::Filter> filter =  QDir::NoDotAndDotDot | QDir::System
-        | QDir::Hidden  | QDir::AllDirs | QDir::Files;
-    if (dir.exists(dirName)) {
-        foreach(QFileInfo info, dir.entryInfoList(filter, QDir::DirsFirst)) {
-            if (info.isDir()) {
-                result = removeDir(info.absoluteFilePath());
-            } else {
-                result = QFile::remove(info.absoluteFilePath());
-            }
-
-            if (!result) {
-                return result;
-            }
-        }
-        result = dir.rmdir(dirName);
-    }
-
-    return result;
+    : BaseTestCase("TestDownload", parent) {
 }
 
 void
 TestDownload::init() {
     BaseTestCase::init();
-    // set the xdg path so that we have control over it
-    _testDir = QDir("./tests");
-    _testDir.makeAbsolute();
 
-    if (!_testDir.exists()) {
-        _testDir.mkpath(_testDir.absolutePath());
-    }
-
-    setenv("XDG_DATA_HOME",
-        _testDir.absolutePath().toStdString().c_str(), 1);
     _id = QUuid::createUuid();
     _isConfined = false;
-    _rootPath = _testDir.absolutePath();
+    _rootPath = testDirectory();
     _path = "random path to dbus";
     _url = QUrl("http://ubuntu.com");
     _algo = "Sha256";
@@ -81,6 +46,8 @@ TestDownload::init() {
 
 void
 TestDownload::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_networkInfo)
         delete _networkInfo;
     if (_reqFactory)
@@ -88,9 +55,6 @@ TestDownload::cleanup() {
     if (_processFactory)
         delete _processFactory;
 
-    // try to remove the test dir
-    removeDir(_testDir.absolutePath());
-    unsetenv("XDG_DATA_HOME");
 }
 
 void

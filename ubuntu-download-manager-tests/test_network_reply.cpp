@@ -22,7 +22,7 @@
 #include "./fake_qnetwork_reply.h"
 
 TestNetworkReply::TestNetworkReply(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestNetworkReply", parent) {
 }
 
 void
@@ -34,6 +34,8 @@ TestNetworkReply::init() {
 
 void
 TestNetworkReply::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_reply != NULL)
         _reply->deleteLater();
 

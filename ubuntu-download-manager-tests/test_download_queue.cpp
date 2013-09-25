@@ -21,7 +21,7 @@
 #include "./test_download_queue.h"
 
 TestDownloadQueue::TestDownloadQueue(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestDownloadQueue", parent) {
 }
 
 void
@@ -49,6 +49,8 @@ TestDownloadQueue::init() {
 
 void
 TestDownloadQueue::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_q != NULL)
         delete _q;
 

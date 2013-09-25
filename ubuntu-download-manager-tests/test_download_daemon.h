@@ -37,7 +37,7 @@ class TestDownloadDaemon : public BaseTestCase {
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    void cleanup();
+    void cleanup() override;
     void testStart();
     void testStartFailServiceRegister();
     void testStartFailObjectRegister();

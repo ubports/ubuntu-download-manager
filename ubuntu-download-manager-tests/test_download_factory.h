@@ -38,7 +38,7 @@ class TestDownloadFactory : public BaseTestCase {
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    void cleanup();
+    void cleanup() override;
 
     void testCreateDownload();
     void testCreateDownloadWithHash();

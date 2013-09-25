@@ -22,7 +22,7 @@
 #include "./test_group_download.h"
 
 TestGroupDownload::TestGroupDownload(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestGroupDownload", parent) {
 }
 
 void
@@ -49,6 +49,8 @@ TestGroupDownload::init() {
 
 void
 TestGroupDownload::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_networkInfo != NULL)
         delete _networkInfo;
     if (_nam != NULL)

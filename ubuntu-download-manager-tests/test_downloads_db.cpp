@@ -38,58 +38,22 @@
     "FROM SingleDownload WHERE uuid=:uuid;"
 
 TestDownloadsDb::TestDownloadsDb(QObject *parent)
-    : BaseTestCase(parent) {
-}
-
-bool
-TestDownloadsDb::removeDir(const QString& dirName) {
-    bool result = true;
-    QDir dir(dirName);
-
-    QFlags<QDir::Filter> filter =  QDir::NoDotAndDotDot | QDir::System
-        | QDir::Hidden  | QDir::AllDirs | QDir::Files;
-    if (dir.exists(dirName)) {
-        foreach(QFileInfo info, dir.entryInfoList(filter, QDir::DirsFirst)) {
-            qDebug() << "Removing" << info.absoluteFilePath();
-            if (info.isDir()) {
-                result = removeDir(info.absoluteFilePath());
-            } else {
-                result = QFile::remove(info.absoluteFilePath());
-            }
-
-            if (!result) {
-                return result;
-            }
-        }
-        result = dir.rmdir(dirName);
-    }
-
-    return result;
+    : BaseTestCase("TestDownloadsDb", parent) {
 }
 
 void
 TestDownloadsDb::init() {
     BaseTestCase::init();
-    _testDir = QDir("./tests");
-    _testDir.makeAbsolute();
-
-    if (!_testDir.exists()) {
-        _testDir.mkpath(_testDir.absolutePath());
-    }
-
-    setenv("XDG_DATA_HOME",
-        _testDir.absolutePath().toStdString().c_str(), 1);
-
     _db = new DownloadsDb();
 }
 
 void
 TestDownloadsDb::cleanup() {
+    BaseTestCase::cleanup();
+
     // try to remove the test dir
     if (_db != NULL)
         delete _db;
-    removeDir(_testDir.absolutePath());
-    unsetenv("XDG_DATA_HOME");
 }
 
 void

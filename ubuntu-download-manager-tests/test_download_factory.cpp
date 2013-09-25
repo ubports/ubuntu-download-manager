@@ -21,7 +21,7 @@
 #include "./test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestDownloadFactory", parent) {
 }
 
 void
@@ -40,6 +40,8 @@ TestDownloadFactory::init() {
 
 void
 TestDownloadFactory::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_downFactory != NULL)
         delete _downFactory;
 }
