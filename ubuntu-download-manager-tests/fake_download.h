@@ -45,7 +45,7 @@ class FakeDownload : public SingleDownload, public Fake {
                  const QString& rootPath,
                  const QUrl& url,
                  const QString& hash,
-                 QCryptographicHash::Algorithm algo,
+                 const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString> &headers,
                  QSharedPointer<SystemNetworkInfo> networkInfo,

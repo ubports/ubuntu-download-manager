@@ -21,6 +21,7 @@
 #include <QNetworkRequest>
 #include <QSignalSpy>
 #include <QSslError>
+#include <hash_algorithm.h>
 #include "./fake_network_reply.h"
 #include "./fake_process.h"
 #include "./test_download.h"
@@ -71,7 +72,7 @@ TestDownload::init() {
     _rootPath = _testDir.absolutePath();
     _path = "random path to dbus";
     _url = QUrl("http://ubuntu.com");
-    _algo = QCryptographicHash::Sha256;
+    _algo = "Sha256";
     _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
@@ -138,20 +139,20 @@ TestDownload::testHashConstructor_data() {
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
-    QTest::addColumn<int>("algo");
+    QTest::addColumn<QString>("algo");
 
     QTest::newRow("First row") << QUuid::createUuid()
         << "/path/to/first/app" << QUrl("http://ubuntu.com")
-        << "my-first-hash" << static_cast<int>(QCryptographicHash::Md4);
+        << "my-first-hash" << "md5";
     QTest::newRow("Second row") << QUuid::createUuid()
         << "/path/to/second/app" << QUrl("http://ubuntu.com/juju")
-        << "my-second-hash" << static_cast<int>(QCryptographicHash::Md5);
+        << "my-second-hash" << "Md5";
     QTest::newRow("Third row") << QUuid::createUuid()
         << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet")
-        << "my-third-hash" << static_cast<int>(QCryptographicHash::Sha1);
+        << "my-third-hash" << "Sha1";
     QTest::newRow("Last row") << QUuid::createUuid()
         << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
-        << "my-last-hash" << static_cast<int>(QCryptographicHash::Sha256);
+        << "my-last-hash" << "Sha256";
 }
 
 void
@@ -160,11 +161,10 @@ TestDownload::testHashConstructor() {
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
-    QFETCH(int, algo);
+    QFETCH(QString, algo);
 
     SingleDownload* download = new SingleDownload(id, path, _isConfined,
-        _rootPath, url, hash,
-        (QCryptographicHash::Algorithm)algo, _metadata, _headers,
+        _rootPath, url, hash, algo, _metadata, _headers,
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
@@ -173,7 +173,7 @@ TestDownload::testHashConstructor() {
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
-    QCOMPARE(static_cast<int>(download->hashAlgorithm()), algo);
+    QCOMPARE(download->hashAlgorithm(), HashAlgorithm::getHashAlgo(algo));
     QCOMPARE(download->state(), Download::IDLE);
     QCOMPARE(download->progress(), 0ULL);
     QCOMPARE(download->totalSize(), 0ULL);
@@ -942,15 +942,17 @@ TestDownload::testOnSuccessHash_data() {
     QByteArray secondData(200, 's');
     QByteArray thirdData(300, 't');
     QByteArray lastData(400, 'l');
+    QCryptographicHash::Algorithm algorithm =
+        HashAlgorithm::getHashAlgo(_algo);
 
     QTest::newRow("First row") << firstData
-        << QString(QCryptographicHash::hash(firstData, _algo).toHex());
+        << QString(QCryptographicHash::hash(firstData, algorithm).toHex());
     QTest::newRow("Second row") << secondData
-        << QString(QCryptographicHash::hash(secondData, _algo).toHex());
+        << QString(QCryptographicHash::hash(secondData, algorithm).toHex());
     QTest::newRow("Third row") << thirdData
-        << QString(QCryptographicHash::hash(thirdData, _algo).toHex());
+        << QString(QCryptographicHash::hash(thirdData, algorithm).toHex());
     QTest::newRow("Last row") << lastData
-        << QString(QCryptographicHash::hash(lastData, _algo).toHex());
+        << QString(QCryptographicHash::hash(lastData, algorithm).toHex());
 }
 
 void
@@ -1746,5 +1748,39 @@ TestDownload::testValidUrl() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
 
+    QVERIFY(download->isValid());
+}
+
+void
+TestDownload::testInvalidHashAlgorithm() {
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url,
+        "hash", "not-valid-algo", _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+    QVERIFY(!download->isValid());
+}
+
+void
+TestDownload::testValidHashAlgorithm_data() {
+    QTest::addColumn<QString>("algo");
+
+    QTest::newRow("md5") << "md5";
+    QTest::newRow("sha1") << "sha1";
+    QTest::newRow("sha224") << "sha224";
+    QTest::newRow("sha256") << "sha256";
+    QTest::newRow("sha384") << "sha384";
+    QTest::newRow("sha512") << "sha512";
+}
+
+void
+TestDownload::testValidHashAlgorithm() {
+    QFETCH(QString, algo);
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, "hash", algo, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
     QVERIFY(download->isValid());
 }

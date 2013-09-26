@@ -20,7 +20,6 @@
 #include <QRegExp>
 #include "./apparmor.h"
 #include "./download_queue.h"
-#include "./hash_algorithm.h"
 #include "./request_factory.h"
 #include "./system_network_info.h"
 #include "./download_manager.h"
@@ -155,7 +154,7 @@ class DownloadManagerPrivate {
 
     QDBusObjectPath createDownload(const QString& url,
                                    const QString& hash,
-                                   QCryptographicHash::Algorithm algo,
+                                   const QString& algo,
                                    const QVariantMap& metadata,
                                    StringMap headers) {
         DownloadCreationFunc createDownloadFunc =
@@ -173,7 +172,7 @@ class DownloadManagerPrivate {
     }
 
     QDBusObjectPath createDownloadGroup(StructList downloads,
-                                        QCryptographicHash::Algorithm algo,
+                                        const QString& algo,
                                         bool allowed3G,
                                         const QVariantMap& metadata,
                                         StringMap headers) {
@@ -314,8 +313,7 @@ QDBusObjectPath
 DownloadManager::createDownload(DownloadStruct download) {
     Q_D(DownloadManager);
     return d->createDownload(download.getUrl(), download.getHash(),
-        HashAlgorithm::getHashAlgo(download.getAlgorithm()),
-        download.getMetadata(), download.getHeaders());
+        download.getAlgorithm(), download.getMetadata(), download.getHeaders());
 }
 
 QDBusObjectPath
@@ -325,8 +323,8 @@ DownloadManager::createDownloadGroup(StructList downloads,
                                      const QVariantMap& metadata,
                                      StringMap headers) {
     Q_D(DownloadManager);
-    return d->createDownloadGroup(downloads,
-        HashAlgorithm::getHashAlgo(algorithm), allowed3G, metadata, headers);
+    return d->createDownloadGroup(downloads, algorithm, allowed3G, metadata,
+        headers);
 }
 
 QList<QDBusObjectPath>

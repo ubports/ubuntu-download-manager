@@ -20,12 +20,16 @@
 #define DOWNLOADER_LIB_HASH_ALGORITHM_H
 
 #include <QCryptographicHash>
+#include <QList>
 #include <QString>
 
 class HashAlgorithm {
  public:
     static QCryptographicHash::Algorithm getHashAlgo(const QString& algorithm);
     static QString getHashAlgo(QCryptographicHash::Algorithm algorithm);
+    static bool isValidAlgo(const QString& algorithm);
+ private:
+    static QList<QString> algoList;
 };
 
 #endif  // DOWNLOADER_LIB_HASH_ALGORITHM_H

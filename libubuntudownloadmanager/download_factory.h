@@ -19,7 +19,6 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
-#include <QCryptographicHash>
 #include <QObject>
 #include <QSharedPointer>
 #include "./apparmor.h"
@@ -50,13 +49,13 @@ class DownloadFactory : public QObject {
     virtual Download* createDownload(const QString& dbusOwner,
                                      const QUrl& url,
                                      const QString& hash,
-                                     QCryptographicHash::Algorithm algo,
+                                     const QString& algo,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers);
 
     virtual Download* createDownload(const QString& dbusOwner,
                                      StructList downloads,
-                                     QCryptographicHash::Algorithm algo,
+                                     const QString& algo,
                                      bool allowed3G,
                                      const QVariantMap& metadata,
                                      StringMap headers);
@@ -73,7 +72,7 @@ class DownloadFactory : public QObject {
                                          const QString& rootPath,
                                          const QUrl& url,
                                          const QString& hash,
-                                         QCryptographicHash::Algorithm algo,
+                                         const QString& algo,
                                          const QVariantMap& metadata,
                                          const QMap<QString, QString>& headers);
 

@@ -17,12 +17,14 @@
  */
 
 #include <QBuffer>
+#include <QCryptographicHash>
 #include <QDir>
 #include <QDebug>
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+#include "./hash_algorithm.h"
 #include "./single_download.h"
 #include "./network_reply.h"
 #include "./xdg_basedir.h"
@@ -57,7 +59,7 @@ class SingleDownloadPrivate {
 
     SingleDownloadPrivate(const QUrl& url,
                           const QString& hash,
-                          QCryptographicHash::Algorithm algo,
+                          const QString& algo,
                           QSharedPointer<RequestFactory> nam,
                           QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
@@ -65,11 +67,17 @@ class SingleDownloadPrivate {
         : _totalSize(0),
           _url(url),
           _hash(hash),
-          _algo(algo),
           _requestFactory(nam),
           _processFactory(processFactory),
           q_ptr(parent) {
+        Q_Q(SingleDownload);
         init();
+        _algo = HashAlgorithm::getHashAlgo(algo);
+        // check that the algorithm is correct if the hash is not emtpy
+        if (!_hash.isEmpty() && !HashAlgorithm::isValidAlgo(algo)) {
+            q->setIsValid(false);
+            q->setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+        }
     }
 
     ~SingleDownloadPrivate() {
@@ -502,7 +510,7 @@ SingleDownload::SingleDownload(const QUuid& id,
                    const QString& rootPath,
                    const QUrl& url,
                    const QString& hash,
-                   QCryptographicHash::Algorithm algo,
+                   const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
                    QSharedPointer<SystemNetworkInfo> networkInfo,

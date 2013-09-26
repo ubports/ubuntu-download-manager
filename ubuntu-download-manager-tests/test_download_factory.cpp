@@ -17,6 +17,7 @@
  */
 
 #include <single_download.h>
+#include <hash_algorithm.h>
 #include "./test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)
@@ -66,7 +67,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     _apparmor->record();
 
     QString hash = "my-hash";
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+    QString algo = "Md5";
 
     // same as above but assert hash and hash algo
     Download* download = _downFactory->createDownload("", QUrl(),
@@ -83,7 +84,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
 
     SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
     QCOMPARE(hash, single->hash());
-    QCOMPARE(algo, single->hashAlgorithm());
+    QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
 
 void
@@ -93,7 +94,7 @@ TestDownloadFactory::testCreateGroupDownload() {
     // create a download, assert that it was
     // created and that the id and the path are correctly set
     Download* download = _downFactory->createDownload("",
-        QList<GroupDownloadStruct>(), QCryptographicHash::Md5,
+        QList<GroupDownloadStruct>(), "Md5",
         true, QVariantMap(), QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
@@ -160,7 +161,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     metadata["objectpath"] = id.toString();
 
     QString hash = "my-hash";
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+    QString algo = "Md5";
 
     // same as above but assert hash and hash algo
     Download* download = _downFactory->createDownload("", QUrl(),
@@ -175,7 +176,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
 
     SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
     QCOMPARE(hash, single->hash());
-    QCOMPARE(algo, single->hashAlgorithm());
+    QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
 
 void
@@ -186,7 +187,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
     metadata["objectpath"] = "bad-id";
 
     QString hash = "my-hash";
-    QCryptographicHash::Algorithm algo = QCryptographicHash::Md5;
+    QString algo = "Md5";
 
     // same as above but assert hash and hash algo
     Download* download = _downFactory->createDownload("", QUrl(),
@@ -203,7 +204,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
 
     SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
     QCOMPARE(hash, single->hash());
-    QCOMPARE(algo, single->hashAlgorithm());
+    QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
 
 void
@@ -218,7 +219,7 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
     metadata["objectpath"] = id.toString();
 
     Download* download = _downFactory->createDownload("",
-        QList<GroupDownloadStruct>(), QCryptographicHash::Md5,
+        QList<GroupDownloadStruct>(), "Md5",
         true, metadata, QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
@@ -239,7 +240,7 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
     metadata["objectpath"] = "bad-id";
 
     Download* download = _downFactory->createDownload("",
-        QList<GroupDownloadStruct>(), QCryptographicHash::Md5,
+        QList<GroupDownloadStruct>(), "Md5",
         true, metadata, QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
@@ -273,7 +274,7 @@ void
 TestDownloadFactory::testCreateDownloadForGroupWithHash() {
     _apparmor->record();
     Download* download = _downFactory->createDownloadForGroup(true, "", QUrl(),
-        "", QCryptographicHash::Md5, QVariantMap(), QMap<QString, QString>());
+        "", "Md5", QVariantMap(), QMap<QString, QString>());
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
