@@ -1,3 +1,14 @@
+ubuntu-download-manager (0.2+13.10.20130926.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Return error if the url is ill formed. (LP: #1228245)
+  * Return DBus error when the hash method is not known. (LP: #1228246)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 138
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 26 Sep 2013 18:03:25 +0000
+
 ubuntu-download-manager (0.2+13.10.20130924.2-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
