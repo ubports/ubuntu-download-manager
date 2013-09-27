@@ -33,7 +33,7 @@ class TestDownloadsDb : public BaseTestCase {
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    void cleanup();
+    void cleanup() override;
 
     void testTableCreations_data();
     void testTableCreations();
@@ -44,10 +44,6 @@ class TestDownloadsDb : public BaseTestCase {
     void testStoreSingleDownloadPresent();
 
  private:
-    bool removeDir(const QString& dirName);
-
- private:
-    QDir _testDir;
     DownloadsDb* _db;
 };
 

@@ -33,7 +33,7 @@ class TestNetworkReply : public BaseTestCase {
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    void cleanup();
+    void cleanup() override;
 
     // data functions used in the tests
     void testDownloadProgressForwarded_data();

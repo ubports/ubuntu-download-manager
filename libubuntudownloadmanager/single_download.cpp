@@ -27,7 +27,6 @@
 #include "./hash_algorithm.h"
 #include "./single_download.h"
 #include "./network_reply.h"
-#include "./xdg_basedir.h"
 
 #define DATA_FILE_NAME "data.download"
 #define METADATA_FILE_NAME "metadata"

@@ -30,7 +30,6 @@ SOURCES += \
     system_network_info.cpp \
     timer.cpp \
     uuid_factory.cpp \
-    xdg_basedir.cpp \
     download_factory.cpp \
     file_manager.cpp \
     download_struct.cpp \
@@ -62,7 +61,6 @@ HEADERS +=\
     system_network_info.h \
     timer.h \
     uuid_factory.h \
-    xdg_basedir.h \
     download_factory.h \
     file_manager.h \
     download_struct.h \

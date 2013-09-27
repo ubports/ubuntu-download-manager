@@ -24,7 +24,7 @@
 #include "./test_download_manager.h"
 
 TestDownloadManager::TestDownloadManager(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestDownloadManager", parent) {
 }
 
 void
@@ -51,6 +51,8 @@ TestDownloadManager::init() {
 
 void
 TestDownloadManager::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_networkInfo)
         delete _networkInfo;
     if (_q != NULL)

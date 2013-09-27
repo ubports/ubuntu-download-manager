@@ -20,9 +20,9 @@
 #include <sys/types.h>
 #include <syslog.h>
 #include <QDateTime>
+#include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
-#include "./xdg_basedir.h"
 #include "./logger.h"
 
 
@@ -128,9 +128,16 @@ Logger::getMessageTypeString(QtMsgType type) {
 
 QString
 Logger::getLogDir() {
-    QStringList pathComponents;
-    pathComponents << "ubuntu-download-manager";
-    return XDGBasedir::saveCachePath(pathComponents);
+    QString cachePath = QStandardPaths::writableLocation(
+        QStandardPaths::CacheLocation);
+    QString path = cachePath + QDir::separator() + "ubuntu-download-manager";
+    qDebug() << "Logging dir is" << path;
+
+    bool wasCreated = QDir().mkpath(path);
+    if (!wasCreated) {
+        qCritical() << "Could not create the logging path" << path;
+    }
+    return path;
 }
 
 void

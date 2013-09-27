@@ -19,7 +19,7 @@
 #include "./test_download_daemon.h"
 
 TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
-    : BaseTestCase(parent) {
+    : BaseTestCase("TestDownloadDaemon", parent) {
 }
 
 void
@@ -37,6 +37,8 @@ TestDownloadDaemon::init() {
 
 void
 TestDownloadDaemon::cleanup() {
+    BaseTestCase::cleanup();
+
     if (_app != NULL)
         delete _app;
     if (_conn != NULL)

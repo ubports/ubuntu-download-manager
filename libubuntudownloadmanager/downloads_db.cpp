@@ -17,14 +17,15 @@
  */
 
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QJsonDocument>
+#include <QStandardPaths>
 #include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include "./hash_algorithm.h"
-#include "./xdg_basedir.h"
 #include "./downloads_db.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\
@@ -107,9 +108,16 @@ class DownloadsDbPrivate {
     }
 
     void internalInit() {
-        QStringList pathComponents;
-        pathComponents << "download_manager";
-        _dbName = XDGBasedir::saveDataPath(pathComponents) + "/downloads.db";
+
+        QString dataPath = QStandardPaths::writableLocation(
+            QStandardPaths::DataLocation);
+        QString path = dataPath + QDir::separator() + "ubuntu-download-manager";
+
+        bool wasCreated = QDir().mkpath(path);
+        if (!wasCreated) {
+            qCritical() << "Could not create the data path" << path;
+        }
+        _dbName = path + QDir::separator() + "downloads.db";
         _db = QSqlDatabase::addDatabase("QSQLITE");
         _db.setDatabaseName(_dbName);
         qDebug() << "Db file is" << _dbName;
@@ -239,11 +247,13 @@ class DownloadsDbPrivate {
         query.bindValue(":headers",
             headersToString(download->headers()));
 
-        bool successs = query.exec();
+        bool success = query.exec();
+        if (!success)
+            qDebug() << query.lastError();
 
         _db.close();
 
-        return successs;
+        return success;
     }
 
  private:

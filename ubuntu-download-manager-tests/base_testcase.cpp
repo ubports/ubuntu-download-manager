@@ -16,7 +16,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDir>
 #include <QtGlobal>
+#include <QStandardPaths>
 #include "./base_testcase.h"
 
 void
@@ -29,11 +31,59 @@ noMessageOutput(QtMsgType type,
     // do nothing
 }
 
-BaseTestCase::BaseTestCase(QObject *parent)
+BaseTestCase::BaseTestCase(const QString& testName, QObject *parent)
     : QObject(parent) {
+    setObjectName(testName);
+}
+
+QString
+BaseTestCase::testDirectory() {
+    // return the test directory using the standard paths
+    QString dataPath = QStandardPaths::writableLocation(
+        QStandardPaths::DataLocation);
+    QStringList pathComponents;
+    pathComponents << dataPath << objectName();
+    QString path = pathComponents.join(QDir::separator());
+
+    if (!QDir().exists(path))
+        QDir().mkpath(path);
+
+    return path;
+}
+
+bool
+BaseTestCase::removeDir(const QString& dirName) {
+    bool result = true;
+    QDir dir(dirName);
+
+    QFlags<QDir::Filter> filter =  QDir::NoDotAndDotDot | QDir::System
+        | QDir::Hidden  | QDir::AllDirs | QDir::Files;
+    if (dir.exists(dirName)) {
+        foreach(QFileInfo info, dir.entryInfoList(filter, QDir::DirsFirst)) {
+            if (info.isDir()) {
+                result = removeDir(info.absoluteFilePath());
+            } else {
+                result = QFile::remove(info.absoluteFilePath());
+            }
+
+            if (!result) {
+                return result;
+            }
+        }
+        result = dir.rmdir(dirName);
+    }
+
+    return result;
 }
 
 void
 BaseTestCase::init() {
     qInstallMessageHandler(noMessageOutput);
+    QStandardPaths::enableTestMode(true);
+}
+
+void
+BaseTestCase::cleanup() {
+    // remove the test dir if exists
+    removeDir(testDirectory());
 }

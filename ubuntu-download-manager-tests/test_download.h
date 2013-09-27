@@ -38,7 +38,7 @@ class TestDownload: public BaseTestCase {
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    void cleanup();
+    void cleanup() override;
 
     // constructors tests
     void testNoHashConstructor();
@@ -132,10 +132,6 @@ class TestDownload: public BaseTestCase {
     void testValidHashAlgorithm();
 
  private:
-    bool removeDir(const QString& dirName);
-
- private:
-    QDir _testDir;
     QUuid _id;
     bool _isConfined;
     QString _rootPath;

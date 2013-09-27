@@ -25,12 +25,17 @@ class BaseTestCase : public QObject
 {
     Q_OBJECT
  public:
-    explicit BaseTestCase(QObject *parent = 0);
+    BaseTestCase(const QString& testName, QObject *parent = 0);
     
+    QString testDirectory();
+
  protected slots:  // NOLINT(whitespace/indent)
 
     virtual void init();
+    virtual void cleanup();
 
+ private:
+    bool removeDir(const QString& dirName);
 };
 
 #endif // BASE_TESTCASE_H
