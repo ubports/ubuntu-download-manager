@@ -51,7 +51,7 @@ class Logger : public QObject {
 
     void logSessionMessage(const QString &message);
 
-    void logSystemMessage(const QString &message);
+    void logSystemMessage(QtMsgType type, const QString &message);
 
  private:
     bool _isSystemBus = false;
