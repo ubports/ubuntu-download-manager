@@ -31,7 +31,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     Q_DECLARE_PRIVATE(RequestFactory)
 
  public:
-    explicit RequestFactory(bool stoppable = false, QObject *parent = 0);
+    RequestFactory(bool stoppable = false, QObject *parent = 0);
 
     virtual NetworkReply* get(const QNetworkRequest& request);
 
