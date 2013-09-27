@@ -31,13 +31,18 @@ class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     Q_DECLARE_PRIVATE(RequestFactory)
 
  public:
-    explicit RequestFactory(QObject *parent = 0);
+    explicit RequestFactory(bool stoppable = false, QObject *parent = 0);
 
     virtual NetworkReply* get(const QNetworkRequest& request);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+
+ private:
+    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
+    Q_PRIVATE_SLOT(d_func(), void onFinished())
+    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
 
  private:
     // use pimpl so that we can mantains ABI compatibility

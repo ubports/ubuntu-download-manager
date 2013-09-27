@@ -47,7 +47,7 @@ class DownloadManagerPrivate {
         _networkInfo = QSharedPointer<SystemNetworkInfo>(
             new SystemNetworkInfo());
         QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
-            new RequestFactory());
+            new RequestFactory(_stoppable));
         _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
         _downloadFactory = QSharedPointer<DownloadFactory>(
             new DownloadFactory(_apparmor, _networkInfo, nam,

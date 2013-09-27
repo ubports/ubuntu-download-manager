@@ -10,6 +10,7 @@ DEFINES += DEBUG
 
 SOURCES += \
     application.cpp \
+    apparmor.cpp \
     dbus_connection.cpp \
     download.cpp \
     download_adaptor.cpp \
@@ -35,13 +36,14 @@ SOURCES += \
     file_manager.cpp \
     download_struct.cpp \
     downloads_db.cpp \
-    dbus_proxy.cpp \
-    apparmor.cpp
+    dbus_proxy.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
+    apparmor.h \
     application.h \
     dbus_connection.h \
+    dbus_proxy.h \
     download.h \
     download_adaptor.h \
     download_daemon.h \
@@ -66,9 +68,7 @@ HEADERS +=\
     download_factory.h \
     file_manager.h \
     download_struct.h \
-    downloads_db.h \
-    dbus_proxy.h \
-    apparmor.h
+    downloads_db.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
