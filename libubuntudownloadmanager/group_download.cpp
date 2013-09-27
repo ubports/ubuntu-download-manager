@@ -99,17 +99,17 @@ class GroupDownloadPrivate {
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, downloadMetadata, headers));
             } else {
+
+                if (!HashAlgorithm::isValidAlgo(algo)) {
+                    q->setIsValid(false);
+                    q->setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+                }
+
                 qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
-            }
-
-            if (!singleDownload->isValid()) {
-                q->setIsValid(false);
-                q->setLastError(singleDownload->lastError());
-                break;
             }
 
             singleDownload->allowGSMDownload(isGSMDownloadAllowed);
