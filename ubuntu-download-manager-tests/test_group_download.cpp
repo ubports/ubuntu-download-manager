@@ -831,6 +831,7 @@ TestGroupDownload::testValidHashAlgorithm_data() {
     QTest::newRow("sha256") << "sha256";
     QTest::newRow("sha384") << "sha384";
     QTest::newRow("sha512") << "sha512";
+    QTest::newRow("Empty string") << "";
 }
 
 void

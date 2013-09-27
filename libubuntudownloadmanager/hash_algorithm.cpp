@@ -19,7 +19,7 @@
 #include "./hash_algorithm.h"
 
 QList<QString> HashAlgorithm::algoList = QList<QString>() << "md5" << "sha1"
-    << "sha224" << "sha256" << "sha384" << "sha512";
+    << "sha224" << "sha256" << "sha384" << "sha512" << "";
 
 QCryptographicHash::Algorithm
 HashAlgorithm::getHashAlgo(const QString& algorithm) {
