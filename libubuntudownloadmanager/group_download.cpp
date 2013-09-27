@@ -71,15 +71,6 @@ class GroupDownloadPrivate {
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
 
-        // check if the algo is correct if not do not even build the
-        // single downloads
-        if (!HashAlgorithm::isValidAlgo(algo)) {
-            q->setIsValid(false);
-            q->setLastError(
-                QString("Invalid hash algorithm: '%1'").arg(algo));
-            return;
-        }
-
         // build downloads and add them to the q, it will take care of
         // starting them etc..
         foreach(GroupDownloadStruct download, downloads) {
@@ -113,6 +104,12 @@ class GroupDownloadPrivate {
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
+            }
+
+            if (!singleDownload->isValid()) {
+                q->setIsValid(false);
+                q->setLastError(singleDownload->lastError());
+                break;
             }
 
             singleDownload->allowGSMDownload(isGSMDownloadAllowed);
