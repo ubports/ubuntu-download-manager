@@ -143,6 +143,8 @@ void
 Logger::logSystemMessage(QtMsgType type, const QString& message) {
     const char* msg = message.toUtf8().data();
 
+    // we using %s to avoid getting a compiler error when using
+    // -Wall
     switch (type) {
         case QtDebugMsg:
             syslog(LOG_DEBUG, "%s", msg);
