@@ -92,10 +92,29 @@ class RequestFactoryPrivate {
         removeNetworkReply(sender);
     }
 
-    void onSslErrors(const QList<QSslError>&) {
+    void onSslErrors(const QList<QSslError>& errors) {
         Q_Q(RequestFactory);
         NetworkReply* sender = qobject_cast<NetworkReply*>(q->sender());
-        removeNetworkReply(sender);
+        // only remove the connection and clear the cache if we cannot
+        // ignore the ssl errors!
+
+        foreach(QSslError error, errors) {
+            QSslError::SslError type = error.error();
+            if (type != QSslError::NoError &&
+                type != QSslError::SelfSignedCertificate) {
+                // we only support self signed certificates all errors
+                // will not be ignored
+                qDebug() << "SSL error type not ignored clearing cache";
+                removeNetworkReply(sender);
+            } else if (type == QSslError::SelfSignedCertificate) {
+                // just ignore those errors of the added errors
+                if (!_certs.contains(error.certificate())) {
+                    qDebug() << "SSL certificate not ignored clearing cache";
+                    removeNetworkReply(sender);
+                }
+            }
+       }
+
     }
 
  private:
