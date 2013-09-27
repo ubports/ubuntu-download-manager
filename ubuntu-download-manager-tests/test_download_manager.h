@@ -32,8 +32,9 @@
 #include "./fake_request_factory.h"
 #include "./fake_uuid_factory.h"
 #include "./fake_system_network_info.h"
+#include "./base_testcase.h"
 
-class TestDownloadManager : public QObject {
+class TestDownloadManager : public BaseTestCase {
     Q_OBJECT
 
  public:
@@ -41,7 +42,7 @@ class TestDownloadManager : public QObject {
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init();
+    void init() override;
     void cleanup();
 
     // data functions

@@ -16,37 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_NETWORK_REPLY_H
-#define TEST_NETWORK_REPLY_H
+#ifndef BASE_TESTCASE_H
+#define BASE_TESTCASE_H
 
 #include <QObject>
-#include <network_reply.h>
-#include "./base_testcase.h"
-#include "./test_runner.h"
 
-class TestNetworkReply : public BaseTestCase {
+class BaseTestCase : public QObject
+{
     Q_OBJECT
+ public:
+    explicit BaseTestCase(QObject *parent = 0);
+    
+ protected slots:  // NOLINT(whitespace/indent)
 
-  public:
-    explicit TestNetworkReply(QObject *parent = 0);
+    virtual void init();
 
- private slots:  // NOLINT(whitespace/indent)
-
-    void init() override;
-    void cleanup();
-
-    // data functions used in the tests
-    void testDownloadProgressForwarded_data();
-
-    void testDownloadProgressForwarded();
-    void testErrorForwarded();
-    void testFinishedForwarded();
-    void testSslErrorsForwarded();
- private:
-    QNetworkReply* _qReply;
-    NetworkReply* _reply;
 };
 
-DECLARE_TEST(TestNetworkReply)
-
-#endif  // TEST_NETWORK_REPLY_H
+#endif // BASE_TESTCASE_H

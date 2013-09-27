@@ -38,7 +38,7 @@
     "FROM SingleDownload WHERE uuid=:uuid;"
 
 TestDownloadsDb::TestDownloadsDb(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 bool
@@ -69,6 +69,7 @@ TestDownloadsDb::removeDir(const QString& dirName) {
 
 void
 TestDownloadsDb::init() {
+    BaseTestCase::init();
     _testDir = QDir("./tests");
     _testDir.makeAbsolute();
 

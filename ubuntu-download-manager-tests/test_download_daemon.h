@@ -25,9 +25,10 @@
 #include "./fake_dbus_connection.h"
 #include "./fake_download_manager.h"
 #include "./fake_timer.h"
+#include "./base_testcase.h"
 #include "./test_runner.h"
 
-class TestDownloadDaemon : public QObject {
+class TestDownloadDaemon : public BaseTestCase {
     Q_OBJECT
 
  public:
@@ -35,7 +36,7 @@ class TestDownloadDaemon : public QObject {
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init();
+    void init() override;
     void cleanup();
     void testStart();
     void testStartFailServiceRegister();

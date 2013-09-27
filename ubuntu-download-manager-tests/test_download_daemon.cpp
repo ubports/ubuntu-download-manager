@@ -19,11 +19,12 @@
 #include "./test_download_daemon.h"
 
 TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestDownloadDaemon::init() {
+    BaseTestCase::init();
     _timer = new FakeTimer();
     _app = new FakeApplication();
     _appPointer = QSharedPointer<Application>(_app);

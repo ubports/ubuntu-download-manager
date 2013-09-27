@@ -22,11 +22,12 @@
 #include "./fake_qnetwork_reply.h"
 
 TestNetworkReply::TestNetworkReply(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestNetworkReply::init() {
+    BaseTestCase::init();
     _qReply = new FakeQNetworkReply();
     _reply = new NetworkReply(_qReply);
 }

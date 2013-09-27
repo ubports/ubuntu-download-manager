@@ -22,11 +22,12 @@
 #include "./test_group_download.h"
 
 TestGroupDownload::TestGroupDownload(QObject *parent)
-    : QObject(parent) {
+    : BaseTestCase(parent) {
 }
 
 void
 TestGroupDownload::init() {
+    BaseTestCase::init();
     _id = QUuid::createUuid();
     _path = "/group/dbus/path";
     _isConfined = true;
