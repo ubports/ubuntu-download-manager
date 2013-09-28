@@ -1,3 +1,21 @@
+ubuntu-download-manager (0.2+13.10.20130928.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Add BaseTestCase that removes the qDebug output so that we have a
+    cleaner tests results output. (LP: #1230210)
+  * Allow the hash method to be empty. (LP: #1232050)
+  * Use syslog when running as a system bus service rather than logging
+    to a file. (LP: #1230236)
+  * Remove the XDG implementation and use the standard paths class found
+    in qt. (LP: #1226998)
+  * Keep track of the replies so that when the daemon is stoppable we
+    clear the cache. (LP: #1229463)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 144
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 28 Sep 2013 21:33:00 +0000
+
 ubuntu-download-manager (0.2+13.10.20130926.2-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
