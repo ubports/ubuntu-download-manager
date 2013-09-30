@@ -1,3 +1,14 @@
+ubuntu-download-manager (0.2+13.10.20130930-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Deal with the presence of the download file in a nicer way. (LP:
+    #1228254)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 146
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 30 Sep 2013 14:28:20 +0000
+
 ubuntu-download-manager (0.2+13.10.20130928.2-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
