@@ -1,3 +1,64 @@
+ubuntu-download-manager (0.2+13.10.20130928.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Add BaseTestCase that removes the qDebug output so that we have a
+    cleaner tests results output. (LP: #1230210)
+  * Allow the hash method to be empty. (LP: #1232050)
+  * Use syslog when running as a system bus service rather than logging
+    to a file. (LP: #1230236)
+  * Remove the XDG implementation and use the standard paths class found
+    in qt. (LP: #1226998)
+  * Keep track of the replies so that when the daemon is stoppable we
+    clear the cache. (LP: #1229463)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 144
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 28 Sep 2013 21:33:00 +0000
+
+ubuntu-download-manager (0.2+13.10.20130926.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Return error if the url is ill formed. (LP: #1228245)
+  * Return DBus error when the hash method is not known. (LP: #1228246)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 138
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 26 Sep 2013 18:03:25 +0000
+
+ubuntu-download-manager (0.2+13.10.20130924.2-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Ensure that when there is a network error the state of the
+    GroupDownload is correctly set. (LP: #1227850, #1227907, #1218031)
+  * Provide system dbus API to be used by apps such as the image
+    updates. (LP: #1211486)
+  * Provide new arg and new method to simplify tests. (LP: #1228233)
+  * Ensure that all downloads are canceled and that the files are
+    correctly removed. (LP: #1229413)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 135
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 24 Sep 2013 22:03:24 +0000
+
+ubuntu-download-manager (0.2+13.10.20130924.1-0ubuntu1) saucy; urgency=low
+
+  [ Loïc Minier ]
+  * Vcs-Bzr branch in control was out of date; use the alias which
+    should always point at the right one.
+
+  [ Manuel de la Pena ]
+  * Ensure that when there is a hash error the state change is emitted
+    and is the correct download state. (LP: #1224676)
+  * Correctly manage SSL errors. (LP: #1228057)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 130
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 24 Sep 2013 06:03:38 +0000
+
 ubuntu-download-manager (0.2+13.10.20130920.1-0ubuntu1) saucy; urgency=low
 
   [ Barry Warsaw ]

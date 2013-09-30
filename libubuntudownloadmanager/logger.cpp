@@ -18,6 +18,7 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+#include <syslog.h>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
@@ -70,7 +71,8 @@ Logger::openLogFile(const QString& filename) {
 
 void
 Logger::openSyslogConnection() {
-    // TODO(mandel): init syslog
+    openlog("ubuntu-download-manager",
+        LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
 }
 
 void
@@ -82,7 +84,14 @@ Logger::setupLogging(const QString filename) {
 void
 Logger::stopLogging() {
     if (_logger != NULL) {
-        delete reinterpret_cast<Logger*>(_logger);
+        Logger* log = reinterpret_cast<Logger*>(_logger);
+        if (log->_isSystemBus) {
+            closelog();
+        } else {
+            log->_logFile.close();
+        }
+
+        delete log;
         _logger = NULL;
     }
 }
@@ -132,14 +141,30 @@ Logger::getLogDir() {
 }
 
 void
-Logger::logSessionMessage(const QString &message) {
+Logger::logSessionMessage(const QString& message) {
     _logStream << message;
     _logStream.flush();
 }
 
 void
-Logger::logSystemMessage(const QString &message) {
-    Q_UNUSED(message);
+Logger::logSystemMessage(QtMsgType type, const QString& message) {
+    const char* msg = message.toUtf8().data();
+
+    // we using %s to avoid getting a compiler error when using
+    // -Wall
+    switch (type) {
+        case QtDebugMsg:
+            syslog(LOG_DEBUG, "%s", msg);
+            break;
+        case QtCriticalMsg:
+            syslog(LOG_CRIT, "%s", msg);
+            break;
+        case QtFatalMsg:
+            syslog(LOG_ALERT, "%s", msg);
+            break;
+        default:
+            break;
+    }
 }
 
 void
@@ -170,7 +195,7 @@ Logger::logMessage(QtMsgType type,
     _stdErr.device()->close();
 
     if (_isSystemBus) {
-        logSystemMessage(logMessage);
+        logSystemMessage(type, logMessage);
     } else {
         logSessionMessage(logMessage);
     }

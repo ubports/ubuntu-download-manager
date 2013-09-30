@@ -809,11 +809,11 @@ void
 TestGroupDownload::testInvalidHashAlgorithm() {
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", ""));
+        "local_file", "asasas"));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
+        "other_local_file", "sasas"));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+        "other_reddit_local_file", "sasaas"));
 
     GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
         downloadsStruct, "wrong", _isGSMDownloadAllowed, _metadata, _headers,
@@ -834,6 +834,7 @@ TestGroupDownload::testValidHashAlgorithm_data() {
     QTest::newRow("sha256") << "sha256";
     QTest::newRow("sha384") << "sha384";
     QTest::newRow("sha512") << "sha512";
+    QTest::newRow("Empty string") << "";
 }
 
 void
@@ -841,11 +842,11 @@ TestGroupDownload::testValidHashAlgorithm() {
     QFETCH(QString, algo);
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", ""));
+        "local_file", "asasas"));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
+        "other_local_file", "asasas"));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+        "other_reddit_local_file", "sasa"));
 
     GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
         downloadsStruct, algo, _isGSMDownloadAllowed, _metadata, _headers,
