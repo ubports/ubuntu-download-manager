@@ -856,3 +856,49 @@ TestGroupDownload::testValidHashAlgorithm() {
 
     QVERIFY(group->isValid());
 }
+
+void
+TestGroupDownload::testInvalidFilePresent() {
+    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+    QFile* file = new QFile(filePath);
+    file->open(QIODevice::ReadWrite | QFile::Append);
+    file->write("data data data!");
+    file->close();
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        filePath, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(!group->isValid());
+}
+
+void
+TestGroupDownload::testValidFileNotPresent() {
+    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        filePath, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<DownloadFactory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager));
+
+    QVERIFY(group->isValid());
+}

@@ -75,6 +75,8 @@ class TestGroupDownload : public BaseTestCase {
     void testInvalidHashAlgorithm();
     void testValidHashAlgorithm_data();
     void testValidHashAlgorithm();
+    void testInvalidFilePresent();
+    void testValidFileNotPresent();
 
  private:
     QUuid _id;

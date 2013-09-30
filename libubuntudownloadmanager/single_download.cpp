@@ -28,6 +28,7 @@
 #include "./single_download.h"
 #include "./network_reply.h"
 
+
 #define DATA_FILE_NAME "data.download"
 #define METADATA_FILE_NAME "metadata"
 #define METADATA_COMMAND_KEY "post-download-command"
@@ -417,8 +418,23 @@ class SingleDownloadPrivate {
         if (!q->isConfined() && metadata.contains(LOCAL_PATH_KEY)) {
             qDebug() << "App is not confined and provided a local path";
             finalPath = metadata[LOCAL_PATH_KEY].toString();
+
+            // in this case and because the app is not confined we are
+            // going to check if the file exists, if it does we will
+            // raise an error
+            if (QFile::exists(finalPath)) {
+                q->setIsValid(false);
+                q->setLastError(QString("File already exists at: '%1'").arg(
+                    finalPath));
+            }
         } else {
             finalPath = q->rootPath() + QDir::separator() + basename;
+
+            // check if the file exists, if it does lets append the uuid to it
+            if (QFile::exists(finalPath)) {
+                finalPath += q->downloadId().toString().replace(
+                    QRegExp("[-{}]"), "");
+            }
         }
 
         return finalPath;

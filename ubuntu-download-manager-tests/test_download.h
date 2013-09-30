@@ -130,6 +130,11 @@ class TestDownload: public BaseTestCase {
     void testInvalidHashAlgorithm();
     void testValidHashAlgorithm_data();
     void testValidHashAlgorithm();
+    void testInvalidFilePresent();
+    void testValidFileNotPresent();
+
+    // filename tests
+    void testDownloadPresent();
 
  private:
     QUuid _id;

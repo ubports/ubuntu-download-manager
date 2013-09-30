@@ -78,15 +78,6 @@ class GroupDownloadPrivate {
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
-            // before we create the download ensure that the url is valid
-            // if not we set the error and stop the loop
-            if (!url.isValid()) {
-                q->setIsValid(false);
-                q->setLastError(QString("Invalid URL: '%1'").arg(
-                    url.toString()));
-                break;
-            }
-
             SingleDownload* singleDownload;
             QVariantMap downloadMetadata = QVariantMap(metadata);
             downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
@@ -110,6 +101,14 @@ class GroupDownloadPrivate {
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
+            }
+
+            // check that the download is valid, if it is not set to invalid
+            // and use the last error from the download
+            if (!singleDownload->isValid()) {
+                q->setIsValid(false);
+                q->setLastError(singleDownload->lastError());
+                break;
             }
 
             singleDownload->allowGSMDownload(isGSMDownloadAllowed);
