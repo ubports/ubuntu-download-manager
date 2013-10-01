@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 #define DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 
+#include <QNetworkAccessManager>
 #include <QNetworkInfo>
 #include <QObject>
 
@@ -34,10 +35,10 @@ class SystemNetworkInfo : public QObject {
 
  signals:
     void currentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
-
- private:
-    Q_PRIVATE_SLOT(d_func(),
-            void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
+    void networkStatusChanged(QNetworkInfo::NetworkMode mode,
+                              int interface,
+                              QNetworkInfo::NetworkStatus status);
+    void networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
 
  private:
     SystemNetworkInfoPrivate* d_ptr;

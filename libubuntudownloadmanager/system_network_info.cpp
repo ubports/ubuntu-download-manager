@@ -27,48 +27,44 @@ class SystemNetworkInfoPrivate {
     Q_DECLARE_PUBLIC(SystemNetworkInfo)
 
  public:
-    explicit SystemNetworkInfoPrivate(SystemNetworkInfo* parent);
-    ~SystemNetworkInfoPrivate();
+    explicit SystemNetworkInfoPrivate(SystemNetworkInfo* parent)
+        : q_ptr(parent) {
+        Q_Q(SystemNetworkInfo);
+        _info = new QNetworkInfo();
+        _man = new QNetworkAccessManager();
 
-    QNetworkInfo::NetworkMode currentNetworkMode();
-    void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
+        // connect to interesting signals
+        q->connect(_info,
+            SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
+            SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)));
+        q->connect(_info,
+            SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)), q,
+            SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)));
+        q->connect(_man,
+            SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), q,
+            SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)));
+    }
+
+    ~SystemNetworkInfoPrivate() {
+        if (_info != NULL)
+            delete _info;
+        if (_man != NULL)
+            delete _man;
+    }
+
+    QNetworkInfo::NetworkMode currentNetworkMode() {
+        return _info->currentNetworkMode();
+    }
 
  private:
+    QNetworkAccessManager* _man;
     QNetworkInfo* _info;
     SystemNetworkInfo* q_ptr;
 };
 
-SystemNetworkInfoPrivate::SystemNetworkInfoPrivate(SystemNetworkInfo* parent)
-    : q_ptr(parent) {
-    Q_Q(SystemNetworkInfo);
-    _info = new QNetworkInfo();
-
-    // connect to interesting signal
-    q->connect(_info,
-            SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
-            SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
-}
-
-SystemNetworkInfoPrivate::~SystemNetworkInfoPrivate() {
-    if (_info != NULL)
-        delete _info;
-}
-
-QNetworkInfo::NetworkMode
-SystemNetworkInfoPrivate::currentNetworkMode() {
-    return _info->currentNetworkMode();
-}
-
-void
-SystemNetworkInfoPrivate::onCurrentNetworkModeChanged(
-        QNetworkInfo::NetworkMode mode) {
-    // foward the signal
-    Q_Q(SystemNetworkInfo);
-    emit q->currentNetworkModeChanged(mode);
-}
 
 /*
- * PUBLIC IMPLEMNTATION
+ * PUBLIC IMPLEMENTATION
  */
 
 SystemNetworkInfo::SystemNetworkInfo(QObject *parent)
@@ -81,5 +77,3 @@ SystemNetworkInfo::currentNetworkMode() {
     Q_D(SystemNetworkInfo);
     return d->currentNetworkMode();
 }
-
-#include "moc_system_network_info.cpp"

@@ -35,9 +35,19 @@ class DownloadQueuePrivate {
           q_ptr(parent) {
           Q_Q(DownloadQueue);
 
+        // used to keep track if we moved from 3G to wireless etc..
         q->connect(_networkInfo.data(),
             SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
             SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
+
+        // used to know if we lost connectivity etc..
+        q->connect(_networkInfo.data(),
+            SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)), q,
+            SLOT(onNetworkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)));
+
+        q->connect(_networkInfo.data(),
+            SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), q,
+            SLOT(onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)));
     }
 
     void add(Download* download) {
@@ -130,8 +140,20 @@ class DownloadQueuePrivate {
     }
 
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-        Q_UNUSED(mode);
+        qDebug() << "Network mode changed to" << mode;
         updateCurrentDownload();
+    }
+
+    void onNetworkStatusChanged(QNetworkInfo::NetworkMode mode,
+                                int interface,
+                                QNetworkInfo::NetworkStatus status) {
+        qDebug() << "Network status changed to" << mode << "interface" <<
+            interface << "status" << status;
+    }
+
+    void onNetworkAccessibleChanged(
+                  QNetworkAccessManager::NetworkAccessibility accessible) {
+        qDebug() << "Network accessible changed" << accessible;
     }
 
  private:
