@@ -142,6 +142,7 @@ class DownloadQueuePrivate {
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
         qDebug() << __PRETTY_FUNCTION__;
         qDebug() << "Network mode changed to" << mode;
+        qDebug() << "Network is accessible" << _networkInfo->networkAccessible();
         updateCurrentDownload();
     }
 
@@ -151,12 +152,14 @@ class DownloadQueuePrivate {
         qDebug() << __PRETTY_FUNCTION__;
         qDebug() << "Network status changed to" << mode << "interface" <<
             interface << "status" << status;
+        qDebug() << "Network is accessible" << _networkInfo->networkAccessible();
     }
 
     void onNetworkAccessibleChanged(
                   QNetworkAccessManager::NetworkAccessibility accessible) {
         qDebug() << __PRETTY_FUNCTION__;
         qDebug() << "Network accessible changed" << accessible;
+        qDebug() << "Network is accessible" << _networkInfo->networkAccessible();
     }
 
  private:

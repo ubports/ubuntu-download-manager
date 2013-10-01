@@ -56,6 +56,10 @@ class SystemNetworkInfoPrivate {
         return _info->currentNetworkMode();
     }
 
+    QNetworkAccessManager::NetworkAccessibility networkAccessible() {
+        return _man->networkAccessible();
+    }
+
  private:
     QNetworkAccessManager* _man;
     QNetworkInfo* _info;
@@ -76,4 +80,10 @@ QNetworkInfo::NetworkMode
 SystemNetworkInfo::currentNetworkMode() {
     Q_D(SystemNetworkInfo);
     return d->currentNetworkMode();
+}
+
+QNetworkAccessManager::NetworkAccessibility
+SystemNetworkInfo::networkAccessible() {
+    Q_D(SystemNetworkInfo);
+    return d->networkAccessible();
 }
