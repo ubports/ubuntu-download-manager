@@ -111,6 +111,7 @@ class TestDownload: public BaseTestCase {
     void testProcessFinishedNoError();
     void testProcessFinishedWithError();
     void testProcessFinishedCrash();
+    void testFileRemoveAfterSuccessfulProcess();
 
     // test related to bug #1224678
     void testSetRawHeaderAcceptEncoding_data();
