@@ -1569,7 +1569,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
     QString fileName = download->filePath();
     QFile* file = new QFile(fileName);
     file->open(QIODevice::ReadWrite | QFile::Append);
-    file->write(QByteArray('c', 500));
+    file->write("my data goes here");
     file->close();
 
     download->start();  // change state
@@ -1592,7 +1592,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(0, QProcess::NormalExit);
     // asser that the file does not longer exist in the system
-    QVERIFY(QFile::exists(fileName));
+    QVERIFY(!QFile::exists(fileName));
 }
 
 void
