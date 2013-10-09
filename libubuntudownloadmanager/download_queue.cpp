@@ -35,19 +35,9 @@ class DownloadQueuePrivate {
           q_ptr(parent) {
           Q_Q(DownloadQueue);
 
-        // used to keep track if we moved from 3G to wireless etc..
         q->connect(_networkInfo.data(),
             SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
             SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
-
-        // used to know if we lost connectivity etc..
-        q->connect(_networkInfo.data(),
-            SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)), q,
-            SLOT(onNetworkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)));
-
-        q->connect(_networkInfo.data(),
-            SIGNAL(networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)), q,
-            SLOT(onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility)));
     }
 
     void add(Download* download) {
@@ -99,7 +89,6 @@ class DownloadQueuePrivate {
     void onDownloadStateChanged() {
         qDebug() << __FUNCTION__;
         Q_Q(DownloadQueue);
-
         // get the appdownload that emited the signal and
         // decide what to do with it
         Download* sender = qobject_cast<Download*>(q->sender());
@@ -148,46 +137,6 @@ class DownloadQueuePrivate {
         }
     }
 
-    void onNetworkStatusChanged(QNetworkInfo::NetworkMode mode,
-                                int interface,
-                                QNetworkInfo::NetworkStatus status) {
-        qDebug() << __PRETTY_FUNCTION__;
-        qDebug() << "Network status changed to" << mode << "interface" <<
-            interface << "status" << status;
-        qDebug() << "Network is accessible" << _networkInfo->networkAccessible();
-    }
-
-    void onNetworkAccessibleChanged(
-                  QNetworkAccessManager::NetworkAccessibility accessible) {
-        qDebug() << __PRETTY_FUNCTION__;
-        qDebug() << "Network accessible changed" << accessible;
-        // the following method deals with the sitaution in witch a download or
-        // downloads are being processed and the network connection is lost. In
-        // that case we need to pause all the downloads without chaging their state
-        // once the connection is back we will resume them. This method fixes bug
-        // lp:1233435
-        if (accessible == QNetworkAccessManager::Accessible) {
-            qDebug() << "Resuming downloads paused due to lost connectivity";
-            _downloads[_current]->resumeDownload();
-            // loop over the dowloads paused due to connection
-            foreach (Download* down, _pausedDueToConnection) {
-                down->resumeDownload();
-            }
-        } else {
-            qDebug() << "Pausing downloads due to lost connectivity";
-            // loop over ALL downloads, pause those that are in START
-            // ore RESUME and keep track of them
-            foreach (Download* down, _downloads) {
-                Download::State state = down->state();
-                if (state == Download::START || state == Download::RESUME) {
-                    down->pauseDownload();
-                    _pausedDueToConnection.append(down);
-                }
-            }
-            _downloads[_current]->pauseDownload();
-        }
-    }
-
  private:
     void updateCurrentDownload() {
         qDebug() << __FUNCTION__;
@@ -224,7 +173,6 @@ class DownloadQueuePrivate {
                     down->startDownload();
                 else
                     down->resumeDownload();
-
                 break;
             }
         }
@@ -236,7 +184,6 @@ class DownloadQueuePrivate {
     QString _current;
     QHash<QString, Download*> _downloads;  // quick for access
     QStringList _sortedPaths;  // keep the order
-    QList<Download*> _pausedDueToConnection;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     DownloadQueue* q_ptr;
 };

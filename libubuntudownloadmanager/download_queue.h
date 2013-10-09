@@ -52,14 +52,7 @@ class DownloadQueue : public QObject {
  private:
     Q_PRIVATE_SLOT(d_func(), void onDownloadStateChanged())
     Q_PRIVATE_SLOT(d_func(),
-        void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkStatusChanged(QNetworkInfo::NetworkMode mode,
-                                  int interface,
-                                  QNetworkInfo::NetworkStatus status))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkAccessibleChanged(
-            QNetworkAccessManager::NetworkAccessibility accessible))
+            void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
  private:
     DownloadQueuePrivate* d_ptr;

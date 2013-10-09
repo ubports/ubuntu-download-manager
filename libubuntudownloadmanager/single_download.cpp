@@ -47,7 +47,7 @@ class SingleDownloadPrivate {
                           QSharedPointer<RequestFactory> nam,
                           QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
-        : _downloading(false),
+        : _downloadingAndNotConnected(false),
           _totalSize(0),
           _url(url),
           _hash(""),
@@ -65,7 +65,7 @@ class SingleDownloadPrivate {
                           QSharedPointer<ProcessFactory> processFactory,
                           SingleDownload* parent)
 
-        : _downloading(false),
+        : _downloadingAndNotConnected(false),
           _totalSize(0),
           _url(url),
           _hash(hash),
@@ -129,27 +129,29 @@ class SingleDownloadPrivate {
         Q_Q(SingleDownload);
         qDebug() << __PRETTY_FUNCTION__ << _url;
 
-        if (_reply == NULL) {
-            // cannot pause because is not running
-            qDebug() << "Cannot pause download because reply is NULL";
-            qDebug() << "EMIT paused(false)";
-            emit q->paused(false);
-            return;
+        if (!_downloadingAndNotConnected) {
+            if (_reply == NULL) {
+                // cannot pause because is not running
+                qDebug() << "Cannot pause download because reply is NULL";
+                qDebug() << "EMIT paused(false)";
+                emit q->paused(false);
+                return;
+            }
+
+            qDebug() << "Pausing download.";
+            // we need to disconnect the signals to ensure that they are not
+            // emitted due to the operation we are going to perform. We read
+            // the data in the reply and store it in a file
+            disconnectFromReplySignals();
+
+            // do abort before reading
+            _reply->abort();
+            _currentData->write(_reply->readAll());
+            _reply->deleteLater();
+            _reply = NULL;
+            qDebug() << "EMIT paused(true)";
+            emit q->paused(true);
         }
-
-        qDebug() << "Pausing download.";
-        // we need to disconnect the signals to ensure that they are not
-        // emitted due to the operation we are going to perform. We read
-        // the data in the reply and store it in a file
-        disconnectFromReplySignals();
-
-        // do abort before reading
-        _reply->abort();
-        _currentData->write(_reply->readAll());
-        _reply->deleteLater();
-        _reply = NULL;
-        qDebug() << "EMIT paused(true)";
-        emit q->paused(true);
     }
 
     void resumeDownload() {
@@ -188,7 +190,7 @@ class SingleDownloadPrivate {
             qDebug() << "EMIT resumed(true)";
             emit q->resumed(true);
         } else {
-            _downloading = true;
+            _downloadingAndNotConnected = true;
         }
     }
 
@@ -228,7 +230,7 @@ class SingleDownloadPrivate {
             emit q->started(true);
         } else {
             qDebug() << "Network is NOT accesible, queueing download";
-            _downloading = true;
+            _downloadingAndNotConnected = true;
         }
     }
 
@@ -390,15 +392,21 @@ class SingleDownloadPrivate {
         Q_Q(SingleDownload);
         // if we are downloading and the status is correct lets call
         // the method again, else do nothing
-        if (online == QNetworkAccessManager::Accessible && _downloading) {
-            qDebug() << "We are back online and we were downloading";
+        if (online == QNetworkAccessManager::Accessible && _downloadingAndNotConnected) {
             Download::State state = q->state();
-            if (state == Download::START) {
-                startDownload();
-            }
-            if (state == Download::RESUME) {
+            _downloadingAndNotConnected = false;
+            qDebug() << "We are back online and we were downloading";
+            if (state == Download::START || state == Download::RESUME) {
                 resumeDownload();
             }
+        }
+
+        // if not longer online yet we have a reply (that is, we are trying
+        // to get data form the missing connection) we pause
+        if (online == QNetworkAccessManager::NotAccessible && _reply != NULL) {
+            qDebug() << "Lost connection and therefore pausing";
+            _downloadingAndNotConnected = true;
+            pauseDownload();
         }
     }
 
@@ -537,7 +545,7 @@ class SingleDownloadPrivate {
     }
 
  private:
-    bool _downloading = false;
+    bool _downloadingAndNotConnected = false;
     qulonglong _totalSize = 0;
     QUrl _url;
     QString _filePath;

@@ -32,7 +32,7 @@ class SystemNetworkInfo : public QObject {
     explicit SystemNetworkInfo(QObject *parent = 0);
 
     virtual QNetworkInfo::NetworkMode currentNetworkMode();
-    QNetworkAccessManager::NetworkAccessibility networkAccessible();
+    virtual QNetworkAccessManager::NetworkAccessibility networkAccessible();
 
  signals:
 

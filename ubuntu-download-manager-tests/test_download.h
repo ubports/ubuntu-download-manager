@@ -136,6 +136,13 @@ class TestDownload: public BaseTestCase {
     // filename tests
     void testDownloadPresent();
 
+    // connectivity tests realted to bug lp:1233435
+    void testStartNotConnected();
+    void testStartPauseNotConnected();
+    void testResumeNotConnected();
+    void testReconnectAndDownloading();
+    void testReconnectAndResumeDownloading();
+
  private:
     QUuid _id;
     bool _isConfined;

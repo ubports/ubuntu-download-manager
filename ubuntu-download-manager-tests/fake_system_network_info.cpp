@@ -53,6 +53,11 @@ FakeSystemNetworkInfo::currentNetworkMode() {
     return _mode;
 }
 
+QNetworkAccessManager::NetworkAccessibility
+FakeSystemNetworkInfo::networkAccessible() {
+    return _online;
+}
+
 QNetworkInfo::NetworkMode
 FakeSystemNetworkInfo::mode() {
     return _mode;
@@ -61,4 +66,17 @@ FakeSystemNetworkInfo::mode() {
 void
 FakeSystemNetworkInfo::setMode(QNetworkInfo::NetworkMode mode) {
     _mode = mode;
+}
+
+void
+FakeSystemNetworkInfo::setOnline(bool online) {
+    _online = online? QNetworkAccessManager::Accessible
+        :QNetworkAccessManager::NotAccessible;
+}
+
+void
+FakeSystemNetworkInfo::emitNetworkAccessibleChanged(
+        QNetworkAccessManager::NetworkAccessibility accessible) {
+    _online = accessible;
+    emit networkAccessibleChanged(_online);
 }

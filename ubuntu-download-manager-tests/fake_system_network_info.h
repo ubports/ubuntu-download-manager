@@ -44,13 +44,18 @@ class FakeSystemNetworkInfo : public SystemNetworkInfo, public Fake {
     explicit FakeSystemNetworkInfo(QObject *parent = 0);
 
     QNetworkInfo::NetworkMode currentNetworkMode() override;
+    QNetworkAccessManager::NetworkAccessibility networkAccessible() override;
 
     // getters and setters used to force the result
     QNetworkInfo::NetworkMode mode();
     void setMode(QNetworkInfo::NetworkMode mode);
+    void setOnline(bool online);
+    void emitNetworkAccessibleChanged(
+        QNetworkAccessManager::NetworkAccessibility accessible);
 
  private:
     QNetworkInfo::NetworkMode _mode;
+    QNetworkAccessManager::NetworkAccessibility _online;
 };
 
 #endif  // FAKE_SYSTEM_NETWORK_INFO_H
