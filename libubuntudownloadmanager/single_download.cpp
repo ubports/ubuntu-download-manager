@@ -353,7 +353,7 @@ class SingleDownloadPrivate {
         Q_Q(SingleDownload);
         if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
             // remove the file since we are done with it
-            success = QFile::remove(_filePath);
+            bool success = QFile::remove(_filePath);
             if (!success)
                 qWarning() << "Error removing" << _filePath;
             q->setState(Download::FINISH);
