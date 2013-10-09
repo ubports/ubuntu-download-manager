@@ -405,8 +405,8 @@ class SingleDownloadPrivate {
         // to get data form the missing connection) we pause
         if (online == QNetworkAccessManager::NotAccessible && _reply != NULL) {
             qDebug() << "Lost connection and therefore pausing";
-            _downloadingAndNotConnected = true;
             pauseDownload();
+            _downloadingAndNotConnected = true;
         }
     }
 
