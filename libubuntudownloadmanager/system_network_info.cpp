@@ -98,7 +98,11 @@ class SystemNetworkInfoPrivate {
     }
 
     QNetworkAccessManager::NetworkAccessibility networkAccessible() {
-        return QNetworkAccessManager::Accessible;
+        bool online = _configMan->isOnline();
+        QNetworkAccessManager::NetworkAccessibility state = online?
+            QNetworkAccessManager::Accessible
+                  :QNetworkAccessManager::NotAccessible;
+        return state;
     }
 
     void onOnlineStateChanged(bool online) {
