@@ -26,9 +26,10 @@
 #include <QDir>
 #include <QRegExp>
 #include <QStandardPaths>
-#include "./dbus_proxy.h"
-#include "./uuid_factory.h"
-#include "./apparmor.h"
+#include "dbus_proxy.h"
+#include "uuid_factory.h"
+#include "uuid_utils.h"
+#include "apparmor.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -53,24 +54,17 @@ class AppArmorPrivate {
         _uuidFactory = new UuidFactory();
     }
 
-    QString getUuidPath(QUuid id, QString path) {
-        qDebug() << __PRETTY_FUNCTION__ << path;
-        QString idString = path + "/" + id.toString().replace(
-            QRegExp("[-{}]"), "");
-        qDebug() << "Download path is" << idString;
-        return idString;
+    void getDBusPath(QString& id, QString& dbusPath) {
+        QUuid uuid = _uuidFactory->createUuid();
+        id = UuidUtils::getDBusString(uuid);
+        dbusPath = UuidUtils::getDBusString(uuid);
     }
 
-    void getDBusPath(QUuid& id, QString& dbusPath) {
-        id = _uuidFactory->createUuid();
-        dbusPath = getUuidPath(id, "");
-    }
-
-    QUuid getSecurePath(const QString& connName,
+    QString getSecurePath(const QString& connName,
                         QString& dbusPath,
                         QString& localPath,
                         bool& isConfined) {
-        QUuid id = _uuidFactory->createUuid();
+        QString id = UuidUtils::getDBusString(_uuidFactory->createUuid());
         getSecurePath(connName, id, dbusPath, localPath, isConfined);
         return id;
     }
@@ -108,12 +102,12 @@ class AppArmorPrivate {
     }
 
     void getSecurePath(const QString& connName,
-                       const QUuid& id,
+                       const QString& id,
                        QString& dbusPath,
                        QString& localPath,
                        bool& isConfined) {
         if (connName.isEmpty()) {
-            dbusPath = getUuidPath(id, QString(BASE_ACCOUNT_URL));
+            dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
             localPath = getLocalPath("");
             isConfined = false;
             return;
@@ -125,7 +119,7 @@ class AppArmorPrivate {
         reply.waitForFinished();
         if (reply.isError()) {
             qCritical() << reply.error();
-            dbusPath = getUuidPath(id, QString(BASE_ACCOUNT_URL));
+            dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
             localPath = getLocalPath("");
             isConfined = false;
             return;
@@ -136,7 +130,7 @@ class AppArmorPrivate {
 
             if (appId.isEmpty() || appId == UNCONFINED_ID) {
                 qDebug() << "UNCONFINED APP";
-                dbusPath = getUuidPath(id, QString(BASE_ACCOUNT_URL));
+                dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
                 localPath = getLocalPath("");
                 isConfined = false;
                 return;
@@ -151,7 +145,7 @@ class AppArmorPrivate {
                 if (appIdPath == NULL) {
                     qCritical() << "Unable to allocate memory for "
                         << "nih_dbus_path()";
-                    dbusPath = getUuidPath(id, QString(BASE_ACCOUNT_URL));
+                    dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
                     localPath = getLocalPath(appId);
                     return;
                 }
@@ -160,7 +154,7 @@ class AppArmorPrivate {
 
                 // free nih data
                 nih_free(appIdPath);
-                dbusPath = getUuidPath(id, path);
+                dbusPath = path + "/" + id;
                 localPath = getLocalPath(appId);
                 return;
             }  // not empty appid string
@@ -195,12 +189,12 @@ AppArmor::AppArmor(QSharedPointer<DBusConnection> connection,
 }
 
 void
-AppArmor::getDBusPath(QUuid& id, QString& dbusPath) {
+AppArmor::getDBusPath(QString& id, QString& dbusPath) {
     Q_D(AppArmor);
     return d->getDBusPath(id, dbusPath);
 }
 
-QUuid
+QString
 AppArmor::getSecurePath(const QString& connName,
                         QString& dbusPath,
                         QString& localPath,
@@ -211,7 +205,7 @@ AppArmor::getSecurePath(const QString& connName,
 
 void
 AppArmor::getSecurePath(const QString& connName,
-                        const QUuid& id,
+                        const QString& id,
                         QString& dbusPath,
                         QString& localPath,
                         bool& isConfined) {

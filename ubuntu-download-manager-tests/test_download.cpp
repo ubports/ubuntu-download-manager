@@ -21,9 +21,10 @@
 #include <QSignalSpy>
 #include <QSslError>
 #include <hash_algorithm.h>
-#include "./fake_network_reply.h"
-#include "./fake_process.h"
-#include "./test_download.h"
+#include <uuid_utils.h>
+#include "fake_network_reply.h"
+#include "fake_process.h"
+#include "test_download.h"
 
 TestDownload::TestDownload(QObject* parent)
     : BaseTestCase("TestDownload", parent) {
@@ -33,7 +34,7 @@ void
 TestDownload::init() {
     BaseTestCase::init();
 
-    _id = QUuid::createUuid();
+    _id = UuidUtils::getDBusString(QUuid::createUuid());
     _isConfined = false;
     _rootPath = testDirectory();
     _path = "random path to dbus";
@@ -58,23 +59,23 @@ TestDownload::cleanup() {
 
 void
 TestDownload::testNoHashConstructor_data() {
-    QTest::addColumn<QUuid>("id");
+    QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
 
-    QTest::newRow("First row") << QUuid::createUuid() << "/path/to/first/app"
-        << QUrl("http://ubuntu.com");
-    QTest::newRow("Second row") << QUuid::createUuid() << "/path/to/second/app"
-        << QUrl("http://ubuntu.com/juju");
-    QTest::newRow("Third row") << QUuid::createUuid() << "/path/to/third/app"
-        << QUrl("http://ubuntu.com/tablet");
-    QTest::newRow("Last row") << QUuid::createUuid() << "/path/to/last/app"
-        << QUrl("http://ubuntu.com/phone");
+    QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "/path/to/first/app" << QUrl("http://ubuntu.com");
+    QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "/path/to/second/app" << QUrl("http://ubuntu.com/juju");
+    QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet");
+    QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
 }
 
 void
 TestDownload::testNoHashConstructor() {
-    QFETCH(QUuid, id);
+    QFETCH(QString, id);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
@@ -99,29 +100,29 @@ TestDownload::testNoHashConstructor() {
 
 void
 TestDownload::testHashConstructor_data() {
-    QTest::addColumn<QUuid>("id");
+    QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
     QTest::addColumn<QString>("algo");
 
-    QTest::newRow("First row") << QUuid::createUuid()
+    QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
         << "/path/to/first/app" << QUrl("http://ubuntu.com")
         << "my-first-hash" << "md5";
-    QTest::newRow("Second row") << QUuid::createUuid()
+    QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
         << "/path/to/second/app" << QUrl("http://ubuntu.com/juju")
         << "my-second-hash" << "Md5";
-    QTest::newRow("Third row") << QUuid::createUuid()
+    QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
         << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet")
         << "my-third-hash" << "Sha1";
-    QTest::newRow("Last row") << QUuid::createUuid()
+    QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
         << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
         << "my-last-hash" << "Sha256";
 }
 
 void
 TestDownload::testHashConstructor() {
-    QFETCH(QUuid, id);
+    QFETCH(QString, id);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);

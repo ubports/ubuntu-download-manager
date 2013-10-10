@@ -17,11 +17,11 @@
  */
 
 #include <QPair>
-#include "./download_adaptor.h"
-#include "./group_download.h"
-#include "./group_download_adaptor.h"
-#include "./single_download.h"
-#include "./download_factory.h"
+#include "download_adaptor.h"
+#include "group_download.h"
+#include "group_download_adaptor.h"
+#include "single_download.h"
+#include "download_factory.h"
 
 #define OBJECT_PATH_KEY "objectpath"
 
@@ -49,16 +49,16 @@ class DownloadFactoryPrivate {
 
     void getDownloadPath(const QString& dbusOwner,
                          const QVariantMap& metadata,
-                         QUuid& id,
+                         QString& id,
                          QString& dbusPath,
                          QString& rootPath,
                          bool& isConfined) {
         qDebug() << __PRETTY_FUNCTION__ << dbusOwner << metadata;
         if (metadata.contains(OBJECT_PATH_KEY)) {
             // create a uuid using the string value form the metadata
-            id = QUuid(metadata[OBJECT_PATH_KEY].toString());
-            if (id.isNull()) {
-                qCritical() << "Uuid sent by client is NULL";
+            id = metadata[OBJECT_PATH_KEY].toString();
+            if (id.isEmpty()) {
+                qCritical() << "Id sent by client is ''";
                 id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
                     isConfined);
             } else {
@@ -77,7 +77,7 @@ class DownloadFactoryPrivate {
                              const QUrl& url,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) {
-        QUuid id;
+        QString id;
         QString dbusPath;
         QString rootPath;
         bool isConfined = false;
@@ -97,7 +97,7 @@ class DownloadFactoryPrivate {
                              const QString& algo,
                              const QVariantMap& metadata,
                              const QMap<QString, QString>& headers) {
-        QUuid id;
+        QString id;
         QString dbusPath;
         QString rootPath;
         bool isConfined = false;
@@ -118,7 +118,7 @@ class DownloadFactoryPrivate {
                              bool allowed3G,
                              const QVariantMap& metadata,
                              StringMap headers) {
-        QUuid id;
+        QString id;
         QString dbusPath;
         QString rootPath;
         bool isConfined = false;
@@ -138,7 +138,7 @@ class DownloadFactoryPrivate {
                                      const QUrl& url,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers) {
-        QUuid id;
+        QString id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
         Download* down = new SingleDownload(id, dbusPath, isConfined, rootPath,
@@ -155,7 +155,7 @@ class DownloadFactoryPrivate {
                                      const QString& algo,
                                      const QVariantMap& metadata,
                                      const QMap<QString, QString>& headers) {
-        QUuid id;
+        QString id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
         Download* down = new SingleDownload(id, dbusPath, isConfined,

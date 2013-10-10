@@ -17,9 +17,9 @@
  */
 
 #include <QDebug>
-#include "./fake_download.h"
+#include "fake_download.h"
 
-FakeDownload::FakeDownload(const QUuid& id,
+FakeDownload::FakeDownload(const QString& id,
                            const QString& path,
                            bool isConfined,
                            const QString& rootPath,
@@ -35,7 +35,7 @@ FakeDownload::FakeDownload(const QUuid& id,
         _canDownload(true) {
 }
 
-FakeDownload::FakeDownload(const QUuid& id,
+FakeDownload::FakeDownload(const QString& id,
                            const QString& path,
                            bool isConfined,
                            const QString& rootPath,

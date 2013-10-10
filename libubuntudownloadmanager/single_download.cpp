@@ -24,9 +24,9 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
-#include "./hash_algorithm.h"
-#include "./single_download.h"
-#include "./network_reply.h"
+#include "hash_algorithm.h"
+#include "single_download.h"
+#include "network_reply.h"
 
 
 #define DATA_FILE_NAME "data.download"
@@ -436,8 +436,7 @@ class SingleDownloadPrivate {
 
             // check if the file exists, if it does lets append the uuid to it
             if (QFile::exists(finalPath)) {
-                finalPath += q->downloadId().toString().replace(
-                    QRegExp("[-{}]"), "");
+                finalPath += q->downloadId();
             }
         }
 
@@ -507,7 +506,7 @@ class SingleDownloadPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-SingleDownload::SingleDownload(const QUuid& id,
+SingleDownload::SingleDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -523,7 +522,7 @@ SingleDownload::SingleDownload(const QUuid& id,
       d_ptr(new SingleDownloadPrivate(url, nam, processFactory, this)) {
 }
 
-SingleDownload::SingleDownload(const QUuid& id,
+SingleDownload::SingleDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,

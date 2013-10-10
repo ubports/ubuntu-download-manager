@@ -35,7 +35,8 @@ SOURCES += \
     file_manager.cpp \
     download_struct.cpp \
     downloads_db.cpp \
-    dbus_proxy.cpp
+    dbus_proxy.cpp \
+    uuid_utils.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -66,7 +67,8 @@ HEADERS +=\
     download_factory.h \
     file_manager.h \
     download_struct.h \
-    downloads_db.h
+    downloads_db.h \
+    uuid_utils.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

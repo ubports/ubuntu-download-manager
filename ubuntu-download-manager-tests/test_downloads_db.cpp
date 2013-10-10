@@ -24,11 +24,12 @@
 #include <QSqlError>
 #include <hash_algorithm.h>
 #include <metatypes.h>
-#include "./fake_download.h"
-#include "./fake_system_network_info.h"
-#include "./fake_request_factory.h"
-#include "./fake_process_factory.h"
-#include "./test_downloads_db.h"
+#include <uuid_utils.h>
+#include "fake_download.h"
+#include "fake_system_network_info.h"
+#include "fake_request_factory.h"
+#include "fake_process_factory.h"
+#include "test_downloads_db.h"
 
 #define TABLE_EXISTS "SELECT count(name) FROM sqlite_master "\
     "WHERE type='table' AND name=:table_name;"
@@ -96,7 +97,7 @@ TestDownloadsDb::testTableExists() {
 
 void
 TestDownloadsDb::testStoreSingleDownload_data() {
-    QTest::addColumn<QUuid>("id");
+    QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
@@ -104,18 +105,18 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     QTest::addColumn<QVariantMap>("metadata");
     QTest::addColumn<QMap<QString, QString> >("headers");
 
-    QTest::newRow("First Row") << QUuid::createUuid() << "first path"
-        << QUrl("http://ubuntu.com") << "" << "md5" << QVariantMap()
-        << QMap<QString, QString>();
+    QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "first path" << QUrl("http://ubuntu.com") << "" << "md5"
+        << QVariantMap() << QMap<QString, QString>();
 
     QVariantMap secondMetadata;
     secondMetadata["test"] = 1;
     secondMetadata["command"] = "cd";
     secondMetadata["hello"] = 23;
 
-    QTest::newRow("Second Row") << QUuid::createUuid() << "second path"
-        << QUrl("http://ubuntu.com/phone") << "" << "sha512" << secondMetadata
-        << QMap<QString, QString>();
+    QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "second path" << QUrl("http://ubuntu.com/phone") << "" << "sha512"
+        << secondMetadata << QMap<QString, QString>();
 
     QVariantMap thirdMetadata;
     secondMetadata["test"] = 3;
@@ -125,15 +126,15 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     QMap<QString, QString> thirdHeaders;
     thirdHeaders["my-header"] = "I do something cool";
 
-    QTest::newRow("Third Row") << QUuid::createUuid() << "third path"
-        << QUrl("http://ubuntu.com/tablet") << "" << "sha384" << thirdMetadata
-        << thirdHeaders;
+    QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "third path" << QUrl("http://ubuntu.com/tablet") << "" << "sha384"
+        << thirdMetadata << thirdHeaders;
 }
 
 void
 TestDownloadsDb::testStoreSingleDownload() {
     _db->init();
-    QFETCH(QUuid, id);
+    QFETCH(QString, id);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
@@ -157,7 +158,7 @@ TestDownloadsDb::testStoreSingleDownload() {
     db.open();
     QSqlQuery query(db);
     query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id.toString());
+    query.bindValue(":uuid", id);
     query.exec();
     if (query.next()) {
         QString dbUrl = query.value(0).toString();
@@ -193,7 +194,7 @@ TestDownloadsDb::testStoreSingleDownload() {
 
 void
 TestDownloadsDb::testStoreSingleDownloadPresent_data() {
-    QTest::addColumn<QUuid>("id");
+    QTest::addColumn<QString>("id");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
@@ -201,18 +202,18 @@ TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     QTest::addColumn<QVariantMap>("metadata");
     QTest::addColumn<QMap<QString, QString> >("headers");
 
-    QTest::newRow("First Row") << QUuid::createUuid() << "first path"
-        << QUrl("http://ubuntu.com") << "" << "md5" << QVariantMap()
-        << QMap<QString, QString>();
+    QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "first path" << QUrl("http://ubuntu.com") << "" << "md5"
+        << QVariantMap() << QMap<QString, QString>();
 
     QVariantMap secondMetadata;
     secondMetadata["test"] = 1;
     secondMetadata["command"] = "cd";
     secondMetadata["hello"] = 23;
 
-    QTest::newRow("Second Row") << QUuid::createUuid() << "second path"
-        << QUrl("http://ubuntu.com/phone") << "" << "sha512" << secondMetadata
-        << QMap<QString, QString>();
+    QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "second path" << QUrl("http://ubuntu.com/phone") << "" << "sha512"
+        << secondMetadata << QMap<QString, QString>();
 
     QVariantMap thirdMetadata;
     secondMetadata["test"] = 3;
@@ -222,15 +223,15 @@ TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     QMap<QString, QString> thirdHeaders;
     thirdHeaders["my-header"] = "I do something cool";
 
-    QTest::newRow("Third Row") << QUuid::createUuid() << "third path"
-        << QUrl("http://ubuntu.com/tablet") << "" << "sha384" << thirdMetadata
-        << thirdHeaders;
+    QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
+        << "third path" << QUrl("http://ubuntu.com/tablet") << "" << "sha384"
+        << thirdMetadata << thirdHeaders;
 }
 
 void
 TestDownloadsDb::testStoreSingleDownloadPresent() {
     _db->init();
-    QFETCH(QUuid, id);
+    QFETCH(QString, id);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
@@ -263,7 +264,7 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     db.open();
     QSqlQuery query(db);
     query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id.toString());
+    query.bindValue(":uuid", id);
     query.exec();
     if (query.next()) {
         QString dbUrl = query.value(0).toString();

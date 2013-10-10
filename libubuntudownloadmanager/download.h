@@ -22,11 +22,10 @@
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
-#include <QUuid>
-#include "./app-downloader-lib_global.h"
-#include "./process_factory.h"
-#include "./request_factory.h"
-#include "./system_network_info.h"
+#include "app-downloader-lib_global.h"
+#include "process_factory.h"
+#include "request_factory.h"
+#include "system_network_info.h"
 
 class DownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
@@ -44,7 +43,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
         ERROR
     };
 
-    Download(const QUuid& id,
+    Download(const QString& id,
              const QString& path,
              bool isConfined,
              const QString& rootPath,
@@ -53,7 +52,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
              QSharedPointer<SystemNetworkInfo> networkInfo,
              QObject* parent = 0);
 
-    QUuid downloadId();
+    QString downloadId();
 
     QString path();
 

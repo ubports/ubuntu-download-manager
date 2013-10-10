@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./fake_apparmor.h"
+#include <uuid_utils.h>
+#include "fake_apparmor.h"
 
 FakeAppArmor::FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,
                            QObject *parent)
@@ -26,14 +27,14 @@ FakeAppArmor::FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,
 }
 
 void
-FakeAppArmor::getDBusPath(QUuid& id, QString& dbusPath) {
-    id = _uuidFactory->createUuid();
-    dbusPath = id.toString().replace(QRegExp("[-{}]"), "");
+FakeAppArmor::getDBusPath(QString& id, QString& dbusPath) {
+    id = UuidUtils::getDBusString(_uuidFactory->createUuid());
+    dbusPath = id;
     if (_recording) {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
-        outParams.append(new UuidWrapper(id));
+        outParams.append(new StringWrapper(id));
         outParams.append(new StringWrapper(dbusPath));
         MethodParams params(inParams, outParams);
         MethodData methodData("getDBusPath", params);
@@ -41,33 +42,32 @@ FakeAppArmor::getDBusPath(QUuid& id, QString& dbusPath) {
     }
 }
 
-QUuid
+QString
 FakeAppArmor::getSecurePath(const QString& connName,
                         QString& dbusPath,
                         QString& localPath,
                         bool& isConfined) {
-    QUuid id = _uuidFactory->createUuid();
+    QString id = UuidUtils::getDBusString(_uuidFactory->createUuid());
     getSecurePath(connName, id, dbusPath, localPath, isConfined);
     return id;
 }
 
 void
 FakeAppArmor::getSecurePath(const QString& connName,
-                       const QUuid& id,
+                       const QString& id,
                        QString& dbusPath,
                        QString& localPath,
                        bool& isConfined) {
-    QString uuidString = id.toString().replace(QRegExp("[-{}]"), "");
-    dbusPath = "dbus/" + uuidString;
-    localPath = "local/"+ uuidString;
+    dbusPath = "dbus/" + id;
+    localPath = "local/"+ id;
     isConfined = _isConfined;
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new UuidWrapper(id));
+        inParams.append(new StringWrapper(id));
         inParams.append(new StringWrapper(connName));
 
         QList<QObject*> outParams;
-        outParams.append(new UuidWrapper(id));
+        outParams.append(new StringWrapper(id));
         outParams.append(new StringWrapper(dbusPath));
         outParams.append(new StringWrapper(localPath));
         MethodParams params(inParams, outParams);

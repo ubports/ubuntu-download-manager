@@ -23,11 +23,11 @@
 #include <QObject>
 #include <single_download.h>
 #include <metatypes.h>
-#include "./fake_system_network_info.h"
-#include "./fake_request_factory.h"
-#include "./fake_process_factory.h"
-#include "./base_testcase.h"
-#include "./test_runner.h"
+#include "fake_system_network_info.h"
+#include "fake_request_factory.h"
+#include "fake_process_factory.h"
+#include "base_testcase.h"
+#include "test_runner.h"
 
 class TestDownload: public BaseTestCase {
     Q_OBJECT
@@ -138,7 +138,7 @@ class TestDownload: public BaseTestCase {
     void testDownloadPresent();
 
  private:
-    QUuid _id;
+    QString _id;
     bool _isConfined;
     QString _rootPath;
     QVariantMap _metadata;

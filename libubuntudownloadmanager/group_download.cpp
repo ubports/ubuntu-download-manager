@@ -17,11 +17,11 @@
  */
 
 #include <QDebug>
-#include "./download_adaptor.h"
-#include "./hash_algorithm.h"
-#include "./single_download.h"
-#include "./uuid_factory.h"
-#include "./group_download.h"
+#include "download_adaptor.h"
+#include "hash_algorithm.h"
+#include "single_download.h"
+#include "uuid_factory.h"
+#include "group_download.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -305,7 +305,7 @@ class GroupDownloadPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-GroupDownload::GroupDownload(const QUuid& id,
+GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,
@@ -323,7 +323,7 @@ GroupDownload::GroupDownload(const QUuid& id,
             networkInfo, downFactory, this)) {
 }
 
-GroupDownload::GroupDownload(const QUuid& id,
+GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,

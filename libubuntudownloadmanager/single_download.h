@@ -23,9 +23,8 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
-#include <QUuid>
-#include "./app-downloader-lib_global.h"
-#include "./download.h"
+#include "app-downloader-lib_global.h"
+#include "download.h"
 
 #define LOCAL_PATH_KEY "local-path"
 
@@ -35,7 +34,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     Q_DECLARE_PRIVATE(SingleDownload)
 
  public:
-    SingleDownload(const QUuid& id,
+    SingleDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -46,7 +45,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
                    QSharedPointer<RequestFactory> nam,
                    QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent = 0);
-    SingleDownload(const QUuid& id,
+    SingleDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,

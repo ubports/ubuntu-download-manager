@@ -22,14 +22,14 @@
 #include <QObject>
 #include <uuid_factory.h>
 #include <group_download.h>
-#include "./fake_apparmor.h"
-#include "./fake_file_manager.h"
-#include "./fake_system_network_info.h"
-#include "./fake_request_factory.h"
-#include "./fake_process_factory.h"
-#include "./fake_download_factory.h"
-#include "./base_testcase.h"
-#include "./test_runner.h"
+#include "fake_apparmor.h"
+#include "fake_file_manager.h"
+#include "fake_system_network_info.h"
+#include "fake_request_factory.h"
+#include "fake_process_factory.h"
+#include "fake_download_factory.h"
+#include "base_testcase.h"
+#include "test_runner.h"
 
 class TestGroupDownload : public BaseTestCase {
     Q_OBJECT
@@ -79,7 +79,7 @@ class TestGroupDownload : public BaseTestCase {
     void testValidFileNotPresent();
 
  private:
-    QUuid _id;
+    QString _id;
     QString _path;
     bool _isConfined;
     QString _rootPath;
