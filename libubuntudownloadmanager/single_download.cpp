@@ -166,32 +166,23 @@ class SingleDownloadPrivate {
             return;
         }
 
-        // check if we have connection, if we don't set the flag and then
-        // do nothing
-        QNetworkAccessManager::NetworkAccessibility online =
-            q->networkInfo()->networkAccessible();
+        qDebug() << "Resuming download.";
+        qDebug() << "Network is accesible, performing download request";
+        QNetworkRequest request = buildRequest();
 
-        if (online == QNetworkAccessManager::Accessible) {
-            qDebug() << "Resuming download.";
-            qDebug() << "Network is accesible, performing download request";
-            QNetworkRequest request = buildRequest();
+        // overrides the range header, we do not let clients set the range!!!
+        qint64 currentDataSize = _currentData->size();
+        QByteArray rangeHeaderValue = "bytes=" +
+            QByteArray::number(currentDataSize) + "-";
+        request.setRawHeader("Range", rangeHeaderValue);
 
-            // overrides the range header, we do not let clients set the range!!!
-            qint64 currentDataSize = _currentData->size();
-            QByteArray rangeHeaderValue = "bytes=" +
-                QByteArray::number(currentDataSize) + "-";
-            request.setRawHeader("Range", rangeHeaderValue);
+        _reply = _requestFactory->get(request);
+        _reply->setReadBufferSize(q->throttle());
 
-            _reply = _requestFactory->get(request);
-            _reply->setReadBufferSize(q->throttle());
+        connectToReplySignals();
 
-            connectToReplySignals();
-
-            qDebug() << "EMIT resumed(true)";
-            emit q->resumed(true);
-        } else {
-            _downloadingAndNotConnected = true;
-        }
+        qDebug() << "EMIT resumed(true)";
+        emit q->resumed(true);
     }
 
     void startDownload() {
@@ -213,25 +204,15 @@ class SingleDownloadPrivate {
         _currentData = new QFile(_filePath);
         _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
-        // check if we have connection, if we don't set the flag and then
-        // do nothing
-        QNetworkAccessManager::NetworkAccessibility online =
-            q->networkInfo()->networkAccessible();
+        qDebug() << "Network is accesible, performing download request";
+        // signals should take care or calling deleteLater on the
+        // NetworkReply object
+        _reply = _requestFactory->get(buildRequest());
+        _reply->setReadBufferSize(q->throttle());
 
-        if (online == QNetworkAccessManager::Accessible) {
-            qDebug() << "Network is accesible, performing download request";
-            // signals should take care or calling deleteLater on the
-            // NetworkReply object
-            _reply = _requestFactory->get(buildRequest());
-            _reply->setReadBufferSize(q->throttle());
-
-            connectToReplySignals();
-            qDebug() << "EMIT started(true)";
-            emit q->started(true);
-        } else {
-            qDebug() << "Network is NOT accesible, queueing download";
-            _downloadingAndNotConnected = true;
-        }
+        connectToReplySignals();
+        qDebug() << "EMIT started(true)";
+        emit q->started(true);
     }
 
     qulonglong progress() {
