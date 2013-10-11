@@ -32,7 +32,7 @@ class SystemNetworkInfo : public QObject {
     explicit SystemNetworkInfo(QObject *parent = 0);
 
     virtual QNetworkInfo::NetworkMode currentNetworkMode();
-    virtual QNetworkAccessManager::NetworkAccessibility networkAccessible();
+    virtual bool isOnline();
 
  signals:
 
@@ -49,7 +49,7 @@ class SystemNetworkInfo : public QObject {
     void networkStatusChanged(QNetworkInfo::NetworkMode mode, int interface, QNetworkInfo::NetworkStatus status);
 
     // network status signals
-    void networkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
+    void onlineStateChanged(bool online);
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onOnlineStateChanged(bool))

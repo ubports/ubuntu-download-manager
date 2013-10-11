@@ -57,6 +57,10 @@ class SystemNetworkInfoPrivate {
             SLOT(onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode, int, int)));
         q->connect(_info, SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)), q,
             SLOT(onNetworkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)));
+
+        q->connect(_configMan,
+            SIGNAL(onlineStateChanged(bool)), q,
+            SLOT(onOnlineStateChanged(bool)));
 #else
         // connect to interesting signals
         q->connect(_info, &QNetworkInfo::cellIdChanged, q,
@@ -79,10 +83,11 @@ class SystemNetworkInfoPrivate {
             &SystemNetworkInfo::networkSignalStrengthChanged);
         q->connect(_info, &QNetworkInfo::networkStatusChanged, q,
             &SystemNetworkInfo::networkStatusChanged);
-#endif
+
         q->connect(_configMan,
-            SIGNAL(onlineStateChanged(bool)), q,
-            SLOT(onOnlineStateChanged(bool)));
+            &QNetworkConfigurationManager::onlineStateChanged, q,
+            &SystemNetworkInfo::onlineStateChanged);
+#endif
 
     }
 
@@ -97,22 +102,14 @@ class SystemNetworkInfoPrivate {
         return _info->currentNetworkMode();
     }
 
-    QNetworkAccessManager::NetworkAccessibility networkAccessible() {
-        bool online = _configMan->isOnline();
-        QNetworkAccessManager::NetworkAccessibility state = online?
-            QNetworkAccessManager::Accessible
-                  :QNetworkAccessManager::NotAccessible;
-        return state;
+    bool isOnline() {
+        return _configMan->isOnline();
     }
 
     void onOnlineStateChanged(bool online) {
-        qDebug() << __PRETTY_FUNCTION__;
         Q_Q(SystemNetworkInfo);
-        QNetworkAccessManager::NetworkAccessibility state = online?
-            QNetworkAccessManager::Accessible
-                  :QNetworkAccessManager::NotAccessible;
-
-        emit q->networkAccessibleChanged(state);
+        qDebug() << __PRETTY_FUNCTION__ << online;
+        emit q->onlineStateChanged(online);
     }
 
 #if DEBUG
@@ -206,10 +203,10 @@ SystemNetworkInfo::currentNetworkMode() {
     return d->currentNetworkMode();
 }
 
-QNetworkAccessManager::NetworkAccessibility
-SystemNetworkInfo::networkAccessible() {
+bool
+SystemNetworkInfo::isOnline() {
     Q_D(SystemNetworkInfo);
-    return d->networkAccessible();
+    return d->isOnline();
 }
 
 #include "moc_system_network_info.cpp"

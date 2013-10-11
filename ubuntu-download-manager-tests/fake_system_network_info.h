@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <system_network_info.h>
-#include "./fake.h"
+#include "fake.h"
 
 class NetworkModeWrapper : public QObject {
     Q_OBJECT
@@ -44,18 +44,17 @@ class FakeSystemNetworkInfo : public SystemNetworkInfo, public Fake {
     explicit FakeSystemNetworkInfo(QObject *parent = 0);
 
     QNetworkInfo::NetworkMode currentNetworkMode() override;
-    QNetworkAccessManager::NetworkAccessibility networkAccessible() override;
+    bool isOnline() override;
 
     // getters and setters used to force the result
     QNetworkInfo::NetworkMode mode();
     void setMode(QNetworkInfo::NetworkMode mode);
     void setOnline(bool online);
-    void emitNetworkAccessibleChanged(
-        QNetworkAccessManager::NetworkAccessibility accessible);
+    void emitOnlineStateChanged(bool online);
 
  private:
     QNetworkInfo::NetworkMode _mode;
-    QNetworkAccessManager::NetworkAccessibility _online;
+    bool _online;
 };
 
 #endif  // FAKE_SYSTEM_NETWORK_INFO_H
