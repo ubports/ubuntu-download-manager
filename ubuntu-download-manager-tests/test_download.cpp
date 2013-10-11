@@ -1551,6 +1551,52 @@ TestDownload::testProcessFinishedCrash() {
 }
 
 void
+TestDownload::testFileRemoveAfterSuccessfulProcess() {
+    // assert that the file is indeed removed
+    QVariantMap metadata;
+    QStringList command;
+    command << "grep" << "$file" << "-Rn";
+    metadata["post-download-command"] = command;
+
+    _processFactory->record();
+    _reqFactory->record();
+    SingleDownload* download = new SingleDownload(_id, _path, _isConfined,
+        _rootPath, _url, metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    // write something in the expected file
+    QString fileName = download->filePath();
+    QFile* file = new QFile(fileName);
+    file->open(QIODevice::ReadWrite | QFile::Append);
+    file->write("my data goes here");
+    file->close();
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finished signal with a result > 0 and ensure error is emitted
+    process->emitFinished(0, QProcess::NormalExit);
+    // asser that the file does not longer exist in the system
+    QVERIFY(!QFile::exists(fileName));
+}
+
+void
 TestDownload::testSetRawHeaderAcceptEncoding_data() {
     QTest::addColumn<QMap<QString, QString> >("headers");
 
