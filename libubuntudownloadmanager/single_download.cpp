@@ -120,6 +120,7 @@ class SingleDownloadPrivate {
 
         // remove current data and metadata
         cleanUpCurrentData();
+        _downloading = false;
         emit q->canceled(true);
     }
 
@@ -147,6 +148,7 @@ class SingleDownloadPrivate {
         _reply->deleteLater();
         _reply = NULL;
         qDebug() << "EMIT paused(true)";
+        _downloading = false;
         emit q->paused(true);
     }
 
@@ -163,6 +165,7 @@ class SingleDownloadPrivate {
         }
 
         qDebug() << "Resuming download.";
+        qDebug() << "Network is accessible, performing download request";
         QNetworkRequest request = buildRequest();
 
         // overrides the range header, we do not let clients set the range!!!
@@ -177,12 +180,15 @@ class SingleDownloadPrivate {
         connectToReplySignals();
 
         qDebug() << "EMIT resumed(true)";
+        _downloading = true;
         emit q->resumed(true);
     }
 
     void startDownload() {
         Q_Q(SingleDownload);
         qDebug() << __PRETTY_FUNCTION__ << _url;
+
+
 
         if (_reply != NULL) {
             // the download was already started, lets say that we did it
@@ -192,19 +198,20 @@ class SingleDownloadPrivate {
             return;
         }
 
-        qDebug() << "Starting download.";
         // create file that will be used to mantain the state of the
         // download when resumed.
         _currentData = new QFile(_filePath);
         _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
-        // signals should take care or calling deleteLater on the
+        qDebug() << "Network is accessible, performing download request";
+        // signals should take care of calling deleteLater on the
         // NetworkReply object
         _reply = _requestFactory->get(buildRequest());
         _reply->setReadBufferSize(q->throttle());
 
         connectToReplySignals();
         qDebug() << "EMIT started(true)";
+        _downloading = true;
         emit q->started(true);
     }
 
@@ -223,13 +230,15 @@ class SingleDownloadPrivate {
             _reply->setReadBufferSize(speed);
     }
 
-    // slots executed to keep track of the newtork reply
+    // slots executed to keep track of the network reply
     void onDownloadProgress(qint64 progress, qint64 bytesTotal) {
         Q_Q(SingleDownload);
         qDebug() << __PRETTY_FUNCTION__ << _url << progress << bytesTotal;
 
-        // do write the current info we have just in case
+        // write the current info we have, just in case we are killed in the
+        // middle of the download
         _currentData->write(_reply->readAll());
+        _currentData->flush();
         qulonglong received = _currentData->size();
 
         if (bytesTotal == -1) {
@@ -256,6 +265,7 @@ class SingleDownloadPrivate {
 
     void onError(QNetworkReply::NetworkError code) {
         qCritical() << _url << "ERROR:" << ":" << code;
+        _downloading = false;
         emitError("NETWORK ERROR");
     }
 
@@ -278,8 +288,8 @@ class SingleDownloadPrivate {
             }
         }
 
-        // there are two possible cases, the first, we do no have the metadata
-        // info to execute a commnad once the download was finished and that
+        // there are two possible cases, the first, we do not have the metadata
+        // info to execute a command once the download was finished and that
         // means we are done here else we execute the command AND raise the
         // finish signals once the command was done (or an error ocurred in
         // the command execution.
@@ -337,8 +347,10 @@ class SingleDownloadPrivate {
         qDebug() << __PRETTY_FUNCTION__ << _url;
         qDebug() << "Found errors" << errors;
         Q_UNUSED(errors);
-        if (!_reply->canIgnoreSslErrors(errors))
+        if (!_reply->canIgnoreSslErrors(errors)) {
+            _downloading = false;
             emitError("SSL ERROR");
+        }
     }
 
     // slots executed to keep track of the post download process
@@ -364,9 +376,43 @@ class SingleDownloadPrivate {
         }
     }
 
+    void onOnlineStateChange(bool online) {
+        qDebug() << __PRETTY_FUNCTION__ << online;
+        Q_Q(SingleDownload);
+        _connected = online;
+        // if we are downloading and the status is correct let's call
+        // the method again, else do nothing
+        if (_connected && _downloading) {
+            Download::State state = q->state();
+            qDebug() << "We are back online and we were downloading";
+            if (state == Download::START || state == Download::RESUME) {
+                resumeDownload();
+            }
+        }
+
+        // if no longer online yet we have a reply (that is, we are trying
+        // to get data from the missing connection) we pause
+        if (!_connected && _reply != NULL) {
+            qDebug() << "Lost connection and therefore pausing";
+            pauseDownload();
+            // set it to be downloading even when pause download sets it
+            // to false
+            _downloading = true;
+        }
+    }
+
  private:
     void init() {
         Q_Q(SingleDownload);
+
+        _connected = q->networkInfo()->isOnline();
+        _downloading = false;
+
+        // connect to the network changed signals
+        q->connect(q->networkInfo().data(),
+            SIGNAL(onlineStateChange(bool)), q,
+            SLOT(onOnlineStateChange(bool)));
+
         _filePath = saveFileName();
         qDebug() << "Download path is" << _filePath;
         _reply = NULL;
@@ -491,7 +537,9 @@ class SingleDownloadPrivate {
     }
 
  private:
-    qulonglong _totalSize;
+    bool _downloading = false;
+    bool _connected = false;
+    qulonglong _totalSize = 0;
     QUrl _url;
     QString _filePath;
     QString _hash;

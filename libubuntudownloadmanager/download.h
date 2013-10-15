@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_H
 #define DOWNLOADER_LIB_DOWNLOAD_H
 
+#include <QNetworkAccessManager>
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
@@ -110,6 +111,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void stateChanged();
 
  protected:
+    QSharedPointer<SystemNetworkInfo> networkInfo();
     void setIsValid(bool isValid);
     void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);

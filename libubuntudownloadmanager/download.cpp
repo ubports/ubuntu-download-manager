@@ -120,6 +120,10 @@ class DownloadPrivate {
         return _isValid;
     }
 
+    QSharedPointer<SystemNetworkInfo> networkInfo() {
+        return _networkInfo;
+    }
+
     void setIsValid(bool isValid) {
         _isValid = isValid;
     }
@@ -278,6 +282,12 @@ bool
 Download::isValid() {
     Q_D(Download);
     return d->isValid();
+}
+
+QSharedPointer<SystemNetworkInfo>
+Download::networkInfo() {
+    Q_D(Download);
+    return d->networkInfo();
 }
 
 void

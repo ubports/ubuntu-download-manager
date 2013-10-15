@@ -130,8 +130,11 @@ class DownloadQueuePrivate {
     }
 
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-        Q_UNUSED(mode);
-        updateCurrentDownload();
+        qDebug() << __PRETTY_FUNCTION__;
+        qDebug() << "Network mode changed to" << mode;
+        if (mode != QNetworkInfo::UnknownMode) {
+            updateCurrentDownload();
+        }
     }
 
  private:
@@ -170,7 +173,6 @@ class DownloadQueuePrivate {
                     down->startDownload();
                 else
                     down->resumeDownload();
-
                 break;
             }
         }

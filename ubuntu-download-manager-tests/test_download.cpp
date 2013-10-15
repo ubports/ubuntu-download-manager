@@ -40,6 +40,7 @@ TestDownload::init() {
     _url = QUrl("http://ubuntu.com");
     _algo = "Sha256";
     _networkInfo = new FakeSystemNetworkInfo();
+    _networkInfo->setOnline(true);
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
 }
