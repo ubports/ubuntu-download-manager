@@ -235,8 +235,8 @@ class SingleDownloadPrivate {
         Q_Q(SingleDownload);
         qDebug() << __PRETTY_FUNCTION__ << _url << progress << bytesTotal;
 
-        // do write the current info we have just in case we are killed in the
-        // middle on the download
+        // write the current info we have, just in case we are killed in the
+        // middle of the download
         _currentData->write(_reply->readAll());
         _currentData->flush();
         qulonglong received = _currentData->size();
@@ -288,8 +288,8 @@ class SingleDownloadPrivate {
             }
         }
 
-        // there are two possible cases, the first, we do no have the metadata
-        // info to execute a commnad once the download was finished and that
+        // there are two possible cases, the first, we do not have the metadata
+        // info to execute a command once the download was finished and that
         // means we are done here else we execute the command AND raise the
         // finish signals once the command was done (or an error ocurred in
         // the command execution.
@@ -392,7 +392,7 @@ class SingleDownloadPrivate {
 
         // if no longer online yet we have a reply (that is, we are trying
         // to get data from the missing connection) we pause
-        if (_connected && _reply != NULL) {
+        if (!_connected && _reply != NULL) {
             qDebug() << "Lost connection and therefore pausing";
             pauseDownload();
             // set it to be downloading even when pause download sets it
