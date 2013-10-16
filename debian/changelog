@@ -1,3 +1,16 @@
+ubuntu-download-manager (0.2+13.10.20131016.1-0ubuntu1) saucy; urgency=low
+
+  [ Manuel de la Pena ]
+  * Remove the file after the successful execution of the post-download
+    command line. (LP: #1233209)
+  * Listen to the connection state of the device and pause the download
+    when we are disconnected. Reconnect asap. (LP: #1233435)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 149
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 16 Oct 2013 10:03:28 +0000
+
 ubuntu-download-manager (0.2+13.10.20130930-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
