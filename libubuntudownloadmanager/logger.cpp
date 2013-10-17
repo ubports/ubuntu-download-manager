@@ -146,7 +146,7 @@ Logger::logSessionMessage(const QString& message) {
 
 void
 Logger::logSystemMessage(QtMsgType type, const QString& message) {
-    const char* msg = message.toLatin1().data();
+    const char* msg = message.toUtf8().data();
     // we using %s to avoid getting a compiler error when using
     // -Wall
     switch (type) {
