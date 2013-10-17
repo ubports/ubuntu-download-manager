@@ -23,8 +23,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
-#include "./logger.h"
-
+#include "logger.h"
 
 static void *_logger = NULL;
 
@@ -128,9 +127,8 @@ Logger::getMessageTypeString(QtMsgType type) {
 
 QString
 Logger::getLogDir() {
-    QString cachePath = QStandardPaths::writableLocation(
+    QString path = QStandardPaths::writableLocation(
         QStandardPaths::CacheLocation);
-    QString path = cachePath + QDir::separator() + "ubuntu-download-manager";
     qDebug() << "Logging dir is" << path;
 
     bool wasCreated = QDir().mkpath(path);
@@ -148,13 +146,15 @@ Logger::logSessionMessage(const QString& message) {
 
 void
 Logger::logSystemMessage(QtMsgType type, const QString& message) {
-    const char* msg = message.toUtf8().data();
-
+    const char* msg = message.toLatin1().data();
     // we using %s to avoid getting a compiler error when using
     // -Wall
     switch (type) {
         case QtDebugMsg:
             syslog(LOG_DEBUG, "%s", msg);
+            break;
+        case QtWarningMsg:
+            syslog(LOG_WARNING, "%s", msg);
             break;
         case QtCriticalMsg:
             syslog(LOG_CRIT, "%s", msg);

@@ -18,7 +18,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
-#include "./application.h"
+#include "application.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -59,7 +59,6 @@ Application::Application(QObject *parent)
 void
 Application::exit(int returnCode) {
     Q_D(Application);
-    qDebug() << "Exit app" << returnCode;
     d->exit(returnCode);
 }
 

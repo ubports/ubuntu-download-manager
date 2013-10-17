@@ -17,11 +17,12 @@
  */
 
 #include <QPair>
-#include "./download_adaptor.h"
-#include "./group_download.h"
-#include "./group_download_adaptor.h"
-#include "./single_download.h"
-#include "./download_factory.h"
+#include "download_adaptor.h"
+#include "group_download.h"
+#include "group_download_adaptor.h"
+#include "single_download.h"
+#include "logger.h"
+#include "download_factory.h"
 
 #define OBJECT_PATH_KEY "objectpath"
 
@@ -53,7 +54,7 @@ class DownloadFactoryPrivate {
                          QString& dbusPath,
                          QString& rootPath,
                          bool& isConfined) {
-        qDebug() << __PRETTY_FUNCTION__ << dbusOwner << metadata;
+        TRACE << dbusOwner << metadata;
         if (metadata.contains(OBJECT_PATH_KEY)) {
             // create a uuid using the string value form the metadata
             id = QUuid(metadata[OBJECT_PATH_KEY].toString());
@@ -83,7 +84,6 @@ class DownloadFactoryPrivate {
         bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
-        qDebug() << "Download secure data is " << id << dbusPath << rootPath;
         Download* down = new SingleDownload(id, dbusPath, isConfined, rootPath,
             url, metadata, headers, _networkInfo, _nam, _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);
@@ -103,7 +103,6 @@ class DownloadFactoryPrivate {
         bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
-        qDebug() << "Download secure data is " << id << dbusPath << rootPath;
         Download* down = new SingleDownload(id, dbusPath, isConfined,
             rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
             _processFactory);
@@ -124,7 +123,6 @@ class DownloadFactoryPrivate {
         bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
-        qDebug() << "Download secure data is " << id << dbusPath << rootPath;
         Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
             downloads, algo, allowed3G, metadata, headers, _networkInfo,
             _self);

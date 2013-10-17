@@ -19,7 +19,8 @@
 #include <QDebug>
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
-#include "./system_network_info.h"
+#include "logger.h"
+#include "system_network_info.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -108,7 +109,7 @@ class SystemNetworkInfoPrivate {
 
     void onOnlineStateChanged(bool online) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << online;
+        TRACE << online;
         emit q->onlineStateChanged(online);
     }
 
@@ -116,66 +117,66 @@ class SystemNetworkInfoPrivate {
 
     void onCellIdChanged(int interface, const QString& id) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << interface << id;
+        TRACE << interface << id;
         emit q->cellIdChanged(interface, id);
     }
 
     void onCurrentCellDataTechnologyChanged(int interface,
                                     QNetworkInfo::CellDataTechnology tech) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << interface << tech;
+        TRACE << interface << tech;
         emit q->currentCellDataTechnologyChanged(interface, tech);
     }
 
     void onCurrentMobileCountryCodeChanged(int interface, const QString& mcc) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << interface << mcc;
+        TRACE << interface << mcc;
         emit q->currentMobileCountryCodeChanged(interface, mcc);
     }
 
     void onCurrentMobileNetworkCodeChanged(int interface, const QString& mnc) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << interface << mnc;
+        TRACE << interface << mnc;
         emit q->currentMobileNetworkCodeChanged(interface, mnc);
     }
 
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << mode;
+        TRACE << mode;
         emit q->currentNetworkModeChanged(mode);
     }
 
     void onLocationAreaCodeChanged(int interface, const QString& lac) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << interface << lac;
+        TRACE << interface << lac;
         emit q->locationAreaCodeChanged(interface, lac);
     }
 
     void onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode mode,
                                         int count) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << mode << count;
+        TRACE << mode << count;
         emit q->networkInterfaceCountChanged(mode, count);
     }
 
     void onNetworkNameChanged(QNetworkInfo::NetworkMode mode, int interface,
                               const QString& name) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ <<  mode << interface << name;
+        TRACE << mode << interface << name;
         emit q->networkNameChanged(mode, interface, name);
     }
 
     void onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode mode,
                                         int interface, int strength) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << mode << interface << strength;
+        TRACE << mode << interface << strength;
         emit q->networkSignalStrengthChanged(mode, interface, strength);
     }
 
     void onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int interface,
                                 QNetworkInfo::NetworkStatus status) {
         Q_Q(SystemNetworkInfo);
-        qDebug() << __PRETTY_FUNCTION__ << mode << interface << status;
+        TRACE << mode << interface << status;
         emit q->networkStatusChanged(mode, interface, status);
     }
 

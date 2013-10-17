@@ -6,6 +6,7 @@ QMAKE_CXXFLAGS += -std=c++0x -Werror
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
+# DEFINES += TRACE use if you want more debug messages
 DEFINES += DEBUG
 
 SOURCES += \

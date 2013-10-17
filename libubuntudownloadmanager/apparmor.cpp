@@ -26,9 +26,10 @@
 #include <QDir>
 #include <QRegExp>
 #include <QStandardPaths>
-#include "./dbus_proxy.h"
-#include "./uuid_factory.h"
-#include "./apparmor.h"
+#include "dbus_proxy.h"
+#include "uuid_factory.h"
+#include "logger.h"
+#include "apparmor.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -54,7 +55,7 @@ class AppArmorPrivate {
     }
 
     QString getUuidPath(QUuid id, QString path) {
-        qDebug() << __PRETTY_FUNCTION__ << path;
+        TRACE << path;
         QString idString = path + "/" + id.toString().replace(
             QRegExp("[-{}]"), "");
         qDebug() << "Download path is" << idString;
@@ -132,7 +133,6 @@ class AppArmorPrivate {
         } else {
             // use the returned value
             QString appId = reply.value();
-            qDebug() << "AppId is " << appId;
 
             if (appId.isEmpty() || appId == UNCONFINED_ID) {
                 qDebug() << "UNCONFINED APP";

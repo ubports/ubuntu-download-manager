@@ -25,8 +25,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include "./hash_algorithm.h"
-#include "./downloads_db.h"
+#include "hash_algorithm.h"
+#include "logger.h"
+#include "downloads_db.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\
     "uuid VARCHAR(40) PRIMARY KEY, "\
@@ -124,7 +125,7 @@ class DownloadsDbPrivate {
     }
 
     bool init() {
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         // create the required tables
         qDebug() << "open the db" << _db.open();
 

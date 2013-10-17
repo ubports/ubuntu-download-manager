@@ -17,11 +17,12 @@
  */
 
 #include <QDebug>
-#include "./download_adaptor.h"
-#include "./hash_algorithm.h"
-#include "./single_download.h"
-#include "./uuid_factory.h"
-#include "./group_download.h"
+#include "download_adaptor.h"
+#include "hash_algorithm.h"
+#include "logger.h"
+#include "single_download.h"
+#include "uuid_factory.h"
+#include "group_download.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -74,18 +75,14 @@ class GroupDownloadPrivate {
         // build downloads and add them to the q, it will take care of
         // starting them etc..
         foreach(GroupDownloadStruct download, downloads) {
-            qDebug() << "Creating download for" << download.getUrl();
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
             SingleDownload* singleDownload;
             QVariantMap downloadMetadata = QVariantMap(metadata);
             downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
-            qDebug() << "Download metadata is" << downloadMetadata;
-            qDebug() << "Group metadata is" << metadata;
 
             if (hash.isEmpty()) {
-                qDebug() << "Creating SingleDownload with no hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, downloadMetadata, headers));
@@ -96,7 +93,6 @@ class GroupDownloadPrivate {
                     q->setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
                 }
 
-                qDebug() << "Creating SingleDownload with hash.";
                 singleDownload = qobject_cast<SingleDownload*>(
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
@@ -122,25 +118,22 @@ class GroupDownloadPrivate {
                 q, SLOT(onProgress(qulonglong, qulonglong)));
             q->connect(singleDownload, SIGNAL(finished(const QString&)),
                 q, SLOT(onFinished(const QString&)));
-            qDebug() << "Signals connected.";
         }
     }
 
     void cancelDownload(bool emitSignal = true) {
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         Q_Q(GroupDownload);
         foreach(SingleDownload* download, _downloads) {
             Download::State state = download->state();
             if (state != Download::FINISH && state != Download::ERROR
                     && state != Download::CANCEL) {
-                qDebug() << "Canceling download of " << download->url();
                 download->cancel();
                 download->cancelDownload();
             }
         }
 
         // loop over the finished downloads and remove the files
-        qDebug() << "Finished downloads" << _finishedDownloads;
         foreach(const QString& path, _finishedDownloads) {
             qDebug() << "Removing file" << path;
             _fileManager->remove(path);
@@ -224,7 +217,7 @@ class GroupDownloadPrivate {
  private:
     // slots to keep track of the downloads
     void onError(const QString& error) {
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         Q_Q(GroupDownload);
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
         // we got an error, cancel all downloads and later remove all the
@@ -237,22 +230,19 @@ class GroupDownloadPrivate {
     void onProgress(qulonglong received, qulonglong total) {
         Q_Q(GroupDownload);
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         // TODO(mandel): the result is not real, we need to be smarter make
         // a head request get size and name and the do all this, but atm is
         // 'good enough' get the sender and check if we received
         // progress from it, update its data and recalculate
         QUrl url = sender->url();
-        qDebug() << "Progress from" << url;
         if (_downloadsProgress.contains(url)) {
             QPair<qulonglong, qulonglong>& data = _downloadsProgress[url];
             data.first = received;
             if (data.second != total) {
-                qDebug() << "Updating total!";
                 data.second = total;
             }
         } else {
-            qDebug() << "First progress signal";
             _downloadsProgress[url] = QPair<qulonglong, qulonglong>(received,
                 total);
         }
@@ -271,13 +261,12 @@ class GroupDownloadPrivate {
         }
 
         Download* down_q = reinterpret_cast<Download*>(q);
-        qDebug() << "EMIT group progress" << totalReceived << totalTotal;
         emit down_q->progress(totalReceived, totalTotal);
     }
 
     void onFinished(const QString& file) {
         Q_Q(GroupDownload);
-        qDebug() << __PRETTY_FUNCTION__ << file;
+        TRACE << file;
         SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
         _downloadsProgress[sender->url()] = QPair<qulonglong, qulonglong>(
             sender->totalSize(), sender->totalSize());

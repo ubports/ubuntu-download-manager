@@ -96,7 +96,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
 
     // private slot used to keep track of the connection
     Q_PRIVATE_SLOT(d_func(),
-        void onOnlineStateChange(bool))
+        void onOnlineStateChanged(bool))
 
  private:
     // use pimpl so that we can mantains ABI compatibility

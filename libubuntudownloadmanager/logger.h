@@ -26,6 +26,14 @@
 #include <QtGlobal>
 
 
+#ifdef TRACE
+    #undef TRACE
+    #define TRACE qDebug() << __FILE__ ":" << __LINE__ << __PRETTY_FUNCTION__
+#else
+    #define TRACE if (0) qDebug()
+#endif
+
+
 class Logger : public QObject {
     Q_OBJECT
 
