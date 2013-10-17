@@ -18,7 +18,8 @@
 
 #include <QDebug>
 #include <QStringList>
-#include "./download.h"
+#include "logger.h"
+#include "download.h"
 
 /**
  * PRIVATE IMPLEMENATION
@@ -93,7 +94,7 @@ class DownloadPrivate {
     }
 
     bool canDownload() {
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
         switch (mode) {
             case QNetworkInfo::UnknownMode:

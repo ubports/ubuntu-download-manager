@@ -20,11 +20,11 @@
 #include <QDebug>
 #include <QSharedPointer>
 #include <QSslCertificate>
-#include "./application.h"
-#include "./logger.h"
-#include "./download_manager.h"
-#include "./download_manager_adaptor.h"
-#include "./download_daemon.h"
+#include "application.h"
+#include "logger.h"
+#include "download_manager.h"
+#include "download_manager_adaptor.h"
+#include "download_daemon.h"
 
 #define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"
@@ -71,7 +71,7 @@ class DownloadDaemonPrivate {
     }
 
     void start() {
-        qDebug() << "Starting daemon";
+        TRACE;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
         bool ret = _conn->registerService(
             "com.canonical.applications.Downloader");
@@ -81,13 +81,13 @@ class DownloadDaemonPrivate {
             ret = _conn->registerObject("/", _downInterface);
             qDebug() << ret;
             if (!ret) {
-                qDebug() << "Could not register interface"
+                qCritical() << "Could not register interface"
                     << _conn->connection().lastError();
                 _app->exit(-1);
             }
             return;
         }
-        qDebug() << "Could not register service"
+        qCritical() << "Could not register service"
             << _conn->connection().lastError();
         _app->exit(-1);
     }
@@ -98,8 +98,8 @@ class DownloadDaemonPrivate {
     }
 
     void onDownloadManagerSizeChanged(int size) {
+        TRACE << size;
         bool isActive = _shutDownTimer->isActive();
-        qDebug() << "Timer is active:" << isActive << "size is:" << size;
 
         if (isActive && size > 0) {
             qDebug() << "Timer must be stopped because we have" << size
@@ -158,8 +158,12 @@ class DownloadDaemonPrivate {
 
         // set logging
         Logger::setupLogging();
+#ifdef DEBUG
+        Logger::setLogLevel(QtDebugMsg);
+#else
         if (qgetenv("UBUNTU_DOWNLOADER_DEBUG") != "")
             Logger::setLogLevel(QtDebugMsg);
+#endif
     }
 
  private:
