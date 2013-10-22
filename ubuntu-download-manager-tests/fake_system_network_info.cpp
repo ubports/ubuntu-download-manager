@@ -53,6 +53,11 @@ FakeSystemNetworkInfo::currentNetworkMode() {
     return _mode;
 }
 
+bool
+FakeSystemNetworkInfo::isOnline() {
+    return _online;
+}
+
 QNetworkInfo::NetworkMode
 FakeSystemNetworkInfo::mode() {
     return _mode;
@@ -61,4 +66,15 @@ FakeSystemNetworkInfo::mode() {
 void
 FakeSystemNetworkInfo::setMode(QNetworkInfo::NetworkMode mode) {
     _mode = mode;
+}
+
+void
+FakeSystemNetworkInfo::setOnline(bool online) {
+    _online = online;
+}
+
+void
+FakeSystemNetworkInfo::emitOnlineStateChanged(bool online) {
+    _online = online;
+    emit onlineStateChanged(_online);
 }

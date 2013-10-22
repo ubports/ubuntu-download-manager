@@ -29,6 +29,7 @@
 #include "dbus_proxy.h"
 #include "uuid_factory.h"
 #include "uuid_utils.h"
+#include "logger.h"
 #include "apparmor.h"
 
 /*
@@ -126,7 +127,6 @@ class AppArmorPrivate {
         } else {
             // use the returned value
             QString appId = reply.value();
-            qDebug() << "AppId is " << appId;
 
             if (appId.isEmpty() || appId == UNCONFINED_ID) {
                 qDebug() << "UNCONFINED APP";

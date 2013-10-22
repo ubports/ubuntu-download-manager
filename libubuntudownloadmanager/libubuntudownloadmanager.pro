@@ -6,18 +6,24 @@ QMAKE_CXXFLAGS += -std=c++0x -Werror
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
+# DEFINES += SHOW_TRACE use if you want more debug messages
 DEFINES += DEBUG
 
 SOURCES += \
     application.cpp \
     apparmor.cpp \
     dbus_connection.cpp \
+    dbus_proxy.cpp \
     download.cpp \
     download_adaptor.cpp \
     download_daemon.cpp \
+    downloads_db.cpp \
+    download_factory.cpp \
     download_manager.cpp \
     download_manager_adaptor.cpp \
     download_queue.cpp \
+    download_struct.cpp \
+    file_manager.cpp \
     group_download.cpp \
     group_download_struct.cpp \
     group_download_adaptor.cpp \
@@ -31,11 +37,6 @@ SOURCES += \
     system_network_info.cpp \
     timer.cpp \
     uuid_factory.cpp \
-    download_factory.cpp \
-    file_manager.cpp \
-    download_struct.cpp \
-    downloads_db.cpp \
-    dbus_proxy.cpp \
     uuid_utils.cpp
 
 HEADERS +=\
@@ -46,10 +47,14 @@ HEADERS +=\
     dbus_proxy.h \
     download.h \
     download_adaptor.h \
+    downloads_db.h \
     download_daemon.h \
+    download_factory.h \
     download_manager.h \
     download_manager_adaptor.h \
     download_queue.h \
+    download_struct.h \
+    file_manager.h \
     group_download.h \
     group_download_struct.h \
     group_download_adaptor.h \
@@ -64,10 +69,6 @@ HEADERS +=\
     system_network_info.h \
     timer.h \
     uuid_factory.h \
-    download_factory.h \
-    file_manager.h \
-    download_struct.h \
-    downloads_db.h \
     uuid_utils.h
 
 OTHER_FILES += \

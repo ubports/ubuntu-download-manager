@@ -18,7 +18,8 @@
 
 #include <QDebug>
 #include <QSignalMapper>
-#include "./download_queue.h"
+#include "logger.h"
+#include "download_queue.h"
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -44,7 +45,7 @@ class DownloadQueuePrivate {
         Q_Q(DownloadQueue);
         // connect to the signals and append to the list
         QString path = download->path();
-        qDebug() << __PRETTY_FUNCTION__ << path;
+        TRACE << path;
 
         _sortedPaths.append(path);
         _downloads[path] = download;
@@ -56,7 +57,7 @@ class DownloadQueuePrivate {
 
     void remove(const QString& path) {
         Q_Q(DownloadQueue);
-        qDebug() << __FUNCTION__ << path;
+        TRACE << path;
 
         Download* down = _downloads[path];
         _sortedPaths.removeOne(path);
@@ -87,7 +88,7 @@ class DownloadQueuePrivate {
     }
 
     void onDownloadStateChanged() {
-        qDebug() << __FUNCTION__;
+        TRACE;
         Q_Q(DownloadQueue);
         // get the appdownload that emited the signal and
         // decide what to do with it
@@ -130,13 +131,15 @@ class DownloadQueuePrivate {
     }
 
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-        Q_UNUSED(mode);
-        updateCurrentDownload();
+        TRACE << mode;
+        if (mode != QNetworkInfo::UnknownMode) {
+            updateCurrentDownload();
+        }
     }
 
  private:
     void updateCurrentDownload() {
-        qDebug() << __FUNCTION__;
+        TRACE;
         Q_Q(DownloadQueue);
 
         if (!_current.isEmpty()) {
@@ -170,7 +173,6 @@ class DownloadQueuePrivate {
                     down->startDownload();
                 else
                     down->resumeDownload();
-
                 break;
             }
         }

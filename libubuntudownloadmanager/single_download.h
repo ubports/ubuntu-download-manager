@@ -93,6 +93,10 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
     Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode,
                                               QProcess::ExitStatus exitStatus))
 
+    // private slot used to keep track of the connection
+    Q_PRIVATE_SLOT(d_func(),
+        void onOnlineStateChanged(bool))
+
  private:
     // use pimpl so that we can mantains ABI compatibility
     SingleDownloadPrivate* d_ptr;

@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <QStringList>
+#include "logger.h"
 #include "download.h"
 
 /**
@@ -93,7 +94,7 @@ class DownloadPrivate {
     }
 
     bool canDownload() {
-        qDebug() << __PRETTY_FUNCTION__;
+        TRACE;
         QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
         switch (mode) {
             case QNetworkInfo::UnknownMode:
@@ -118,6 +119,10 @@ class DownloadPrivate {
 
     bool isValid() {
         return _isValid;
+    }
+
+    QSharedPointer<SystemNetworkInfo> networkInfo() {
+        return _networkInfo;
     }
 
     void setIsValid(bool isValid) {
@@ -278,6 +283,12 @@ bool
 Download::isValid() {
     Q_D(Download);
     return d->isValid();
+}
+
+QSharedPointer<SystemNetworkInfo>
+Download::networkInfo() {
+    Q_D(Download);
+    return d->networkInfo();
 }
 
 void
