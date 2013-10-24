@@ -14,7 +14,7 @@ SOURCES += \
     downloads/download.cpp \
     downloads/download_adaptor.cpp \
     downloads/downloads_db.cpp \
-    downloads/download_factory.cpp \
+    downloads/factory.cpp \
     downloads/download_manager.cpp \
     downloads/download_manager_adaptor.cpp \
     downloads/download_queue.cpp \
@@ -45,7 +45,7 @@ HEADERS +=\
     downloads/download.h \
     downloads/download_adaptor.h \
     downloads/downloads_db.h \
-    downloads/download_factory.h \
+    downloads/factory.h \
     downloads/download_manager.h \
     downloads/download_manager_adaptor.h \
     downloads/download_queue.h \

@@ -21,7 +21,7 @@
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
 #include "downloads/single_download.h"
-#include "downloads/download_factory.h"
+#include "downloads/factory.h"
 #include "system/logger.h"
 
 #define OBJECT_PATH_KEY "objectpath"
@@ -31,15 +31,15 @@
  */
 
 
-class DownloadFactoryPrivate {
-    Q_DECLARE_PUBLIC(DownloadFactory)
+class FactoryPrivate {
+    Q_DECLARE_PUBLIC(Factory)
 
  public:
-    DownloadFactoryPrivate(QSharedPointer<AppArmor> apparmor,
-                           QSharedPointer<SystemNetworkInfo> networkInfo,
-                           QSharedPointer<RequestFactory> nam,
-                           QSharedPointer<ProcessFactory> processFactory,
-                           DownloadFactory* parent)
+    FactoryPrivate(QSharedPointer<AppArmor> apparmor,
+                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QSharedPointer<RequestFactory> nam,
+                   QSharedPointer<ProcessFactory> processFactory,
+                   Factory* parent)
         : _apparmor(apparmor),
           _networkInfo(networkInfo),
           _nam(nam),
@@ -68,7 +68,7 @@ class DownloadFactoryPrivate {
                     isConfined);
             }
         } else {
-            qDebug() << "DownloadFactory assigns the Download Uuid.";
+            qDebug() << "Factory assigns the Download Uuid.";
             id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
                 isConfined);
         }
@@ -177,89 +177,89 @@ class DownloadFactoryPrivate {
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<RequestFactory> _nam;
     QSharedPointer<ProcessFactory> _processFactory;
-    QSharedPointer<DownloadFactory> _self;
-    DownloadFactory* q_ptr;
+    QSharedPointer<Factory> _self;
+    Factory* q_ptr;
 };
 
 /*
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadFactory::DownloadFactory(QSharedPointer<AppArmor> apparmor,
-                                 QSharedPointer<SystemNetworkInfo> networkInfo,
-                                 QSharedPointer<RequestFactory> nam,
-                                 QSharedPointer<ProcessFactory> processFactory,
-                                 QObject* parent)
+Factory::Factory(QSharedPointer<AppArmor> apparmor,
+                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 QSharedPointer<RequestFactory> nam,
+                 QSharedPointer<ProcessFactory> processFactory,
+                 QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadFactoryPrivate(apparmor, networkInfo, nam,
+      d_ptr(new FactoryPrivate(apparmor, networkInfo, nam,
         processFactory, this)) {
 }
 
 
 Download*
-DownloadFactory::createDownload(const QString& dbusOwner,
-                                const QUrl& url,
-                                const QVariantMap& metadata,
-                                const QMap<QString, QString>& headers) {
-    Q_D(DownloadFactory);
+Factory::createDownload(const QString& dbusOwner,
+                        const QUrl& url,
+                        const QVariantMap& metadata,
+                        const QMap<QString, QString>& headers) {
+    Q_D(Factory);
     return d->createDownload(dbusOwner, url, metadata, headers);
 }
 
 Download*
-DownloadFactory::createDownload(const QString& dbusOwner,
-                                const QUrl& url,
-                                const QString& hash,
-                                const QString& algo,
-                                const QVariantMap& metadata,
-                                const QMap<QString, QString>& headers) {
-    Q_D(DownloadFactory);
+Factory::createDownload(const QString& dbusOwner,
+                        const QUrl& url,
+                        const QString& hash,
+                        const QString& algo,
+                        const QVariantMap& metadata,
+                        const QMap<QString, QString>& headers) {
+    Q_D(Factory);
     return d->createDownload(dbusOwner, url, hash, algo, metadata, headers);
 }
 
 Download*
-DownloadFactory::createDownload(const QString& dbusOwner,
-                                StructList downloads,
-                                const QString& algo,
-                                bool allowed3G,
-                                const QVariantMap& metadata,
-                                StringMap headers) {
-    Q_D(DownloadFactory);
+Factory::createDownload(const QString& dbusOwner,
+                        StructList downloads,
+                        const QString& algo,
+                        bool allowed3G,
+                        const QVariantMap& metadata,
+                        StringMap headers) {
+    Q_D(Factory);
     return d->createDownload(dbusOwner, downloads, algo, allowed3G, metadata,
         headers);
 }
 
 Download*
-DownloadFactory::createDownloadForGroup(bool isConfined,
-                                        const QString& rootPath,
-                                        const QUrl& url,
-                                        const QVariantMap& metadata,
-                                        const QMap<QString, QString>& headers) {
-    Q_D(DownloadFactory);
+Factory::createDownloadForGroup(bool isConfined,
+                                const QString& rootPath,
+                                const QUrl& url,
+                                const QVariantMap& metadata,
+                                const QMap<QString, QString>& headers) {
+    Q_D(Factory);
     return d->createDownloadForGroup(isConfined, rootPath, url, metadata,
         headers);
 }
 
 Download*
-DownloadFactory::createDownloadForGroup(bool isConfined,
-                                        const QString& rootPath,
-                                        const QUrl& url,
-                                        const QString& hash,
-                                        const QString& algo,
-                                        const QVariantMap& metadata,
-                                        const QMap<QString, QString>& headers) {
-    Q_D(DownloadFactory);
+Factory::createDownloadForGroup(bool isConfined,
+                                const QString& rootPath,
+                                const QUrl& url,
+                                const QString& hash,
+                                const QString& algo,
+                                const QVariantMap& metadata,
+                                const QMap<QString, QString>& headers) {
+    Q_D(Factory);
     return d->createDownloadForGroup(isConfined, rootPath, url, hash, algo,
         metadata, headers);
 }
 
 QList<QSslCertificate>
-DownloadFactory::acceptedCertificates() {
-    Q_D(DownloadFactory);
+Factory::acceptedCertificates() {
+    Q_D(Factory);
     return d->acceptedCertificates();
 }
 
 void
-DownloadFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    Q_D(DownloadFactory);
+Factory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(Factory);
     d->setAcceptedCertificates(certs);
 }

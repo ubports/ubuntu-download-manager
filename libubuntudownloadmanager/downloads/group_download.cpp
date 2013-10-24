@@ -36,7 +36,7 @@ class GroupDownloadPrivate {
                   const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downloadFactory,
+                  QSharedPointer<Factory> downloadFactory,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
@@ -52,7 +52,7 @@ class GroupDownloadPrivate {
                   const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<Factory> downFactory,
                   QSharedPointer<FileManager> fileManager,
                   GroupDownload* parent)
         : _downloads(),
@@ -285,7 +285,7 @@ class GroupDownloadPrivate {
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
-    QSharedPointer<DownloadFactory> _downFactory;
+    QSharedPointer<Factory> _downFactory;
     QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;
 };
@@ -304,7 +304,7 @@ GroupDownload::GroupDownload(const QString& id,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<Factory> downFactory,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,
             networkInfo, parent),
@@ -322,7 +322,7 @@ GroupDownload::GroupDownload(const QString& id,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<Factory> downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,

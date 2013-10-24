@@ -28,7 +28,7 @@
 #include "metatypes.h"
 #include "downloads/download.h"
 #include "downloads/download_queue.h"
-#include "downloads/download_factory.h"
+#include "downloads/factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
 #include "system/system_network_info.h"
@@ -46,7 +46,7 @@ class DownloadManager : public QObject, public QDBusContext {
     DownloadManager(QSharedPointer<Application> app,
                     QSharedPointer<DBusConnection> connection,
                     SystemNetworkInfo* networkInfo,
-                    DownloadFactory* downloadFactory,
+                    Factory* downloadFactory,
                     DownloadQueue* queue,
                     bool stoppable = false,
                     QObject *parent = 0);

@@ -35,7 +35,7 @@ TestDownloadFactory::init() {
     _nam = QSharedPointer<RequestFactory>(new FakeRequestFactory());
     _processFactory = QSharedPointer<ProcessFactory>(
         new FakeProcessFactory());
-    _downFactory = new DownloadFactory(QSharedPointer<AppArmor>(_apparmor),
+    _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor),
         _networkInfo, _nam, _processFactory);
 }
 

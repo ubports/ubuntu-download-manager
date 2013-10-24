@@ -27,17 +27,17 @@
 #include "system/system_network_info.h"
 #include "system/uuid_factory.h"
 
-class DownloadFactoryPrivate;
-class DownloadFactory : public QObject {
+class FactoryPrivate;
+class Factory : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DownloadFactory)
+    Q_DECLARE_PRIVATE(Factory)
 
  public:
-    DownloadFactory(QSharedPointer<AppArmor> apparmor,
-                    QSharedPointer<SystemNetworkInfo> networkInfo,
-                    QSharedPointer<RequestFactory> nam,
-                    QSharedPointer<ProcessFactory> processFactory,
-                    QObject *parent = 0);
+    Factory(QSharedPointer<AppArmor> apparmor,
+            QSharedPointer<SystemNetworkInfo> networkInfo,
+            QSharedPointer<RequestFactory> nam,
+            QSharedPointer<ProcessFactory> processFactory,
+            QObject *parent = 0);
 
     // create downloads comming from a dbus call
 
@@ -83,7 +83,7 @@ class DownloadFactory : public QObject {
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloadFactoryPrivate* d_ptr;
+    FactoryPrivate* d_ptr;
 };
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_FACTORY_H

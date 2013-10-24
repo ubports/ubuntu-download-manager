@@ -25,7 +25,7 @@ FakeDownloadFactory::FakeDownloadFactory(
                                  QSharedPointer<RequestFactory> nam,
                                  QSharedPointer<ProcessFactory> processFactory,
                                  QObject *parent)
-    : DownloadFactory(apparmor, networkInfo, nam, processFactory, parent),
+    : Factory(apparmor, networkInfo, nam, processFactory, parent),
       Fake(),
       _apparmor(apparmor),
       _networkInfo(networkInfo),

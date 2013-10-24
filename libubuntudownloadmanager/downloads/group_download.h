@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include "downloads/download.h"
-#include "downloads/download_factory.h"
+#include "downloads/factory.h"
 #include "downloads/group_download_struct.h"
 #include "system/file_manager.h"
 
@@ -44,7 +44,7 @@ class GroupDownload : public Download {
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<Factory> downFactory,
                   QObject* parent = 0);
 
     GroupDownload(const QString& id,
@@ -57,7 +57,7 @@ class GroupDownload : public Download {
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<DownloadFactory> downFactory,
+                  QSharedPointer<Factory> downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent = 0);
 

@@ -49,8 +49,8 @@ class DownloadManagerPrivate {
         QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
             new RequestFactory(_stoppable));
         _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
-        _downloadFactory = QSharedPointer<DownloadFactory>(
-            new DownloadFactory(_apparmor, _networkInfo, nam,
+        _downloadFactory = QSharedPointer<Factory>(
+            new Factory(_apparmor, _networkInfo, nam,
                 _processFactory));
         _downloadsQueue = QSharedPointer<DownloadQueue>(
             new DownloadQueue(_networkInfo));
@@ -60,7 +60,7 @@ class DownloadManagerPrivate {
     DownloadManagerPrivate(QSharedPointer<Application> app,
                            QSharedPointer<DBusConnection> connection,
                            SystemNetworkInfo* networkInfo,
-                           DownloadFactory* downloadFactory,
+                           Factory* downloadFactory,
                            DownloadQueue* queue,
                            bool stoppable,
                            DownloadManager* parent)
@@ -241,7 +241,7 @@ class DownloadManagerPrivate {
     QSharedPointer<AppArmor> _apparmor;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<ProcessFactory> _processFactory;
-    QSharedPointer<DownloadFactory> _downloadFactory;
+    QSharedPointer<Factory> _downloadFactory;
     QSharedPointer<DownloadQueue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;
     bool _stoppable;
@@ -263,7 +263,7 @@ DownloadManager::DownloadManager(QSharedPointer<Application> app,
 DownloadManager::DownloadManager(QSharedPointer<Application> app,
                                  QSharedPointer<DBusConnection> connection,
                                  SystemNetworkInfo* networkInfo,
-                                 DownloadFactory* downloadFactory,
+                                 Factory* downloadFactory,
                                  DownloadQueue* queue,
                                  bool stoppable,
                                  QObject* parent)
