@@ -20,7 +20,7 @@
 #define FAKE_SYSTEM_NETWORK_INFO_H
 
 #include <QObject>
-#include <system_network_info.h>
+#include <system/system_network_info.h>
 #include "fake.h"
 
 class NetworkModeWrapper : public QObject {

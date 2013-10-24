@@ -25,7 +25,7 @@
 #include <QSharedPointer>
 #include "download.h"
 #include "download_factory.h"
-#include "file_manager.h"
+#include "system/file_manager.h"
 #include "group_download_struct.h"
 
 class GroupDownloadPrivate;

@@ -20,7 +20,7 @@
 #define FAKE_DOWNLOAD_H
 #include <QSharedPointer>
 #include <single_download.h>
-#include <system_network_info.h>
+#include <system/system_network_info.h>
 #include <metatypes.h>
 #include "fake.h"
 

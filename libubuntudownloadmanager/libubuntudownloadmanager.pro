@@ -10,9 +10,6 @@ DEFINES += APPDOWNLOADERLIB_LIBRARY
 DEFINES += DEBUG
 
 SOURCES += \
-    application.cpp \
-    apparmor.cpp \
-    dbus_connection.cpp \
     dbus_proxy.cpp \
     download.cpp \
     download_adaptor.cpp \
@@ -23,27 +20,27 @@ SOURCES += \
     download_manager_adaptor.cpp \
     download_queue.cpp \
     download_struct.cpp \
-    file_manager.cpp \
     group_download.cpp \
     group_download_struct.cpp \
     group_download_adaptor.cpp \
     hash_algorithm.cpp \
-    logger.cpp \
-    network_reply.cpp \
-    process.cpp \
-    process_factory.cpp \
-    request_factory.cpp \
     single_download.cpp \
-    system_network_info.cpp \
-    timer.cpp \
-    uuid_factory.cpp \
-    uuid_utils.cpp
+    system/uuid_utils.cpp \
+    system/uuid_factory.cpp \
+    system/timer.cpp \
+    system/system_network_info.cpp \
+    system/request_factory.cpp \
+    system/process_factory.cpp \
+    system/process.cpp \
+    system/logger.cpp \
+    system/file_manager.cpp \
+    system/dbus_connection.cpp \
+    system/application.cpp \
+    system/apparmor.cpp \
+    system/network_reply.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
-    apparmor.h \
-    application.h \
-    dbus_connection.h \
     dbus_proxy.h \
     download.h \
     download_adaptor.h \
@@ -54,22 +51,25 @@ HEADERS +=\
     download_manager_adaptor.h \
     download_queue.h \
     download_struct.h \
-    file_manager.h \
     group_download.h \
     group_download_struct.h \
     group_download_adaptor.h \
     hash_algorithm.h \
-    logger.h \
     metatypes.h \
-    network_reply.h \
-    process.h \
-    process_factory.h \
-    request_factory.h \
     single_download.h \
-    system_network_info.h \
-    timer.h \
-    uuid_factory.h \
-    uuid_utils.h
+    system/uuid_utils.h \
+    system/uuid_factory.h \
+    system/timer.h \
+    system/system_network_info.h \
+    system/request_factory.h \
+    system/process_factory.h \
+    system/process.h \
+    system/logger.h \
+    system/file_manager.h \
+    system/dbus_connection.h \
+    system/application.h \
+    system/apparmor.h \
+    system/network_reply.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

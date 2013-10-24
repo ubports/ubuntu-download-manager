@@ -24,7 +24,7 @@
 #include <QSqlError>
 #include <hash_algorithm.h>
 #include <metatypes.h>
-#include <uuid_utils.h>
+#include <system/uuid_utils.h>
 #include "fake_download.h"
 #include "fake_system_network_info.h"
 #include "fake_request_factory.h"

@@ -20,8 +20,8 @@
 #include <QDebug>
 #include <QSharedPointer>
 #include <QSslCertificate>
-#include "application.h"
-#include "logger.h"
+#include "system/application.h"
+#include "system/logger.h"
 #include "download_manager.h"
 #include "download_manager_adaptor.h"
 #include "download_daemon.h"

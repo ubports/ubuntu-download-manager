@@ -26,7 +26,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include "hash_algorithm.h"
-#include "logger.h"
+#include "system/logger.h"
 #include "downloads_db.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\

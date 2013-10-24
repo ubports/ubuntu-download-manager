@@ -18,10 +18,10 @@
 
 #include <functional>
 #include <QRegExp>
-#include "apparmor.h"
+#include "system/apparmor.h"
 #include "download_queue.h"
-#include "request_factory.h"
-#include "system_network_info.h"
+#include "system/request_factory.h"
+#include "system/system_network_info.h"
 #include "download_manager.h"
 
 /**

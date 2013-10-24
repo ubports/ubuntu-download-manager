@@ -23,7 +23,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPair>
-#include <request_factory.h>
+#include <system/request_factory.h>
 #include "./fake.h"
 
 class RequestWrapper : public QObject {

@@ -18,7 +18,7 @@
 
 #include <QDebug>
 #include <QStringList>
-#include "logger.h"
+#include "system/logger.h"
 #include "download.h"
 
 /**

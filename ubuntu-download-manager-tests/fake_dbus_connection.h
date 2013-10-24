@@ -18,8 +18,8 @@
 
 #ifndef FAKE_DBUS_CONNECTION_H
 #define FAKE_DBUS_CONNECTION_H
-#include <dbus_connection.h>
-#include "./fake.h"
+#include <system/dbus_connection.h>
+#include "fake.h"
 
 class RegisterOptionsWrapper : public QObject {
     Q_OBJECT

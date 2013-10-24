@@ -25,9 +25,9 @@
 #include <QFileInfo>
 #include <QSslError>
 #include "hash_algorithm.h"
-#include "logger.h"
+#include "system/logger.h"
 #include "single_download.h"
-#include "network_reply.h"
+#include "system/network_reply.h"
 
 
 #define DATA_FILE_NAME "data.download"

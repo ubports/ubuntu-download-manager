@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <download_manager.h>
-#include "./fake.h"
+#include "fake.h"
 
 
 class FakeDownloadManager : public DownloadManager, public Fake {

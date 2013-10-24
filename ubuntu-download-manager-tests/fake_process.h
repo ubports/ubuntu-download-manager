@@ -20,8 +20,8 @@
 #define FAKE_PROCESS_H
 
 #include <QObject>
-#include <process.h>
-#include "./fake.h"
+#include <system/process.h>
+#include "fake.h"
 
 class OpenModeWrapper: public QObject {
     Q_OBJECT

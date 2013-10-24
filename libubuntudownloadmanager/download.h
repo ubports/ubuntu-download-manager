@@ -24,9 +24,9 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include "app-downloader-lib_global.h"
-#include "process_factory.h"
-#include "request_factory.h"
-#include "system_network_info.h"
+#include "system/process_factory.h"
+#include "system/request_factory.h"
+#include "system/system_network_info.h"
 
 class DownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {

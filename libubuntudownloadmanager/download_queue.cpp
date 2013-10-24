@@ -18,7 +18,7 @@
 
 #include <QDebug>
 #include <QSignalMapper>
-#include "logger.h"
+#include "system/logger.h"
 #include "download_queue.h"
 
 /*
