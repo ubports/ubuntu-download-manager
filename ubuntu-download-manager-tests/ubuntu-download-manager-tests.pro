@@ -22,7 +22,7 @@ SOURCES += \
     fake_request_factory.cpp \
     main.cpp \
     test_download.cpp \
-    test_download_daemon.cpp \
+    test_daemon.cpp \
     test_download_manager.cpp \
     test_download_queue.cpp \
     test_network_reply.cpp \
@@ -50,7 +50,7 @@ HEADERS += \
     fake_qnetwork_reply.h \
     fake_request_factory.h \
     test_download.h \
-    test_download_daemon.h \
+    test_daemon.h \
     test_download_manager.h \
     test_download_queue.h \
     test_network_reply.h \
