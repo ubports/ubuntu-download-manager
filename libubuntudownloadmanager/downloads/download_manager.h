@@ -27,7 +27,7 @@
 #include <QSslCertificate>
 #include "metatypes.h"
 #include "downloads/download.h"
-#include "downloads/download_queue.h"
+#include "downloads/queue.h"
 #include "downloads/factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
@@ -47,7 +47,7 @@ class DownloadManager : public QObject, public QDBusContext {
                     QSharedPointer<DBusConnection> connection,
                     SystemNetworkInfo* networkInfo,
                     Factory* downloadFactory,
-                    DownloadQueue* queue,
+                    Queue* queue,
                     bool stoppable = false,
                     QObject *parent = 0);
 
