@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_DAEMON_H
 
 #include <QObject>
-#include <download_daemon.h>
+#include <downloads/download_daemon.h>
 #include "./fake_application.h"
 #include "./fake_dbus_connection.h"
 #include "./fake_download_manager.h"

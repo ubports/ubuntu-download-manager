@@ -17,8 +17,8 @@
  */
 
 #include <QSignalSpy>
-#include <download_factory.h>
-#include <download_struct.h>
+#include <downloads/download_factory.h>
+#include <downloads/download_struct.h>
 #include <system/uuid_utils.h>
 #include "fake_process_factory.h"
 #include "fake_system_network_info.h"

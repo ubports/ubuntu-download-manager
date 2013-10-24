@@ -20,11 +20,11 @@
 #include <QDebug>
 #include <QSharedPointer>
 #include <QSslCertificate>
+#include "downloads/download_manager.h"
+#include "downloads/download_manager_adaptor.h"
+#include "downloads/download_daemon.h"
 #include "system/application.h"
 #include "system/logger.h"
-#include "download_manager.h"
-#include "download_manager_adaptor.h"
-#include "download_daemon.h"
 
 #define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"

@@ -20,7 +20,7 @@
 #define FAKE_DOWNLOAD_MANAGER_H
 
 #include <QObject>
-#include <download_manager.h>
+#include <downloads/download_manager.h>
 #include "fake.h"
 
 

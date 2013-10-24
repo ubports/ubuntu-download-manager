@@ -20,8 +20,8 @@
 #define TEST_DOWNLOAD_QUEUE_H
 
 #include <QObject>
-#include <download_adaptor.h>
-#include <download_queue.h>
+#include <downloads/download_adaptor.h>
+#include <downloads/download_queue.h>
 #include "test_runner.h"
 #include "fake_download.h"
 #include "fake_request_factory.h"

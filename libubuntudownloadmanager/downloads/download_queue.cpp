@@ -18,8 +18,8 @@
 
 #include <QDebug>
 #include <QSignalMapper>
+#include "downloads/download_queue.h"
 #include "system/logger.h"
-#include "download_queue.h"
 
 /*
  * PRIVATE IMPLEMENTATION

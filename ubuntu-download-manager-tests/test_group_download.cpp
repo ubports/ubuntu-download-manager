@@ -17,7 +17,7 @@
  */
 
 #include <QSignalSpy>
-#include <group_download.h>
+#include <downloads/group_download.h>
 #include <system/uuid_utils.h>
 #include "fake_download.h"
 #include "test_group_download.h"

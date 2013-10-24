@@ -25,12 +25,12 @@
 #include <QtDBus/QDBusContext>
 #include <QSharedPointer>
 #include <QSslCertificate>
+#include "metatypes.h"
+#include "downloads/download.h"
+#include "downloads/download_queue.h"
+#include "downloads/download_factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
-#include "download.h"
-#include "download_queue.h"
-#include "download_factory.h"
-#include "metatypes.h"
 #include "system/system_network_info.h"
 
 class DownloadManagerPrivate;

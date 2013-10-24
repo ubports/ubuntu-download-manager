@@ -22,9 +22,9 @@
 #include <QObject>
 #include <QSharedPointer>
 #include "app-downloader-lib_global.h"
+#include "downloads/download_manager.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
-#include "download_manager.h"
 #include "system/timer.h"
 
 class DownloadDaemonPrivate;

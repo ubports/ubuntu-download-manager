@@ -17,12 +17,12 @@
  */
 
 #include <QDebug>
-#include "download_adaptor.h"
-#include "hash_algorithm.h"
+#include "downloads/download_adaptor.h"
+#include "downloads/single_download.h"
+#include "downloads/group_download.h"
+#include "system/hash_algorithm.h"
 #include "system/logger.h"
-#include "single_download.h"
 #include "system/uuid_factory.h"
-#include "group_download.h"
 
 /*
  * PRIVATE IMPLEMENTATION

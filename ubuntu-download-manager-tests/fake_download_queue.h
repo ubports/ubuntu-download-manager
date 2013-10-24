@@ -19,7 +19,7 @@
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
 #include <QSharedPointer>
-#include <download_queue.h>
+#include <downloads/download_queue.h>
 #include <system/system_network_info.h>
 #include "fake.h"
 

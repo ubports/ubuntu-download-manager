@@ -22,8 +22,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <hash_algorithm.h>
 #include <metatypes.h>
+#include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "fake_download.h"
 #include "fake_system_network_info.h"

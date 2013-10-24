@@ -19,7 +19,7 @@
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
 #include <QSharedPointer>
-#include <single_download.h>
+#include <downloads/single_download.h>
 #include <system/system_network_info.h>
 #include <metatypes.h>
 #include "fake.h"

@@ -24,7 +24,7 @@
 #include <QSharedPointer>
 #include <QUrl>
 #include "app-downloader-lib_global.h"
-#include "download.h"
+#include "downloads/download.h"
 
 #define LOCAL_PATH_KEY "local-path"
 

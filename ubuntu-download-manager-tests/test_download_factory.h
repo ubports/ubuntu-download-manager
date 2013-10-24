@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include <download_factory.h>
+#include <downloads/download_factory.h>
 #include "./fake_apparmor.h"
 #include "./fake_system_network_info.h"
 #include "./fake_request_factory.h"

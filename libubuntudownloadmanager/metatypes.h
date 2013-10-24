@@ -21,8 +21,8 @@
 
 #include <QMap>
 #include <QList>
-#include "./group_download_struct.h"
-#include "./download_struct.h"
+#include "downloads/group_download_struct.h"
+#include "downloads/download_struct.h"
 
 typedef QMap<QString, QString> StringMap;
 typedef QList<GroupDownloadStruct> StructList;
