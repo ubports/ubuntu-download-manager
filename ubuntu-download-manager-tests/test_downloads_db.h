@@ -22,8 +22,8 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <downloads_db.h>
-#include "./base_testcase.h"
-#include "./test_runner.h"
+#include "base_testcase.h"
+#include "test_runner.h"
 
 class TestDownloadsDb : public BaseTestCase {
     Q_OBJECT

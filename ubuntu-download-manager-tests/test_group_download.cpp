@@ -18,8 +18,9 @@
 
 #include <QSignalSpy>
 #include <group_download.h>
-#include "./fake_download.h"
-#include "./test_group_download.h"
+#include <uuid_utils.h>
+#include "fake_download.h"
+#include "test_group_download.h"
 
 TestGroupDownload::TestGroupDownload(QObject *parent)
     : BaseTestCase("TestGroupDownload", parent) {
@@ -28,7 +29,7 @@ TestGroupDownload::TestGroupDownload(QObject *parent)
 void
 TestGroupDownload::init() {
     BaseTestCase::init();
-    _id = QUuid::createUuid();
+    _id = UuidUtils::getDBusString(QUuid::createUuid());
     _path = "/group/dbus/path";
     _isConfined = true;
     _rootPath = "/random/dbus/path";

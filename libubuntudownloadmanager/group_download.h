@@ -23,10 +23,10 @@
 #include <QList>
 #include <QObject>
 #include <QSharedPointer>
-#include "./download.h"
-#include "./download_factory.h"
-#include "./file_manager.h"
-#include "./group_download_struct.h"
+#include "download.h"
+#include "download_factory.h"
+#include "file_manager.h"
+#include "group_download_struct.h"
 
 class GroupDownloadPrivate;
 class GroupDownload : public Download {
@@ -34,7 +34,7 @@ class GroupDownload : public Download {
     Q_DECLARE_PRIVATE(GroupDownload)
 
  public:
-    GroupDownload(const QUuid& id,
+    GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,
@@ -47,7 +47,7 @@ class GroupDownload : public Download {
                   QSharedPointer<DownloadFactory> downFactory,
                   QObject* parent = 0);
 
-    GroupDownload(const QUuid& id,
+    GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,

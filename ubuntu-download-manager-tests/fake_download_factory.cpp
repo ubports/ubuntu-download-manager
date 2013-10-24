@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./fake_download.h"
-#include "./fake_download_factory.h"
+#include "fake_download.h"
+#include "fake_download_factory.h"
 
 FakeDownloadFactory::FakeDownloadFactory(
                                  QSharedPointer<AppArmor> apparmor,
@@ -47,7 +47,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined;
-    QUuid id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
+    QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
         metadata, headers, _networkInfo, _nam, _processFactory);
@@ -72,7 +72,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined;
-    QUuid id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
+    QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
         hash, algo, metadata, headers, _networkInfo, _nam, _processFactory);
@@ -100,7 +100,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined;
-    QUuid id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
+    QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
         QUrl(), "", algo, metadata, headers, _networkInfo, _nam,
@@ -122,7 +122,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
         methodData.setMethodName("createDownload");
         _called.append(methodData);
     }
-    QUuid id;
+    QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
@@ -140,7 +140,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
                                     const QString& algo,
                                     const QVariantMap& metadata,
                                     const QMap<QString, QString>& headers) {
-    QUuid id;
+    QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new SingleDownload(id, dbusPath, isConfined,

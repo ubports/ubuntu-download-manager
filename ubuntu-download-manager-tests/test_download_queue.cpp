@@ -18,7 +18,8 @@
 
 #include <QDebug>
 #include <QSignalSpy>
-#include "./test_download_queue.h"
+#include <uuid_utils.h>
+#include "test_download_queue.h"
 
 TestDownloadQueue::TestDownloadQueue(QObject *parent)
     : BaseTestCase("TestDownloadQueue", parent) {
@@ -32,14 +33,14 @@ TestDownloadQueue::init() {
     _networkInfo = new FakeSystemNetworkInfo();
     _reqFactory = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
-    _first = new FakeDownload(QUuid::createUuid(), "first-path",
-        _isConfined, _rootPath, QUrl(),
+    _first = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
+        "first-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    _second = new FakeDownload(QUuid::createUuid(), "second-path",
-        _isConfined, _rootPath, QUrl(),
+    _second = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
+        "second-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(),
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),

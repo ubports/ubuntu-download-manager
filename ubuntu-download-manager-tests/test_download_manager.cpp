@@ -19,9 +19,10 @@
 #include <QSignalSpy>
 #include <download_factory.h>
 #include <download_struct.h>
-#include "./fake_process_factory.h"
-#include "./fake_system_network_info.h"
-#include "./test_download_manager.h"
+#include <uuid_utils.h>
+#include "fake_process_factory.h"
+#include "fake_system_network_info.h"
+#include "test_download_manager.h"
 
 TestDownloadManager::TestDownloadManager(QObject *parent)
     : BaseTestCase("TestDownloadManager", parent) {
@@ -141,7 +142,8 @@ TestDownloadManager::testCreateDownload() {
 
     SingleDownload* download = reinterpret_cast<SingleDownload*>(
         calledMethods[0].params().inParams()[0]);
-    QCOMPARE(_uuidFactory->data(), download->downloadId());
+    QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
+        download->downloadId());
     QCOMPARE(QUrl(url), download->url());
 
     QVariantMap downloadMetadata = download->metadata();
@@ -228,7 +230,8 @@ TestDownloadManager::testCreateDownloadWithHash() {
 
     SingleDownload* download = reinterpret_cast<SingleDownload*>(
         calledMethods[0].params().inParams()[0]);
-    QCOMPARE(_uuidFactory->data(), download->downloadId());
+    QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
+        download->downloadId());
     QCOMPARE(QUrl(url), download->url());
 
     QVariantMap downloadMetadata = download->metadata();

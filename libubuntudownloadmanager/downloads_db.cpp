@@ -216,7 +216,7 @@ class DownloadsDbPrivate {
 
         QSqlQuery query;
         query.prepare(PRESENT_SINGLE_DOWNLOAD);
-        query.bindValue(":uuid", download->downloadId().toString());
+        query.bindValue(":uuid", download->downloadId());
 
         query.exec();
         int rows = 0;
@@ -231,7 +231,7 @@ class DownloadsDbPrivate {
             query.prepare(INSERT_SINGLE_DOWNLOAD);
         }
 
-        query.bindValue(":uuid", download->downloadId().toString());
+        query.bindValue(":uuid", download->downloadId());
         query.bindValue(":url", download->url().toString());
         query.bindValue(":dbus_path", download->path());
         query.bindValue(":local_path", download->filePath());

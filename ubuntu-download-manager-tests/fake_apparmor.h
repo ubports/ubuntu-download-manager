@@ -23,7 +23,7 @@
 #include <QSharedPointer>
 #include <apparmor.h>
 #include <uuid_factory.h>
-#include "./fake.h"
+#include "fake.h"
 
 class FakeAppArmor : public AppArmor, public Fake {
     Q_OBJECT
@@ -31,14 +31,14 @@ class FakeAppArmor : public AppArmor, public Fake {
     FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,
                  QObject *parent = 0);
 
-    void getDBusPath(QUuid& id, QString& dbusPath) override;
+    void getDBusPath(QString& id, QString& dbusPath) override;
 
-    QUuid getSecurePath(const QString& connName,
-                        QString& dbusPath,
-                        QString& localPath,
-                        bool& isConfined) override;
+    QString getSecurePath(const QString& connName,
+                          QString& dbusPath,
+                          QString& localPath,
+                          bool& isConfined) override;
     void getSecurePath(const QString& connName,
-                       const QUuid& id,
+                       const QString& id,
                        QString& dbusPath,
                        QString& localPath,
                        bool& isConfined) override;

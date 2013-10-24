@@ -36,7 +36,8 @@ SOURCES += \
     single_download.cpp \
     system_network_info.cpp \
     timer.cpp \
-    uuid_factory.cpp
+    uuid_factory.cpp \
+    uuid_utils.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -67,7 +68,8 @@ HEADERS +=\
     single_download.h \
     system_network_info.h \
     timer.h \
-    uuid_factory.h
+    uuid_factory.h \
+    uuid_utils.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

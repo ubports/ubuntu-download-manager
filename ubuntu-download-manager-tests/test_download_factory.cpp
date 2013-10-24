@@ -18,7 +18,8 @@
 
 #include <single_download.h>
 #include <hash_algorithm.h>
-#include "./test_download_factory.h"
+#include <uuid_utils.h>
+#include "test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)
     : BaseTestCase("TestDownloadFactory", parent) {
@@ -57,7 +58,7 @@ TestDownloadFactory::testCreateDownload() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -78,7 +79,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -102,7 +103,7 @@ TestDownloadFactory::testCreateGroupDownload() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -116,10 +117,10 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
 
     // create a download, assert that it was
     // created and that the id and the path are correctly set
-    QUuid id = QUuid::createUuid();
+    QString id = UuidUtils::getDBusString(QUuid::createUuid());
 
     QVariantMap metadata;
-    metadata["objectpath"] = id.toString();
+    metadata["objectpath"] = id;
 
     Download* download = _downFactory->createDownload("", QUrl(),
         metadata, QMap<QString, QString>());
@@ -146,7 +147,7 @@ TestDownloadFactory::testCreateDownloadWithNullUuid() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -158,10 +159,10 @@ void
 TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     _apparmor->record();
 
-    QUuid id = QUuid::createUuid();
+    QString id = UuidUtils::getDBusString(QUuid::createUuid());
 
     QVariantMap metadata;
-    metadata["objectpath"] = id.toString();
+    metadata["objectpath"] = id;
 
     QString hash = "my-hash";
     QString algo = "Md5";
@@ -198,7 +199,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -216,10 +217,10 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
 
     // create a download, assert that it was
     // created and that the id and the path are correctly set
-    QUuid id = QUuid::createUuid();
+    QString id = UuidUtils::getDBusString(QUuid::createUuid());
 
     QVariantMap metadata;
-    metadata["objectpath"] = id.toString();
+    metadata["objectpath"] = id;
 
     Download* download = _downFactory->createDownload("",
         QList<GroupDownloadStruct>(), "Md5",
@@ -248,7 +249,7 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -264,7 +265,7 @@ TestDownloadFactory::testCreateDownloadForGroup() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
@@ -281,7 +282,7 @@ TestDownloadFactory::testCreateDownloadForGroupWithHash() {
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
-    UuidWrapper* id = reinterpret_cast<UuidWrapper*>(
+    StringWrapper* id = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);

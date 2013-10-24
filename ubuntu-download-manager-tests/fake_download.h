@@ -22,13 +22,13 @@
 #include <single_download.h>
 #include <system_network_info.h>
 #include <metatypes.h>
-#include "./fake.h"
+#include "fake.h"
 
 class FakeDownload : public SingleDownload, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownload(const QUuid& id,
+    FakeDownload(const QString& id,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,
@@ -39,7 +39,7 @@ class FakeDownload : public SingleDownload, public Fake {
                  QSharedPointer<RequestFactory> nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
-    FakeDownload(const QUuid& id,
+    FakeDownload(const QString& id,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,

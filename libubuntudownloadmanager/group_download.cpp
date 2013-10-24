@@ -294,7 +294,7 @@ class GroupDownloadPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-GroupDownload::GroupDownload(const QUuid& id,
+GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,
@@ -312,7 +312,7 @@ GroupDownload::GroupDownload(const QUuid& id,
             networkInfo, downFactory, this)) {
 }
 
-GroupDownload::GroupDownload(const QUuid& id,
+GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,

@@ -29,7 +29,7 @@ class DownloadPrivate {
     Q_DECLARE_PUBLIC(Download)
 
  public:
-    DownloadPrivate(const QUuid& id,
+    DownloadPrivate(const QString& id,
                     const QString& path,
                     bool isConfined,
                     const QString& rootPath,
@@ -55,7 +55,7 @@ class DownloadPrivate {
             _adaptor->deleteLater();
     }
 
-    QUuid downloadId() const {
+    QString downloadId() const {
         return _id;
     }
 
@@ -188,7 +188,7 @@ class DownloadPrivate {
  private:
     bool _isValid = true;
     QString _lastError = "";
-    QUuid _id;
+    QString _id;
     qulonglong _throttle;
     bool _allowGSMDownload;
     Download::State _state;
@@ -206,7 +206,7 @@ class DownloadPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Download::Download(const QUuid& id,
+Download::Download(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -219,7 +219,7 @@ Download::Download(const QUuid& id,
             headers, networkInfo, this)) {
 }
 
-QUuid
+QString
 Download::downloadId() {
     Q_D(Download);
     return d->downloadId();

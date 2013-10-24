@@ -23,8 +23,7 @@
 #include <QPair>
 #include <QString>
 #include <QSharedPointer>
-#include <QUuid>
-#include "./dbus_connection.h"
+#include "dbus_connection.h"
 
 class AppArmorPrivate;
 class AppArmor : public QObject {
@@ -35,14 +34,14 @@ class AppArmor : public QObject {
     explicit AppArmor(QObject *parent = 0);
     AppArmor(QSharedPointer<DBusConnection> connection, QObject *parent = 0);
 
-    virtual void getDBusPath(QUuid& id, QString& dbusPath);
+    virtual void getDBusPath(QString& id, QString& dbusPath);
 
-    virtual QUuid getSecurePath(const QString& connName,
+    virtual QString getSecurePath(const QString& connName,
                                 QString& dbusPath,
                                 QString& localPath,
                                 bool& isConfined);
     virtual void getSecurePath(const QString& connName,
-                               const QUuid& id,
+                               const QString& id,
                                QString& dbusPath,
                                QString& localPath,
                                bool& isConfined);
