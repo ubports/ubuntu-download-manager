@@ -20,8 +20,8 @@
 #define FAKE_NETWORK_REPLY_H
 
 #include <QObject>
-#include <network_reply.h>
-#include "./fake.h"
+#include <system/network_reply.h>
+#include "fake.h"
 
 
 class SslErrorsListWrapper : public QObject {

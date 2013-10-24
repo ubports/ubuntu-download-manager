@@ -20,7 +20,7 @@
 #define TEST_GROUP_DOWNLOAD_H
 
 #include <QObject>
-#include <uuid_factory.h>
+#include <system/uuid_factory.h>
 #include <group_download.h>
 #include "fake_apparmor.h"
 #include "fake_file_manager.h"

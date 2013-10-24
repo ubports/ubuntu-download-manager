@@ -20,7 +20,7 @@
 #define FAKE_UUID_FACTORY_H
 
 #include <QObject>
-#include <uuid_factory.h>
+#include <system/uuid_factory.h>
 #include "./fake.h"
 
 class FakeUuidFactory : public UuidFactory, public Fake {

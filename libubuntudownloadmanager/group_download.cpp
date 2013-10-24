@@ -19,9 +19,9 @@
 #include <QDebug>
 #include "download_adaptor.h"
 #include "hash_algorithm.h"
-#include "logger.h"
+#include "system/logger.h"
 #include "single_download.h"
-#include "uuid_factory.h"
+#include "system/uuid_factory.h"
 #include "group_download.h"
 
 /*

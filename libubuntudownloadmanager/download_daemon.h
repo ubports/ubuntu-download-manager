@@ -21,11 +21,11 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include "./app-downloader-lib_global.h"
-#include "./application.h"
-#include "./dbus_connection.h"
-#include "./download_manager.h"
-#include "./timer.h"
+#include "app-downloader-lib_global.h"
+#include "system/application.h"
+#include "system/dbus_connection.h"
+#include "download_manager.h"
+#include "system/timer.h"
 
 class DownloadDaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {

@@ -18,7 +18,7 @@
 
 #include <single_download.h>
 #include <hash_algorithm.h>
-#include <uuid_utils.h>
+#include <system/uuid_utils.h>
 #include "test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)

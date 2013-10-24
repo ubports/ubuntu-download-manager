@@ -18,7 +18,7 @@
 
 #include <QDebug>
 #include <QSignalSpy>
-#include <uuid_utils.h>
+#include <system/uuid_utils.h>
 #include "test_download_queue.h"
 
 TestDownloadQueue::TestDownloadQueue(QObject *parent)

@@ -20,7 +20,7 @@
 #define FAKE_PROCESS_FACTORY_H
 
 #include <QObject>
-#include <process_factory.h>
+#include <system/process_factory.h>
 #include "./fake.h"
 
 class FakeProcessFactory : public ProcessFactory, public Fake {

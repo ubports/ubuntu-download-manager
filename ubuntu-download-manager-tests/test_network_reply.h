@@ -20,9 +20,9 @@
 #define TEST_NETWORK_REPLY_H
 
 #include <QObject>
-#include <network_reply.h>
-#include "./base_testcase.h"
-#include "./test_runner.h"
+#include <system/network_reply.h>
+#include "base_testcase.h"
+#include "test_runner.h"
 
 class TestNetworkReply : public BaseTestCase {
     Q_OBJECT

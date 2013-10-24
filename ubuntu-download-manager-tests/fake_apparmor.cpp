@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <uuid_utils.h>
+#include <system/uuid_utils.h>
 #include "fake_apparmor.h"
 
 FakeAppArmor::FakeAppArmor(QSharedPointer<UuidFactory> uuidFactory,

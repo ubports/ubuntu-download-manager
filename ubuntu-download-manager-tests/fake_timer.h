@@ -20,8 +20,8 @@
 #define FAKE_TIMER_H
 
 #include <QObject>
-#include <timer.h>
-#include "./fake.h"
+#include <system/timer.h>
+#include "fake.h"
 
 
 class FakeTimer : public Timer, public Fake {

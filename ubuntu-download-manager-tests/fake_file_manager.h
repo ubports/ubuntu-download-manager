@@ -20,8 +20,8 @@
 #define FAKE_FILE_MANAGER_H
 
 #include <QObject>
-#include <file_manager.h>
-#include "./fake.h"
+#include <system/file_manager.h>
+#include "fake.h"
 
 class FakeFileManager : public FileManager, public Fake {
     Q_OBJECT

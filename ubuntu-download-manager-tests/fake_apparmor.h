@@ -21,8 +21,8 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <apparmor.h>
-#include <uuid_factory.h>
+#include <system/apparmor.h>
+#include <system/uuid_factory.h>
 #include "fake.h"
 
 class FakeAppArmor : public AppArmor, public Fake {

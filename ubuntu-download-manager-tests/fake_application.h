@@ -20,8 +20,8 @@
 #define FAKE_APPLICATION_H
 
 #include <QObject>
-#include <application.h>
-#include "./fake.h"
+#include <system/application.h>
+#include "fake.h"
 
 class FakeApplication : public Application, public Fake {
     Q_OBJECT

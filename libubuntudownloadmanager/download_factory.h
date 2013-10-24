@@ -21,11 +21,11 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include "./apparmor.h"
-#include "./metatypes.h"
-#include "./system_network_info.h"
-#include "./download.h"
-#include "./uuid_factory.h"
+#include "system/apparmor.h"
+#include "metatypes.h"
+#include "system/system_network_info.h"
+#include "download.h"
+#include "system/uuid_factory.h"
 
 class DownloadFactoryPrivate;
 class DownloadFactory : public QObject {
