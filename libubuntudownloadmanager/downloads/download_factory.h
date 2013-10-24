@@ -21,10 +21,10 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include "system/apparmor.h"
 #include "metatypes.h"
+#include "downloads/download.h"
+#include "system/apparmor.h"
 #include "system/system_network_info.h"
-#include "download.h"
 #include "system/uuid_factory.h"
 
 class DownloadFactoryPrivate;

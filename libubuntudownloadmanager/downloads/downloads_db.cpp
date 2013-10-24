@@ -25,9 +25,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include "hash_algorithm.h"
+#include "downloads/downloads_db.h"
+#include "system/hash_algorithm.h"
 #include "system/logger.h"
-#include "downloads_db.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\
     "uuid VARCHAR(40) PRIMARY KEY, "\

@@ -22,8 +22,8 @@
 #include <QList>
 #include <QPair>
 #include <QSharedPointer>
-#include "download.h"
-#include "download_adaptor.h"
+#include "downloads/download.h"
+#include "downloads/download_adaptor.h"
 #include "system/system_network_info.h"
 
 class DownloadQueuePrivate;

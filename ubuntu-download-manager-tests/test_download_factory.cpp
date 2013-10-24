@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <single_download.h>
-#include <hash_algorithm.h>
+#include <downloads/single_download.h>
+#include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "test_download_factory.h"
 

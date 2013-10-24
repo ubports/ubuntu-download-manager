@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#include "./group_download.h"
-#include "group_download_adaptor.h"
+#include "downloads/group_download.h"
+#include "downloads/group_download_adaptor.h"
 #include <QtCore/QMetaObject>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>

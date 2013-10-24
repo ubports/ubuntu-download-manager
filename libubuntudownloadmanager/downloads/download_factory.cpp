@@ -17,12 +17,12 @@
  */
 
 #include <QPair>
-#include "download_adaptor.h"
-#include "group_download.h"
-#include "group_download_adaptor.h"
-#include "single_download.h"
+#include "downloads/download_adaptor.h"
+#include "downloads/group_download.h"
+#include "downloads/group_download_adaptor.h"
+#include "downloads/single_download.h"
+#include "downloads/download_factory.h"
 #include "system/logger.h"
-#include "download_factory.h"
 
 #define OBJECT_PATH_KEY "objectpath"
 

@@ -17,8 +17,8 @@
  */
 
 #include <QDBusMetaType>
-#include "./hash_algorithm.h"
-#include "./group_download_struct.h"
+#include "downloads/group_download_struct.h"
+#include "system/hash_algorithm.h"
 
 GroupDownloadStruct::GroupDownloadStruct()
     : _url(""),

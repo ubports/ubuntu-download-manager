@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <system/uuid_factory.h>
-#include <group_download.h>
+#include <downloads/group_download.h>
 #include "fake_apparmor.h"
 #include "fake_file_manager.h"
 #include "fake_system_network_info.h"

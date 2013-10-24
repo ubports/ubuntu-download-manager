@@ -19,7 +19,7 @@
 #include <QDebug>
 #include <QStringList>
 #include "system/logger.h"
-#include "download.h"
+#include "downloads/download.h"
 
 /**
  * PRIVATE IMPLEMENATION

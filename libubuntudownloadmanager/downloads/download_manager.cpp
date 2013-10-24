@@ -18,11 +18,11 @@
 
 #include <functional>
 #include <QRegExp>
+#include "downloads/download_queue.h"
+#include "downloads/download_manager.h"
 #include "system/apparmor.h"
-#include "download_queue.h"
 #include "system/request_factory.h"
 #include "system/system_network_info.h"
-#include "download_manager.h"
 
 /**
  * PRIVATE IMPLEMENATION

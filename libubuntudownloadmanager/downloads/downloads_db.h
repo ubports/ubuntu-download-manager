@@ -21,7 +21,7 @@
 
 #include <QSqlDatabase>
 #include <QObject>
-#include "single_download.h"
+#include "downloads/single_download.h"
 #include "system/file_manager.h"
 
 class DownloadsDbPrivate;
