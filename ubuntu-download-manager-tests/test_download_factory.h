@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include <downloads/download_factory.h>
+#include <downloads/factory.h>
 #include "./fake_apparmor.h"
 #include "./fake_system_network_info.h"
 #include "./fake_request_factory.h"
@@ -58,7 +58,7 @@ class TestDownloadFactory : public BaseTestCase {
     QSharedPointer<RequestFactory> _nam;
     QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<UuidFactory> _uuidFactory;
-    DownloadFactory* _downFactory;
+    Factory* _downFactory;
 };
 
 DECLARE_TEST(TestDownloadFactory)

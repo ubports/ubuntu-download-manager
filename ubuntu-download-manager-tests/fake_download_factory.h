@@ -21,10 +21,10 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <downloads/download_factory.h>
+#include <downloads/factory.h>
 #include "fake.h"
 
-class FakeDownloadFactory : public DownloadFactory, public Fake {
+class FakeDownloadFactory : public Factory, public Fake {
     Q_OBJECT
 
  public:
