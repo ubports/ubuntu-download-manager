@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 #include <QSslCertificate>
 #include "downloads/daemon.h"
-#include "downloads/download_manager.h"
+#include "downloads/manager.h"
 #include "downloads/download_manager_adaptor.h"
 #include "system/application.h"
 #include "system/logger.h"
@@ -49,7 +49,7 @@ class DaemonPrivate {
     DaemonPrivate(QSharedPointer<Application> app,
                   DBusConnection* conn,
                   Timer* timer,
-                  DownloadManager* man,
+                  Manager* man,
                   Daemon* parent)
         : _app(app),
           _shutDownTimer(timer),
@@ -146,7 +146,7 @@ class DaemonPrivate {
         }
 
         if (_downInterface == NULL) {
-            _downInterface = new DownloadManager(_app, _conn, _stoppable,
+            _downInterface = new Manager(_app, _conn, _stoppable,
                 q_ptr);
         }
 
@@ -173,7 +173,7 @@ class DaemonPrivate {
     QSharedPointer<Application> _app;
     Timer* _shutDownTimer;
     QSharedPointer<DBusConnection> _conn;
-    DownloadManager* _downInterface;
+    Manager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
     Daemon* q_ptr;
 };
@@ -190,7 +190,7 @@ Daemon::Daemon(QObject *parent)
 Daemon::Daemon(QSharedPointer<Application> app,
                DBusConnection* conn,
                Timer* timer,
-               DownloadManager* man,
+               Manager* man,
                QObject *parent)
     : QObject(parent),
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {

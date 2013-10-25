@@ -22,7 +22,7 @@ FakeDownloadManager::FakeDownloadManager(
                                     QSharedPointer<Application> app,
                                     QSharedPointer<DBusConnection> connection,
                                     QObject *parent)
-    : DownloadManager(app, connection, parent),
+    : Manager(app, connection, parent),
       Fake() {
 }
 
@@ -40,7 +40,7 @@ FakeDownloadManager::acceptedCertificates() {
         MethodData methodData("acceptedCertificates", params);
         _called.append(methodData);
     }
-    return DownloadManager::acceptedCertificates();
+    return Manager::acceptedCertificates();
 }
 
 void
@@ -53,5 +53,5 @@ FakeDownloadManager::setAcceptedCertificates(
         MethodData methodData("setAcceptedCertificates", params);
         _called.append(methodData);
     }
-    DownloadManager::setAcceptedCertificates(certs);
+    Manager::setAcceptedCertificates(certs);
 }

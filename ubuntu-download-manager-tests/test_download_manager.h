@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <downloads/download_manager.h>
+#include <downloads/manager.h>
 #include <downloads/single_download.h>
 #include "fake_application.h"
 #include "fake_apparmor.h"
@@ -79,7 +79,7 @@ class TestDownloadManager : public BaseTestCase {
     FakeDownloadQueue* _q;
     FakeUuidFactory* _uuidFactory;
     FakeAppArmor* _apparmor;
-    DownloadManager* _man;
+    Manager* _man;
 };
 
 DECLARE_TEST(TestDownloadManager)

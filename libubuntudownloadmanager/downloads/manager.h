@@ -33,23 +33,23 @@
 #include "system/dbus_connection.h"
 #include "system/system_network_info.h"
 
-class DownloadManagerPrivate;
-class DownloadManager : public QObject, public QDBusContext {
+class ManagerPrivate;
+class Manager : public QObject, public QDBusContext {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DownloadManager)
+    Q_DECLARE_PRIVATE(Manager)
 
  public:
-    DownloadManager(QSharedPointer<Application> app,
-                    QSharedPointer<DBusConnection> connection,
-                    bool stoppable = false,
-                    QObject *parent = 0);
-    DownloadManager(QSharedPointer<Application> app,
-                    QSharedPointer<DBusConnection> connection,
-                    SystemNetworkInfo* networkInfo,
-                    Factory* downloadFactory,
-                    Queue* queue,
-                    bool stoppable = false,
-                    QObject *parent = 0);
+    Manager(QSharedPointer<Application> app,
+            QSharedPointer<DBusConnection> connection,
+            bool stoppable = false,
+            QObject *parent = 0);
+    Manager(QSharedPointer<Application> app,
+            QSharedPointer<DBusConnection> connection,
+            SystemNetworkInfo* networkInfo,
+            Factory* downloadFactory,
+            Queue* queue,
+            bool stoppable = false,
+            QObject *parent = 0);
 
     void loadPreviewsDownloads(const QString &path);
 
@@ -82,7 +82,7 @@ class DownloadManager : public QObject, public QDBusContext {
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloadManagerPrivate* d_ptr;
+    ManagerPrivate* d_ptr;
 };
 
 #endif  // DOWNLOADER_LIB_DOWNLOADER_H

@@ -19,7 +19,7 @@
 #include <functional>
 #include <QRegExp>
 #include "downloads/queue.h"
-#include "downloads/download_manager.h"
+#include "downloads/manager.h"
 #include "system/apparmor.h"
 #include "system/request_factory.h"
 #include "system/system_network_info.h"
@@ -30,14 +30,14 @@
 
 typedef std::function<Download*(QString)> DownloadCreationFunc;
 
-class DownloadManagerPrivate {
-    Q_DECLARE_PUBLIC(DownloadManager)
+class ManagerPrivate {
+    Q_DECLARE_PUBLIC(Manager)
 
  public:
-    DownloadManagerPrivate(QSharedPointer<Application> app,
-                           QSharedPointer<DBusConnection> connection,
-                           bool stoppable,
-                           DownloadManager* parent)
+    ManagerPrivate(QSharedPointer<Application> app,
+                   QSharedPointer<DBusConnection> connection,
+                   bool stoppable,
+                   Manager* parent)
         : _app(app),
           _throttle(0),
           _stoppable(stoppable),
@@ -57,13 +57,13 @@ class DownloadManagerPrivate {
         init();
     }
 
-    DownloadManagerPrivate(QSharedPointer<Application> app,
-                           QSharedPointer<DBusConnection> connection,
-                           SystemNetworkInfo* networkInfo,
-                           Factory* downloadFactory,
-                           Queue* queue,
-                           bool stoppable,
-                           DownloadManager* parent)
+    ManagerPrivate(QSharedPointer<Application> app,
+                   QSharedPointer<DBusConnection> connection,
+                   SystemNetworkInfo* networkInfo,
+                   Factory* downloadFactory,
+                   Queue* queue,
+                   bool stoppable,
+                   Manager* parent)
         : _app(app),
           _throttle(0),
           _networkInfo(networkInfo),
@@ -77,7 +77,7 @@ class DownloadManagerPrivate {
 
  private:
     void init() {
-        Q_Q(DownloadManager);
+        Q_Q(Manager);
 
         // register the required types
         qDBusRegisterMetaType<StringMap>();
@@ -113,12 +113,12 @@ class DownloadManagerPrivate {
 
     void onDownloadsChanged(QString path) {
         qDebug() << __PRETTY_FUNCTION__ << path;
-        Q_Q(DownloadManager);
+        Q_Q(Manager);
         emit q->sizeChanged(_downloadsQueue->size());
     }
 
     QDBusObjectPath registerDownload(Download* download) {
-        Q_Q(DownloadManager);
+        Q_Q(Manager);
         download->setThrottle(_throttle);
         _downloadsQueue->add(download);
         _conn->registerObject(download->path(), download);
@@ -131,7 +131,7 @@ class DownloadManagerPrivate {
     }
 
     QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc) {
-        Q_Q(DownloadManager);
+        Q_Q(Manager);
         QString owner = "";
 
         bool calledFromDBus = q->calledFromDBus();
@@ -224,7 +224,7 @@ class DownloadManagerPrivate {
 
 
     void exit() {
-        Q_Q(DownloadManager);
+        Q_Q(Manager);
         if (_stoppable) {
             _app->exit(0);
         } else {
@@ -245,105 +245,105 @@ class DownloadManagerPrivate {
     QSharedPointer<Queue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;
     bool _stoppable;
-    DownloadManager* q_ptr;
+    Manager* q_ptr;
 };
 
 /**
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadManager::DownloadManager(QSharedPointer<Application> app,
-                                 QSharedPointer<DBusConnection> connection,
-                                 bool stoppable,
-                                 QObject* parent)
+Manager::Manager(QSharedPointer<Application> app,
+                 QSharedPointer<DBusConnection> connection,
+                 bool stoppable,
+                 QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadManagerPrivate(app, connection, stoppable, this)) {
+      d_ptr(new ManagerPrivate(app, connection, stoppable, this)) {
 }
 
-DownloadManager::DownloadManager(QSharedPointer<Application> app,
-                                 QSharedPointer<DBusConnection> connection,
-                                 SystemNetworkInfo* networkInfo,
-                                 Factory* downloadFactory,
-                                 Queue* queue,
-                                 bool stoppable,
-                                 QObject* parent)
+Manager::Manager(QSharedPointer<Application> app,
+                 QSharedPointer<DBusConnection> connection,
+                 SystemNetworkInfo* networkInfo,
+                 Factory* downloadFactory,
+                 Queue* queue,
+                 bool stoppable,
+                 QObject* parent)
     : QObject(parent),
       QDBusContext(),
-      d_ptr(new DownloadManagerPrivate(app,
-                                       connection,
-                                       networkInfo,
-                                       downloadFactory,
-                                       queue,
-                                       stoppable,
-                                       this)) {
+      d_ptr(new ManagerPrivate(app,
+                connection,
+                networkInfo,
+                downloadFactory,
+                queue,
+                stoppable,
+                this)) {
 }
 
 void
-DownloadManager::loadPreviewsDownloads(const QString &path) {
-    Q_D(DownloadManager);
+Manager::loadPreviewsDownloads(const QString &path) {
+    Q_D(Manager);
     d->loadPreviewsDownloads(path);
 }
 
 QList<QSslCertificate>
-DownloadManager::acceptedCertificates() {
-    Q_D(DownloadManager);
+Manager::acceptedCertificates() {
+    Q_D(Manager);
     return d->acceptedCertificates();
 }
 
 
 void
-DownloadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    Q_D(DownloadManager);
+Manager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    Q_D(Manager);
     return d->setAcceptedCertificates(certs);
 }
 
 qulonglong
-DownloadManager::defaultThrottle() {
-    Q_D(DownloadManager);
+Manager::defaultThrottle() {
+    Q_D(Manager);
     return d->defaultThrottle();
 }
 
 void
-DownloadManager::setDefaultThrottle(qulonglong speed) {
-    Q_D(DownloadManager);
+Manager::setDefaultThrottle(qulonglong speed) {
+    Q_D(Manager);
     d->setDefaultThrottle(speed);
 }
 
 QDBusObjectPath
-DownloadManager::createDownload(DownloadStruct download) {
-    Q_D(DownloadManager);
+Manager::createDownload(DownloadStruct download) {
+    Q_D(Manager);
     return d->createDownload(download.getUrl(), download.getHash(),
         download.getAlgorithm(), download.getMetadata(), download.getHeaders());
 }
 
 QDBusObjectPath
-DownloadManager::createDownloadGroup(StructList downloads,
-                                     const QString& algorithm,
-                                     bool allowed3G,
-                                     const QVariantMap& metadata,
-                                     StringMap headers) {
-    Q_D(DownloadManager);
+Manager::createDownloadGroup(StructList downloads,
+                             const QString& algorithm,
+                             bool allowed3G,
+                             const QVariantMap& metadata,
+                             StringMap headers) {
+    Q_D(Manager);
     return d->createDownloadGroup(downloads, algorithm, allowed3G, metadata,
         headers);
 }
 
 QList<QDBusObjectPath>
-DownloadManager::getAllDownloads() {
-    Q_D(DownloadManager);
+Manager::getAllDownloads() {
+    Q_D(Manager);
     return d->getAllDownloads();
 }
 
 QList<QDBusObjectPath>
-DownloadManager::getAllDownloadsWithMetadata(const QString &name,
-                                             const QString &value) {
-    Q_D(DownloadManager);
+Manager::getAllDownloadsWithMetadata(const QString &name,
+                                     const QString &value) {
+    Q_D(Manager);
     return d->getAllDownloadsWithMetadata(name, value);
 }
 
 void
-DownloadManager::exit() {
-    Q_D(DownloadManager);
+Manager::exit() {
+    Q_D(Manager);
     return d->exit();
 }
 
-#include "moc_download_manager.cpp"
+#include "moc_manager.cpp"
