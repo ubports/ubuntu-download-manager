@@ -30,6 +30,10 @@
 #define SELFSIGNED_CERT "-self-signed-certs"
 #define STOPPABLE "-stoppable"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -201,5 +205,9 @@ Daemon::start() {
     Q_D(Daemon);
     d->start();
 }
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_daemon.cpp"

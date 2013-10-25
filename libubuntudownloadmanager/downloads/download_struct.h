@@ -24,6 +24,10 @@
 #include <QString>
 #include <QVariantMap>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 typedef QMap<QString, QString> StringList;
 class DownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
@@ -65,5 +69,9 @@ class DownloadStruct {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
 };
+
+}  // DownloadManager
+
+}  // Ubunutu
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_STRUCT_H

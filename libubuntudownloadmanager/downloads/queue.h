@@ -26,6 +26,10 @@
 #include "downloads/download_adaptor.h"
 #include "system/system_network_info.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class QueuePrivate;
 class Queue : public QObject {
     Q_OBJECT
@@ -57,5 +61,9 @@ class Queue : public QObject {
  private:
     QueuePrivate* d_ptr;
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_QUEUE_H

@@ -23,6 +23,7 @@
 #include <downloads/manager.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager;
 
 class FakeDownloadManager : public Manager, public Fake {
     Q_OBJECT

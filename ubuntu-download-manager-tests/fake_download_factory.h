@@ -24,6 +24,8 @@
 #include <downloads/factory.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager;
+
 class FakeDownloadFactory : public Factory, public Fake {
     Q_OBJECT
 

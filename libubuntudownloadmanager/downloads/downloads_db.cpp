@@ -80,6 +80,10 @@
 #define FINISH_STRING "finish"
 #define ERROR_STRING "error"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class DownloadsDbPrivate {
     Q_DECLARE_PUBLIC(DownloadsDb)
 
@@ -307,3 +311,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
     Q_D(DownloadsDb);
     return d->storeSingleDownload(download);
 }
+
+}  // DownloadManager
+
+}  // Ubuntu

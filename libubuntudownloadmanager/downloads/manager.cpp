@@ -24,6 +24,10 @@
 #include "system/request_factory.h"
 #include "system/system_network_info.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -345,5 +349,9 @@ Manager::exit() {
     Q_D(Manager);
     return d->exit();
 }
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_manager.cpp"

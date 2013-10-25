@@ -24,6 +24,10 @@ class QStringList;
 class QVariant;
 QT_END_NAMESPACE
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * Adaptor class for interface com.canonical.applications.Download
  */
@@ -112,5 +116,9 @@ Q_SIGNALS: // SIGNALS
     void resumed(bool success);
     void started(bool success);
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif

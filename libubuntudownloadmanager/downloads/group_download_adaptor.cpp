@@ -18,6 +18,10 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * Implementation of adaptor class GroupDownloadAdaptor
  */
@@ -108,3 +112,6 @@ qulonglong GroupDownloadAdaptor::totalSize()
     return total;
 }
 
+}  // DownloadManager
+
+}  // Ubuntu

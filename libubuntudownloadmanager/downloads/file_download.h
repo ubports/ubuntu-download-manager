@@ -28,6 +28,10 @@
 
 #define LOCAL_PATH_KEY "local-path"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class FileDownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
     Q_OBJECT
@@ -101,5 +105,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
     // use pimpl so that we can mantains ABI compatibility
     FileDownloadPrivate* d_ptr;
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
