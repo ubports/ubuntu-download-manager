@@ -20,11 +20,11 @@
 #define FAKE_DOWNLOAD_MANAGER_H
 
 #include <QObject>
-#include <downloads/download_manager.h>
+#include <downloads/manager.h>
 #include "fake.h"
 
 
-class FakeDownloadManager : public DownloadManager, public Fake {
+class FakeDownloadManager : public Manager, public Fake {
     Q_OBJECT
 
  public:

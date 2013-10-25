@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include "app-downloader-lib_global.h"
-#include "downloads/download_manager.h"
+#include "downloads/manager.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
 #include "system/timer.h"
@@ -37,7 +37,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Daemon(QSharedPointer<Application> app,
            DBusConnection* conn,
            Timer* timer,
-           DownloadManager* man,
+           Manager* man,
            QObject *parent = 0);
 
  public slots:  // NOLINT (whitespace/indent)
