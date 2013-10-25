@@ -24,7 +24,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
-#include "downloads/single_download.h"
+#include "downloads/file_download.h"
 #include "system/hash_algorithm.h"
 #include "system/logger.h"
 #include "system/network_reply.h"
@@ -40,14 +40,14 @@
  * PRIVATE IMPLEMENATION
  */
 
-class SingleDownloadPrivate {
-    Q_DECLARE_PUBLIC(SingleDownload)
+class FileDownloadPrivate {
+    Q_DECLARE_PUBLIC(FileDownload)
 
  public:
-    SingleDownloadPrivate(const QUrl& url,
-                          QSharedPointer<RequestFactory> nam,
-                          QSharedPointer<ProcessFactory> processFactory,
-                          SingleDownload* parent)
+    FileDownloadPrivate(const QUrl& url,
+                        QSharedPointer<RequestFactory> nam,
+                        QSharedPointer<ProcessFactory> processFactory,
+                        FileDownload* parent)
         : _totalSize(0),
           _url(url),
           _hash(""),
@@ -58,12 +58,12 @@ class SingleDownloadPrivate {
         init();
     }
 
-    SingleDownloadPrivate(const QUrl& url,
-                          const QString& hash,
-                          const QString& algo,
-                          QSharedPointer<RequestFactory> nam,
-                          QSharedPointer<ProcessFactory> processFactory,
-                          SingleDownload* parent)
+    FileDownloadPrivate(const QUrl& url,
+                        const QString& hash,
+                        const QString& algo,
+                        QSharedPointer<RequestFactory> nam,
+                        QSharedPointer<ProcessFactory> processFactory,
+                        FileDownload* parent)
 
         : _totalSize(0),
           _url(url),
@@ -71,7 +71,7 @@ class SingleDownloadPrivate {
           _requestFactory(nam),
           _processFactory(processFactory),
           q_ptr(parent) {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         init();
         _algo = HashAlgorithm::getHashAlgo(algo);
         // check that the algorithm is correct if the hash is not emtpy
@@ -81,7 +81,7 @@ class SingleDownloadPrivate {
         }
     }
 
-    ~SingleDownloadPrivate() {
+    ~FileDownloadPrivate() {
         if (_currentData != NULL) {
             _currentData->close();
             delete _currentData;
@@ -107,7 +107,7 @@ class SingleDownloadPrivate {
     }
 
     void cancelDownload() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         TRACE << _url;
 
         if (_reply != NULL) {
@@ -126,7 +126,7 @@ class SingleDownloadPrivate {
     }
 
     void pauseDownload() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         TRACE << _url;
 
         if (_reply == NULL) {
@@ -154,7 +154,7 @@ class SingleDownloadPrivate {
     }
 
     void resumeDownload() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         qDebug() << __PRETTY_FUNCTION__ << _url;
 
         if (_reply != NULL) {
@@ -185,7 +185,7 @@ class SingleDownloadPrivate {
     }
 
     void startDownload() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         TRACE << _url;
 
         if (_reply != NULL) {
@@ -230,7 +230,7 @@ class SingleDownloadPrivate {
 
     // slots executed to keep track of the network reply
     void onDownloadProgress(qint64 progress, qint64 bytesTotal) {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         TRACE << _url << progress << bytesTotal;
 
         // write the current info we have, just in case we are killed in the
@@ -265,7 +265,7 @@ class SingleDownloadPrivate {
     }
 
     void onFinished() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         TRACE << _url;
 
         // if the hash is present we check it
@@ -356,7 +356,7 @@ class SingleDownloadPrivate {
 
     void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         TRACE << exitCode << exitStatus;
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
             // remove the file since we are done with it
             bool success = QFile::remove(_filePath);
@@ -372,7 +372,7 @@ class SingleDownloadPrivate {
 
     void onOnlineStateChanged(bool online) {
         TRACE << online;
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         _connected = online;
         // if we are downloading and the status is correct let's call
         // the method again, else do nothing
@@ -395,7 +395,7 @@ class SingleDownloadPrivate {
 
  private:
     void init() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
 
         _connected = q->networkInfo()->isOnline();
         _downloading = false;
@@ -417,7 +417,7 @@ class SingleDownloadPrivate {
     }
 
     void connectToReplySignals() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         if (_reply != NULL) {
             q->connect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
                 q, SLOT(onDownloadProgress(qint64, qint64)));
@@ -431,7 +431,7 @@ class SingleDownloadPrivate {
     }
 
     void disconnectFromReplySignals() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         if (_reply != NULL) {
             q->disconnect(_reply, SIGNAL(downloadProgress(qint64, qint64)),
                 q, SLOT(onDownloadProgress(qint64, qint64)));
@@ -445,7 +445,7 @@ class SingleDownloadPrivate {
     }
 
     QString saveFileName() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
 
         QString path = _url.path();
         QString basename = QFileInfo(path).fileName();
@@ -497,7 +497,7 @@ class SingleDownloadPrivate {
     }
 
     QNetworkRequest buildRequest() {
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         QNetworkRequest request = QNetworkRequest(_url);
         QMap<QString, QString> headers = q->headers();
         foreach(const QString& header, headers.keys()) {
@@ -516,7 +516,7 @@ class SingleDownloadPrivate {
 
     void emitError(const QString& error) {
         TRACE << error;
-        Q_Q(SingleDownload);
+        Q_Q(FileDownload);
         disconnectFromReplySignals();
         _reply->deleteLater();
         _reply = NULL;
@@ -536,14 +536,14 @@ class SingleDownloadPrivate {
     QFile* _currentData;
     QSharedPointer<RequestFactory> _requestFactory;
     QSharedPointer<ProcessFactory> _processFactory;
-    SingleDownload* q_ptr;
+    FileDownload* q_ptr;
 };
 
 /**
  * PUBLIC IMPLEMENTATION
  */
 
-SingleDownload::SingleDownload(const QString& id,
+FileDownload::FileDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -556,10 +556,10 @@ SingleDownload::SingleDownload(const QString& id,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
             parent),
-      d_ptr(new SingleDownloadPrivate(url, nam, processFactory, this)) {
+      d_ptr(new FileDownloadPrivate(url, nam, processFactory, this)) {
 }
 
-SingleDownload::SingleDownload(const QString& id,
+FileDownload::FileDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -574,75 +574,75 @@ SingleDownload::SingleDownload(const QString& id,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
             parent),
-      d_ptr(new SingleDownloadPrivate(url, hash, algo, nam,
+      d_ptr(new FileDownloadPrivate(url, hash, algo, nam,
             processFactory, this)) {
 }
 
 QUrl
-SingleDownload::url() {
-    Q_D(SingleDownload);
+FileDownload::url() {
+    Q_D(FileDownload);
     return d->url();
 }
 
 QString
-SingleDownload::filePath() {
-    Q_D(SingleDownload);
+FileDownload::filePath() {
+    Q_D(FileDownload);
     return d->filePath();
 }
 
 QString
-SingleDownload::hash() {
-    Q_D(SingleDownload);
+FileDownload::hash() {
+    Q_D(FileDownload);
     return d->hash();
 }
 
 QCryptographicHash::Algorithm
-SingleDownload::hashAlgorithm() {
-    Q_D(SingleDownload);
+FileDownload::hashAlgorithm() {
+    Q_D(FileDownload);
     return d->hashAlgorithm();
 }
 
 void
-SingleDownload::cancelDownload() {
-    Q_D(SingleDownload);
+FileDownload::cancelDownload() {
+    Q_D(FileDownload);
     d->cancelDownload();
 }
 
 void
-SingleDownload::pauseDownload() {
-    Q_D(SingleDownload);
+FileDownload::pauseDownload() {
+    Q_D(FileDownload);
     d->pauseDownload();
 }
 
 void
-SingleDownload::resumeDownload() {
-    Q_D(SingleDownload);
+FileDownload::resumeDownload() {
+    Q_D(FileDownload);
     d->resumeDownload();
 }
 
 void
-SingleDownload::startDownload() {
-    Q_D(SingleDownload);
+FileDownload::startDownload() {
+    Q_D(FileDownload);
     d->startDownload();
 }
 
 qulonglong
-SingleDownload::progress() {
-    Q_D(SingleDownload);
+FileDownload::progress() {
+    Q_D(FileDownload);
     return d->progress();
 }
 
 qulonglong
-SingleDownload::totalSize() {
-    Q_D(SingleDownload);
+FileDownload::totalSize() {
+    Q_D(FileDownload);
     return d->totalSize();
 }
 
 void
-SingleDownload::setThrottle(qulonglong speed) {
-    Q_D(SingleDownload);
+FileDownload::setThrottle(qulonglong speed) {
+    Q_D(FileDownload);
     Download::setThrottle(speed);
     d->setThrottle(speed);
 }
 
-#include "moc_single_download.cpp"
+#include "moc_file_download.cpp"

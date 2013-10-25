@@ -30,7 +30,7 @@ FakeDownload::FakeDownload(const QString& id,
                            QSharedPointer<RequestFactory> nam,
                            QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
-        : SingleDownload(id, path, isConfined, rootPath, url, metadata,
+        : FileDownload(id, path, isConfined, rootPath, url, metadata,
                 headers, networkInfo, nam, processFactory, parent),
         _canDownload(true) {
 }
@@ -48,7 +48,7 @@ FakeDownload::FakeDownload(const QString& id,
                            QSharedPointer<RequestFactory> nam,
                            QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
-        : SingleDownload(id, path, isConfined, rootPath, url, hash, algo,
+        : FileDownload(id, path, isConfined, rootPath, url, hash, algo,
                 metadata, headers, networkInfo, nam, processFactory, parent),
         _canDownload(true) {
 }
@@ -79,7 +79,7 @@ FakeDownload::setThrottle(qulonglong speed) {
         MethodData methodData("setThrottle", params);
         _called.append(methodData);
     }
-    SingleDownload::setThrottle(speed);
+    FileDownload::setThrottle(speed);
 }
 
 qulonglong
@@ -89,7 +89,7 @@ FakeDownload::throttle() {
         methodData.setMethodName("throttle");
         _called.append(methodData);
     }
-    return SingleDownload::throttle();
+    return FileDownload::throttle();
 }
 
 void

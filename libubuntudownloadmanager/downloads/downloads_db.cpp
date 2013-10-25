@@ -210,7 +210,7 @@ class DownloadsDbPrivate {
         return QString(json.toJson());
     }
 
-    bool storeSingleDownload(SingleDownload* download) {
+    bool storeSingleDownload(FileDownload* download) {
         // decide if we store it as a new download or update an existing one
         _db.open();
 
@@ -303,7 +303,7 @@ DownloadsDb::init() {
 }
 
 bool
-DownloadsDb::storeSingleDownload(SingleDownload* download) {
+DownloadsDb::storeSingleDownload(FileDownload* download) {
     Q_D(DownloadsDb);
     return d->storeSingleDownload(download);
 }

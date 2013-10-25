@@ -18,7 +18,7 @@
 
 #include <QDebug>
 #include "downloads/download_adaptor.h"
-#include "downloads/single_download.h"
+#include "downloads/file_download.h"
 #include "downloads/group_download.h"
 #include "system/hash_algorithm.h"
 #include "system/logger.h"
@@ -78,12 +78,12 @@ class GroupDownloadPrivate {
             QUrl url(download.getUrl());
             QString hash = download.getHash();
 
-            SingleDownload* singleDownload;
+            FileDownload* singleDownload;
             QVariantMap downloadMetadata = QVariantMap(metadata);
             downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
 
             if (hash.isEmpty()) {
-                singleDownload = qobject_cast<SingleDownload*>(
+                singleDownload = qobject_cast<FileDownload*>(
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, downloadMetadata, headers));
             } else {
@@ -93,7 +93,7 @@ class GroupDownloadPrivate {
                     q->setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
                 }
 
-                singleDownload = qobject_cast<SingleDownload*>(
+                singleDownload = qobject_cast<FileDownload*>(
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
@@ -124,7 +124,7 @@ class GroupDownloadPrivate {
     void cancelDownload(bool emitSignal = true) {
         TRACE;
         Q_Q(GroupDownload);
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state != Download::FINISH && state != Download::ERROR
                     && state != Download::CANCEL) {
@@ -145,7 +145,7 @@ class GroupDownloadPrivate {
 
     void pauseDownload() {
         Q_Q(GroupDownload);
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::START || state == Download::RESUME) {
                 qDebug() << "Pausing download of " << download->url();
@@ -158,7 +158,7 @@ class GroupDownloadPrivate {
 
     void resumeDownload() {
         Q_Q(GroupDownload);
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::PAUSE) {
                 download->resume();
@@ -170,7 +170,7 @@ class GroupDownloadPrivate {
 
     void startDownload() {
         Q_Q(GroupDownload);
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::IDLE) {
                 download->start();
@@ -182,7 +182,7 @@ class GroupDownloadPrivate {
 
     qulonglong progress() {
         qulonglong total = 0;
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             total += download->progress();
         }
         return total;
@@ -208,7 +208,7 @@ class GroupDownloadPrivate {
 
     qulonglong totalSize() {
         qulonglong total = 0;
-        foreach(SingleDownload* download, _downloads) {
+        foreach(FileDownload* download, _downloads) {
             total += download->totalSize();
         }
         return total;
@@ -219,7 +219,7 @@ class GroupDownloadPrivate {
     void onError(const QString& error) {
         TRACE;
         Q_Q(GroupDownload);
-        SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
+        FileDownload* sender = qobject_cast<FileDownload*>(q->sender());
         // we got an error, cancel all downloads and later remove all the
         // files that we managed to download
         cancelDownload(false);
@@ -229,7 +229,7 @@ class GroupDownloadPrivate {
 
     void onProgress(qulonglong received, qulonglong total) {
         Q_Q(GroupDownload);
-        SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
+        FileDownload* sender = qobject_cast<FileDownload*>(q->sender());
         TRACE;
         // TODO(mandel): the result is not real, we need to be smarter make
         // a head request get size and name and the do all this, but atm is
@@ -267,7 +267,7 @@ class GroupDownloadPrivate {
     void onFinished(const QString& file) {
         Q_Q(GroupDownload);
         TRACE << file;
-        SingleDownload* sender = qobject_cast<SingleDownload*>(q->sender());
+        FileDownload* sender = qobject_cast<FileDownload*>(q->sender());
         _downloadsProgress[sender->url()] = QPair<qulonglong, qulonglong>(
             sender->totalSize(), sender->totalSize());
         _finishedDownloads.append(file);
@@ -281,7 +281,7 @@ class GroupDownloadPrivate {
     }
 
  private:
-    QList<SingleDownload*> _downloads;
+    QList<FileDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     QSharedPointer<SystemNetworkInfo> _networkInfo;

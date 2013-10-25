@@ -140,7 +140,7 @@ TestDownloadManager::testCreateDownload() {
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(1, calledMethods.count());
 
-    SingleDownload* download = reinterpret_cast<SingleDownload*>(
+    FileDownload* download = reinterpret_cast<FileDownload*>(
         calledMethods[0].params().inParams()[0]);
     QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
         download->downloadId());
@@ -228,7 +228,7 @@ TestDownloadManager::testCreateDownloadWithHash() {
     QList<MethodData> calledMethods = _q->calledMethods();
     QCOMPARE(1, calledMethods.count());
 
-    SingleDownload* download = reinterpret_cast<SingleDownload*>(
+    FileDownload* download = reinterpret_cast<FileDownload*>(
         calledMethods[0].params().inParams()[0]);
     QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
         download->downloadId());
@@ -299,7 +299,7 @@ TestDownloadManager::testGetAllDownloads() {
     QCOMPARE(3, calledMethods.count());
     QList<QString> paths;
     for (int index = 0; index < calledMethods.count(); index++) {
-        SingleDownload* download = reinterpret_cast<SingleDownload*>(
+        FileDownload* download = reinterpret_cast<FileDownload*>(
             calledMethods[index].params().inParams()[0]);
         paths << download->path();
     }
@@ -355,7 +355,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     QCOMPARE(3, calledMethods.count());
     QList<QString> downloads;
     for (int index = 0; index < calledMethods.count(); index++) {
-        SingleDownload* download = reinterpret_cast<SingleDownload*>(
+        FileDownload* download = reinterpret_cast<FileDownload*>(
             calledMethods[index].params().inParams()[0]);
         downloads << download->path();
     }
@@ -433,7 +433,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
 
     QList<MethodData> calledMethods = _q->calledMethods();
     for (int index = 0; index < calledMethods.count(); index++) {
-        SingleDownload* download = reinterpret_cast<SingleDownload*>(
+        FileDownload* download = reinterpret_cast<FileDownload*>(
             calledMethods[index].params().inParams()[0]);
         QCOMPARE(download->throttle(), speed);
     }

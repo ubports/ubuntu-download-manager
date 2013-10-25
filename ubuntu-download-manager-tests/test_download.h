@@ -21,7 +21,7 @@
 
 #include <QDir>
 #include <QObject>
-#include <downloads/single_download.h>
+#include <downloads/file_download.h>
 #include <metatypes.h>
 #include "fake_system_network_info.h"
 #include "fake_request_factory.h"

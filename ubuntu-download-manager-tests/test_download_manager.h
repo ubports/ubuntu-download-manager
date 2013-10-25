@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <downloads/manager.h>
-#include <downloads/single_download.h>
+#include <downloads/file_download.h>
 #include "fake_application.h"
 #include "fake_apparmor.h"
 #include "test_runner.h"
