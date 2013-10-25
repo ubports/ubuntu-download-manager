@@ -1,1 +1,9 @@
 download-manager.pro.user
+Makefile
+libubuntudownloadmanager/Makefile
+libubuntudownloadmanager/libubuntudownloadmanager.so
+libubuntudownloadmanager/libubuntudownloadmanager.so.1
+libubuntudownloadmanager/libubuntudownloadmanager.so.1.0
+libubuntudownloadmanager/libubuntudownloadmanager.so.1.0.0
+ubuntu-download-manager/ubuntu-download-manager
+ubuntu-download-manager-tests/ubuntu-download-manager-tests

@@ -18,12 +18,12 @@
 
 #include <QTimer>
 #include <QCoreApplication>
-#include <downloads/download_daemon.h>
+#include <downloads/daemon.h>
 
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    DownloadDaemon* daemon = new DownloadDaemon();
+    Daemon* daemon = new Daemon();
     // use a singleShot timer so that we start after exec so that exit works
     QTimer::singleShot(0, daemon, SLOT(start()));
 

@@ -10,9 +10,9 @@ DEFINES += APPDOWNLOADERLIB_LIBRARY
 DEFINES += DEBUG
 
 SOURCES += \
+    downloads/daemon.cpp \
     downloads/download.cpp \
     downloads/download_adaptor.cpp \
-    downloads/download_daemon.cpp \
     downloads/downloads_db.cpp \
     downloads/download_factory.cpp \
     downloads/download_manager.cpp \
@@ -41,10 +41,10 @@ SOURCES += \
 
 HEADERS +=\
     app-downloader-lib_global.h \
+    downloads/daemon.h \
     downloads/download.h \
     downloads/download_adaptor.h \
     downloads/downloads_db.h \
-    downloads/download_daemon.h \
     downloads/download_factory.h \
     downloads/download_manager.h \
     downloads/download_manager_adaptor.h \

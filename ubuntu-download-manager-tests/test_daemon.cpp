@@ -16,14 +16,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./test_download_daemon.h"
+#include "test_daemon.h"
 
-TestDownloadDaemon::TestDownloadDaemon(QObject *parent)
-    : BaseTestCase("TestDownloadDaemon", parent) {
+TestDaemon::TestDaemon(QObject *parent)
+    : BaseTestCase("TestDaemon", parent) {
 }
 
 void
-TestDownloadDaemon::init() {
+TestDaemon::init() {
     BaseTestCase::init();
     _timer = new FakeTimer();
     _app = new FakeApplication();
@@ -31,12 +31,12 @@ TestDownloadDaemon::init() {
     _conn = new FakeDBusConnection();
     _man = new FakeDownloadManager(_appPointer,
         QSharedPointer<DBusConnection>(_conn));
-    _daemon = new DownloadDaemon(_appPointer,
+    _daemon = new Daemon(_appPointer,
         _conn, _timer, _man, this);
 }
 
 void
-TestDownloadDaemon::cleanup() {
+TestDaemon::cleanup() {
     BaseTestCase::cleanup();
 
     if (_app != NULL)
@@ -52,7 +52,7 @@ TestDownloadDaemon::cleanup() {
 }
 
 void
-TestDownloadDaemon::testStart() {
+TestDaemon::testStart() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(true);
     _conn->record();
@@ -72,7 +72,7 @@ TestDownloadDaemon::testStart() {
 }
 
 void
-TestDownloadDaemon::testStartFailServiceRegister() {
+TestDaemon::testStartFailServiceRegister() {
     _conn->setRegisterServiceResult(false);
     _conn->setRegisterObjectResult(true);
     _conn->record();
@@ -92,7 +92,7 @@ TestDownloadDaemon::testStartFailServiceRegister() {
 }
 
 void
-TestDownloadDaemon::testStartFailObjectRegister() {
+TestDaemon::testStartFailObjectRegister() {
     _conn->setRegisterServiceResult(true);
     _conn->setRegisterObjectResult(false);
     _conn->record();
@@ -113,7 +113,7 @@ TestDownloadDaemon::testStartFailObjectRegister() {
 }
 
 void
-TestDownloadDaemon::testTimerStop() {
+TestDaemon::testTimerStop() {
     _timer->setIsActive(true);
     _timer->record();
     _man->emitSizeChaged(1);
@@ -125,7 +125,7 @@ TestDownloadDaemon::testTimerStop() {
 }
 
 void
-TestDownloadDaemon::testTimerStart() {
+TestDaemon::testTimerStart() {
     _timer->setIsActive(false);
     _timer->record();
     _man->emitSizeChaged(0);
@@ -137,7 +137,7 @@ TestDownloadDaemon::testTimerStart() {
 }
 
 void
-TestDownloadDaemon::testTimeoutExit() {
+TestDaemon::testTimeoutExit() {
     _app->record();
     // emit the timeout signal and assert that exit was called
     _timer->emitTimeout();
@@ -148,7 +148,7 @@ TestDownloadDaemon::testTimeoutExit() {
 }
 
 void
-TestDownloadDaemon::testDisableTimeout() {
+TestDaemon::testDisableTimeout() {
     _timer->record();
 
     // set the args so that we disable the timeout
@@ -157,34 +157,34 @@ TestDownloadDaemon::testDisableTimeout() {
     _app->setArguments(args);
 
     // assert that start is never called
-    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _timer->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
 
 void
-TestDownloadDaemon::testSelfSignedCerts() {
+TestDaemon::testSelfSignedCerts() {
     _man->record();
     QStringList args;
     args << "-self-signed-certs" << "*.pem";
     _app->setArguments(args);
 
     // assert that we set the certs
-    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
 }
 
 void
-TestDownloadDaemon::testSelfSignedCertsMissingPath() {
+TestDaemon::testSelfSignedCertsMissingPath() {
     _man->record();
     QStringList args;
     args << "-self-signed-certs";
     _app->setArguments(args);
 
     // assert that we do not crash
-    _daemon = new DownloadDaemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }

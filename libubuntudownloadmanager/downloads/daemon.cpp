@@ -20,9 +20,9 @@
 #include <QDebug>
 #include <QSharedPointer>
 #include <QSslCertificate>
+#include "downloads/daemon.h"
 #include "downloads/download_manager.h"
 #include "downloads/download_manager_adaptor.h"
-#include "downloads/download_daemon.h"
 #include "system/application.h"
 #include "system/logger.h"
 
@@ -34,11 +34,11 @@
  * PRIVATE IMPLEMENATION
  */
 
-class DownloadDaemonPrivate {
-    Q_DECLARE_PUBLIC(DownloadDaemon)
+class DaemonPrivate {
+    Q_DECLARE_PUBLIC(Daemon)
 
  public:
-    explicit DownloadDaemonPrivate(DownloadDaemon* parent)
+    explicit DaemonPrivate(Daemon* parent)
         : q_ptr(parent) {
         _app = QSharedPointer<Application>(new Application());
         _conn = QSharedPointer<DBusConnection>(new DBusConnection());
@@ -46,11 +46,11 @@ class DownloadDaemonPrivate {
         init();
     }
 
-    DownloadDaemonPrivate(QSharedPointer<Application> app,
-                          DBusConnection* conn,
-                          Timer* timer,
-                          DownloadManager* man,
-                          DownloadDaemon* parent)
+    DaemonPrivate(QSharedPointer<Application> app,
+                  DBusConnection* conn,
+                  Timer* timer,
+                  DownloadManager* man,
+                  Daemon* parent)
         : _app(app),
           _shutDownTimer(timer),
           _conn(conn),
@@ -59,7 +59,7 @@ class DownloadDaemonPrivate {
         init();
     }
 
-    ~DownloadDaemonPrivate() {
+    ~DaemonPrivate() {
         // no need to delete the adaptor because the interface is its parent
         if (_downInterface)
             delete _downInterface;
@@ -134,7 +134,7 @@ class DownloadDaemonPrivate {
     }
 
     void init() {
-        Q_Q(DownloadDaemon);
+        Q_Q(Daemon);
 
         // parse command line to decide if the timer is enabled and if
         // we accept self signed certs
@@ -175,31 +175,31 @@ class DownloadDaemonPrivate {
     QSharedPointer<DBusConnection> _conn;
     DownloadManager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
-    DownloadDaemon* q_ptr;
+    Daemon* q_ptr;
 };
 
 /**
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadDaemon::DownloadDaemon(QObject *parent)
+Daemon::Daemon(QObject *parent)
     : QObject(parent),
-      d_ptr(new DownloadDaemonPrivate(this)) {
+      d_ptr(new DaemonPrivate(this)) {
 }
 
-DownloadDaemon::DownloadDaemon(QSharedPointer<Application> app,
-                               DBusConnection* conn,
-                               Timer* timer,
-                               DownloadManager* man,
-                               QObject *parent)
+Daemon::Daemon(QSharedPointer<Application> app,
+               DBusConnection* conn,
+               Timer* timer,
+               DownloadManager* man,
+               QObject *parent)
     : QObject(parent),
-      d_ptr(new DownloadDaemonPrivate(app, conn, timer, man, this)) {
+      d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
 }
 
 void
-DownloadDaemon::start() {
-    Q_D(DownloadDaemon);
+Daemon::start() {
+    Q_D(Daemon);
     d->start();
 }
 
-#include "moc_download_daemon.cpp"
+#include "moc_daemon.cpp"

@@ -20,19 +20,19 @@
 #define TEST_DOWNLOAD_DAEMON_H
 
 #include <QObject>
-#include <downloads/download_daemon.h>
-#include "./fake_application.h"
-#include "./fake_dbus_connection.h"
-#include "./fake_download_manager.h"
-#include "./fake_timer.h"
-#include "./base_testcase.h"
-#include "./test_runner.h"
+#include <downloads/daemon.h>
+#include "fake_application.h"
+#include "fake_dbus_connection.h"
+#include "fake_download_manager.h"
+#include "fake_timer.h"
+#include "base_testcase.h"
+#include "test_runner.h"
 
-class TestDownloadDaemon : public BaseTestCase {
+class TestDaemon : public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownloadDaemon(QObject *parent = 0);
+    explicit TestDaemon(QObject *parent = 0);
 
  private slots:  // NOLINT(whitespace/indent)
 
@@ -54,9 +54,9 @@ class TestDownloadDaemon : public BaseTestCase {
     QSharedPointer<Application> _appPointer;
     FakeDownloadManager* _man;
     FakeDBusConnection* _conn;
-    DownloadDaemon* _daemon;
+    Daemon* _daemon;
 };
 
-DECLARE_TEST(TestDownloadDaemon)
+DECLARE_TEST(TestDaemon)
 
 #endif  // TEST_DOWNLOAD_DAEMON_H

@@ -27,18 +27,18 @@
 #include "system/dbus_connection.h"
 #include "system/timer.h"
 
-class DownloadDaemonPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
-    Q_DECLARE_PRIVATE(DownloadDaemon)
+class DaemonPrivate;
+class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
+    Q_DECLARE_PRIVATE(Daemon)
     Q_OBJECT
 
  public:
-    explicit DownloadDaemon(QObject *parent = 0);
-    DownloadDaemon(QSharedPointer<Application> app,
-                   DBusConnection* conn,
-                   Timer* timer,
-                   DownloadManager* man,
-                   QObject *parent = 0);
+    explicit Daemon(QObject *parent = 0);
+    Daemon(QSharedPointer<Application> app,
+           DBusConnection* conn,
+           Timer* timer,
+           DownloadManager* man,
+           QObject *parent = 0);
 
  public slots:  // NOLINT (whitespace/indent)
     void start();
@@ -49,7 +49,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT DownloadDaemon : public QObject {
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    DownloadDaemonPrivate* d_ptr;
+    DaemonPrivate* d_ptr;
 };
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
