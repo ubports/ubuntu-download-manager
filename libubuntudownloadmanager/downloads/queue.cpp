@@ -18,23 +18,23 @@
 
 #include <QDebug>
 #include <QSignalMapper>
-#include "downloads/download_queue.h"
+#include "downloads/queue.h"
 #include "system/logger.h"
 
 /*
  * PRIVATE IMPLEMENTATION
  */
 
-class DownloadQueuePrivate {
-    Q_DECLARE_PUBLIC(DownloadQueue)
+class QueuePrivate {
+    Q_DECLARE_PUBLIC(Queue)
 
  public:
-    DownloadQueuePrivate(QSharedPointer<SystemNetworkInfo> networkInfo,
-                         DownloadQueue* parent)
+    QueuePrivate(QSharedPointer<SystemNetworkInfo> networkInfo,
+                 Queue* parent)
         : _current(""),
           _networkInfo(networkInfo),
           q_ptr(parent) {
-          Q_Q(DownloadQueue);
+          Q_Q(Queue);
 
         q->connect(_networkInfo.data(),
             SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
@@ -42,7 +42,7 @@ class DownloadQueuePrivate {
     }
 
     void add(Download* download) {
-        Q_Q(DownloadQueue);
+        Q_Q(Queue);
         // connect to the signals and append to the list
         QString path = download->path();
         TRACE << path;
@@ -56,7 +56,7 @@ class DownloadQueuePrivate {
     }
 
     void remove(const QString& path) {
-        Q_Q(DownloadQueue);
+        Q_Q(Queue);
         TRACE << path;
 
         Download* down = _downloads[path];
@@ -89,7 +89,7 @@ class DownloadQueuePrivate {
 
     void onDownloadStateChanged() {
         TRACE;
-        Q_Q(DownloadQueue);
+        Q_Q(Queue);
         // get the appdownload that emited the signal and
         // decide what to do with it
         Download* sender = qobject_cast<Download*>(q->sender());
@@ -140,7 +140,7 @@ class DownloadQueuePrivate {
  private:
     void updateCurrentDownload() {
         TRACE;
-        Q_Q(DownloadQueue);
+        Q_Q(Queue);
 
         if (!_current.isEmpty()) {
             // check if it was canceled/finished
@@ -185,48 +185,48 @@ class DownloadQueuePrivate {
     QHash<QString, Download*> _downloads;  // quick for access
     QStringList _sortedPaths;  // keep the order
     QSharedPointer<SystemNetworkInfo> _networkInfo;
-    DownloadQueue* q_ptr;
+    Queue* q_ptr;
 };
 
 /*
  * PUBLIC IMPLEMENTATION
  */
 
-DownloadQueue::DownloadQueue(QSharedPointer<SystemNetworkInfo> networkInfo,
-                             QObject* parent)
+Queue::Queue(QSharedPointer<SystemNetworkInfo> networkInfo,
+             QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadQueuePrivate(networkInfo, this)) {
+      d_ptr(new QueuePrivate(networkInfo, this)) {
 }
 
 void
-DownloadQueue::add(Download* download) {
-    Q_D(DownloadQueue);
+Queue::add(Download* download) {
+    Q_D(Queue);
     d->add(download);
 }
 
 QString
-DownloadQueue::currentDownload() {
-    Q_D(DownloadQueue);
+Queue::currentDownload() {
+    Q_D(Queue);
     return d->currentDownload();
 }
 
 QStringList
-DownloadQueue::paths() {
-    Q_D(DownloadQueue);
+Queue::paths() {
+    Q_D(Queue);
     return d->paths();
 }
 
 
 QHash<QString, Download*>
-DownloadQueue::downloads() {
-    Q_D(DownloadQueue);
+Queue::downloads() {
+    Q_D(Queue);
     return d->downloads();
 }
 
 int
-DownloadQueue::size() {
-    Q_D(DownloadQueue);
+Queue::size() {
+    Q_D(Queue);
     return d->size();
 }
 
-#include "moc_download_queue.cpp"
+#include "moc_queue.cpp"

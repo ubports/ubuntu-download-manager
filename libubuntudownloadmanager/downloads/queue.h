@@ -26,14 +26,14 @@
 #include "downloads/download_adaptor.h"
 #include "system/system_network_info.h"
 
-class DownloadQueuePrivate;
-class DownloadQueue : public QObject {
+class QueuePrivate;
+class Queue : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DownloadQueue)
+    Q_DECLARE_PRIVATE(Queue)
 
  public:
-    explicit DownloadQueue(QSharedPointer<SystemNetworkInfo> networkInfo,
-                           QObject* parent = 0);
+    explicit Queue(QSharedPointer<SystemNetworkInfo> networkInfo,
+                   QObject* parent = 0);
 
     virtual void add(Download* download);
 
@@ -55,7 +55,7 @@ class DownloadQueue : public QObject {
             void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode))
 
  private:
-    DownloadQueuePrivate* d_ptr;
+    QueuePrivate* d_ptr;
 };
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_QUEUE_H

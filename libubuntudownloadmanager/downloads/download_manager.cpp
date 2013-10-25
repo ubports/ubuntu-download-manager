@@ -18,7 +18,7 @@
 
 #include <functional>
 #include <QRegExp>
-#include "downloads/download_queue.h"
+#include "downloads/queue.h"
 #include "downloads/download_manager.h"
 #include "system/apparmor.h"
 #include "system/request_factory.h"
@@ -52,8 +52,8 @@ class DownloadManagerPrivate {
         _downloadFactory = QSharedPointer<Factory>(
             new Factory(_apparmor, _networkInfo, nam,
                 _processFactory));
-        _downloadsQueue = QSharedPointer<DownloadQueue>(
-            new DownloadQueue(_networkInfo));
+        _downloadsQueue = QSharedPointer<Queue>(
+            new Queue(_networkInfo));
         init();
     }
 
@@ -61,7 +61,7 @@ class DownloadManagerPrivate {
                            QSharedPointer<DBusConnection> connection,
                            SystemNetworkInfo* networkInfo,
                            Factory* downloadFactory,
-                           DownloadQueue* queue,
+                           Queue* queue,
                            bool stoppable,
                            DownloadManager* parent)
         : _app(app),
@@ -242,7 +242,7 @@ class DownloadManagerPrivate {
     QSharedPointer<SystemNetworkInfo> _networkInfo;
     QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<Factory> _downloadFactory;
-    QSharedPointer<DownloadQueue> _downloadsQueue;
+    QSharedPointer<Queue> _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;
     bool _stoppable;
     DownloadManager* q_ptr;
@@ -264,7 +264,7 @@ DownloadManager::DownloadManager(QSharedPointer<Application> app,
                                  QSharedPointer<DBusConnection> connection,
                                  SystemNetworkInfo* networkInfo,
                                  Factory* downloadFactory,
-                                 DownloadQueue* queue,
+                                 Queue* queue,
                                  bool stoppable,
                                  QObject* parent)
     : QObject(parent),

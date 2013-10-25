@@ -45,7 +45,7 @@ TestDownloadQueue::init() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    _q = new DownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
+    _q = new Queue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
 }
 
 void

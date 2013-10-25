@@ -21,7 +21,7 @@
 FakeDownloadQueue::FakeDownloadQueue(
                                QSharedPointer<SystemNetworkInfo> networkInfo,
                                QObject *parent)
-    : DownloadQueue(networkInfo, parent),
+    : Queue(networkInfo, parent),
     Fake() {
 }
 
@@ -38,7 +38,7 @@ FakeDownloadQueue::add(Download* download) {
         MethodData methodData("add", params);
         _called.append(methodData);
     }
-    DownloadQueue::add(download);
+    Queue::add(download);
 }
 
 int

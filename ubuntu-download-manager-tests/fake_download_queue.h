@@ -19,11 +19,11 @@
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
 #include <QSharedPointer>
-#include <downloads/download_queue.h>
+#include <downloads/queue.h>
 #include <system/system_network_info.h>
 #include "fake.h"
 
-class FakeDownloadQueue : public DownloadQueue, public Fake {
+class FakeDownloadQueue : public Queue, public Fake {
     Q_OBJECT
 
  public:

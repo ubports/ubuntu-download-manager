@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <downloads/download_adaptor.h>
-#include <downloads/download_queue.h>
+#include <downloads/queue.h>
 #include "test_runner.h"
 #include "fake_download.h"
 #include "fake_request_factory.h"
@@ -65,7 +65,7 @@ class TestDownloadQueue : public BaseTestCase {
     FakeProcessFactory* _processFactory;
     FakeDownload* _first;
     FakeDownload* _second;
-    DownloadQueue* _q;
+    Queue* _q;
 };
 
 DECLARE_TEST(TestDownloadQueue)
