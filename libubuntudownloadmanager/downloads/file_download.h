@@ -28,36 +28,36 @@
 
 #define LOCAL_PATH_KEY "local-path"
 
-class SingleDownloadPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
+class FileDownloadPrivate;
+class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(SingleDownload)
+    Q_DECLARE_PRIVATE(FileDownload)
 
  public:
-    SingleDownload(const QString& id,
-                   const QString& path,
-                   bool isConfined,
-                   const QString& rootPath,
-                   const QUrl& url,
-                   const QVariantMap& metadata,
-                   const QMap<QString, QString>& headers,
-                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                   QSharedPointer<RequestFactory> nam,
-                   QSharedPointer<ProcessFactory> processFactory,
-                   QObject* parent = 0);
-    SingleDownload(const QString& id,
-                   const QString& path,
-                   bool isConfined,
-                   const QString& rootPath,
-                   const QUrl& url,
-                   const QString& hash,
-                   const QString& algo,
-                   const QVariantMap& metadata,
-                   const QMap<QString, QString>& headers,
-                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                   QSharedPointer<RequestFactory> nam,
-                   QSharedPointer<ProcessFactory> processFactory,
-                   QObject* parent = 0);
+    FileDownload(const QString& id,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 QSharedPointer<RequestFactory> nam,
+                 QSharedPointer<ProcessFactory> processFactory,
+                 QObject* parent = 0);
+    FileDownload(const QString& id,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QString& hash,
+                 const QString& algo,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 QSharedPointer<RequestFactory> nam,
+                 QSharedPointer<ProcessFactory> processFactory,
+                 QObject* parent = 0);
 
     // gets for internal state
     QUrl url();
@@ -99,7 +99,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT SingleDownload : public Download {
 
  private:
     // use pimpl so that we can mantains ABI compatibility
-    SingleDownloadPrivate* d_ptr;
+    FileDownloadPrivate* d_ptr;
 };
 
 #endif  // DOWNLOADER_LIB_SINGLE_DOWNLOAD_H

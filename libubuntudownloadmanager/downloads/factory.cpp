@@ -20,7 +20,7 @@
 #include "downloads/download_adaptor.h"
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
-#include "downloads/single_download.h"
+#include "downloads/file_download.h"
 #include "downloads/factory.h"
 #include "system/logger.h"
 
@@ -84,7 +84,7 @@ class FactoryPrivate {
         bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
-        Download* down = new SingleDownload(id, dbusPath, isConfined, rootPath,
+        Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
             url, metadata, headers, _networkInfo, _nam, _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);
         down->setAdaptor(adaptor);
@@ -103,7 +103,7 @@ class FactoryPrivate {
         bool isConfined = false;
         getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
             isConfined);
-        Download* down = new SingleDownload(id, dbusPath, isConfined,
+        Download* down = new FileDownload(id, dbusPath, isConfined,
             rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
             _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);
@@ -139,7 +139,7 @@ class FactoryPrivate {
         QString id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
-        Download* down = new SingleDownload(id, dbusPath, isConfined, rootPath,
+        Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
             url, metadata, headers, _networkInfo, _nam, _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);
         down->setAdaptor(adaptor);
@@ -156,7 +156,7 @@ class FactoryPrivate {
         QString id;
         QString dbusPath;
         _apparmor->getDBusPath(id, dbusPath);
-        Download* down = new SingleDownload(id, dbusPath, isConfined,
+        Download* down = new FileDownload(id, dbusPath, isConfined,
             rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
             _processFactory);
         DownloadAdaptor* adaptor = new DownloadAdaptor(down);

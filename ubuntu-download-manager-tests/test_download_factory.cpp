@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <downloads/single_download.h>
+#include <downloads/file_download.h>
 #include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "test_download_factory.h"
@@ -86,7 +86,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 
-    SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
+    FileDownload* single = reinterpret_cast<FileDownload*>(download);
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
@@ -178,7 +178,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QCOMPARE(download->downloadId(), id);
     QCOMPARE(download->path(), path->value());
 
-    SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
+    FileDownload* single = reinterpret_cast<FileDownload*>(download);
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
@@ -206,7 +206,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 
-    SingleDownload* single = reinterpret_cast<SingleDownload*>(download);
+    FileDownload* single = reinterpret_cast<FileDownload*>(download);
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }

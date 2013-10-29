@@ -19,12 +19,12 @@
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
 #include <QSharedPointer>
-#include <downloads/single_download.h>
+#include <downloads/file_download.h>
 #include <system/system_network_info.h>
 #include <metatypes.h>
 #include "fake.h"
 
-class FakeDownload : public SingleDownload, public Fake {
+class FakeDownload : public FileDownload, public Fake {
     Q_OBJECT
 
  public:

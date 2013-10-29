@@ -21,7 +21,7 @@
 
 #include <QSqlDatabase>
 #include <QObject>
-#include "downloads/single_download.h"
+#include "downloads/file_download.h"
 #include "system/file_manager.h"
 
 class DownloadsDbPrivate;
@@ -37,7 +37,7 @@ class DownloadsDb : public QObject {
     QString filename();
     bool dbExists();  // return if the db is present and valid
     bool init();  // init or update the db
-    bool storeSingleDownload(SingleDownload* download);
+    bool storeSingleDownload(FileDownload* download);
 
  private:
     // use pimpl so that we can mantains ABI compatibility
