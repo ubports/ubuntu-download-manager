@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef SM_FILE_DOWNLOAD_H
-#define SM_FILE_DOWNLOAD_H
+#ifndef DOWNLOADER_LIB_SM_FILE_DOWNLOAD_H
+#define DOWNLOADER_LIB_SM_FILE_DOWNLOAD_H
 
 #include <QNetworkReply>
 #include <QObject>
