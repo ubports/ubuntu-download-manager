@@ -19,6 +19,7 @@
 #include <QFinalState>
 #include <QState>
 #include <QStateMachine>
+#include <QSslError>
 #include "download_sm.h"
 
 namespace Ubuntu {
@@ -26,6 +27,68 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 namespace StateMachines {
+
+
+/*
+ * HEAD TRANSITION
+ */
+HeaderTransition::HeaderTransition(const SMFileDownload* sender,
+                                   QState* sourceState,
+                                   QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(headRequestCompleted()),
+        sourceState, nextState) {
+}
+
+void
+HeaderTransition::onTransition(QEvent * event) {
+    DownloadSMTransition::onTransition(event);
+}
+
+/*
+ * NETWORK ERROR TRANSITION
+ */
+
+NetworkErrorTransition::NetworkErrorTransition(const SMFileDownload* sender,
+                                               QState* sourceState,
+                                               QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(error(QNetworkReply::NetworkError)),
+        sourceState, nextState) {
+}
+
+void
+NetworkErrorTransition::onTransition(QEvent* event) {
+    SMFileDownload* down = download();
+    QStateMachine::SignalEvent* e =
+        static_cast<QStateMachine::SignalEvent*>(event);
+    QVariant v = e->arguments().at(0);
+    QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
+
+    down->emitNetworkError(code);
+    DownloadSMTransition::onTransition(event);
+}
+
+/*
+ * SSL ERROR TRANSITION
+ */
+
+SslErrorTransition::SslErrorTransition(const SMFileDownload* sender,
+                                       QState* sourceState,
+                                       QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(sslErrors(const QList<QSslError>&)),
+        sourceState, nextState) {
+}
+
+void
+SslErrorTransition::onTransition(QEvent * event) {
+    SMFileDownload* down = download();
+    QStateMachine::SignalEvent* e =
+        static_cast<QStateMachine::SignalEvent*>(event);
+    QVariant v = e->arguments().at(0);
+    QList<QSslError> errors = v.value<QList<QSslError> > ();
+
+    down->emitSslError(errors);
+    DownloadSMTransition::onTransition(event);
+}
 
 /**
  * PRIVATE IMPLEMENATION
@@ -52,31 +115,15 @@ class DownloadSMPrivate {
         _error = new QFinalState();
         _canceled = new QFinalState();
         _finished = new QFinalState();
-    }
 
-    ~DownloadSMPrivate() {
-        if (_idle != NULL)
-            delete _idle;
-        if (_init != NULL)
-            delete _init;
-        if (_downloading != NULL)
-            delete _downloading;
-        if (_paused != NULL)
-            delete _paused;
-        if (_downloadingNotConnected != NULL)
-            delete _downloadingNotConnected;
-        if (_downloaded != NULL)
-            delete _downloaded;
-        if (_hashing != NULL)
-            delete _hashing;
-        if (_postProcessing != NULL)
-            delete _postProcessing;
-        if (_error != NULL)
-            delete _error;
-        if (_canceled != NULL)
-            delete _canceled;
-        if (_finished != NULL)
-            delete _finished;
+        // add the idle state transitions
+        _headerTransition = new HeaderTransition(_down, _idle, _init);
+        _idleNetworkErrorTransition = new NetworkErrorTransition(_down, _idle, _error);
+        _idleSslErrorTransition = new SslErrorTransition(_down, _idle, _error);
+        _idle->addTransition(_headerTransition);
+        _idle->addTransition(_idleNetworkErrorTransition);
+        _idle->addTransition(_idleSslErrorTransition);
+
     }
 
  private:
@@ -95,7 +142,12 @@ class DownloadSMPrivate {
     QFinalState* _error;
     QFinalState* _canceled;
     QFinalState* _finished;
+    // transitions
+    HeaderTransition* _headerTransition;
+    NetworkErrorTransition* _idleNetworkErrorTransition;
+    SslErrorTransition* _idleSslErrorTransition;
 
+    SMFileDownload* _down;
     DownloadSM* q_ptr;
 };
 

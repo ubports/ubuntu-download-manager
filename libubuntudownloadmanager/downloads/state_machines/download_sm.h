@@ -20,6 +20,7 @@
 #define DOWNLOADER_LIB_DOWNLOAD_SM_H
 
 #include <QSignalTransition>
+#include <QAbstractState>
 #include <QState>
 #include <QObject>
 #include "downloads/sm_file_download.h"
@@ -37,7 +38,7 @@ class DownloadSMTransition : public QSignalTransition {
     DownloadSMTransition(const SMFileDownload* sender,
                          const char* signal,
                          QState* sourceState,
-                         QState* next)
+                         QAbstractState* next)
         : QSignalTransition(sender, signal, sourceState) {
         setTargetState(next);
     }
@@ -45,6 +46,40 @@ class DownloadSMTransition : public QSignalTransition {
     SMFileDownload* download() {
         return qobject_cast<SMFileDownload*>(senderObject());
     }
+};
+
+// takes care of the case in witch the header is correctly performed
+class HeaderTransition : public DownloadSMTransition  {
+    Q_OBJECT
+
+ public:
+    HeaderTransition(const SMFileDownload* sender,
+                     QState* sourceState,
+                     QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
+// takes care of the case where there was an error during a network request
+class NetworkErrorTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    NetworkErrorTransition(const SMFileDownload* sender,
+                           QState* sourceState,
+                           QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
+// takes care of the case where there was an ssl error
+class SslErrorTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    SslErrorTransition(const SMFileDownload* sender,
+                       QState* sourceState,
+                       QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
 };
 
 class DownloadSMPrivate;
