@@ -23,6 +23,8 @@
 #include <system/process_factory.h>
 #include "./fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class FakeProcessFactory : public ProcessFactory, public Fake {
     Q_OBJECT
 

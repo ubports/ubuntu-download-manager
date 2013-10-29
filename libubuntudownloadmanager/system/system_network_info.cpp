@@ -22,6 +22,12 @@
 #include "logger.h"
 #include "system_network_info.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -209,5 +215,11 @@ SystemNetworkInfo::isOnline() {
     Q_D(SystemNetworkInfo);
     return d->isOnline();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_system_network_info.cpp"

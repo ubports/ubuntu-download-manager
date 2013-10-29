@@ -21,6 +21,9 @@
 #include <system/dbus_connection.h>
 #include "fake.h"
 
+
+using namespace Ubuntu::DownloadManager::System;
+
 class RegisterOptionsWrapper : public QObject {
     Q_OBJECT
 

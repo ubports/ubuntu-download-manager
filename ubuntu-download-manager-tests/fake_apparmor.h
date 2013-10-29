@@ -25,6 +25,8 @@
 #include <system/uuid_factory.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class FakeAppArmor : public AppArmor, public Fake {
     Q_OBJECT
  public:

@@ -22,8 +22,14 @@
 #include <QNetworkRequest>
 #include <QObject>
 #include <QSslCertificate>
-#include "./app-downloader-lib_global.h"
-#include "./network_reply.h"
+#include "app-downloader-lib_global.h"
+#include "network_reply.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 class RequestFactoryPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
@@ -48,5 +54,11 @@ class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     RequestFactoryPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_REQUEST_FACTORY_H

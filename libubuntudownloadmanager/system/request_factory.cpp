@@ -19,7 +19,13 @@
 #include <QDebug>
 #include <QNetworkAccessManager>
 #include <QSslError>
-#include "./request_factory.h"
+#include "request_factory.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -151,5 +157,11 @@ RequestFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     Q_D(RequestFactory);
     d->setAcceptedCertificates(certs);
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_request_factory.cpp"

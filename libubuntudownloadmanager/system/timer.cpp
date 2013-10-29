@@ -17,7 +17,14 @@
  */
 
 #include <QTimer>
-#include "./timer.h"
+#include "timer.h"
+
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -97,3 +104,9 @@ Timer::stop() {
     Q_D(Timer);
     d->stop();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

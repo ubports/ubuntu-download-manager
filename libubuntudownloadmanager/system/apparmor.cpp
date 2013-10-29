@@ -32,6 +32,12 @@
 #include "logger.h"
 #include "apparmor.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -212,3 +218,9 @@ AppArmor::getSecurePath(const QString& connName,
     Q_D(AppArmor);
     d->getSecurePath(connName, id, dbusPath, localPath, isConfined);
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

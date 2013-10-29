@@ -22,9 +22,21 @@
 #include <QString>
 #include <QUuid>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class UuidUtils {
  public:
     static QString getDBusString(const QUuid& id);
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_UUID_UTILS_H

@@ -24,6 +24,12 @@
 #include <QNetworkReply>
 #include <QSslError>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class NetworkReplyPrivate;
 class NetworkReply : public QObject {
     Q_OBJECT
@@ -49,5 +55,11 @@ class NetworkReply : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     NetworkReplyPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_NETWORK_REPLY_H

@@ -23,6 +23,8 @@
 #include <system/process.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class OpenModeWrapper: public QObject {
     Q_OBJECT
 

@@ -25,6 +25,13 @@
 #include <QSharedPointer>
 #include "dbus_connection.h"
 
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class AppArmorPrivate;
 class AppArmor : public QObject {
     Q_OBJECT
@@ -51,4 +58,9 @@ class AppArmor : public QObject {
     AppArmorPrivate* d_ptr;
 };
 
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 #endif  // DOWNLOADER_LIB_APP_ARMOR_H

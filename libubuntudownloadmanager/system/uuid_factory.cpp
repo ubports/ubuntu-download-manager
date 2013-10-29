@@ -16,7 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./uuid_factory.h"
+#include "uuid_factory.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 UuidFactory::UuidFactory(QObject *parent)
     : QObject(parent) {
@@ -26,3 +32,9 @@ QUuid
 UuidFactory::createUuid() {
     return QUuid::createUuid();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

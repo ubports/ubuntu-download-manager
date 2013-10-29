@@ -23,6 +23,12 @@
 #include <QNetworkInfo>
 #include <QObject>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class SystemNetworkInfoPrivate;
 class SystemNetworkInfo : public QObject {
     Q_OBJECT
@@ -83,5 +89,11 @@ class SystemNetworkInfo : public QObject {
  private:
     SystemNetworkInfoPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H

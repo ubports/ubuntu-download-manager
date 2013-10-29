@@ -23,6 +23,8 @@
 #include <system/uuid_factory.h>
 #include "./fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class FakeUuidFactory : public UuidFactory, public Fake {
     Q_OBJECT
 

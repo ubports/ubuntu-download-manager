@@ -22,6 +22,12 @@
 #include <QObject>
 #include <QProcess>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class ProcessPrivate;
 class Process : public QObject {
     Q_OBJECT
@@ -46,5 +52,11 @@ class Process : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     ProcessPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_PROCESS_H

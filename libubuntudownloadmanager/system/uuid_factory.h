@@ -22,6 +22,12 @@
 #include <QUuid>
 #include <QObject>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class UuidFactory : public QObject {
     Q_OBJECT
 
@@ -31,4 +37,9 @@ class UuidFactory : public QObject {
     virtual QUuid createUuid();
 };
 
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 #endif  // DOWNLOADER_LIB_UUID_FACTORY_H

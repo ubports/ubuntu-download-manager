@@ -7,3 +7,4 @@ libubuntudownloadmanager/libubuntudownloadmanager.so.1.0
 libubuntudownloadmanager/libubuntudownloadmanager.so.1.0.0
 ubuntu-download-manager/ubuntu-download-manager
 ubuntu-download-manager-tests/ubuntu-download-manager-tests
+moc_*

@@ -16,7 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./dbus_connection.h"
+#include "dbus_connection.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -92,3 +98,9 @@ DBusConnection::connection() {
     Q_D(DBusConnection);
     return d->connection();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
