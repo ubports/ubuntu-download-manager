@@ -33,6 +33,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+using namespace System;
+
 class DownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     Q_OBJECT

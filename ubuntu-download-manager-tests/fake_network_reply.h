@@ -23,6 +23,7 @@
 #include <system/network_reply.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
 
 class SslErrorsListWrapper : public QObject {
     Q_OBJECT

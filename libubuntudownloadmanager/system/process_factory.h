@@ -20,7 +20,13 @@
 #define DOWNLOADER_LIB_PROCESS_FACTORY_H
 
 #include <QObject>
-#include "./process.h"
+#include "process.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 class ProcessFactoryPrivate;
 class ProcessFactory : public QObject {
@@ -36,5 +42,11 @@ class ProcessFactory : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     ProcessFactoryPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_PROCESS_FACTORY_H

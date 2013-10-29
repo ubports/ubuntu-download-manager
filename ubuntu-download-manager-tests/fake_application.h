@@ -23,6 +23,8 @@
 #include <system/application.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class FakeApplication : public Application, public Fake {
     Q_OBJECT
 

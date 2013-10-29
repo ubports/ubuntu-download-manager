@@ -22,6 +22,12 @@
 #include <QObject>
 
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class TimerPrivate;
 class Timer : public QObject {
     Q_OBJECT
@@ -41,5 +47,11 @@ class Timer : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     TimerPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_TIMER_H

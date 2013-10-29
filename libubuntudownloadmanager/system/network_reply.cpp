@@ -17,7 +17,13 @@
  */
 
 #include <QDebug>
-#include "./network_reply.h"
+#include "network_reply.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -140,3 +146,9 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
     Q_D(NetworkReply);
     return d->canIgnoreSslErrors(errors);
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

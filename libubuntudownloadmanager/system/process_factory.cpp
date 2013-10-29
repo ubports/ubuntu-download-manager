@@ -16,7 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./process_factory.h"
+#include "process_factory.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -57,3 +63,9 @@ ProcessFactory::createProcess() {
     Q_D(ProcessFactory);
     return d->createProcess();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

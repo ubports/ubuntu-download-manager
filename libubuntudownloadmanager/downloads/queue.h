@@ -30,6 +30,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+using namespace System;
+
 class QueuePrivate;
 class Queue : public QObject {
     Q_OBJECT

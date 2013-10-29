@@ -23,6 +23,7 @@
 #include <system/timer.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
 
 class FakeTimer : public Timer, public Fake {
     Q_OBJECT

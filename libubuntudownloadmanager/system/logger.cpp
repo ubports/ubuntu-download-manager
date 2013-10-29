@@ -25,6 +25,12 @@
 #include <QStandardPaths>
 #include "logger.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 static void *_logger = NULL;
 
 static void
@@ -203,3 +209,9 @@ Logger::logMessage(QtMsgType type,
     if (type == QtFatalMsg)
         abort();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

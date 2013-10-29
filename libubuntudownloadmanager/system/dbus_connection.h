@@ -22,6 +22,12 @@
 #include <QObject>
 #include <QtDBus/QDBusConnection>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class DBusConnectionPrivate;
 class DBusConnection : public QObject {
     Q_OBJECT
@@ -39,5 +45,11 @@ class DBusConnection : public QObject {
  private:
     DBusConnectionPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_DBUS_CONNECTION_H

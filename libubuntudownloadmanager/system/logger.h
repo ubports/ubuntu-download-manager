@@ -33,6 +33,12 @@
 #endif
 
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class Logger : public QObject {
     Q_OBJECT
 
@@ -70,5 +76,10 @@ class Logger : public QObject {
     const QString _datetimeFormat = "yyyy-MM-dd hh:mm:ss,zzz";
 };
 
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // LOGGING_H

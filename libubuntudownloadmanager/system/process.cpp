@@ -18,7 +18,13 @@
 
 #include <QDebug>
 #include <QProcess>
-#include "./process.h"
+#include "process.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 /*
  * PRIVATE IMPLEMENTATION
@@ -103,5 +109,11 @@ Process::start(const QString& program,
     Q_D(Process);
     d->start(program, arguments, mode);
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_process.cpp"

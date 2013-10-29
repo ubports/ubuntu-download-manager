@@ -20,6 +20,12 @@
 #include <QCoreApplication>
 #include "application.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -67,3 +73,9 @@ Application::arguments() {
     Q_D(Application);
     return d->arguments();
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

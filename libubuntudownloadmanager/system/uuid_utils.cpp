@@ -19,7 +19,19 @@
 #include <QRegExp>
 #include "uuid_utils.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 QString
 UuidUtils::getDBusString(const QUuid& id) {
     return id.toString().replace(QRegExp("[-{}]"), "");
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

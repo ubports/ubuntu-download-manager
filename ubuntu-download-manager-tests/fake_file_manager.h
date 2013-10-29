@@ -23,6 +23,8 @@
 #include <system/file_manager.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class FakeFileManager : public FileManager, public Fake {
     Q_OBJECT
 

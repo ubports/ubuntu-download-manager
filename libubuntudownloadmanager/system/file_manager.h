@@ -21,6 +21,12 @@
 
 #include <QObject>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class FileManager : public QObject {
     Q_OBJECT
 
@@ -30,5 +36,11 @@ class FileManager : public QObject {
     virtual bool remove(const QString& path);
     virtual bool exists(const QString& path);
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_FILE_MANAGER_H

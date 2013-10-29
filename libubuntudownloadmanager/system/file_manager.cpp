@@ -17,7 +17,13 @@
  */
 
 #include <QFile>
-#include "./file_manager.h"
+#include "file_manager.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 bool
 FileManager::remove(const QString& path) {
@@ -28,3 +34,9 @@ bool
 FileManager::exists(const QString& path) {
     return QFile::exists(path);
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

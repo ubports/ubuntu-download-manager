@@ -16,7 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "./hash_algorithm.h"
+#include "hash_algorithm.h"
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
 
 QList<QString> HashAlgorithm::algoList = QList<QString>() << "md5" << "sha1"
     << "sha224" << "sha256" << "sha384" << "sha512" << "";
@@ -68,3 +74,9 @@ bool
 HashAlgorithm::isValidAlgo(const QString& algorithm) {
     return algoList.contains(algorithm.toLower());
 }
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu

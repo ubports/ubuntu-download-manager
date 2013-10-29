@@ -24,6 +24,8 @@
 #include "base_testcase.h"
 #include "test_runner.h"
 
+using namespace Ubuntu::DownloadManager::System;
+
 class TestNetworkReply : public BaseTestCase {
     Q_OBJECT
 

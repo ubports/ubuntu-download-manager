@@ -22,6 +22,12 @@
 #include <QStringList>
 #include <QObject>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class ApplicationPrivate;
 class Application : public QObject {
     Q_OBJECT
@@ -37,5 +43,11 @@ class Application : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     ApplicationPrivate* d_ptr;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_APPLICATION_H

@@ -23,6 +23,12 @@
 #include <QList>
 #include <QString>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace System {
+
 class HashAlgorithm {
  public:
     static QCryptographicHash::Algorithm getHashAlgo(const QString& algorithm);
@@ -31,5 +37,11 @@ class HashAlgorithm {
  private:
     static QList<QString> algoList;
 };
+
+}  // System
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_HASH_ALGORITHM_H
