@@ -26,6 +26,10 @@
 
 #define OBJECT_PATH_KEY "objectpath"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -263,3 +267,7 @@ Factory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     Q_D(Factory);
     d->setAcceptedCertificates(certs);
 }
+
+}  // DownloadManager
+
+}  // Ubuntu

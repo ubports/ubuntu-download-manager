@@ -28,6 +28,11 @@
 #include "system/request_factory.h"
 #include "system/system_network_info.h"
 
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class DownloadPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     Q_OBJECT
@@ -120,4 +125,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     DownloadPrivate* d_ptr;
 };
 
+}  // DownloadManager
+
+}  // Ubuntu
 #endif  // DOWNLOADER_LIB_APP_DOWNLOAD_H

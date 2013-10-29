@@ -18,6 +18,10 @@
 
 #include "downloads/download_struct.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 DownloadStruct::DownloadStruct()
     : _url(""),
       _hash(""),
@@ -119,3 +123,7 @@ QMap<QString, QString>
 DownloadStruct::getHeaders() {
     return _headers;
 }
+
+}  // DownloadManager
+
+}  // Ubuntu

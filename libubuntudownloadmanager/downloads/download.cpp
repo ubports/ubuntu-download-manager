@@ -21,6 +21,10 @@
 #include "system/logger.h"
 #include "downloads/download.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -368,5 +372,9 @@ Download::emitError(const QString& error) {
     Q_D(Download);
     d->emitError(error);
 }
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_download.cpp"

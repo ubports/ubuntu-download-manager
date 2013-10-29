@@ -35,6 +35,10 @@
 #define METADATA_COMMAND_KEY "post-download-command"
 #define METADATA_COMMAND_FILE_KEY "$file"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 
 /**
  * PRIVATE IMPLEMENATION
@@ -645,4 +649,7 @@ FileDownload::setThrottle(qulonglong speed) {
     d->setThrottle(speed);
 }
 
+}  // DownloadManager
+
+}  // Ubuntu
 #include "moc_file_download.cpp"

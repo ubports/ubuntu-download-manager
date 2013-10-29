@@ -33,6 +33,10 @@
 #include "system/dbus_connection.h"
 #include "system/system_network_info.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class ManagerPrivate;
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
@@ -85,4 +89,7 @@ class Manager : public QObject, public QDBusContext {
     ManagerPrivate* d_ptr;
 };
 
+}  // DownloadManager
+
+}  // Manager
 #endif  // DOWNLOADER_LIB_DOWNLOADER_H

@@ -21,6 +21,10 @@
 
 #include <QDBusArgument>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class GroupDownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString hash READ getHash)
@@ -53,6 +57,10 @@ class GroupDownloadStruct {
     QString _hash;
 };
 
-Q_DECLARE_METATYPE(GroupDownloadStruct)
+}  // DownloadManager
+
+}  // Ubuntu
+
+Q_DECLARE_METATYPE(Ubuntu::DownloadManager::GroupDownloadStruct)
 
 #endif  // DOWNLOADER_LIB_GROUP_DOWNLOAD_STRUCT_H

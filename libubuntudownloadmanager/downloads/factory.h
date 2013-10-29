@@ -27,6 +27,10 @@
 #include "system/system_network_info.h"
 #include "system/uuid_factory.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class FactoryPrivate;
 class Factory : public QObject {
     Q_OBJECT
@@ -85,5 +89,9 @@ class Factory : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     FactoryPrivate* d_ptr;
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_DOWNLOAD_FACTORY_H

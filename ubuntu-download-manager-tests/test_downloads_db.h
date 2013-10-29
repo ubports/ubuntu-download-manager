@@ -25,6 +25,8 @@
 #include "base_testcase.h"
 #include "test_runner.h"
 
+using namespace Ubuntu::DownloadManager;
+
 class TestDownloadsDb : public BaseTestCase {
     Q_OBJECT
  public:

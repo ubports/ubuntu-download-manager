@@ -20,6 +20,10 @@
 #include "downloads/group_download_struct.h"
 #include "system/hash_algorithm.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 GroupDownloadStruct::GroupDownloadStruct()
     : _url(""),
       _hash("") {
@@ -93,3 +97,7 @@ QString
 GroupDownloadStruct::getLocalFile() {
     return _localFile;
 }
+
+}  // DownloadManager
+
+}  // Ubuntu

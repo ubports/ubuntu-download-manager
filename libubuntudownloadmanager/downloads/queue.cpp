@@ -21,6 +21,10 @@
 #include "downloads/queue.h"
 #include "system/logger.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -228,5 +232,9 @@ Queue::size() {
     Q_D(Queue);
     return d->size();
 }
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_queue.cpp"

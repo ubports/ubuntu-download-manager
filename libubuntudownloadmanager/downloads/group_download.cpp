@@ -24,6 +24,10 @@
 #include "system/logger.h"
 #include "system/uuid_factory.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * PRIVATE IMPLEMENTATION
  */
@@ -374,5 +378,9 @@ GroupDownload::totalSize() {
     Q_D(GroupDownload);
     return d->totalSize();
 }
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #include "moc_group_download.cpp"

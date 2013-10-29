@@ -28,6 +28,10 @@
 #include "downloads/group_download_struct.h"
 #include "system/file_manager.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class GroupDownloadPrivate;
 class GroupDownload : public Download {
     Q_OBJECT
@@ -87,5 +91,9 @@ class GroupDownload : public Download {
     // use pimpl so that we can mantains ABI compatibility
     GroupDownloadPrivate* d_ptr;
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_GROUP_DOWNLOAD_H

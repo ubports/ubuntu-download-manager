@@ -23,6 +23,8 @@
 #include <system/system_network_info.h>
 #include "fake.h"
 
+using namespace Ubuntu::DownloadManager;
+
 class FakeDownloadQueue : public Queue, public Fake {
     Q_OBJECT
 

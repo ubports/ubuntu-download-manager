@@ -27,6 +27,10 @@
 #include "system/dbus_connection.h"
 #include "system/timer.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class DaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
@@ -52,4 +56,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     DaemonPrivate* d_ptr;
 };
 
+}  // DownloadManager
+
+}  // Ubuntu
 #endif  // DOWNLOADER_LIB_DOWNLOAD_DAEMON_H

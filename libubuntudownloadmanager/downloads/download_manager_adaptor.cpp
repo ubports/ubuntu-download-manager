@@ -17,6 +17,10 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 /*
  * Implementation of adaptor class DownloadManagerAdaptor
  */
@@ -99,3 +103,6 @@ void DownloadManagerAdaptor::setDefaultThrottle(qulonglong speed)
     QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(qulonglong, speed));
 }
 
+}  // DownloadManager
+
+}  // Ubuntu

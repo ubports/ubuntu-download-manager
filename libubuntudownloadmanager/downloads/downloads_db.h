@@ -24,6 +24,10 @@
 #include "downloads/file_download.h"
 #include "system/file_manager.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
 class DownloadsDbPrivate;
 class DownloadsDb : public QObject {
     Q_OBJECT
@@ -43,5 +47,9 @@ class DownloadsDb : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     DownloadsDbPrivate* d_ptr;
 };
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
