@@ -21,10 +21,10 @@
 
 #include <QObject>
 #include <downloads/daemon.h>
-#include "fake_application.h"
-#include "fake_dbus_connection.h"
-#include "fake_download_manager.h"
-#include "fake_timer.h"
+#include "fakes/fake_application.h"
+#include "fakes/fake_dbus_connection.h"
+#include "fakes/fake_download_manager.h"
+#include "fakes/fake_timer.h"
 #include "base_testcase.h"
 #include "test_runner.h"
 

@@ -19,7 +19,7 @@
 #include <QSignalSpy>
 #include <downloads/group_download.h>
 #include <system/uuid_utils.h>
-#include "fake_download.h"
+#include "fakes/fake_download.h"
 #include "test_group_download.h"
 
 TestGroupDownload::TestGroupDownload(QObject *parent)
