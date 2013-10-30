@@ -23,15 +23,15 @@
 #include <QSharedPointer>
 #include <downloads/manager.h>
 #include <downloads/file_download.h>
-#include "fake_application.h"
-#include "fake_apparmor.h"
+#include "fakes/fake_application.h"
+#include "fakes/fake_apparmor.h"
+#include "fakes/fake_dbus_connection.h"
+#include "fakes/fake_download_queue.h"
+#include "fakes/fake_download_factory.h"
+#include "fakes/fake_request_factory.h"
+#include "fakes/fake_uuid_factory.h"
+#include "fakes/fake_system_network_info.h"
 #include "test_runner.h"
-#include "fake_dbus_connection.h"
-#include "fake_download_queue.h"
-#include "fake_download_factory.h"
-#include "fake_request_factory.h"
-#include "fake_uuid_factory.h"
-#include "fake_system_network_info.h"
 #include "base_testcase.h"
 
 class TestDownloadManager : public BaseTestCase {

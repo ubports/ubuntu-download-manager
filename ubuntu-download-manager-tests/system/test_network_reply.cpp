@@ -18,8 +18,8 @@
 
 #include <QSslError>
 #include <QSignalSpy>
-#include "./test_network_reply.h"
-#include "./fake_qnetwork_reply.h"
+#include "fakes/fake_qnetwork_reply.h"
+#include "test_network_reply.h"
 
 TestNetworkReply::TestNetworkReply(QObject *parent)
     : BaseTestCase("TestNetworkReply", parent) {
