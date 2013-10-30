@@ -25,10 +25,10 @@
 #include <metatypes.h>
 #include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
-#include "fake_download.h"
-#include "fake_system_network_info.h"
-#include "fake_request_factory.h"
-#include "fake_process_factory.h"
+#include "fakes/fake_download.h"
+#include "fakes/fake_system_network_info.h"
+#include "fakes/fake_request_factory.h"
+#include "fakes/fake_process_factory.h"
 #include "test_downloads_db.h"
 
 #define TABLE_EXISTS "SELECT count(name) FROM sqlite_master "\

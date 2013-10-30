@@ -23,9 +23,9 @@
 #include <QObject>
 #include <downloads/file_download.h>
 #include <metatypes.h>
-#include "fake_system_network_info.h"
-#include "fake_request_factory.h"
-#include "fake_process_factory.h"
+#include "fakes/fake_system_network_info.h"
+#include "fakes/fake_request_factory.h"
+#include "fakes/fake_process_factory.h"
 #include "base_testcase.h"
 #include "test_runner.h"
 
