@@ -105,8 +105,9 @@ class DownloadSMPrivate {
         _idle = new QState();
         _init = new QState();
         _downloading = new QState();
-        _paused = new QState();
         _downloadingNotConnected = new QState();
+        _paused = new QState();
+        _pausedNotConnected = new QState();
         _downloaded = new QState();
         _hashing = new QState();
         _postProcessing = new QState();
@@ -126,6 +127,33 @@ class DownloadSMPrivate {
 
     }
 
+    ~DownloadSMPrivate() {
+        if (_idle != NULL)
+            delete _idle;
+        if (_init != NULL)
+            delete _init;
+        if (_downloading != NULL)
+            delete _downloading;
+        if (_downloadingNotConnected != NULL)
+            delete _downloadingNotConnected;
+        if (_paused != NULL)
+            delete _paused;
+        if (_pausedNotConnected != NULL)
+            delete _pausedNotConnected;
+        if (_downloaded != NULL)
+            delete _downloaded;
+        if (_hashing != NULL)
+            delete _hashing;
+        if (_postProcessing != NULL)
+            delete _postProcessing;
+        if (_error != NULL)
+            delete _error;
+        if (_canceled != NULL)
+            delete _canceled;
+        if (_finished != NULL)
+            delete _finished;
+    }
+
  private:
     QStateMachine _stateMachine;
 
@@ -133,8 +161,9 @@ class DownloadSMPrivate {
     QState* _idle;
     QState* _init;
     QState* _downloading;
-    QState* _paused;
     QState* _downloadingNotConnected;
+    QState* _paused;
+    QState* _pausedNotConnected;
     QState* _downloaded;
     QState* _hashing;
     QState* _postProcessing;
