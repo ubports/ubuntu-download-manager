@@ -42,8 +42,9 @@ class DownloadSMPrivate {
         _idle = new QState();
         _init = new QState();
         _downloading = new QState();
-        _paused = new QState();
         _downloadingNotConnected = new QState();
+        _paused = new QState();
+        _pausedNotConnected = new QState();
         _downloaded = new QState();
         _hashing = new QState();
         _postProcessing = new QState();
@@ -61,10 +62,12 @@ class DownloadSMPrivate {
             delete _init;
         if (_downloading != NULL)
             delete _downloading;
-        if (_paused != NULL)
-            delete _paused;
         if (_downloadingNotConnected != NULL)
             delete _downloadingNotConnected;
+        if (_paused != NULL)
+            delete _paused;
+        if (_pausedNotConnected != NULL)
+            delete _pausedNotConnected;
         if (_downloaded != NULL)
             delete _downloaded;
         if (_hashing != NULL)
@@ -86,8 +89,9 @@ class DownloadSMPrivate {
     QState* _idle;
     QState* _init;
     QState* _downloading;
-    QState* _paused;
     QState* _downloadingNotConnected;
+    QState* _paused;
+    QState* _pausedNotConnected;
     QState* _downloaded;
     QState* _hashing;
     QState* _postProcessing;
