@@ -34,30 +34,31 @@ class SMFileDownload : public QObject {
     
  signals:
     // the following signals are used to control the move between
-    // states in the statem machine
+    // states in the state machine
 
     // signal raised when we are done with a head request done to get as
-    // much info as possible about the download as possible
+    // much info as possible about the download
     void headRequestCompleted();
 
     // network related signals
     void error(QNetworkReply::NetworkError code);
     void sslErrors(const QList<QSslError>& errors);
 
-    // raised when the connection is not a available (either no connection
+    // raised when the connection is not available (either no connection
     // or we cannot use the connection, eg. WIFI only)
     void connectionEnabled();
     void connectionDisabled();
 
     // signals that are raised when performing download operations
-    void downloading();
+    void downloadingStarted();
     void paused();
     void completed();
-    void hashing();
+    void hashingStarted();
     void hashingError();
-    void postProcessing();
+    void postProcessingStarted();
     void postProcessingError();
     void finished();
+    void canceled();
 
 };
 
