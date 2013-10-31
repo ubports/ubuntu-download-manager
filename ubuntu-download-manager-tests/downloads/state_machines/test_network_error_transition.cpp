@@ -17,6 +17,7 @@
  */
 
 #include <QNetworkReply>
+#include <QSignalSpy>
 #include "test_network_error_transition.h"
 
 TestNetworkErrorTransition::TestNetworkErrorTransition(QObject *parent)
@@ -28,22 +29,34 @@ TestNetworkErrorTransition::init() {
     BaseTestCase::init();
     _down = new FakeSMFileDownload();
     _s1 = new QState();
-    _s2 = new QState();
+    _s2 = new QFinalState();
+
+    _stateMachine.addState(_s1);
+    _stateMachine.addState(_s2);
 
     _transition = new NetworkErrorTransition(_down, _s1, _s2);
+    _s1->addTransition(_transition);
+    _stateMachine.setInitialState(_s1);
 }
 
 void
 TestNetworkErrorTransition::cleanup() {
     BaseTestCase::cleanup();
+    _stateMachine.removeState(_s1);
+    _stateMachine.removeState(_s2);
+    if (_transition != NULL)
+        delete _transition;
     if (_down != NULL)
         delete _down;
+    if (_s1 != NULL)
+        delete _s1;
+    if (_s2 != NULL)
+        delete _s2;
 }
 
 void
 TestNetworkErrorTransition::testOnTransition_data() {
     QTest::addColumn<QNetworkReply::NetworkError>("code");
-
     QTest::newRow("ConnectionRefusedError")
         << QNetworkReply::ConnectionRefusedError;
     QTest::newRow("RemoteHostClosedError")
@@ -99,14 +112,25 @@ TestNetworkErrorTransition::testOnTransition_data() {
 void
 TestNetworkErrorTransition::testOnTransition() {
     _down->record();
+    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
     QFETCH(QNetworkReply::NetworkError, code);
+
+    _stateMachine.start();
+    // ensure that we started
+    QTRY_COMPARE(startedSpy.count(), 1);
 
     // raise the signal and assert that the correct method was called with the
     // correct error code
     _down->raiseNetworkError(code);
+
+    // ensure that we finished
+    QTRY_COMPARE(finishedSpy.count(), 1);
+
     QList<MethodData> calledMethods = _down->calledMethods();
+    QCOMPARE(calledMethods.count(), 1);
+
     NetworkErrorWrapper* wrapper = reinterpret_cast<NetworkErrorWrapper*>(
         calledMethods[0].params().inParams()[0]);
-
     QCOMPARE(wrapper->value(), code);
 }

@@ -19,7 +19,9 @@
 #ifndef TEST_NETWORK_ERROR_TRANSITION_H
 #define TEST_NETWORK_ERROR_TRANSITION_H
 
+#include <QFinalState>
 #include <QState>
+#include <QStateMachine>
 #include <QObject>
 #include <downloads/state_machines/download_sm.h>
 #include "base_testcase.h"
@@ -40,10 +42,11 @@ class TestNetworkErrorTransition : public BaseTestCase {
     void testOnTransition();
 
  private:
+    QStateMachine _stateMachine;
     FakeSMFileDownload* _down;
     NetworkErrorTransition* _transition;
     QState* _s1;
-    QState* _s2;
+    QFinalState* _s2;
 };
 
 DECLARE_TEST(TestNetworkErrorTransition)

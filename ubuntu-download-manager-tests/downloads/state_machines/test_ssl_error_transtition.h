@@ -19,9 +19,16 @@
 #ifndef TEST_SSL_ERROR_TRANSTITION_H
 #define TEST_SSL_ERROR_TRANSTITION_H
 
+#include <QFinalState>
 #include <QObject>
+#include <QState>
+#include <QStateMachine>
+#include <downloads/state_machines/download_sm.h>
 #include "base_testcase.h"
 #include "test_runner.h"
+#include "fakes/fake_sm_file_download.h"
+
+using namespace Ubuntu::DownloadManager::StateMachines;
 
 class TestSslErrorTranstition : public BaseTestCase {
     Q_OBJECT
@@ -33,6 +40,13 @@ class TestSslErrorTranstition : public BaseTestCase {
     void init() override;
     void cleanup() override;
     void testOnTransition();
+
+ private:
+    QStateMachine _stateMachine;
+    FakeSMFileDownload* _down;
+    SslErrorTransition* _transition;
+    QState* _s1;
+    QFinalState* _s2;
 };
 
 DECLARE_TEST(TestSslErrorTranstition)
