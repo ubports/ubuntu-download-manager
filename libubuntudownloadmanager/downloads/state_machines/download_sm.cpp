@@ -110,6 +110,43 @@ StartDownloadTransition::onTransition(QEvent * event) {
     down->setState(Download::START);
 }
 
+/*
+ * DOWNLOADING LOST CONNECTION
+ */
+
+StopRequestTransition::StopRequestTransition(const SMFileDownload* sender,
+                                             const char* signal,
+                                             QState* sourceState,
+                                             QAbstractState* nextState)
+    : DownloadSMTransition(sender, signal, sourceState, nextState){
+}
+
+void
+StopRequestTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->stopRequestDownload();
+    down->setState(Download::PAUSE);
+}
+
+/*
+ * CANCEL DOWNLOAD TRANSITION
+ */
+
+CancelDownloadTransition::CancelDownloadTransition(const SMFileDownload* sender,
+                                                   QState* sourceState,
+                                                   QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(canceled()), sourceState, nextState) {
+}
+
+void
+CancelDownloadTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->cancelRequestDownload();
+    down->setState(Download::CANCEL);
+}
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -152,6 +189,18 @@ class DownloadSMPrivate {
         _init->addTransition(_startDownload);
         _init->addTransition(_initNetworkErrorTransition);
         _init->addTransition(_initSslErrorTransition);
+
+        // add the downloading transitions
+        _downloadingLostConnectionTransition = new StopRequestTransition(_down,
+            SIGNAL(connectionDisabled()), _downloading, _downloadingNotConnected);
+        _downloadingPausedTransition = new StopRequestTransition(_down,
+            SIGNAL(paused()), _downloading, _paused);
+        _downloadingCancelTransition = new CancelDownloadTransition(_down,
+            _downloading, _canceled);
+        _downloadingNetworkErrorTransition = new NetworkErrorTransition(_down,
+            _downloading, _error);
+        _downloadingSslErrorTransition = new SslErrorTransition(_down,
+            _downloading, _error);
     }
 
  private:
@@ -179,6 +228,12 @@ class DownloadSMPrivate {
     StartDownloadTransition* _startDownload;
     NetworkErrorTransition* _initNetworkErrorTransition;
     SslErrorTransition* _initSslErrorTransition;
+    // downloading transtions
+    StopRequestTransition* _downloadingLostConnectionTransition;
+    StopRequestTransition* _downloadingPausedTransition;
+    CancelDownloadTransition* _downloadingCancelTransition;
+    NetworkErrorTransition* _downloadingNetworkErrorTransition;
+    SslErrorTransition* _downloadingSslErrorTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;

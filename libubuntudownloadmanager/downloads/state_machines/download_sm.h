@@ -93,6 +93,29 @@ class StartDownloadTransition : public DownloadSMTransition {
     virtual void onTransition(QEvent * event) override;
 };
 
+// takes care of the case in witch the connection is lost
+class StopRequestTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    StopRequestTransition(const SMFileDownload* sender,
+                          const char* signal,
+                          QState* sourceState,
+                          QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
+// takes care of the case when the download is canceled
+class CancelDownloadTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    CancelDownloadTransition(const SMFileDownload* sender,
+                             QState* sourceState,
+                             QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
 class DownloadSMPrivate;
 class DownloadSM : public QObject {
     Q_OBJECT

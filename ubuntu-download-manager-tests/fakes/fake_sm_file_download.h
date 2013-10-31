@@ -61,10 +61,14 @@ class FakeSMFileDownload : public SMFileDownload, public Fake{
     Download::State state();
     void setState(Download::State state) override;
     void requestDownload() override;
+    void stopRequestDownload() override;
+    void cancelRequestDownload() override;
 
     void raiseNetworkError(QNetworkReply::NetworkError code);
     void raiseSslError(const QList<QSslError>& errors);
     void raiseDownloadingStarted();
+    void raisePaused();
+    void raiseCanceled();
 
  private:
     Download::State _state;
