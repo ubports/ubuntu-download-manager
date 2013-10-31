@@ -23,6 +23,7 @@ SOURCES += \
     downloads/group_download_struct.cpp \
     downloads/group_download_adaptor.cpp \
     downloads/file_download.cpp \
+    downloads/sm_file_download.cpp \
     system/hash_algorithm.cpp \
     system/uuid_utils.cpp \
     system/uuid_factory.cpp \
@@ -54,6 +55,7 @@ HEADERS +=\
     downloads/group_download_struct.h \
     downloads/group_download_adaptor.h \
     downloads/file_download.h \
+    downloads/sm_file_download.h \
     system/hash_algorithm.h \
     system/uuid_utils.h \
     system/uuid_factory.h \
