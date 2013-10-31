@@ -93,6 +93,28 @@ FakeSMFileDownload::emitSslError(const QList<QSslError>& errors) {
     }
 }
 
+Download::State
+FakeSMFileDownload::state() {
+    return _state;
+}
+
+void
+FakeSMFileDownload::setState(Download::State state) {
+    _state = state;
+}
+
+void
+FakeSMFileDownload::requestDownload() {
+    if (_recording) {
+        QList<QObject*> inParams;
+
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("requestDownload", params);
+        _called.append(methodData);
+    }
+}
+
 void
 FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
     emit error(code);
@@ -101,4 +123,9 @@ FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
 void
 FakeSMFileDownload::raiseSslError(const QList<QSslError>& errors) {
     emit sslErrors(errors);
+}
+
+void
+FakeSMFileDownload::raiseDownloadingStarted() {
+    emit downloadingStarted();
 }

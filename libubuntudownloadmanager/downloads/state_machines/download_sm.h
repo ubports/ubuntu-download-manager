@@ -82,6 +82,17 @@ class SslErrorTransition : public DownloadSMTransition {
     virtual void onTransition(QEvent * event) override;
 };
 
+// takes care of the very first time the download is started
+class StartDownloadTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    StartDownloadTransition(const SMFileDownload* sender,
+                            QState* sourceState,
+                            QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
 class DownloadSMPrivate;
 class DownloadSM : public QObject {
     Q_OBJECT

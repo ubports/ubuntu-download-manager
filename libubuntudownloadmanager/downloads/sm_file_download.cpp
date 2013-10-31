@@ -44,6 +44,17 @@ SMFileDownload::emitSslError(const QList<QSslError>& errors) {
     // TODO: emit the signal
 }
 
+void
+SMFileDownload::setState(Download::State state) {
+    Q_UNUSED(state);
+    // TODO: set the real state
+}
+
+void
+SMFileDownload::requestDownload() {
+    // TODO: perform the request
+}
+
 }  // Ubuntu
 
 }  // DownloadManager

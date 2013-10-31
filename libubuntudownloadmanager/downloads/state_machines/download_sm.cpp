@@ -90,6 +90,26 @@ SslErrorTransition::onTransition(QEvent * event) {
     DownloadSMTransition::onTransition(event);
 }
 
+/*
+ * START TRANSITION
+ */
+
+StartDownloadTransition::StartDownloadTransition(const SMFileDownload* sender,
+                                                 QState* sourceState,
+                                                 QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(downloadingStarted()),
+        sourceState, nextState) {
+}
+
+void
+StartDownloadTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    // tell the down to start and set the state
+    down->requestDownload();
+    down->setState(Download::START);
+}
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -125,33 +145,13 @@ class DownloadSMPrivate {
         _idle->addTransition(_idleNetworkErrorTransition);
         _idle->addTransition(_idleSslErrorTransition);
 
-    }
-
-    ~DownloadSMPrivate() {
-        if (_idle != NULL)
-            delete _idle;
-        if (_init != NULL)
-            delete _init;
-        if (_downloading != NULL)
-            delete _downloading;
-        if (_downloadingNotConnected != NULL)
-            delete _downloadingNotConnected;
-        if (_paused != NULL)
-            delete _paused;
-        if (_pausedNotConnected != NULL)
-            delete _pausedNotConnected;
-        if (_downloaded != NULL)
-            delete _downloaded;
-        if (_hashing != NULL)
-            delete _hashing;
-        if (_postProcessing != NULL)
-            delete _postProcessing;
-        if (_error != NULL)
-            delete _error;
-        if (_canceled != NULL)
-            delete _canceled;
-        if (_finished != NULL)
-            delete _finished;
+        // add the init state transtions
+        _startDownload = new StartDownloadTransition(_down, _init, _downloading);
+        _initNetworkErrorTransition = new NetworkErrorTransition(_down, _init, _error);
+        _initSslErrorTransition = new SslErrorTransition(_down, _init, _error);
+        _init->addTransition(_startDownload);
+        _init->addTransition(_initNetworkErrorTransition);
+        _init->addTransition(_initSslErrorTransition);
     }
 
  private:
@@ -171,10 +171,14 @@ class DownloadSMPrivate {
     QFinalState* _error;
     QFinalState* _canceled;
     QFinalState* _finished;
-    // transitions
+    // idle transitions
     HeaderTransition* _headerTransition;
     NetworkErrorTransition* _idleNetworkErrorTransition;
     SslErrorTransition* _idleSslErrorTransition;
+    // init transtions
+    StartDownloadTransition* _startDownload;
+    NetworkErrorTransition* _initNetworkErrorTransition;
+    SslErrorTransition* _initSslErrorTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
