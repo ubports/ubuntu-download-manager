@@ -147,6 +147,24 @@ CancelDownloadTransition::onTransition(QEvent * event) {
     down->setState(Download::CANCEL);
 }
 
+/*
+ * RESUME DOWNLOAD TRANSITION
+ */
+ResumeDownloadTransition::ResumeDownloadTransition(const SMFileDownload* sender,
+                                                   const char* signal,
+                                                   QState* sourceState,
+                                                   QAbstractState* nextState)
+    : DownloadSMTransition(sender, signal, sourceState, nextState) {
+}
+
+void
+ResumeDownloadTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->requestDownload();
+    down->setState(Download::RESUME);
+}
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -201,6 +219,22 @@ class DownloadSMPrivate {
             _downloading, _error);
         _downloadingSslErrorTransition = new SslErrorTransition(_down,
             _downloading, _error);
+
+        // add the downloading not connected transitions
+        _downloadingReconnectTransition = new ResumeDownloadTransition(_down,
+            SIGNAL(connectionEnabled()), _downloadingNotConnected,
+            _downloading);
+        _downloadingNotConnectedCanceled = new CancelDownloadTransition(_down,
+            _downloadingNotConnected, _canceled);
+        _downloadingNotConnected->addTransition(_downloadingReconnectTransition);
+        _downloadingNotConnected->addTransition(_downloadingNotConnectedCanceled);
+        // this is a special case, we are moving from downloadingNotConnected
+        // to pausedNotConnected. In downloadingNotConnected the state was
+        // already set to be paused and the request was stopped, when we are
+        // paused we are not changing internally b ut we are moving to a diff
+        // state
+        _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
+            _pausedNotConnected);
     }
 
  private:
@@ -234,6 +268,9 @@ class DownloadSMPrivate {
     CancelDownloadTransition* _downloadingCancelTransition;
     NetworkErrorTransition* _downloadingNetworkErrorTransition;
     SslErrorTransition* _downloadingSslErrorTransition;
+    // downloading not connected transitions
+    ResumeDownloadTransition* _downloadingReconnectTransition;
+    CancelDownloadTransition* _downloadingNotConnectedCanceled;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;

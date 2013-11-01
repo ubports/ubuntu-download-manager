@@ -116,6 +116,17 @@ class CancelDownloadTransition : public DownloadSMTransition {
     virtual void onTransition(QEvent * event) override;
 };
 
+class ResumeDownloadTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    ResumeDownloadTransition(const SMFileDownload* sender,
+                             const char* signal,
+                             QState* sourceState,
+                             QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
 class DownloadSMPrivate;
 class DownloadSM : public QObject {
     Q_OBJECT

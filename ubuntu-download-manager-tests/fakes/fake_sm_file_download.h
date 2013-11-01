@@ -69,6 +69,7 @@ class FakeSMFileDownload : public SMFileDownload, public Fake{
     void raiseDownloadingStarted();
     void raisePaused();
     void raiseCanceled();
+    void raiseResumed();
 
  private:
     Download::State _state;
