@@ -201,6 +201,11 @@ class DownloadSMPrivate {
             _downloading, _error);
         _downloadingSslErrorTransition = new SslErrorTransition(_down,
             _downloading, _error);
+        _downloading->addTransition(_downloadingLostConnectionTransition);
+        _downloading->addTransition(_downloadingPausedTransition);
+        _downloading->addTransition(_downloadingCancelTransition);
+        _downloading->addTransition(_downloadingNetworkErrorTransition);
+        _downloading->addTransition(_downloadingSslErrorTransition);
     }
 
  private:
