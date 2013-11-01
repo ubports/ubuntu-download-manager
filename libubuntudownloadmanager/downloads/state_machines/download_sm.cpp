@@ -252,6 +252,15 @@ class DownloadSMPrivate {
         // _pausedNotConnected
         _paused->addTransition(_down, SIGNAL(connectionDisabled()),
             _pausedNotConnected);
+
+        // paused not connected transitions
+        _pausedNotConnectedCancelTransition = new CancelDownloadTransition(
+            _down, _pausedNotConnected, _canceled);
+        _pausedNotConnected->addTransition(_pausedNotConnectedCancelTransition);
+        _pausedNotConnected->addTransition(_down, SIGNAL(resumed()),
+            _downloadingNotConnected);
+        _pausedNotConnected->addTransition(_down, SIGNAL(connectionEnabled()),
+            _paused);
     }
 
  private:
@@ -291,6 +300,8 @@ class DownloadSMPrivate {
     // paused transitions
     ResumeDownloadTransition* _pauseResumeTransition;
     CancelDownloadTransition* _pausedCancelTransition;
+    // paused not connected transitions
+    CancelDownloadTransition* _pausedNotConnectedCancelTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
