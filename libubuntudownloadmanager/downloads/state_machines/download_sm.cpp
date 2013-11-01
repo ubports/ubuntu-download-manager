@@ -280,6 +280,12 @@ class DownloadSMPrivate {
             _error);
         _hashing->addTransition(_down, SIGNAL(postProcessingStarted()),
             _postProcessing);
+
+        // post processing transitions
+        _postProcessing->addTransition(_down, SIGNAL(finished()),
+            _finished);
+        _postProcessing->addTransition(_down, SIGNAL(postProcessingError()),
+            _error);
     }
 
  private:
