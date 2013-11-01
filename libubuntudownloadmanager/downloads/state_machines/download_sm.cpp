@@ -19,6 +19,7 @@
 #include <QFinalState>
 #include <QState>
 #include <QStateMachine>
+#include <QSharedPointer>
 #include "download_sm.h"
 
 namespace Ubuntu {
@@ -39,39 +40,39 @@ class DownloadSMPrivate {
         : q_ptr(parent) {
 
         // create the diff events and add them to the state machine
-        _idle = new QState();
-        _init = new QState();
-        _downloading = new QState();
-        _downloadingNotConnected = new QState();
-        _paused = new QState();
-        _pausedNotConnected = new QState();
-        _downloaded = new QState();
-        _hashing = new QState();
-        _postProcessing = new QState();
+        _idle = QSharedPointer<QState>(new QState());
+        _init = QSharedPointer<QState>(new QState());
+        _downloading = QSharedPointer<QState>(new QState());
+        _downloadingNotConnected = QSharedPointer<QState>(new QState());
+        _paused = QSharedPointer<QState>(new QState());
+        _pausedNotConnected = QSharedPointer<QState>(new QState());
+        _downloaded = QSharedPointer<QState>(new QState());
+        _hashing = QSharedPointer<QState>(new QState());
+        _postProcessing = QSharedPointer<QState>(new QState());
 
         // finish steps
-        _error = new QFinalState();
-        _canceled = new QFinalState();
-        _finished = new QFinalState();
+        _error = QSharedPointer<QFinalState>(new QFinalState());
+        _canceled = QSharedPointer<QFinalState>(new QFinalState());
+        _finished = QSharedPointer<QFinalState>(new QFinalState());
     }
 
  private:
     QStateMachine _stateMachine;
 
     // intermediate steps
-    QState* _idle;
-    QState* _init;
-    QState* _downloading;
-    QState* _downloadingNotConnected;
-    QState* _paused;
-    QState* _pausedNotConnected;
-    QState* _downloaded;
-    QState* _hashing;
-    QState* _postProcessing;
+    QSharedPointer<QState>_idle;
+    QSharedPointer<QState>_init;
+    QSharedPointer<QState>_downloading;
+    QSharedPointer<QState>_downloadingNotConnected;
+    QSharedPointer<QState>_paused;
+    QSharedPointer<QState>_pausedNotConnected;
+    QSharedPointer<QState>_downloaded;
+    QSharedPointer<QState>_hashing;
+    QSharedPointer<QState>_postProcessing;
     // finish steps
-    QFinalState* _error;
-    QFinalState* _canceled;
-    QFinalState* _finished;
+    QSharedPointer<QFinalState>_error;
+    QSharedPointer<QFinalState>_canceled;
+    QSharedPointer<QFinalState>_finished;
 
     DownloadSM* q_ptr;
 };
