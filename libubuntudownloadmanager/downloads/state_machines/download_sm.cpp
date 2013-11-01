@@ -127,33 +127,6 @@ class DownloadSMPrivate {
 
     }
 
-    ~DownloadSMPrivate() {
-        if (_idle != NULL)
-            delete _idle;
-        if (_init != NULL)
-            delete _init;
-        if (_downloading != NULL)
-            delete _downloading;
-        if (_downloadingNotConnected != NULL)
-            delete _downloadingNotConnected;
-        if (_paused != NULL)
-            delete _paused;
-        if (_pausedNotConnected != NULL)
-            delete _pausedNotConnected;
-        if (_downloaded != NULL)
-            delete _downloaded;
-        if (_hashing != NULL)
-            delete _hashing;
-        if (_postProcessing != NULL)
-            delete _postProcessing;
-        if (_error != NULL)
-            delete _error;
-        if (_canceled != NULL)
-            delete _canceled;
-        if (_finished != NULL)
-            delete _finished;
-    }
-
  private:
     QStateMachine _stateMachine;
 
