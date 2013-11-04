@@ -297,6 +297,8 @@ class DownloadSMPrivate {
         delete _downloadingCancelTransition;
         delete _downloadingNetworkErrorTransition;
         delete _downloadingSslErrorTransition;
+        delete _downloadingReconnectTransition;
+        delete _downloadingNotConnectedCanceled;
         delete _idle;
         delete _init;
         delete _downloading;
