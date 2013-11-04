@@ -20,7 +20,6 @@
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
-#include <QScopedPointer>
 #include "download_sm.h"
 
 namespace Ubuntu {
@@ -120,65 +119,90 @@ class DownloadSMPrivate {
 
  public:
     explicit DownloadSMPrivate(DownloadSM* parent)
-        : _idle(new QState()),
-          _init(new QState()),
-          _downloading(new QState()),
-          _downloadingNotConnected(new QState()),
-          _paused(new QState()),
-          _pausedNotConnected(new QState()),
-          _downloaded(new QState()),
-          _hashing(new QState()),
-          _postProcessing(new QState()),
-          _error(new QFinalState()),
-          _canceled(new QFinalState()),
-          _finished(new QFinalState()),
-          _headerTransition(new HeaderTransition(_down,
-                _idle.data(), _init.data())),
-          _idleNetworkErrorTransition(new NetworkErrorTransition(
-                _down, _idle.data(), _error.data())),
-          _idleSslErrorTransition(new SslErrorTransition(_down,
-                _idle.data(), _error.data())),
-          q_ptr(parent) {
+        : q_ptr(parent) {
+
+        _idle = new QState();
+        _init = new QState();
+        _downloading = new QState();
+        _downloadingNotConnected = new QState();
+        _paused = new QState();
+        _pausedNotConnected = new QState();
+        _downloaded = new QState();
+        _hashing = new QState();
+        _postProcessing = new QState();
+        _error = new QFinalState();
+        _canceled = new QFinalState();
+        _finished = new QFinalState();
 
         // add the idle state transitions
-        _idle->addTransition(_headerTransition.data());
-        _idle->addTransition(_idleNetworkErrorTransition.data());
-        _idle->addTransition(_idleSslErrorTransition.data());
+        _headerTransition = new HeaderTransition(_down,
+            _idle, _init);
+        _idleNetworkErrorTransition = new NetworkErrorTransition(
+            _down, _idle, _error);
+        _idleSslErrorTransition = new SslErrorTransition(_down,
+            _idle, _error);
+
+        _idle->addTransition(_headerTransition);
+        _idle->addTransition(_idleNetworkErrorTransition);
+        _idle->addTransition(_idleSslErrorTransition);
 
         // add the init state transtions
-        _startDownload = new StartDownloadTransition(_down, _init.data(), _downloading.data());
-        _initNetworkErrorTransition = new NetworkErrorTransition(_down, _init.data(), _error.data());
-        _initSslErrorTransition = new SslErrorTransition(_down, _init.data(), _error.data());
+        _startDownload = new StartDownloadTransition(_down,
+            _init, _downloading);
+        _initNetworkErrorTransition = new NetworkErrorTransition(_down,
+            _init, _error);
+        _initSslErrorTransition = new SslErrorTransition(_down, _init, _error);
         _init->addTransition(_startDownload);
         _init->addTransition(_initNetworkErrorTransition);
         _init->addTransition(_initSslErrorTransition);
+    }
+
+    ~DownloadSMPrivate() {
+        delete _headerTransition;
+        delete _idleNetworkErrorTransition;
+        delete _idleSslErrorTransition;
+        delete _startDownload;
+        delete _initNetworkErrorTransition;
+        delete _initSslErrorTransition;
+        delete _idle;
+        delete _init;
+        delete _downloading;
+        delete _downloadingNotConnected;
+        delete _paused;
+        delete _pausedNotConnected;
+        delete _downloaded;
+        delete _hashing;
+        delete _postProcessing;
+        delete _error;
+        delete _canceled;
+        delete _finished;
     }
 
  private:
     QStateMachine _stateMachine;
 
     // intermediate steps
-    QScopedPointer<QState>_idle;
-    QScopedPointer<QState>_init;
-    QScopedPointer<QState>_downloading;
-    QScopedPointer<QState>_downloadingNotConnected;
-    QScopedPointer<QState>_paused;
-    QScopedPointer<QState>_pausedNotConnected;
-    QScopedPointer<QState>_downloaded;
-    QScopedPointer<QState>_hashing;
-    QScopedPointer<QState>_postProcessing;
+    QState* _idle;
+    QState* _init;
+    QState* _downloading;
+    QState* _downloadingNotConnected;
+    QState* _paused;
+    QState* _pausedNotConnected;
+    QState* _downloaded;
+    QState* _hashing;
+    QState* _postProcessing;
     // finish steps
-    QSharedPointer<QFinalState>_error;
-    QSharedPointer<QFinalState>_canceled;
-    QSharedPointer<QFinalState>_finished;
+    QFinalState* _error;
+    QFinalState* _canceled;
+    QFinalState* _finished;
     // idle transitions
-    QSharedPointer<HeaderTransition> _headerTransition;
-    QSharedPointer<NetworkErrorTransition> _idleNetworkErrorTransition;
-    QSharedPointer<SslErrorTransition> _idleSslErrorTransition;
+    HeaderTransition* _headerTransition;
+    NetworkErrorTransition* _idleNetworkErrorTransition;
+    SslErrorTransition* _idleSslErrorTransition;
     // init transitions
-    QSharedPointer<StartDownloadTransition> _startDownload;
-    QSharedPointer<NetworkErrorTransition> _initNetworkErrorTransition;
-    QSharedPointer<SslErrorTransition> _initSslErrorTransition;
+    StartDownloadTransition* _startDownload;
+    NetworkErrorTransition* _initNetworkErrorTransition;
+    SslErrorTransition* _initSslErrorTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
@@ -187,6 +211,10 @@ class DownloadSMPrivate {
 DownloadSM::DownloadSM(QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadSMPrivate(this)){
+}
+
+DownloadSM::~DownloadSM() {
+    delete d_ptr;
 }
 
 }  // StateMachines
