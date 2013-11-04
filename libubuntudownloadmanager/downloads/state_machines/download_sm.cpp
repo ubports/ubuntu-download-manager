@@ -131,11 +131,11 @@ class DownloadSMPrivate {
         _states[IDLE_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new NetworkErrorTransition(
-            _down, _states[IDLE_STATE], _states[ERROR_STATE]));
+            _down, _states[IDLE_STATE], _finalStates[ERROR_STATE]));
         _states[IDLE_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new SslErrorTransition(_down,
-            _states[IDLE_STATE], _states[ERROR_STATE]));
+            _states[IDLE_STATE], _finalStates[ERROR_STATE]));
         _states[IDLE_STATE]->addTransition(_transitions.last());
     }
 
