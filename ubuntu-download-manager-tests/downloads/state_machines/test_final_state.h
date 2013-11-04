@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QState>
 #include <QStateMachine>
+#include <QSignalTransition>
 #include <downloads/state_machines/final_state.h>
 #include "base_testcase.h"
 #include "test_runner.h"
@@ -62,7 +63,7 @@ class TestFinalStateHelperObject : public QObject {
     }
 
     void setSurname(QString surname) {
-        surname = _surname;
+        _surname = surname;
     }
 
     void emitMoveStates() {
@@ -97,6 +98,7 @@ public:
     QStateMachine _stateMachine;
     QState* _s1;
     FinalState* _s2;
+    QSignalTransition* _transition;
 };
 
 DECLARE_TEST(TestFinalState)
