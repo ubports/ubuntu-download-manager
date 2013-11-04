@@ -71,21 +71,6 @@ class DownloadSMPrivate {
     QStateMachine _stateMachine;
     QList<QAbstractState*> _states;
 
-    // intermediate steps
-    QState* _idle;
-    QState* _init;
-    QState* _downloading;
-    QState* _downloadingNotConnected;
-    QState* _paused;
-    QState* _pausedNotConnected;
-    QState* _downloaded;
-    QState* _hashing;
-    QState* _postProcessing;
-    // finish steps
-    QFinalState* _error;
-    QFinalState* _canceled;
-    QFinalState* _finished;
-
     DownloadSM* q_ptr;
 };
 
