@@ -132,13 +132,32 @@ class DownloadSM : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadSM)
 
+    Q_PROPERTY(DownloadSM::State state READ state WRITE setState)
+
  public:
-    explicit DownloadSM(QObject *parent = 0);
+    DownloadSM(SMFileDownload* down, QObject *parent = 0);
     virtual ~DownloadSM();
- signals:
+
+    enum State {
+        IDLE,
+        INIT,
+        DOWNLOADING,
+        DOWNLOADING_NOT_CONNECTED,
+        PAUSED,
+        PAUSED_NOT_CONNECTED,
+        DOWNLOADED,
+        HASHING,
+        POST_PROCESSING,
+        FINISHED,
+        ERROR,
+        CANCELED
+    };
     
- public slots:
-    
+    DownloadSM::State state();
+    void setState(DownloadSM::State state);
+
+    void start();
+
  private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadSMPrivate* d_ptr;

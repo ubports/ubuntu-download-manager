@@ -173,21 +173,40 @@ class DownloadSMPrivate {
     Q_DECLARE_PUBLIC(DownloadSM)
 
  public:
-    explicit DownloadSMPrivate(DownloadSM* parent)
-        : q_ptr(parent) {
+    explicit DownloadSMPrivate(SMFileDownload* down, DownloadSM* parent)
+        : _down(down),
+          q_ptr(parent) {
+        Q_Q(DownloadSM);
 
         _idle = new QState();
+        _idle->assignProperty(q, "state", DownloadSM::IDLE);
         _init = new QState();
+        _init->assignProperty(q, "state", DownloadSM::INIT);
         _downloading = new QState();
+        _downloading->assignProperty(q, "state", DownloadSM::DOWNLOADING);
         _downloadingNotConnected = new QState();
+        _downloadingNotConnected->assignProperty(q, "state",
+            DownloadSM::DOWNLOADING_NOT_CONNECTED);
         _paused = new QState();
+        _paused->assignProperty(q, "state", DownloadSM::PAUSED);
         _pausedNotConnected = new QState();
+        _pausedNotConnected->assignProperty(q, "state",
+            DownloadSM::PAUSED_NOT_CONNECTED);
         _downloaded = new QState();
+        _downloaded->assignProperty(q, "state", DownloadSM::DOWNLOADED);
         _hashing = new QState();
+        _hashing->assignProperty(q, "state", DownloadSM::HASHING);
         _postProcessing = new QState();
+        _postProcessing->assignProperty(q, "state",
+            DownloadSM::POST_PROCESSING);
+
+        // finish steps
         _error = new QFinalState();
+        _error->assignProperty(q, "state", DownloadSM::ERROR);
         _canceled = new QFinalState();
+        _canceled->assignProperty(q, "state", DownloadSM::CANCELED);
         _finished = new QFinalState();
+        _finished->assignProperty(q, "state", DownloadSM::FINISHED);
 
         // add the idle state transitions
         _headerTransition = new HeaderTransition(_down,
@@ -289,6 +308,34 @@ class DownloadSMPrivate {
             _finished);
         _postProcessing->addTransition(_down, SIGNAL(postProcessingError()),
             _error);
+
+        // add states set init state
+        _stateMachine.addState(_idle);
+        _stateMachine.addState(_init);
+        _stateMachine.addState(_downloading);
+        _stateMachine.addState(_downloadingNotConnected);
+        _stateMachine.addState(_paused);
+        _stateMachine.addState(_pausedNotConnected);
+        _stateMachine.addState(_downloaded);
+        _stateMachine.addState(_hashing);
+        _stateMachine.addState(_postProcessing);
+        _stateMachine.addState(_error);
+        _stateMachine.addState(_canceled);
+        _stateMachine.addState(_finished);
+
+        _stateMachine.setInitialState(_idle);
+    }
+
+    DownloadSM::State state() {
+        return _state;
+    }
+
+    void setState(DownloadSM::State state) {
+        _state = state;
+    }
+
+    void start() {
+        _stateMachine.start();
     }
 
     ~DownloadSMPrivate() {
@@ -324,6 +371,7 @@ class DownloadSMPrivate {
     }
 
  private:
+    DownloadSM::State _state = DownloadSM::IDLE;
     QStateMachine _stateMachine;
 
     // intermediate steps
@@ -369,9 +417,27 @@ class DownloadSMPrivate {
     DownloadSM* q_ptr;
 };
 
-DownloadSM::DownloadSM(QObject* parent)
+DownloadSM::DownloadSM(SMFileDownload* down, QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadSMPrivate(this)){
+      d_ptr(new DownloadSMPrivate(down, this)){
+}
+
+DownloadSM::State
+DownloadSM::state() {
+    Q_D(DownloadSM);
+    return d->state();
+}
+
+void
+DownloadSM::setState(DownloadSM::State state) {
+    Q_D(DownloadSM);
+    d->setState(state);
+}
+
+void
+DownloadSM::start() {
+    Q_D(DownloadSM);
+    d->start();
 }
 
 DownloadSM::~DownloadSM() {
