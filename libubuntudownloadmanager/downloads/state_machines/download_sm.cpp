@@ -282,6 +282,7 @@ class DownloadSMPrivate {
         delete _downloadingNotConnectedCanceled;
         delete _pauseResumeTransition;
         delete _pausedCancelTransition;
+        delete _pausedNotConnectedCancelTransition;
         delete _idle;
         delete _init;
         delete _downloading;
