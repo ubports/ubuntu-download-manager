@@ -16,11 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QFinalState>
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
 #include "download_sm.h"
+#include "final_state.h"
 
 namespace Ubuntu {
 
@@ -201,11 +201,11 @@ class DownloadSMPrivate {
             DownloadSM::POST_PROCESSING);
 
         // finish steps
-        _error = new QFinalState();
+        _error = new FinalState();
         _error->assignProperty(q, "state", DownloadSM::ERROR);
-        _canceled = new QFinalState();
+        _canceled = new FinalState();
         _canceled->assignProperty(q, "state", DownloadSM::CANCELED);
-        _finished = new QFinalState();
+        _finished = new FinalState();
         _finished->assignProperty(q, "state", DownloadSM::FINISHED);
 
         // add the idle state transitions
@@ -385,9 +385,9 @@ class DownloadSMPrivate {
     QState* _hashing;
     QState* _postProcessing;
     // finish steps
-    QFinalState* _error;
-    QFinalState* _canceled;
-    QFinalState* _finished;
+    FinalState* _error;
+    FinalState* _canceled;
+    FinalState* _finished;
     // idle transitions
     HeaderTransition* _headerTransition;
     NetworkErrorTransition* _idleNetworkErrorTransition;
