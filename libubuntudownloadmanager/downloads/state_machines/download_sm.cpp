@@ -274,7 +274,6 @@ class DownloadSMPrivate {
 
         _transitions.append(_states[PAUSED_STATE]->addTransition(
             _down, SIGNAL(connectionDisabled()), _states[PAUSED_NOT_CONNECTED_STATE]));
-        _states[PAUSED_STATE]->addTransition(_transitions.last());
 
         // paused not connected transitions
         _transitions.append(new CancelDownloadTransition(
@@ -287,7 +286,6 @@ class DownloadSMPrivate {
 
         _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_down,
             SIGNAL(connectionEnabled()), _states[PAUSED_STATE]));
-        _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
     }
 
     ~DownloadSMPrivate() {
