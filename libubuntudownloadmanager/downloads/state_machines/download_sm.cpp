@@ -241,8 +241,9 @@ class DownloadSMPrivate {
         // already set to be paused and the request was stopped, when we are
         // paused we are not changing internally b ut we are moving to a diff
         // state
-        _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
-            _pausedNotConnected);
+        _downloadingNotConnectedPaused =
+            _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
+                _pausedNotConnected);
 
         // add the pause transitions
         _pauseResumeTransition = new ResumeDownloadTransition(_down,
@@ -253,8 +254,8 @@ class DownloadSMPrivate {
         _paused->addTransition(_pausedCancelTransition);
         // similar transition to the _downloadingNotConnected and
         // _pausedNotConnected
-        _paused->addTransition(_down, SIGNAL(connectionDisabled()),
-            _pausedNotConnected);
+        _pausedLostConnectionTransition = _paused->addTransition(
+            _down, SIGNAL(connectionDisabled()), _pausedNotConnected);
     }
 
     ~DownloadSMPrivate() {
@@ -271,8 +272,10 @@ class DownloadSMPrivate {
         delete _downloadingSslErrorTransition;
         delete _downloadingReconnectTransition;
         delete _downloadingNotConnectedCanceled;
+        delete _downloadingNotConnectedPaused;
         delete _pauseResumeTransition;
         delete _pausedCancelTransition;
+        delete _pausedLostConnectionTransition;
         delete _idle;
         delete _init;
         delete _downloading;
@@ -321,9 +324,11 @@ class DownloadSMPrivate {
     // downloading not connected transitions
     ResumeDownloadTransition* _downloadingReconnectTransition;
     CancelDownloadTransition* _downloadingNotConnectedCanceled;
+    QSignalTransition* _downloadingNotConnectedPaused;
     // paused transitions
     ResumeDownloadTransition* _pauseResumeTransition;
     CancelDownloadTransition* _pausedCancelTransition;
+    QSignalTransition* _pausedLostConnectionTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
