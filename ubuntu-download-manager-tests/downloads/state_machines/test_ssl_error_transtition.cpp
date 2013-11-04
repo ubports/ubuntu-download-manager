@@ -44,14 +44,10 @@ TestSslErrorTranstition::cleanup() {
     BaseTestCase::cleanup();
     _stateMachine.removeState(_s1);
     _stateMachine.removeState(_s2);
-    if (_transition != NULL)
-        delete _transition;
-    if (_down != NULL)
-        delete _down;
-    if (_s1 != NULL)
-        delete _s1;
-    if (_s2 != NULL)
-        delete _s2;
+    delete _transition;
+    delete _down;
+    delete _s1;
+    delete _s2;
 }
 
 void
