@@ -241,8 +241,9 @@ class DownloadSMPrivate {
         // already set to be paused and the request was stopped, when we are
         // paused we are not changing internally b ut we are moving to a diff
         // state
-        _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
-            _pausedNotConnected);
+        _downloadingNotConnectedPaused =
+            _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
+                _pausedNotConnected);
     }
 
     ~DownloadSMPrivate() {
@@ -259,6 +260,7 @@ class DownloadSMPrivate {
         delete _downloadingSslErrorTransition;
         delete _downloadingReconnectTransition;
         delete _downloadingNotConnectedCanceled;
+        delete _downloadingNotConnectedPaused;
         delete _idle;
         delete _init;
         delete _downloading;
@@ -307,6 +309,7 @@ class DownloadSMPrivate {
     // downloading not connected transitions
     ResumeDownloadTransition* _downloadingReconnectTransition;
     CancelDownloadTransition* _downloadingNotConnectedCanceled;
+    QSignalTransition* _downloadingNotConnectedPaused;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
