@@ -123,7 +123,7 @@ class DownloadSM : public QObject {
 
  public:
     explicit DownloadSM(QObject *parent = 0);
-    
+    virtual ~DownloadSM();
  signals:
     
  public slots:
