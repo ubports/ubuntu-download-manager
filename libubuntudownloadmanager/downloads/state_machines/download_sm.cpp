@@ -21,6 +21,18 @@
 #include <QStateMachine>
 #include <QSslError>
 #include "download_sm.h"
+#define IDLE_STATE 0
+#define INIT_STATE 1
+#define DOWNLOADING_STATE 2
+#define DOWNLOADING_NOT_CONNECTED_STATE  3
+#define PAUSED_STATE 4
+#define PAUSED_NOT_CONNECTED_STATE 5
+#define DOWNLOADED_STATE 6
+#define HASHING_STATE 7
+#define POST_PROCESSING_STATE 8
+#define ERROR_STATE 9
+#define CANCELED_STATE 10
+#define FINISHED_STATE 11
 
 namespace Ubuntu {
 
@@ -100,72 +112,44 @@ class DownloadSMPrivate {
  public:
     explicit DownloadSMPrivate(DownloadSM* parent)
         : q_ptr(parent) {
-
-        _idle = new QState();
-        _init = new QState();
-        _downloading = new QState();
-        _downloadingNotConnected = new QState();
-        _paused = new QState();
-        _pausedNotConnected = new QState();
-        _downloaded = new QState();
-        _hashing = new QState();
-        _postProcessing = new QState();
-        _error = new QFinalState();
-        _canceled = new QFinalState();
-        _finished = new QFinalState();
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _states.append(new QState());
+        _finalStates.append(new QFinalState());
+        _finalStates.append(new QFinalState());
+        _finalStates.append(new QFinalState());
 
         // add the idle state transitions
-        _headerTransition = new HeaderTransition(_down,
-            _idle, _init);
-        _idleNetworkErrorTransition = new NetworkErrorTransition(
-            _down, _idle, _error);
-        _idleSslErrorTransition = new SslErrorTransition(_down,
-            _idle, _error);
+        _transitions.append(new HeaderTransition(_down,
+            _states[IDLE_STATE], _states[INIT_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
 
-        _idle->addTransition(_headerTransition);
-        _idle->addTransition(_idleNetworkErrorTransition);
-        _idle->addTransition(_idleSslErrorTransition);
+        _transitions.append(new NetworkErrorTransition(
+            _down, _states[IDLE_STATE], _states[ERROR_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new SslErrorTransition(_down,
+            _states[IDLE_STATE], _states[ERROR_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
     }
 
     ~DownloadSMPrivate() {
-        delete _headerTransition;
-        delete _idleNetworkErrorTransition;
-        delete _idleSslErrorTransition;
-        delete _idle;
-        delete _init;
-        delete _downloading;
-        delete _downloadingNotConnected;
-        delete _paused;
-        delete _pausedNotConnected;
-        delete _downloaded;
-        delete _hashing;
-        delete _postProcessing;
-        delete _error;
-        delete _canceled;
-        delete _finished;
+        qDeleteAll(_transitions);
+        qDeleteAll(_states);
+        qDeleteAll(_finalStates);
     }
 
  private:
     QStateMachine _stateMachine;
-
-    // intermediate steps
-    QState* _idle;
-    QState* _init;
-    QState* _downloading;
-    QState* _downloadingNotConnected;
-    QState* _paused;
-    QState* _pausedNotConnected;
-    QState* _downloaded;
-    QState* _hashing;
-    QState* _postProcessing;
-    // finish steps
-    QFinalState* _error;
-    QFinalState* _canceled;
-    QFinalState* _finished;
-    // transitions
-    HeaderTransition* _headerTransition;
-    NetworkErrorTransition* _idleNetworkErrorTransition;
-    SslErrorTransition* _idleSslErrorTransition;
+    QList<QState*> _states;
+    QList<QFinalState*> _finalStates;
+    QList<QSignalTransition*> _transitions;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
