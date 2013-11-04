@@ -30,9 +30,10 @@
 #define DOWNLOADED_STATE 6
 #define HASHING_STATE 7
 #define POST_PROCESSING_STATE 8
-#define ERROR_STATE 9
-#define CANCELED_STATE 10
-#define FINISHED_STATE 11
+
+#define ERROR_STATE 0
+#define CANCELED_STATE 1
+#define FINISHED_STATE 2
 
 namespace Ubuntu {
 
