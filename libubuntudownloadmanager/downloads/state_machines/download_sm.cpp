@@ -264,6 +264,18 @@ class DownloadSMPrivate {
             _downloadingNotConnected);
         _pausedNotConnected->addTransition(_down, SIGNAL(connectionEnabled()),
             _paused);
+
+        // downloaded transitions
+        _downloadedCancelTransition = new CancelDownloadTransition(
+            _down, _downloaded, _canceled);
+        _downloaded->addTransition(_downloadedCancelTransition);
+        _downloaded->addTransition(_down, SIGNAL(finished()),
+            _finished);
+        _downloaded->addTransition(_down, SIGNAL(hashingStarted()),
+            _hashing);
+        _downloaded->addTransition(_down, SIGNAL(postProcessingStarted()),
+            _postProcessing);
+
     }
 
     ~DownloadSMPrivate() {
@@ -283,6 +295,7 @@ class DownloadSMPrivate {
         delete _pauseResumeTransition;
         delete _pausedCancelTransition;
         delete _pausedNotConnectedCancelTransition;
+        delete _downloadedCancelTransition;
         delete _idle;
         delete _init;
         delete _downloading;
@@ -336,6 +349,8 @@ class DownloadSMPrivate {
     CancelDownloadTransition* _pausedCancelTransition;
     // paused not connected transitions
     CancelDownloadTransition* _pausedNotConnectedCancelTransition;
+    // downloaded transitions
+    CancelDownloadTransition* _downloadedCancelTransition;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
