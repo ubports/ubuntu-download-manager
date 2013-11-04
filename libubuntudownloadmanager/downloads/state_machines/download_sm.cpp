@@ -22,6 +22,20 @@
 #include "download_sm.h"
 #include "final_state.h"
 
+#define IDLE_STATE 0
+#define INIT_STATE 1
+#define DOWNLOADING_STATE 2
+#define DOWNLOADING_NOT_CONNECTED_STATE  3
+#define PAUSED_STATE 4
+#define PAUSED_NOT_CONNECTED_STATE 5
+#define DOWNLOADED_STATE 6
+#define HASHING_STATE 7
+#define POST_PROCESSING_STATE 8
+
+#define ERROR_STATE 0
+#define CANCELED_STATE 1
+#define FINISHED_STATE 2
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -178,154 +192,168 @@ class DownloadSMPrivate {
           q_ptr(parent) {
         Q_Q(DownloadSM);
 
-        _idle = new QState();
-        _idle->assignProperty(q, "state", DownloadSM::IDLE);
-        _init = new QState();
-        _init->assignProperty(q, "state", DownloadSM::INIT);
-        _downloading = new QState();
-        _downloading->assignProperty(q, "state", DownloadSM::DOWNLOADING);
-        _downloadingNotConnected = new QState();
-        _downloadingNotConnected->assignProperty(q, "state",
+        _states.append(new QState());
+        _states[IDLE_STATE]->assignProperty(q, "state", DownloadSM::IDLE);
+        _states.append(new QState());
+        _states[INIT_STATE]->assignProperty(q, "state", DownloadSM::INIT);
+        _states.append(new QState());
+        _states[DOWNLOADING_STATE]->assignProperty(q, "state",
+            DownloadSM::DOWNLOADING);
+        _states.append(new QState());
+        _states[DOWNLOADING_NOT_CONNECTED_STATE]->assignProperty(q, "state",
             DownloadSM::DOWNLOADING_NOT_CONNECTED);
-        _paused = new QState();
-        _paused->assignProperty(q, "state", DownloadSM::PAUSED);
-        _pausedNotConnected = new QState();
-        _pausedNotConnected->assignProperty(q, "state",
+        _states.append(new QState());
+        _states[PAUSED_STATE]->assignProperty(q, "state", DownloadSM::PAUSED);
+        _states.append(new QState());
+        _states[PAUSED_NOT_CONNECTED_STATE]->assignProperty(q, "state",
             DownloadSM::PAUSED_NOT_CONNECTED);
-        _downloaded = new QState();
-        _downloaded->assignProperty(q, "state", DownloadSM::DOWNLOADED);
-        _hashing = new QState();
-        _hashing->assignProperty(q, "state", DownloadSM::HASHING);
-        _postProcessing = new QState();
-        _postProcessing->assignProperty(q, "state",
+        _states.append(new QState());
+        _states[DOWNLOADED_STATE]->assignProperty(q, "state",
+            DownloadSM::DOWNLOADED);
+        _states.append(new QState());
+        _states[HASHING_STATE]->assignProperty(q, "state", DownloadSM::HASHING);
+        _states.append(new QState());
+        _states[POST_PROCESSING_STATE]->assignProperty(q, "state",
             DownloadSM::POST_PROCESSING);
-
-        // finish steps
-        _error = new FinalState();
-        _error->assignProperty(q, "state", DownloadSM::ERROR);
-        _canceled = new FinalState();
-        _canceled->assignProperty(q, "state", DownloadSM::CANCELED);
-        _finished = new FinalState();
-        _finished->assignProperty(q, "state", DownloadSM::FINISHED);
+        _finalStates.append(new FinalState());
+        _finalStates[ERROR_STATE]->assignProperty(q, "state",
+            DownloadSM::ERROR);
+        _finalStates.append(new FinalState());
+        _finalStates[CANCELED_STATE]->assignProperty(q, "state",
+            DownloadSM::CANCELED);
+        _finalStates.append(new FinalState());
+        _states[FINISHED_STATE]->assignProperty(q, "state",
+            DownloadSM::FINISHED);
 
         // add the idle state transitions
-        _headerTransition = new HeaderTransition(_down,
-            _idle, _init);
-        _idleNetworkErrorTransition = new NetworkErrorTransition(
-            _down, _idle, _error);
-        _idleSslErrorTransition = new SslErrorTransition(_down,
-            _idle, _error);
+        _transitions.append(new HeaderTransition(_down,
+            _states[IDLE_STATE], _states[INIT_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
 
-        _idle->addTransition(_headerTransition);
-        _idle->addTransition(_idleNetworkErrorTransition);
-        _idle->addTransition(_idleSslErrorTransition);
+        _transitions.append(new NetworkErrorTransition(
+            _down, _states[IDLE_STATE], _finalStates[ERROR_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new SslErrorTransition(_down,
+            _states[IDLE_STATE], _finalStates[ERROR_STATE]));
+        _states[IDLE_STATE]->addTransition(_transitions.last());
 
         // add the init state transtions
-        _startDownload = new StartDownloadTransition(_down,
-            _init, _downloading);
-        _initNetworkErrorTransition = new NetworkErrorTransition(_down,
-            _init, _error);
-        _initSslErrorTransition = new SslErrorTransition(_down, _init, _error);
-        _init->addTransition(_startDownload);
-        _init->addTransition(_initNetworkErrorTransition);
-        _init->addTransition(_initSslErrorTransition);
+        _transitions.append(new StartDownloadTransition(_down,
+            _states[INIT_STATE], _states[DOWNLOADING_STATE]));
+        _states[INIT_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new NetworkErrorTransition(_down,
+            _states[INIT_STATE], _finalStates[ERROR_STATE]));
+        _states[INIT_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new SslErrorTransition(_down,
+            _states[INIT_STATE], _finalStates[ERROR_STATE]));
+        _states[INIT_STATE]->addTransition(_transitions.last());
 
         // add the downloading transitions
-        _downloadingLostConnectionTransition = new StopRequestTransition(_down,
-            SIGNAL(connectionDisabled()), _downloading, _downloadingNotConnected);
-        _downloadingPausedTransition = new StopRequestTransition(_down,
-            SIGNAL(paused()), _downloading, _paused);
-        _downloadingCancelTransition = new CancelDownloadTransition(_down,
-            _downloading, _canceled);
-        _downloadingNetworkErrorTransition = new NetworkErrorTransition(_down,
-            _downloading, _error);
-        _downloadingSslErrorTransition = new SslErrorTransition(_down,
-            _downloading, _error);
-        _downloading->addTransition(_downloadingLostConnectionTransition);
-        _downloading->addTransition(_downloadingPausedTransition);
-        _downloading->addTransition(_downloadingCancelTransition);
-        _downloading->addTransition(_downloadingNetworkErrorTransition);
-        _downloading->addTransition(_downloadingSslErrorTransition);
+        _transitions.append(new StopRequestTransition(_down,
+            SIGNAL(connectionDisabled()), _states[DOWNLOADING_STATE],
+            _states[DOWNLOADING_NOT_CONNECTED_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new StopRequestTransition(_down,
+            SIGNAL(paused()), _states[DOWNLOADING_STATE], _states[PAUSED_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new CancelDownloadTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[CANCELED_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new NetworkErrorTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[ERROR_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new SslErrorTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[ERROR_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
         // add the downloading not connected transitions
-        _downloadingReconnectTransition = new ResumeDownloadTransition(_down,
-            SIGNAL(connectionEnabled()), _downloadingNotConnected,
-            _downloading);
-        _downloadingNotConnectedCanceled = new CancelDownloadTransition(_down,
-            _downloadingNotConnected, _canceled);
-        _downloadingNotConnected->addTransition(_downloadingReconnectTransition);
-        _downloadingNotConnected->addTransition(_downloadingNotConnectedCanceled);
-        // this is a special case, we are moving from downloadingNotConnected
-        // to pausedNotConnected. In downloadingNotConnected the state was
-        // already set to be paused and the request was stopped, when we are
-        // paused we are not changing internally b ut we are moving to a diff
-        // state
-        _downloadingNotConnectedPaused =
-            _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
-                _pausedNotConnected);
+        _transitions.append(new ResumeDownloadTransition(_down,
+            SIGNAL(connectionEnabled()),
+            _states[DOWNLOADING_NOT_CONNECTED_STATE],
+            _states[DOWNLOADING_STATE]));
+        _states[DOWNLOADING_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new CancelDownloadTransition(_down,
+            _states[DOWNLOADING_NOT_CONNECTED_STATE], _finalStates[CANCELED_STATE]));
+        _states[DOWNLOADING_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[DOWNLOADING_NOT_CONNECTED_STATE]->addTransition(
+            _down, SIGNAL(paused()), _states[PAUSED_NOT_CONNECTED_STATE]));
+        _states[DOWNLOADING_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
 
         // add the pause transitions
-        _pauseResumeTransition = new ResumeDownloadTransition(_down,
-            SIGNAL(resumed()), _paused, _downloading);
-        _pausedCancelTransition = new CancelDownloadTransition(_down,
-            _paused, _canceled);
-        _paused->addTransition(_pauseResumeTransition);
-        _paused->addTransition(_pausedCancelTransition);
-        // similar transition to the _downloadingNotConnected and
-        // _pausedNotConnected
-        _pausedLostConnectionTransition = _paused->addTransition(
-            _down, SIGNAL(connectionDisabled()), _pausedNotConnected);
+        _transitions.append(new ResumeDownloadTransition(_down,
+            SIGNAL(resumed()), _states[PAUSED_STATE], _states[DOWNLOADING_STATE]));
+        _states[PAUSED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new CancelDownloadTransition(_down,
+            _states[PAUSED_STATE], _finalStates[CANCELED_STATE]));
+        _states[PAUSED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[PAUSED_STATE]->addTransition(
+            _down, SIGNAL(connectionDisabled()), _states[PAUSED_NOT_CONNECTED_STATE]));
+        _states[PAUSED_STATE]->addTransition(_transitions.last());
 
         // paused not connected transitions
-        _pausedNotConnectedCancelTransition = new CancelDownloadTransition(
-            _down, _pausedNotConnected, _canceled);
-        _pausedNotConnected->addTransition(_pausedNotConnectedCancelTransition);
-        _pausedNotConnectedResumeTransition = _pausedNotConnected->addTransition(
-            _down, SIGNAL(resumed()), _downloadingNotConnected);
-        _pausedNotConnectedOnlineTransition =
-            _pausedNotConnected->addTransition(_down,
-            SIGNAL(connectionEnabled()), _paused);
+        _transitions.append(new CancelDownloadTransition(
+            _down, _states[PAUSED_NOT_CONNECTED_STATE], _finalStates[CANCELED_STATE]));
+        _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(
+            _down, SIGNAL(resumed()), _states[DOWNLOADING_NOT_CONNECTED_STATE]));
+        _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_down,
+            SIGNAL(connectionEnabled()), _states[PAUSED_STATE]));
+        _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
 
         // downloaded transitions
-        _downloadedCancelTransition = new CancelDownloadTransition(
-            _down, _downloaded, _canceled);
-        _downloaded->addTransition(_downloadedCancelTransition);
-        _downloaded->addTransition(_down, SIGNAL(finished()),
-            _finished);
-        _downloaded->addTransition(_down, SIGNAL(hashingStarted()),
-            _hashing);
-        _downloaded->addTransition(_down, SIGNAL(postProcessingStarted()),
-            _postProcessing);
+        _transitions.append(new CancelDownloadTransition(
+            _down, _states[DOWNLOADED_STATE], _finalStates[CANCELED_STATE]));
+        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
+            SIGNAL(finished()), _finalStates[FINISHED_STATE]));
+        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
+            SIGNAL(hashingStarted()), _states[HASHING_STATE]));
+        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
+            SIGNAL(postProcessingStarted()), _states[POST_PROCESSING_STATE]));
+        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
 
         // hashing transitions
-        _hashing->addTransition(_down, SIGNAL(finished()),
-            _finished);
-        _hashing->addTransition(_down, SIGNAL(hashingError()),
-            _error);
-        _hashing->addTransition(_down, SIGNAL(postProcessingStarted()),
-            _postProcessing);
+        _transitions.append(_states[HASHING_STATE]->addTransition(_down,
+            SIGNAL(finished()), _finalStates[FINISHED_STATE]));
+        _transitions.append(_states[HASHING_STATE]->addTransition(_down,
+            SIGNAL(hashingError()), _finalStates[ERROR_STATE]));
+        _transitions.append(_states[HASHING_STATE]->addTransition(_down,
+            SIGNAL(postProcessingStarted()), _states[POST_PROCESSING_STATE]));
 
         // post processing transitions
-        _postProcessing->addTransition(_down, SIGNAL(finished()),
-            _finished);
-        _postProcessing->addTransition(_down, SIGNAL(postProcessingError()),
-            _error);
+        _transitions.append(_states[POST_PROCESSING_STATE]->addTransition(
+            _down, SIGNAL(finished()), _finalStates[FINISHED_STATE]));
+        _transitions.append(_states[POST_PROCESSING_STATE]->addTransition(
+            _down, SIGNAL(postProcessingError()), _finalStates[ERROR_STATE]));
 
         // add states set init state
-        _stateMachine.addState(_idle);
-        _stateMachine.addState(_init);
-        _stateMachine.addState(_downloading);
-        _stateMachine.addState(_downloadingNotConnected);
-        _stateMachine.addState(_paused);
-        _stateMachine.addState(_pausedNotConnected);
-        _stateMachine.addState(_downloaded);
-        _stateMachine.addState(_hashing);
-        _stateMachine.addState(_postProcessing);
-        _stateMachine.addState(_error);
-        _stateMachine.addState(_canceled);
-        _stateMachine.addState(_finished);
+        foreach(QState* state, _states) {
+            _stateMachine.addState(state);
+        }
+        foreach(FinalState* state, _finalStates) {
+            _stateMachine.addState(state);
+        }
 
-        _stateMachine.setInitialState(_idle);
+        _stateMachine.setInitialState(_states[IDLE_STATE]);
     }
 
     DownloadSM::State state() {
@@ -341,87 +369,17 @@ class DownloadSMPrivate {
     }
 
     ~DownloadSMPrivate() {
-        delete _headerTransition;
-        delete _idleNetworkErrorTransition;
-        delete _idleSslErrorTransition;
-        delete _startDownload;
-        delete _initNetworkErrorTransition;
-        delete _initSslErrorTransition;
-        delete _downloadingLostConnectionTransition;
-        delete _downloadingPausedTransition;
-        delete _downloadingCancelTransition;
-        delete _downloadingNetworkErrorTransition;
-        delete _downloadingSslErrorTransition;
-        delete _downloadingReconnectTransition;
-        delete _downloadingNotConnectedCanceled;
-        delete _downloadingNotConnectedPaused;
-        delete _pauseResumeTransition;
-        delete _pausedCancelTransition;
-        delete _pausedLostConnectionTransition;
-        delete _pausedNotConnectedCancelTransition;
-        delete _pausedNotConnectedResumeTransition;
-        delete _pausedNotConnectedOnlineTransition;
-        delete _downloadedCancelTransition;
-        delete _idle;
-        delete _init;
-        delete _downloading;
-        delete _downloadingNotConnected;
-        delete _paused;
-        delete _pausedNotConnected;
-        delete _downloaded;
-        delete _hashing;
-        delete _postProcessing;
-        delete _error;
-        delete _canceled;
-        delete _finished;
+        qDeleteAll(_transitions);
+        qDeleteAll(_states);
+        qDeleteAll(_finalStates);
     }
 
  private:
     DownloadSM::State _state = DownloadSM::IDLE;
     QStateMachine _stateMachine;
-
-    // intermediate steps
-    QState* _idle;
-    QState* _init;
-    QState* _downloading;
-    QState* _downloadingNotConnected;
-    QState* _paused;
-    QState* _pausedNotConnected;
-    QState* _downloaded;
-    QState* _hashing;
-    QState* _postProcessing;
-    // finish steps
-    FinalState* _error;
-    FinalState* _canceled;
-    FinalState* _finished;
-    // idle transitions
-    HeaderTransition* _headerTransition;
-    NetworkErrorTransition* _idleNetworkErrorTransition;
-    SslErrorTransition* _idleSslErrorTransition;
-    // init transitions
-    StartDownloadTransition* _startDownload;
-    NetworkErrorTransition* _initNetworkErrorTransition;
-    SslErrorTransition* _initSslErrorTransition;
-    // downloading transtions
-    StopRequestTransition* _downloadingLostConnectionTransition;
-    StopRequestTransition* _downloadingPausedTransition;
-    CancelDownloadTransition* _downloadingCancelTransition;
-    NetworkErrorTransition* _downloadingNetworkErrorTransition;
-    SslErrorTransition* _downloadingSslErrorTransition;
-    // downloading not connected transitions
-    ResumeDownloadTransition* _downloadingReconnectTransition;
-    CancelDownloadTransition* _downloadingNotConnectedCanceled;
-    QSignalTransition* _downloadingNotConnectedPaused;
-    // paused transitions
-    ResumeDownloadTransition* _pauseResumeTransition;
-    CancelDownloadTransition* _pausedCancelTransition;
-    QSignalTransition* _pausedLostConnectionTransition;
-    // paused not connected transitions
-    CancelDownloadTransition* _pausedNotConnectedCancelTransition;
-    QSignalTransition* _pausedNotConnectedResumeTransition;
-    QSignalTransition* _pausedNotConnectedOnlineTransition;
-    // downloaded transitions
-    CancelDownloadTransition* _downloadedCancelTransition;
+    QList<QState*> _states;
+    QList<FinalState*> _finalStates;
+    QList<QSignalTransition*> _transitions;
 
     SMFileDownload* _down;
     DownloadSM* q_ptr;
