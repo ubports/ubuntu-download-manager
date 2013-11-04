@@ -19,7 +19,6 @@
 #include <QFinalState>
 #include <QState>
 #include <QStateMachine>
-#include <QScopedPointer>
 #include "download_sm.h"
 
 namespace Ubuntu {
@@ -37,38 +36,53 @@ class DownloadSMPrivate {
 
  public:
     explicit DownloadSMPrivate(DownloadSM* parent)
-        : _idle(new QState()),
-          _init(new QState()),
-          _downloading(new QState()),
-          _downloadingNotConnected(new QState()),
-          _paused(new QState()),
-          _pausedNotConnected(new QState()),
-          _downloaded(new QState()),
-          _hashing(new QState()),
-          _postProcessing(new QState()),
-          _error(new QFinalState()),
-          _canceled(new QFinalState()),
-          _finished(new QFinalState()),
-          q_ptr(parent) {
+        : q_ptr(parent) {
+        _idle = new QState();
+        _init = new QState();
+        _downloading = new QState();
+        _downloadingNotConnected = new QState();
+        _paused = new QState();
+        _pausedNotConnected = new QState();
+        _downloaded = new QState();
+        _hashing = new QState();
+        _postProcessing = new QState();
+        _error = new QFinalState();
+        _canceled = new QFinalState();
+        _finished = new QFinalState();
+    }
+
+    ~DownloadSMPrivate() {
+        delete _idle;
+        delete _init;
+        delete _downloading;
+        delete _downloadingNotConnected;
+        delete _paused;
+        delete _pausedNotConnected;
+        delete _downloaded;
+        delete _hashing;
+        delete _postProcessing;
+        delete _error;
+        delete _canceled;
+        delete _finished;
     }
 
  private:
     QStateMachine _stateMachine;
 
     // intermediate steps
-    QScopedPointer<QState>_idle;
-    QScopedPointer<QState>_init;
-    QScopedPointer<QState>_downloading;
-    QScopedPointer<QState>_downloadingNotConnected;
-    QScopedPointer<QState>_paused;
-    QScopedPointer<QState>_pausedNotConnected;
-    QScopedPointer<QState>_downloaded;
-    QScopedPointer<QState>_hashing;
-    QScopedPointer<QState>_postProcessing;
+    QState* _idle;
+    QState* _init;
+    QState* _downloading;
+    QState* _downloadingNotConnected;
+    QState* _paused;
+    QState* _pausedNotConnected;
+    QState* _downloaded;
+    QState* _hashing;
+    QState* _postProcessing;
     // finish steps
-    QScopedPointer<QFinalState>_error;
-    QScopedPointer<QFinalState>_canceled;
-    QScopedPointer<QFinalState>_finished;
+    QFinalState* _error;
+    QFinalState* _canceled;
+    QFinalState* _finished;
 
     DownloadSM* q_ptr;
 };
@@ -76,6 +90,10 @@ class DownloadSMPrivate {
 DownloadSM::DownloadSM(QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadSMPrivate(this)){
+}
+
+DownloadSM::~DownloadSM() {
+    delete d_ptr;
 }
 
 }  // StateMachines
