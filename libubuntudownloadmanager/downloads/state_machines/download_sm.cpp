@@ -241,8 +241,9 @@ class DownloadSMPrivate {
         // already set to be paused and the request was stopped, when we are
         // paused we are not changing internally b ut we are moving to a diff
         // state
-        _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
-            _pausedNotConnected);
+        _downloadingNotConnectedPaused =
+            _downloadingNotConnected->addTransition(_down, SIGNAL(paused()),
+                _pausedNotConnected);
 
         // add the pause transitions
         _pauseResumeTransition = new ResumeDownloadTransition(_down,
@@ -253,17 +254,18 @@ class DownloadSMPrivate {
         _paused->addTransition(_pausedCancelTransition);
         // similar transition to the _downloadingNotConnected and
         // _pausedNotConnected
-        _paused->addTransition(_down, SIGNAL(connectionDisabled()),
-            _pausedNotConnected);
+        _pausedLostConnectionTransition = _paused->addTransition(
+            _down, SIGNAL(connectionDisabled()), _pausedNotConnected);
 
         // paused not connected transitions
         _pausedNotConnectedCancelTransition = new CancelDownloadTransition(
             _down, _pausedNotConnected, _canceled);
         _pausedNotConnected->addTransition(_pausedNotConnectedCancelTransition);
-        _pausedNotConnected->addTransition(_down, SIGNAL(resumed()),
-            _downloadingNotConnected);
-        _pausedNotConnected->addTransition(_down, SIGNAL(connectionEnabled()),
-            _paused);
+        _pausedNotConnectedResumeTransition = _pausedNotConnected->addTransition(
+            _down, SIGNAL(resumed()), _downloadingNotConnected);
+        _pausedNotConnectedOnlineTransition =
+            _pausedNotConnected->addTransition(_down,
+            SIGNAL(connectionEnabled()), _paused);
 
         // downloaded transitions
         _downloadedCancelTransition = new CancelDownloadTransition(
@@ -305,9 +307,13 @@ class DownloadSMPrivate {
         delete _downloadingSslErrorTransition;
         delete _downloadingReconnectTransition;
         delete _downloadingNotConnectedCanceled;
+        delete _downloadingNotConnectedPaused;
         delete _pauseResumeTransition;
         delete _pausedCancelTransition;
+        delete _pausedLostConnectionTransition;
         delete _pausedNotConnectedCancelTransition;
+        delete _pausedNotConnectedResumeTransition;
+        delete _pausedNotConnectedOnlineTransition;
         delete _downloadedCancelTransition;
         delete _idle;
         delete _init;
@@ -357,11 +363,15 @@ class DownloadSMPrivate {
     // downloading not connected transitions
     ResumeDownloadTransition* _downloadingReconnectTransition;
     CancelDownloadTransition* _downloadingNotConnectedCanceled;
+    QSignalTransition* _downloadingNotConnectedPaused;
     // paused transitions
     ResumeDownloadTransition* _pauseResumeTransition;
     CancelDownloadTransition* _pausedCancelTransition;
+    QSignalTransition* _pausedLostConnectionTransition;
     // paused not connected transitions
     CancelDownloadTransition* _pausedNotConnectedCancelTransition;
+    QSignalTransition* _pausedNotConnectedResumeTransition;
+    QSignalTransition* _pausedNotConnectedOnlineTransition;
     // downloaded transitions
     CancelDownloadTransition* _downloadedCancelTransition;
 
