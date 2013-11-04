@@ -176,7 +176,6 @@ class DownloadSMPrivate {
     explicit DownloadSMPrivate(DownloadSM* parent)
         : q_ptr(parent) {
 
-        // create the diff events and add them to the state machine
         _idle = new QState();
         _init = new QState();
         _downloading = new QState();
@@ -186,23 +185,27 @@ class DownloadSMPrivate {
         _downloaded = new QState();
         _hashing = new QState();
         _postProcessing = new QState();
-
-        // finish steps
         _error = new QFinalState();
         _canceled = new QFinalState();
         _finished = new QFinalState();
 
         // add the idle state transitions
-        _headerTransition = new HeaderTransition(_down, _idle, _init);
-        _idleNetworkErrorTransition = new NetworkErrorTransition(_down, _idle, _error);
-        _idleSslErrorTransition = new SslErrorTransition(_down, _idle, _error);
+        _headerTransition = new HeaderTransition(_down,
+            _idle, _init);
+        _idleNetworkErrorTransition = new NetworkErrorTransition(
+            _down, _idle, _error);
+        _idleSslErrorTransition = new SslErrorTransition(_down,
+            _idle, _error);
+
         _idle->addTransition(_headerTransition);
         _idle->addTransition(_idleNetworkErrorTransition);
         _idle->addTransition(_idleSslErrorTransition);
 
         // add the init state transtions
-        _startDownload = new StartDownloadTransition(_down, _init, _downloading);
-        _initNetworkErrorTransition = new NetworkErrorTransition(_down, _init, _error);
+        _startDownload = new StartDownloadTransition(_down,
+            _init, _downloading);
+        _initNetworkErrorTransition = new NetworkErrorTransition(_down,
+            _init, _error);
         _initSslErrorTransition = new SslErrorTransition(_down, _init, _error);
         _init->addTransition(_startDownload);
         _init->addTransition(_initNetworkErrorTransition);
@@ -288,6 +291,27 @@ class DownloadSMPrivate {
             _error);
     }
 
+    ~DownloadSMPrivate() {
+        delete _headerTransition;
+        delete _idleNetworkErrorTransition;
+        delete _idleSslErrorTransition;
+        delete _startDownload;
+        delete _initNetworkErrorTransition;
+        delete _initSslErrorTransition;
+        delete _idle;
+        delete _init;
+        delete _downloading;
+        delete _downloadingNotConnected;
+        delete _paused;
+        delete _pausedNotConnected;
+        delete _downloaded;
+        delete _hashing;
+        delete _postProcessing;
+        delete _error;
+        delete _canceled;
+        delete _finished;
+    }
+
  private:
     QStateMachine _stateMachine;
 
@@ -309,7 +333,7 @@ class DownloadSMPrivate {
     HeaderTransition* _headerTransition;
     NetworkErrorTransition* _idleNetworkErrorTransition;
     SslErrorTransition* _idleSslErrorTransition;
-    // init transtions
+    // init transitions
     StartDownloadTransition* _startDownload;
     NetworkErrorTransition* _initNetworkErrorTransition;
     SslErrorTransition* _initSslErrorTransition;
@@ -337,6 +361,10 @@ class DownloadSMPrivate {
 DownloadSM::DownloadSM(QObject* parent)
     : QObject(parent),
       d_ptr(new DownloadSMPrivate(this)){
+}
+
+DownloadSM::~DownloadSM() {
+    delete d_ptr;
 }
 
 }  // StateMachines
