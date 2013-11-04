@@ -30,9 +30,10 @@
 #define DOWNLOADED_STATE 6
 #define HASHING_STATE 7
 #define POST_PROCESSING_STATE 8
-#define ERROR_STATE 9
-#define CANCELED_STATE 10
-#define FINISHED_STATE 11
+
+#define ERROR_STATE 0
+#define CANCELED_STATE 1
+#define FINISHED_STATE 2
 
 namespace Ubuntu {
 
@@ -219,33 +220,33 @@ class DownloadSMPrivate {
         _states[INIT_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new NetworkErrorTransition(_down,
-            _states[INIT_STATE], _states[ERROR_STATE]));
+            _states[INIT_STATE], _finalStates[ERROR_STATE]));
         _states[INIT_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new SslErrorTransition(_down,
-            _states[INIT_STATE], _states[ERROR_STATE]));
+            _states[INIT_STATE], _finalStates[ERROR_STATE]));
         _states[INIT_STATE]->addTransition(_transitions.last());
 
         // add the downloading transitions
-        _downloadingLostConnectionTransition = new TEStopRequestTransition(_down,
+        _transitions.append(new StopRequestTransition(_down,
             SIGNAL(connectionDisabled()), _states[DOWNLOADING_STATE],
-            _states[DOWNLOADING_NOT_CONNECTED_STATE]);
+            _states[DOWNLOADING_NOT_CONNECTED_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
-        _downloadingPausedTransition = new StopRequestTransition(_down,
-            SIGNAL(paused()), _states[DOWNLOADING_STATE], _states[PAUSED_STATE]);
+        _transitions.append(new StopRequestTransition(_down,
+            SIGNAL(paused()), _states[DOWNLOADING_STATE], _states[PAUSED_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
-        _downloadingCancelTransition = new CancelDownloadTransition(_down,
-            _states[DOWNLOADING_STATE], states[CANCELED_STATE]);
+        _transitions.append(new CancelDownloadTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[CANCELED_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
-        _downloadingNetworkErrorTransition = new NetworkErrorTransition(_down,
-            _states[DOWNLOADING_STATE], _states[ERROR_STATE]);
+        _transitions.append(new NetworkErrorTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[ERROR_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
-        _downloadingSslErrorTransition = new SslErrorTransition(_down,
-            _states[DOWNLOADING_STATE], _states[ERROR_STATE]);
+        _transitions.append(new SslErrorTransition(_down,
+            _states[DOWNLOADING_STATE], _finalStates[ERROR_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
         // add the downloading not connected transitions
