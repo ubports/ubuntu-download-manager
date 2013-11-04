@@ -274,7 +274,6 @@ class DownloadSMPrivate {
 
         _transitions.append(_states[PAUSED_STATE]->addTransition(
             _down, SIGNAL(connectionDisabled()), _states[PAUSED_NOT_CONNECTED_STATE]));
-        _states[PAUSED_STATE]->addTransition(_transitions.last());
 
         // paused not connected transitions
         _transitions.append(new CancelDownloadTransition(
@@ -287,7 +286,6 @@ class DownloadSMPrivate {
 
         _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_down,
             SIGNAL(connectionEnabled()), _states[PAUSED_STATE]));
-        _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
 
         // downloaded transitions
         _transitions.append(new CancelDownloadTransition(
@@ -296,15 +294,12 @@ class DownloadSMPrivate {
 
         _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
             SIGNAL(finished()), _finalStates[FINISHED_STATE]));
-        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
 
         _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
             SIGNAL(hashingStarted()), _states[HASHING_STATE]));
-        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
 
         _transitions.append(_states[DOWNLOADED_STATE]->addTransition(_down,
             SIGNAL(postProcessingStarted()), _states[POST_PROCESSING_STATE]));
-        _states[DOWNLOADED_STATE]->addTransition(_transitions.last());
 
         // hashing transitions
         _transitions.append(_states[HASHING_STATE]->addTransition(_down,
