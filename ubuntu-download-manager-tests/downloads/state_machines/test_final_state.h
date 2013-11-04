@@ -65,6 +65,13 @@ class TestFinalStateHelperObject : public QObject {
         surname = _surname;
     }
 
+    void emitMoveStates() {
+        emit moveStates();
+    }
+
+ signals:
+    void moveStates();
+
  private:
     QString _name = "";
     QString _surname = "";
@@ -84,6 +91,8 @@ public:
     void testMultipleProperties();
 
  private:
+    QString _originalName;
+    QString _originalSurname;
     TestFinalStateHelperObject* _obj;
     QStateMachine _stateMachine;
     QState* _s1;

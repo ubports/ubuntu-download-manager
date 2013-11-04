@@ -25,7 +25,9 @@ TestFinalState::TestFinalState(QObject *parent)
 void
 TestFinalState::init() {
     BaseTestCase::init();
-    _obj = new TestFinalStateHelperObject();
+    _originalName = "Paco";
+    _originalSurname = "Paquito";
+    _obj = new TestFinalStateHelperObject(_originalName, _originalSurname);
     _s1 = new QState();
     _s2 = new FinalState();
 
