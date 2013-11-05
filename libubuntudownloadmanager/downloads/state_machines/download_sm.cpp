@@ -16,9 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
+#include "system/logger.h"
 #include "download_sm.h"
 #include "final_state.h"
 
@@ -71,6 +73,7 @@ NetworkErrorTransition::NetworkErrorTransition(const SMFileDownload* sender,
 
 void
 NetworkErrorTransition::onTransition(QEvent* event) {
+    TRACE << event;
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
@@ -94,6 +97,7 @@ SslErrorTransition::SslErrorTransition(const SMFileDownload* sender,
 
 void
 SslErrorTransition::onTransition(QEvent * event) {
+    TRACE << event;
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
@@ -117,7 +121,7 @@ StartDownloadTransition::StartDownloadTransition(const SMFileDownload* sender,
 
 void
 StartDownloadTransition::onTransition(QEvent * event) {
-    Q_UNUSED(event);
+    TRACE << event;
     SMFileDownload* down = download();
     // tell the down to start and set the state
     down->requestDownload();
@@ -137,7 +141,7 @@ StopRequestTransition::StopRequestTransition(const SMFileDownload* sender,
 
 void
 StopRequestTransition::onTransition(QEvent * event) {
-    Q_UNUSED(event);
+    TRACE << event;
     SMFileDownload* down = download();
     down->stopRequestDownload();
     down->setState(Download::PAUSE);
@@ -155,7 +159,7 @@ CancelDownloadTransition::CancelDownloadTransition(const SMFileDownload* sender,
 
 void
 CancelDownloadTransition::onTransition(QEvent * event) {
-    Q_UNUSED(event);
+    TRACE << event;
     SMFileDownload* down = download();
     down->cancelRequestDownload();
     down->setState(Download::CANCEL);
@@ -173,7 +177,7 @@ ResumeDownloadTransition::ResumeDownloadTransition(const SMFileDownload* sender,
 
 void
 ResumeDownloadTransition::onTransition(QEvent * event) {
-    Q_UNUSED(event);
+    TRACE << event;
     SMFileDownload* down = download();
     down->requestDownload();
     down->setState(Download::RESUME);
@@ -193,37 +197,37 @@ class DownloadSMPrivate {
         Q_Q(DownloadSM);
 
         _states.append(new QState());
-        _states[IDLE_STATE]->assignProperty(q, "state", DownloadSM::IDLE);
+        _states[IDLE_STATE]->assignProperty(q, "state", "IDLE");
         _states.append(new QState());
-        _states[INIT_STATE]->assignProperty(q, "state", DownloadSM::INIT);
+        _states[INIT_STATE]->assignProperty(q, "state", "INIT");
         _states.append(new QState());
         _states[DOWNLOADING_STATE]->assignProperty(q, "state",
-            DownloadSM::DOWNLOADING);
+            "DOWNLOADING");
         _states.append(new QState());
         _states[DOWNLOADING_NOT_CONNECTED_STATE]->assignProperty(q, "state",
-            DownloadSM::DOWNLOADING_NOT_CONNECTED);
+            "DOWNLOADING_NOT_CONNECTED");
         _states.append(new QState());
-        _states[PAUSED_STATE]->assignProperty(q, "state", DownloadSM::PAUSED);
+        _states[PAUSED_STATE]->assignProperty(q, "state", "PAUSED");
         _states.append(new QState());
         _states[PAUSED_NOT_CONNECTED_STATE]->assignProperty(q, "state",
-            DownloadSM::PAUSED_NOT_CONNECTED);
+            "PAUSED_NOT_CONNECTED");
         _states.append(new QState());
         _states[DOWNLOADED_STATE]->assignProperty(q, "state",
-            DownloadSM::DOWNLOADED);
+            "DOWNLOADED");
         _states.append(new QState());
-        _states[HASHING_STATE]->assignProperty(q, "state", DownloadSM::HASHING);
+        _states[HASHING_STATE]->assignProperty(q, "state", "HASHING");
         _states.append(new QState());
         _states[POST_PROCESSING_STATE]->assignProperty(q, "state",
-            DownloadSM::POST_PROCESSING);
+            "POST_PROCESSING");
         _finalStates.append(new FinalState());
         _finalStates[ERROR_STATE]->assignProperty(q, "state",
-            DownloadSM::ERROR);
+            "ERROR");
         _finalStates.append(new FinalState());
         _finalStates[CANCELED_STATE]->assignProperty(q, "state",
-            DownloadSM::CANCELED);
+            "CANCELED");
         _finalStates.append(new FinalState());
         _states[FINISHED_STATE]->assignProperty(q, "state",
-            DownloadSM::FINISHED);
+            "FINISHED");
 
         // add the idle state transitions
         _transitions.append(new HeaderTransition(_down,
@@ -347,13 +351,21 @@ class DownloadSMPrivate {
         }
 
         _stateMachine.setInitialState(_states[IDLE_STATE]);
+
+        // connect the signals
+        q->connect(&_stateMachine, SIGNAL(started()),
+            q, SIGNAL(started()));
+        q->connect(&_stateMachine, SIGNAL(stopped()),
+            q, SIGNAL(stopped()));
+        q->connect(&_stateMachine, SIGNAL(finished()),
+            q, SIGNAL(finished()));
     }
 
-    DownloadSM::State state() {
+    QString state() {
         return _state;
     }
 
-    void setState(DownloadSM::State state) {
+    void setState(QString state) {
         _state = state;
     }
 
@@ -368,7 +380,7 @@ class DownloadSMPrivate {
     }
 
  private:
-    DownloadSM::State _state = DownloadSM::IDLE;
+    QString _state = "IDLE";
     QStateMachine _stateMachine;
     QList<QState*> _states;
     QList<FinalState*> _finalStates;
@@ -383,14 +395,14 @@ DownloadSM::DownloadSM(SMFileDownload* down, QObject* parent)
       d_ptr(new DownloadSMPrivate(down, this)){
 }
 
-DownloadSM::State
+QString
 DownloadSM::state() {
     Q_D(DownloadSM);
     return d->state();
 }
 
 void
-DownloadSM::setState(DownloadSM::State state) {
+DownloadSM::setState(QString state) {
     Q_D(DownloadSM);
     d->setState(state);
 }
