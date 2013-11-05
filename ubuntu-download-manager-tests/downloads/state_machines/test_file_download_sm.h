@@ -66,6 +66,7 @@ class TestFileDownloadSM : public BaseTestCase {
     void testDownloadingCanceled();
     void testDownloadingPaused();
     void testDownloadingConnectionLost();
+    void testDownloadingDownloaded();
 
     // downloading not connected
     void testDownloadingNotConnectedConnectionEnabled();
@@ -91,6 +92,7 @@ class TestFileDownloadSM : public BaseTestCase {
     // hashing
     void testHashingError();
     void testHashingFinished();
+    void testHashingPostProcessing();
 
     // post processing
     void testPostProcessingError();

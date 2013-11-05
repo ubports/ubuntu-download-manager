@@ -47,30 +47,53 @@ TestFileDownloadSM::moveToInit() {
 
 void
 TestFileDownloadSM::moveToDownloading() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
 }
 
 void
 TestFileDownloadSM::moveToDownloadingNotConnected() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raiseConnectionDisabled();
 }
 
 void
 TestFileDownloadSM::moveToPaused() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raisePaused();
 }
 
 void
 TestFileDownloadSM::moveToPausedNotConnected() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raisePaused();
+    _down->raiseConnectionDisabled();
 }
 
 void
 TestFileDownloadSM::moveToDownloaded() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raiseCompleted();
 }
 
 void
 TestFileDownloadSM::moveToHashing() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raiseCompleted();
+    _down->raiseHashingStarted();
 }
 
 void
 TestFileDownloadSM::moveToPostProcessing() {
+    _down->raiseHeadRequestCompleted();
+    _down->raiseDownloadingStarted();
+    _down->raiseCompleted();
+    _down->raisePostProcessingStarted();
 }
 
 void
@@ -178,110 +201,406 @@ TestFileDownloadSM::testInitDownloadingStarted() {
 
 void
 TestFileDownloadSM::testDownloadingError() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    // move to the state we are testing
+    moveToDownloading();
+    _down->raiseNetworkError(QNetworkReply::ProtocolFailure);
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testDownloadingSslErrors() {
-    QFAIL("Not implemented");
+    QList<QSslError> errors;
+    errors.append(QSslError(QSslError::CertificateExpired));
+
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    // move to the state we are testing
+    moveToDownloading();
+    _down->raiseSslError(errors);
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testDownloadingCanceled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloading();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseCanceled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("CANCELED"));
 }
 
 void
 TestFileDownloadSM::testDownloadingPaused() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloading();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raisePaused();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("PAUSED"));
 }
 
 void
 TestFileDownloadSM::testDownloadingConnectionLost() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloading();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseConnectionDisabled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADING_NOT_CONNECTED"));
+}
+
+void
+TestFileDownloadSM::testDownloadingDownloaded() {
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloading();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseCompleted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADED"));
 }
 
 void
 TestFileDownloadSM::testDownloadingNotConnectedConnectionEnabled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloadingNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseConnectionEnabled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADING"));
 }
 
 void
 TestFileDownloadSM::testDownloadingNotConnectedPaused() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloadingNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raisePaused();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("PAUSED_NOT_CONNECTED"));
 }
 
 void
 TestFileDownloadSM::testDownloadingNotConnectedCanceled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloadingNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseCanceled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("CANCELED"));
 }
 
 void
 TestFileDownloadSM::testPauseDownloadingStarted() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPaused();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseDownloadingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADING"));
 }
 
 void
 TestFileDownloadSM::testPauseConnectionLost() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPaused();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseConnectionDisabled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("PAUSED_NOT_CONNECTED"));
 }
 
 void
 TestFileDownloadSM::testPauseCanceled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPaused();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseCanceled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("CANCELED"));
 }
 
 void
 TestFileDownloadSM::testPausedNotConnectedConnectionEnabled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPausedNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseConnectionEnabled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("PAUSED"));
 }
 
 void
 TestFileDownloadSM::testPausedNotConnectedDownloadingStarted() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPausedNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseDownloadingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADING_NOT_CONNECTED"));
 }
 
 void
 TestFileDownloadSM::testPausedNotConnectedCanceled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPausedNotConnected();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseCanceled();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("CANCELED"));
 }
 
 void
 TestFileDownloadSM::testDownloadedHashingStarted() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloaded();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseHashingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("HASHING"));
 }
 
 void
 TestFileDownloadSM::testDownloadedPostProcessingStarted() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloaded();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raisePostProcessingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("POST_PROCESSING"));
 }
 
 void
 TestFileDownloadSM::testDownloadedFinished() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloaded();
+    _down->raiseFinished();
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("FINISHED"));
 }
 
 void
 TestFileDownloadSM::testDownloadedCanceled() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToDownloaded();
+    _down->raiseCanceled();
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("CANCELED"));
 }
 
 void
 TestFileDownloadSM::testHashingError() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToHashing();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseHashingError();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testHashingFinished() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToHashing();
+    _down->raiseFinished();
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("FINISHED"));
+}
+
+void
+TestFileDownloadSM::testHashingPostProcessing() {
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToHashing();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raisePostProcessingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("POST_PROCESSING"));
 }
 
 void
 TestFileDownloadSM::testPostProcessingError() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPostProcessing();
+    _down->raisePostProcessingError();
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testPostProcessingFinished() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToPostProcessing();
+    _down->raiseFinished();
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("FINISHED"));
 }

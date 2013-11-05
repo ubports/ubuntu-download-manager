@@ -126,6 +126,7 @@ StartDownloadTransition::onTransition(QEvent * event) {
     // tell the down to start and set the state
     down->requestDownload();
     down->setState(Download::START);
+    DownloadSMTransition::onTransition(event);
 }
 
 /*
@@ -145,6 +146,7 @@ StopRequestTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     down->stopRequestDownload();
     down->setState(Download::PAUSE);
+    DownloadSMTransition::onTransition(event);
 }
 
 /*
@@ -163,6 +165,7 @@ CancelDownloadTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     down->cancelRequestDownload();
     down->setState(Download::CANCEL);
+    DownloadSMTransition::onTransition(event);
 }
 
 /*
@@ -181,6 +184,7 @@ ResumeDownloadTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     down->requestDownload();
     down->setState(Download::RESUME);
+    DownloadSMTransition::onTransition(event);
 }
 
 /**
@@ -262,6 +266,11 @@ class DownloadSMPrivate {
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new StopRequestTransition(_down,
+            SIGNAL(completed()), _states[DOWNLOADING_STATE],
+            _states[DOWNLOADED_STATE]));
+        _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
+
+        _transitions.append(new StopRequestTransition(_down,
             SIGNAL(paused()), _states[DOWNLOADING_STATE], _states[PAUSED_STATE]));
         _states[DOWNLOADING_STATE]->addTransition(_transitions.last());
 
@@ -293,7 +302,7 @@ class DownloadSMPrivate {
 
         // add the pause transitions
         _transitions.append(new ResumeDownloadTransition(_down,
-            SIGNAL(resumed()), _states[PAUSED_STATE], _states[DOWNLOADING_STATE]));
+            SIGNAL(downloadingStarted()), _states[PAUSED_STATE], _states[DOWNLOADING_STATE]));
         _states[PAUSED_STATE]->addTransition(_transitions.last());
 
         _transitions.append(new CancelDownloadTransition(_down,
@@ -309,7 +318,7 @@ class DownloadSMPrivate {
         _states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_transitions.last());
 
         _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(
-            _down, SIGNAL(resumed()), _states[DOWNLOADING_NOT_CONNECTED_STATE]));
+            _down, SIGNAL(downloadingStarted()), _states[DOWNLOADING_NOT_CONNECTED_STATE]));
 
         _transitions.append(_states[PAUSED_NOT_CONNECTED_STATE]->addTransition(_down,
             SIGNAL(connectionEnabled()), _states[PAUSED_STATE]));
@@ -366,9 +375,9 @@ class DownloadSMPrivate {
     }
 
     void setState(QString state) {
+        TRACE << state;
         Q_Q(DownloadSM);
         _state = state;
-        qDebug() << _state;
         emit q->stateChanged(state);
     }
 
