@@ -166,6 +166,19 @@ ResumeDownloadTransition::onTransition(QEvent * event) {
     down->setState(Download::RESUME);
 }
 
+QString DownloadSM::IDLE = "IDLE";
+QString DownloadSM::INIT = "INIT";
+QString DownloadSM::DOWNLOADING = "DOWNLOADING";
+QString DownloadSM::DOWNLOADING_NOT_CONNECTED = "DOWNLOADING_NOT_CONNECTED";
+QString DownloadSM::PAUSED = "PAUSED";
+QString DownloadSM::PAUSED_NOT_CONNECTED = "PAUSED_NOT_CONNECTED";
+QString DownloadSM::DOWNLOADED = "DOWNLOADED";
+QString DownloadSM::HASHING = "HASHING";
+QString DownloadSM::POST_PROCESSING = "POST_PROCESSING";
+QString DownloadSM::ERROR = "ERROR";
+QString DownloadSM::CANCELED = "CANCELED";
+QString DownloadSM::FINISHED = "FINISHED";
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -178,18 +191,19 @@ class DownloadSMPrivate {
         : _down(down),
           q_ptr(parent) {
         Q_Q(DownloadSM);
-        _idle = new State(q, "state", "IDLE");
-        _init = new State(q, "state", "INIT");
-        _downloading = new State(q, "state", "DOWNLOADING");
-        _downloadingNotConnected = new State(q, "state", "DOWNLOADING_NOT_CONNECTED");
-        _paused = new State(q, "state", "PAUSED");
-        _pausedNotConnected = new State(q, "state", "PAUSED_NOT_CONNECTED");
-        _downloaded = new State(q, "state", "DOWNLOADED");
-        _hashing = new State(q, "state", "HASHING");
-        _postProcessing = new State(q, "state", "POST_PROCESSING");
-        _error = new FinalState(q, "state", "ERROR");
-        _canceled = new FinalState(q, "state", "CANCELED");
-        _finished = new FinalState(q, "state", "FINISHED");
+        _idle = new State(q, "state", DownloadSM::IDLE);
+        _init = new State(q, "state", DownloadSM::INIT);
+        _downloading = new State(q, "state", DownloadSM::DOWNLOADING);
+        _downloadingNotConnected = new State(q, "state",
+            DownloadSM::DOWNLOADING_NOT_CONNECTED);
+        _paused = new State(q, "state", DownloadSM::PAUSED);
+        _pausedNotConnected = new State(q, "state", DownloadSM::PAUSED_NOT_CONNECTED);
+        _downloaded = new State(q, "state", DownloadSM::DOWNLOADED);
+        _hashing = new State(q, "state", DownloadSM::HASHING);
+        _postProcessing = new State(q, "state", DownloadSM::POST_PROCESSING);
+        _error = new FinalState(q, "state", DownloadSM::ERROR);
+        _canceled = new FinalState(q, "state", DownloadSM::CANCELED);
+        _finished = new FinalState(q, "state", DownloadSM::FINISHED);
 
         // add the idle state transitions
         _transitions.append(new HeaderTransition(_down,

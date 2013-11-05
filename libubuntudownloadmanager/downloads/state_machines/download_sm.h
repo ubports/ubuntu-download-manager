@@ -143,6 +143,19 @@ class DownloadSM : public QObject {
 
     void start();
 
+    static QString IDLE;
+    static QString INIT;
+    static QString DOWNLOADING;
+    static QString DOWNLOADING_NOT_CONNECTED;
+    static QString PAUSED;
+    static QString PAUSED_NOT_CONNECTED;
+    static QString DOWNLOADED;
+    static QString HASHING;
+    static QString POST_PROCESSING;
+    static QString ERROR;
+    static QString CANCELED;
+    static QString FINISHED;
+
  private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadSMPrivate* d_ptr;
