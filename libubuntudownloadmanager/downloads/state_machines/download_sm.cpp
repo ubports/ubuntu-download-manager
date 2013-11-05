@@ -48,28 +48,52 @@ class DownloadSMPrivate {
 
  public:
     explicit DownloadSMPrivate(DownloadSM* parent)
-        : q_ptr(parent) {
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QState());
-        _states.append(new QFinalState());
-        _states.append(new QFinalState());
-        _states.append(new QFinalState());
+        : _idle(),
+          _init(),
+          _downloading(),
+          _downloadingNotConnected(),
+          _paused(),
+          _pausedNotConnected(),
+          _downloaded(),
+          _hashing(),
+          _postProcessing(),
+          _error(),
+          _canceled(),
+          _finished(),
+          q_ptr(parent) {
     }
 
     ~DownloadSMPrivate() {
-        qDeleteAll(_states);
+        delete _idle;
+        delete _init;
+        delete _downloading;
+        delete _downloadingNotConnected;
+        delete _paused;
+        delete _pausedNotConnected;
+        delete _downloaded;
+        delete _hashing;
+        delete _postProcessing;
+        delete _error;
+        delete _canceled;
+        delete _finished;
     }
 
  private:
     QStateMachine _stateMachine;
-    QList<QAbstractState*> _states;
+    // states
+    QState* _idle;
+    QState* _init;
+    QState* _downloading;
+    QState* _downloadingNotConnected;
+    QState* _paused;
+    QState* _pausedNotConnected;
+    QState* _downloaded;
+    QState* _hashing;
+    QState* _postProcessing;
+    // final states
+    QFinalState* _error;
+    QFinalState* _canceled;
+    QFinalState* _finished;
 
     DownloadSM* q_ptr;
 };
