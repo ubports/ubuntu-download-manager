@@ -50,9 +50,15 @@ class FinalState : public QFinalState {
     Q_OBJECT
  public:
     explicit FinalState(QState* parent = 0);
+    FinalState(QObject* obj,
+               const char* property,
+               QVariant value,
+               QState* parent = 0);
+
     void assignProperty(QObject *object,
                         const char* name,
                         const QVariant& value);
+
     void onEntry(QEvent* event) override;
 
  private:

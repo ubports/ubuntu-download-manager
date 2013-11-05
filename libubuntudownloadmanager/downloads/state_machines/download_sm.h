@@ -132,29 +132,14 @@ class DownloadSM : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadSM)
 
-    Q_PROPERTY(DownloadSM::State state READ state WRITE setState)
+    Q_PROPERTY(QString state READ state WRITE setState)
 
  public:
     DownloadSM(SMFileDownload* down, QObject *parent = 0);
     virtual ~DownloadSM();
 
-    enum State {
-        IDLE,
-        INIT,
-        DOWNLOADING,
-        DOWNLOADING_NOT_CONNECTED,
-        PAUSED,
-        PAUSED_NOT_CONNECTED,
-        DOWNLOADED,
-        HASHING,
-        POST_PROCESSING,
-        FINISHED,
-        ERROR,
-        CANCELED
-    };
-    
-    DownloadSM::State state();
-    void setState(DownloadSM::State state);
+    QString state();
+    void setState(QString state);
 
     void start();
 

@@ -29,6 +29,14 @@ FinalState::FinalState(QState* parent)
     : QFinalState(parent) {
 }
 
+FinalState::FinalState(QObject* obj,
+                       const char* property,
+                       QVariant value,
+                       QState* parent)
+    : QFinalState(parent) {
+    assignProperty(obj, property, value);
+}
+
 void
 FinalState::assignProperty(QObject *object,
                            const char* name,
