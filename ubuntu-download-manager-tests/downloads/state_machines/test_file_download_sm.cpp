@@ -42,7 +42,7 @@ TestFileDownloadSM::cleanup() {
 
 void
 TestFileDownloadSM::moveToInit() {
-    // emit those signals that move use to init
+    _down->raiseHeadRequestCompleted();
 }
 
 void
@@ -111,30 +111,69 @@ TestFileDownloadSM::testIdleHeadRequestCompleted() {
     QCOMPARE(_stateMachine->state(), QString("IDLE"));
 
     QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
     QTRY_COMPARE(startedSpy.count(), 1);
 
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->raiseHeadRequestCompleted();
 
-    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), QString("INIT"));
 }
 
 void
 TestFileDownloadSM::testInitError() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    // move to the state we are testing
+    moveToInit();
+    _down->raiseNetworkError(QNetworkReply::ProtocolFailure);
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testInitSslErrors() {
-    QFAIL("Not implemented");
+    QList<QSslError> errors;
+    errors.append(QSslError(QSslError::CertificateExpired));
+
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    // move to the state we are testing
+    moveToInit();
+    _down->raiseSslError(errors);
+
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("ERROR"));
 }
 
 void
 TestFileDownloadSM::testInitDownloadingStarted() {
-    QFAIL("Not implemented");
+    QCOMPARE(_stateMachine->state(), QString("IDLE"));
+
+    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+
+    _stateMachine->start();
+    QTRY_COMPARE(startedSpy.count(), 1);
+
+    moveToInit();
+    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    _down->raiseDownloadingStarted();
+
+    QCOMPARE(changedSpy.count(), 1);
+    QCOMPARE(_stateMachine->state(), QString("DOWNLOADING"));
 }
 
 void

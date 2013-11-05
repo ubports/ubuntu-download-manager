@@ -226,7 +226,7 @@ class DownloadSMPrivate {
         _finalStates[CANCELED_STATE]->assignProperty(q, "state",
             "CANCELED");
         _finalStates.append(new FinalState());
-        _states[FINISHED_STATE]->assignProperty(q, "state",
+        _finalStates[FINISHED_STATE]->assignProperty(q, "state",
             "FINISHED");
 
         // add the idle state transitions
@@ -366,7 +366,10 @@ class DownloadSMPrivate {
     }
 
     void setState(QString state) {
+        Q_Q(DownloadSM);
         _state = state;
+        qDebug() << _state;
+        emit q->stateChanged(state);
     }
 
     void start() {

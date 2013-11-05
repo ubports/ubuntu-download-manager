@@ -148,6 +148,7 @@ class DownloadSM : public QObject {
     void started();
     void stopped();
     void finished();
+    void stateChanged(QString);
 
  private:
     // use pimpl so that we can mantains ABI compatibility
