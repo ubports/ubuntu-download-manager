@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
+#include <QFinalState>
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
@@ -61,10 +63,13 @@ NetworkErrorTransition::onTransition(QEvent* event) {
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
-    QVariant v = e->arguments().at(0);
-    QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
-
-    down->emitNetworkError(code);
+    if (e->arguments().count() > 0) {
+        QVariant v = e->arguments().at(0);
+        QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
+        down->emitNetworkError(code);
+    } else {
+        qWarning() << "Signal does not have events!";
+    }
     DownloadSMTransition::onTransition(event);
 }
 
