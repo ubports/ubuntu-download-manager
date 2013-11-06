@@ -78,6 +78,9 @@ class TestGroupDownload : public BaseTestCase {
     void testInvalidFilePresent();
     void testValidFileNotPresent();
 
+    // empty group tests
+    void testEmptyGroupRaisesFinish();
+
  private:
     QString _id;
     QString _path;
