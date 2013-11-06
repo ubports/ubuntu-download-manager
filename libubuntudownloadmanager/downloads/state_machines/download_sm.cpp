@@ -87,10 +87,13 @@ SslErrorTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
-    QVariant v = e->arguments().at(0);
-    QList<QSslError> errors = v.value<QList<QSslError> > ();
-
-    down->emitSslError(errors);
+    if (e->arguments().count() > 0) {
+        QVariant v = e->arguments().at(0);
+        QList<QSslError> errors = v.value<QList<QSslError> > ();
+        down->emitSslError(errors);
+    } else {
+        qWarning() << "Signal does not have events!";
+    }
     DownloadSMTransition::onTransition(event);
 }
 
