@@ -40,6 +40,7 @@ SOURCES += \
     system/apparmor.cpp \
     system/network_reply.cpp \
     system/dbus_proxy.cpp \
+    downloads/state_machines/state.cpp \
     downloads/state_machines/final_state.cpp
 
 HEADERS +=\
@@ -75,6 +76,7 @@ HEADERS +=\
     system/network_reply.h \
     system/dbus_proxy.h \
     metatypes.h \
+    downloads/state_machines/state.h \
     downloads/state_machines/final_state.h
 
 OTHER_FILES += \
