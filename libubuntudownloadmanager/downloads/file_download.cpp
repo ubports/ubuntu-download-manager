@@ -329,6 +329,7 @@ class FileDownloadPrivate {
 
                 qDebug() << "Executing" << command << args;
                 postDownloadProcess->start(command, args);
+                emit q->processing(filePath());
                 return;
             }
         } else {

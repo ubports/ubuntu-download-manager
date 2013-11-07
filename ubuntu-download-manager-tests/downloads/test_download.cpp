@@ -1282,6 +1282,7 @@ TestDownload::testProcessExecutedNoParams() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1309,6 +1310,7 @@ TestDownload::testProcessExecutedNoParams() {
     QStringList processArgs = listWrapper->value();
     QCOMPARE(processCommand, command);
     QCOMPARE(0, processArgs.count());
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
@@ -1346,6 +1348,7 @@ TestDownload::testProcessExecutedWithParams() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1373,6 +1376,7 @@ TestDownload::testProcessExecutedWithParams() {
     QStringList processArgs = listWrapper->value();
     QCOMPARE(processCommand, command);
     QVERIFY(0 != processArgs.count());
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
@@ -1410,6 +1414,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1437,6 +1442,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QStringList processArgs = listWrapper->value();
     QCOMPARE(processCommand, command);
     QVERIFY(processArgs.contains(download->filePath()));
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
@@ -1454,6 +1460,7 @@ TestDownload::testProcessFinishedNoError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1475,6 +1482,7 @@ TestDownload::testProcessFinishedNoError() {
     // emit the finished signal with 0 and ensure that finished is emitted
     process->emitFinished(0, QProcess::NormalExit);
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
@@ -1492,6 +1500,7 @@ TestDownload::testProcessFinishedWithError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(error(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1513,6 +1522,7 @@ TestDownload::testProcessFinishedWithError() {
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(1, QProcess::NormalExit);
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
@@ -1530,6 +1540,7 @@ TestDownload::testProcessFinishedCrash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(error(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1551,6 +1562,7 @@ TestDownload::testProcessFinishedCrash() {
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(1, QProcess::CrashExit);
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(processingSpy.count(), 1);
 }
 
 void
