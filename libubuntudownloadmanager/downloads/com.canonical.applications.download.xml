@@ -64,5 +64,7 @@
         <arg name="total" type="t" direction="out"/>
     </signal>
 
+    <signal name="processing"/>
+
  </interface>
 </node>

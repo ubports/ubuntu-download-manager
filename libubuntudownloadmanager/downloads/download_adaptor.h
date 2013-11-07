@@ -82,6 +82,7 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"t\" name=\"received\"/>\n"
 "      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
 "    </signal>\n"
+"    <signal name=\"processing\"/>\n"
 "  </interface>\n"
         "")
 public:
@@ -106,6 +107,7 @@ Q_SIGNALS: // SIGNALS
     void error(const QString &error);
     void finished(const QString &path);
     void paused(bool success);
+    void processing();
     void progress(qulonglong received, qulonglong total);
     void resumed(bool success);
     void started(bool success);
