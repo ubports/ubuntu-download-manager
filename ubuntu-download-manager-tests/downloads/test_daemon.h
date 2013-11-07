@@ -39,6 +39,7 @@ class TestDaemon : public BaseTestCase {
     void init() override;
     void cleanup() override;
     void testStart();
+    void testStartPath();
     void testStartFailServiceRegister();
     void testStartFailObjectRegister();
     void testTimerStop();

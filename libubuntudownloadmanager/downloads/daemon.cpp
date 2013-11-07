@@ -74,11 +74,10 @@ class DaemonPrivate {
         Logger::stopLogging();
     }
 
-    void start() {
+    void start(QString path) {
         TRACE;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
-        bool ret = _conn->registerService(
-            "com.canonical.applications.Downloader");
+        bool ret = _conn->registerService(path);
         if (ret) {
             qDebug() << "Service registered to"
                 << "com.canonical.applications.Downloader";
@@ -201,9 +200,9 @@ Daemon::Daemon(QSharedPointer<Application> app,
 }
 
 void
-Daemon::start() {
+Daemon::start(QString path) {
     Q_D(Daemon);
-    d->start();
+    d->start(path);
 }
 
 }  // DownloadManager
