@@ -122,6 +122,8 @@ class GroupDownloadPrivate {
                 q, SLOT(onProgress(qulonglong, qulonglong)));
             q->connect(singleDownload, SIGNAL(finished(const QString&)),
                 q, SLOT(onFinished(const QString&)));
+            q->connect(singleDownload, SIGNAL(processing(QString)),
+                q, SIGNAL(processing(QString)));
         }
     }
 
