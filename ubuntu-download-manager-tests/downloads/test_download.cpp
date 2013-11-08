@@ -840,6 +840,7 @@ TestDownload::testOnSuccessNoHash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -852,6 +853,7 @@ TestDownload::testOnSuccessNoHash() {
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(processingSpy.count(), 0);
     QCOMPARE(download->state(), Download::FINISH);
 }
 
@@ -865,6 +867,7 @@ TestDownload::testOnSuccessHashError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy errorSpy(download , SIGNAL(error(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -896,6 +899,7 @@ TestDownload::testOnSuccessHashError() {
     // the has is a random string so we should get an error signal
     QCOMPARE(errorSpy.count(), 1);
     QCOMPARE(stateSpy.count(), 1);
+    QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::ERROR);
 
     delete download;
@@ -935,6 +939,7 @@ TestDownload::testOnSuccessHash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -961,6 +966,7 @@ TestDownload::testOnSuccessHash() {
 
     // the hash should be correct and we should get the finish signal
     QCOMPARE(spy.count(), 1);
+    QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -1872,4 +1878,39 @@ TestDownload::testDownloadPresent() {
         QSharedPointer<ProcessFactory>(_processFactory));
 
     QVERIFY(filePath != download->filePath());
+}
+
+void
+TestDownload::testProcessingJustOnce() {
+    QCryptographicHash::Algorithm algorithm = HashAlgorithm::getHashAlgo(_algo);
+    QByteArray data(300, 't');
+    QString hash = QString(QCryptographicHash::hash(data, algorithm).toHex());
+
+    QString command = "touch";
+    QVariantMap metadata;
+    metadata["post-download-command"] = command;
+
+    _reqFactory->record();
+    FileDownload* download = new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, hash, _algo,
+        metadata, _headers, QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<RequestFactory>(_reqFactory),
+        QSharedPointer<ProcessFactory>(_processFactory));
+
+    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+    reply->setData(data);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    QCOMPARE(processingSpy.count(), 1);
 }
