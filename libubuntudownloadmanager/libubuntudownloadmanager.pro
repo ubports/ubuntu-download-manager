@@ -24,6 +24,7 @@ SOURCES += \
     downloads/group_download_adaptor.cpp \
     downloads/file_download.cpp \
     downloads/sm_file_download.cpp \
+    downloads/state_machines/download_sm.cpp \
     system/hash_algorithm.cpp \
     system/uuid_utils.cpp \
     system/uuid_factory.cpp \
@@ -56,6 +57,7 @@ HEADERS +=\
     downloads/group_download_adaptor.h \
     downloads/file_download.h \
     downloads/sm_file_download.h \
+    downloads/state_machines/download_sm.h \
     system/hash_algorithm.h \
     system/uuid_utils.h \
     system/uuid_factory.h \
@@ -78,7 +80,11 @@ OTHER_FILES += \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml \
     com.canonical.applications.group_download.xml \
-    org.freedesktop.DBus.xml
+    org.freedesktop.DBus.xml \
+    downloads/com.canonical.applications.group_download.xml \
+    downloads/com.canonical.applications.download_manager.xml \
+    downloads/com.canonical.applications.download.xml \
+    downloads/generate_adaptors.sh
 
 target.path = /usr/lib/
 INSTALLS += target
