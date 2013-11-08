@@ -74,6 +74,30 @@ class DaemonPrivate {
         Logger::stopLogging();
     }
 
+    bool isTimeoutEnabled() {
+        return _isTimeoutEnabled;
+    }
+
+    void enableTimeout(bool enabled) {
+        _isTimeoutEnabled = enabled;
+    }
+
+    bool isStoppable() {
+        return _stoppable;
+    }
+
+    void setStoppable(bool stoppable) {
+        _stoppable = stoppable;
+    }
+
+    QList<QSslCertificate> selfSignedCerts() {
+        return _certs;
+    }
+
+    void setSelfSignedCerts(QList<QSslCertificate> certs) {
+        _certs = certs;
+    }
+
     void start(QString path) {
         TRACE;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
@@ -197,6 +221,42 @@ Daemon::Daemon(QSharedPointer<Application> app,
                QObject *parent)
     : QObject(parent),
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
+}
+
+bool
+Daemon::isTimeoutEnabled() {
+    Q_D(Daemon);
+    return d->isTimeoutEnabled();
+}
+
+void
+Daemon::enableTimeout(bool enabled) {
+    Q_D(Daemon);
+    d->enableTimeout(enabled);
+}
+
+bool
+Daemon::isStoppable() {
+    Q_D(Daemon);
+    return d->isStoppable();
+}
+
+void
+Daemon::setStoppable(bool stoppable) {
+    Q_D(Daemon);
+    d->setStoppable(stoppable);
+}
+
+QList<QSslCertificate>
+Daemon::selfSignedCerts() {
+    Q_D(Daemon);
+    return d->selfSignedCerts();
+}
+
+void
+Daemon::setSelfSignedCerts(QList<QSslCertificate> certs) {
+    Q_D(Daemon);
+    d->setSelfSignedCerts(certs);
 }
 
 void
