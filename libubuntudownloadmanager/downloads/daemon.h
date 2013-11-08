@@ -45,7 +45,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
            QObject *parent = 0);
 
  public slots:  // NOLINT (whitespace/indent)
-    void start();
+    void start(QString path="com.canonical.applications.Downloader");
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onTimeout())
