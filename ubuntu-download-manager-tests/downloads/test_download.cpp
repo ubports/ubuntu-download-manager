@@ -840,7 +840,7 @@ TestDownload::testOnSuccessNoHash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -867,7 +867,7 @@ TestDownload::testOnSuccessHashError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy errorSpy(download , SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -939,7 +939,7 @@ TestDownload::testOnSuccessHash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1288,7 +1288,7 @@ TestDownload::testProcessExecutedNoParams() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1354,7 +1354,7 @@ TestDownload::testProcessExecutedWithParams() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1420,7 +1420,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
         QSharedPointer<SystemNetworkInfo>(_networkInfo),
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1466,7 +1466,7 @@ TestDownload::testProcessFinishedNoError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1506,7 +1506,7 @@ TestDownload::testProcessFinishedWithError() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1546,7 +1546,7 @@ TestDownload::testProcessFinishedCrash() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
     QSignalSpy spy(download , SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1897,7 +1897,7 @@ TestDownload::testProcessingJustOnce() {
         QSharedPointer<RequestFactory>(_reqFactory),
         QSharedPointer<ProcessFactory>(_processFactory));
 
-    QSignalSpy processingSpy(download , SIGNAL(processing(QString)));
+    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
