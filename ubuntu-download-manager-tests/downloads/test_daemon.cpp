@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include "test_daemon.h"
 
 TestDaemon::TestDaemon(QObject *parent)
@@ -64,6 +65,38 @@ TestDaemon::testStart() {
 
     QCOMPARE(2, calledMethods.count());
     QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+
+    StringWrapper* wrapper = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0]);
+    QCOMPARE(QString("com.canonical.applications.Downloader"),
+        wrapper->value());
+
+    QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
+
+    // assert exit was NOT called
+    calledMethods = _app->calledMethods();
+    QCOMPARE(0, calledMethods.count());
+}
+
+void
+TestDaemon::testStartPath() {
+    QString myPath = "com.canonical.tests";
+    _conn->setRegisterServiceResult(true);
+    _conn->setRegisterObjectResult(true);
+    _conn->record();
+    _app->record();
+
+    _daemon->start(myPath);
+
+    QList<MethodData> calledMethods = _conn->calledMethods();
+
+    QCOMPARE(2, calledMethods.count());
+    QCOMPARE(QString("registerService"), calledMethods[0].methodName());
+
+    StringWrapper* wrapper = reinterpret_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0]);
+    QCOMPARE(myPath, wrapper->value());
+
     QCOMPARE(QString("registerObject"), calledMethods[1].methodName());
 
     // assert exit was NOT called
