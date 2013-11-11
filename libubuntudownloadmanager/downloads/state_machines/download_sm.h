@@ -94,14 +94,14 @@ class StartDownloadTransition : public DownloadSMTransition {
     virtual void onTransition(QEvent * event) override;
 };
 
-// takes care of the case in witch the connection is lost
-class StopRequestTransition : public DownloadSMTransition {
+// takes care of the case in when the download is paused
+class PauseRequestTransition : public DownloadSMTransition {
     Q_OBJECT
  public:
-    StopRequestTransition(const SMFileDownload* sender,
-                          const char* signal,
-                          QState* sourceState,
-                          QAbstractState* nextState);
+    PauseRequestTransition(const SMFileDownload* sender,
+                           const char* signal,
+                           QState* sourceState,
+                           QAbstractState* nextState);
  protected:
     virtual void onTransition(QEvent * event) override;
 };
