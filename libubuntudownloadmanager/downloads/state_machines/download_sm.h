@@ -48,7 +48,7 @@ class DownloadSMTransition : public QSignalTransition {
     }
 };
 
-// takes care of the case in witch the header is correctly performed
+// takes care of the case in which the header is correctly performed
 class HeaderTransition : public DownloadSMTransition  {
     Q_OBJECT
 
