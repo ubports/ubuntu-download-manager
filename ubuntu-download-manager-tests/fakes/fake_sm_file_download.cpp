@@ -116,13 +116,13 @@ FakeSMFileDownload::requestDownload() {
 }
 
 void
-FakeSMFileDownload::stopRequestDownload() {
+FakeSMFileDownload::pauseRequestDownload() {
     if (_recording) {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
-        MethodData methodData("stopRequestDownload", params);
+        MethodData methodData("pauseRequestDownload", params);
         _called.append(methodData);
     }
 }
