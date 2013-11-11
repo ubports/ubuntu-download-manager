@@ -175,6 +175,7 @@ ResumeDownloadTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     down->requestDownload();
     down->setState(Download::RESUME);
+    DownloadSMTransition::onTransition(event);
 }
 
 QString DownloadSM::IDLE = "IDLE";
