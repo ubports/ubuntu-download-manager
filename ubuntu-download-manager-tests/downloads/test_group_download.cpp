@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QScopedPointer>
 #include <QSignalSpy>
 #include <downloads/group_download.h>
 #include <system/uuid_utils.h>
@@ -902,4 +903,21 @@ TestGroupDownload::testValidFileNotPresent() {
         QSharedPointer<FileManager>(_fileManager));
 
     QVERIFY(group->isValid());
+}
+
+void
+TestGroupDownload::testEmptyGroupRaisesFinish() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
+        QSharedPointer<SystemNetworkInfo>(_networkInfo),
+        QSharedPointer<Factory>(_downloadFactory),
+        QSharedPointer<FileManager>(_fileManager)));
+
+    QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
+    QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
+
+    group->startDownload();
+    QCOMPARE(startedSpy.count(), 1);
+    QCOMPARE(finishedSpy.count(), 1);
 }

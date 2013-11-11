@@ -19,7 +19,8 @@
 #include <QDir>
 #include <QtGlobal>
 #include <QStandardPaths>
-#include "./base_testcase.h"
+#include <string.h>
+#include "base_testcase.h"
 
 void
 noMessageOutput(QtMsgType type,
@@ -49,6 +50,16 @@ BaseTestCase::testDirectory() {
         QDir().mkpath(path);
 
     return path;
+}
+
+QString
+BaseTestCase::dataDirectory() {
+    // get the file name and use it to get the data path that is in the
+    // same dir
+    QDir dir(".");
+    dir.makeAbsolute();
+
+    return dir.path() + "/data";
 }
 
 bool

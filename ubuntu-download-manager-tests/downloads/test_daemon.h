@@ -39,6 +39,7 @@ class TestDaemon : public BaseTestCase {
     void init() override;
     void cleanup() override;
     void testStart();
+    void testStartPath();
     void testStartFailServiceRegister();
     void testStartFailObjectRegister();
     void testTimerStop();
@@ -47,6 +48,11 @@ class TestDaemon : public BaseTestCase {
     void testDisableTimeout();
     void testSelfSignedCerts();
     void testSelfSignedCertsMissingPath();
+    void testStoppable_data();
+    void testStoppable();
+    void testSetTimeout_data();
+    void testSetTimeout();
+    void testSetSelfSignedSslCerts();
 
  private:
     FakeTimer* _timer;
