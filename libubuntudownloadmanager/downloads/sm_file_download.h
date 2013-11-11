@@ -40,7 +40,7 @@ class SMFileDownload : public QObject {
 
     virtual void setState(Download::State state);
     virtual void requestDownload();
-    virtual void stopRequestDownload();
+    virtual void pauseRequestDownload();
     virtual void cancelRequestDownload();
 
  signals:
