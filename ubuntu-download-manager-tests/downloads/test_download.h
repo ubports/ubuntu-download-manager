@@ -137,6 +137,9 @@ class TestDownload: public BaseTestCase {
     // filename tests
     void testDownloadPresent();
 
+    // processing signal tests
+    void testProcessingJustOnce();
+
  private:
     QString _id;
     bool _isConfined;
