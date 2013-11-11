@@ -30,10 +30,10 @@
 
 using namespace Ubuntu::DownloadManager::StateMachines;
 
-class TestSslErrorTranstition : public BaseTestCase {
+class TestSslErrorTransition : public BaseTestCase {
     Q_OBJECT
  public:
-    explicit TestSslErrorTranstition(QObject *parent = 0);
+    explicit TestSslErrorTransition(QObject *parent = 0);
     
  private slots:  // NOLINT(whitespace/indent)
 
@@ -49,6 +49,6 @@ class TestSslErrorTranstition : public BaseTestCase {
     QFinalState* _s2;
 };
 
-DECLARE_TEST(TestSslErrorTranstition)
+DECLARE_TEST(TestSslErrorTransition)
 
 #endif  // TEST_SSL_ERROR_TRANSTITION_H
