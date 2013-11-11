@@ -122,6 +122,8 @@ class GroupDownloadPrivate {
                 q, SLOT(onProgress(qulonglong, qulonglong)));
             q->connect(singleDownload, SIGNAL(finished(const QString&)),
                 q, SLOT(onFinished(const QString&)));
+            q->connect(singleDownload, SIGNAL(processing(QString)),
+                q, SIGNAL(processing(QString)));
         }
     }
 
@@ -174,14 +176,19 @@ class GroupDownloadPrivate {
 
     void startDownload() {
         Q_Q(GroupDownload);
-        foreach(FileDownload* download, _downloads) {
-            Download::State state = download->state();
-            if (state == Download::IDLE) {
-                download->start();
-                download->startDownload();
+        if (_downloads.count() > 0) {
+            foreach(FileDownload* download, _downloads) {
+                Download::State state = download->state();
+                if (state == Download::IDLE) {
+                    download->start();
+                    download->startDownload();
+                }
             }
+            emit q->started(true);
+        } else {
+            emit q->started(true);
+            emit q->finished(_finishedDownloads);
         }
-        emit q->started(true);
     }
 
     qulonglong progress() {

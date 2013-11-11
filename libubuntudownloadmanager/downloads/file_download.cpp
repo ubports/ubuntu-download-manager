@@ -274,6 +274,7 @@ class FileDownloadPrivate {
 
         // if the hash is present we check it
         if (!_hash.isEmpty()) {
+            emit q->processing(filePath());
             _currentData->reset();
             QByteArray data = _currentData->readAll();
             // do calculate the hash of the file so far and ensure that
@@ -293,6 +294,10 @@ class FileDownloadPrivate {
         // finish signals once the command was done (or an error ocurred in
         // the command execution.
         if (q->metadata().contains(METADATA_COMMAND_KEY)) {
+            // just emit processing if we DO NOT have a hash because else we already emitted it.
+            if (_hash.isEmpty()) {
+                emit q->processing(filePath());
+            }
             // toStringList will return an empty list if it cannot be converted
             QStringList commandData =
                 q->metadata()[METADATA_COMMAND_KEY].toStringList();
