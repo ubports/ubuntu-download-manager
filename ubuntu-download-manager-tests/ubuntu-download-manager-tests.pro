@@ -83,6 +83,6 @@ INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$PWD/../libubuntudownloadmanager ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../libubuntudownloadmanager ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check
 
