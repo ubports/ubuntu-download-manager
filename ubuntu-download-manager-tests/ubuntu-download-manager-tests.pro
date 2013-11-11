@@ -42,7 +42,7 @@ SOURCES += \
     main.cpp \
     base_testcase.cpp \
     downloads/state_machines/test_network_error_transition.cpp \
-    downloads/state_machines/test_ssl_error_transtition.cpp \
+    downloads/state_machines/test_ssl_error_transition.cpp \
     fakes/fake_sm_file_download.cpp
 
 HEADERS += \
@@ -74,7 +74,7 @@ HEADERS += \
     test_runner.h \
     base_testcase.h \
     downloads/state_machines/test_network_error_transition.h \
-    downloads/state_machines/test_ssl_error_transtition.h \
+    downloads/state_machines/test_ssl_error_transition.h \
     fakes/fake_sm_file_download.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
