@@ -28,6 +28,7 @@ class BaseTestCase : public QObject
     BaseTestCase(const QString& testName, QObject *parent = 0);
     
     QString testDirectory();
+    QString dataDirectory();
 
  protected slots:  // NOLINT(whitespace/indent)
 
