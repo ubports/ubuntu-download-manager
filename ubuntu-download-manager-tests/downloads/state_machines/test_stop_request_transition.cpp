@@ -33,7 +33,7 @@ TestStopRequestTransition::init() {
     _stateMachine.addState(_s1);
     _stateMachine.addState(_s2);
 
-    _transition = new StopRequestTransition(_down, SIGNAL(paused()), _s1, _s2);
+    _transition = new PauseRequestTransition(_down, SIGNAL(paused()), _s1, _s2);
     _s1->addTransition(_transition);
     _stateMachine.setInitialState(_s1);
 }
@@ -70,6 +70,6 @@ TestStopRequestTransition::testOnTransition() {
     QList<MethodData> calledMethods = _down->calledMethods();
     QCOMPARE(calledMethods.count(), 1);
     QString methodName = calledMethods[0].methodName();
-    QCOMPARE(methodName, QString("stopRequestDownload"));
+    QCOMPARE(methodName, QString("pauseRequestDownload"));
     QCOMPARE(Download::PAUSE, _down->state());
 }
