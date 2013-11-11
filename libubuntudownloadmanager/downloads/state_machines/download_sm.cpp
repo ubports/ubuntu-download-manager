@@ -70,7 +70,7 @@ NetworkErrorTransition::onTransition(QEvent* event) {
         QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
         down->emitNetworkError(code);
     } else {
-        qWarning() << "Signal does not have events!";
+        qCritical() << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
@@ -97,7 +97,7 @@ SslErrorTransition::onTransition(QEvent * event) {
         QList<QSslError> errors = v.value<QList<QSslError> > ();
         down->emitSslError(errors);
     } else {
-        qWarning() << "Signal does not have events!";
+        qCritical() << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
@@ -195,7 +195,7 @@ QString DownloadSM::CANCELED = "CANCELED";
 QString DownloadSM::FINISHED = "FINISHED";
 
 /**
- * PRIVATE IMPLEMENATION
+ * PRIVATE IMPLEMENTATION
  */
 
 class DownloadSMPrivate {
@@ -221,16 +221,13 @@ class DownloadSMPrivate {
         _finished = new FinalState(q, "state", DownloadSM::FINISHED);
 
         // add the idle state transitions
-        _transitions.append(new HeaderTransition(_down,
-            _idle, _init));
+        _transitions.append(new HeaderTransition(_down, _idle, _init));
         _idle->addTransition(_transitions.last());
 
-        _transitions.append(new NetworkErrorTransition(
-            _down, _idle, _error));
+        _transitions.append(new NetworkErrorTransition(_down, _idle, _error));
         _idle->addTransition(_transitions.last());
 
-        _transitions.append(new SslErrorTransition(_down,
-            _idle, _error));
+        _transitions.append(new SslErrorTransition(_down, _idle, _error));
         _idle->addTransition(_transitions.last());
 
         // add the init state transtions
