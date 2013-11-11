@@ -80,7 +80,11 @@ OTHER_FILES += \
     com.canonical.applications.download.xml \
     com.canonical.applications.download_manager.xml \
     com.canonical.applications.group_download.xml \
-    org.freedesktop.DBus.xml
+    org.freedesktop.DBus.xml \
+    downloads/com.canonical.applications.group_download.xml \
+    downloads/com.canonical.applications.download_manager.xml \
+    downloads/com.canonical.applications.download.xml \
+    downloads/generate_adaptors.sh
 
 target.path = /usr/lib/
 INSTALLS += target
