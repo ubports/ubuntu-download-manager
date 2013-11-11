@@ -56,7 +56,7 @@ SMFileDownload::requestDownload() {
 }
 
 void
-SMFileDownload::stopRequestDownload() {
+SMFileDownload::pauseRequestDownload() {
     // TODO: perform the stop
 }
 

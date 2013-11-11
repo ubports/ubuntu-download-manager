@@ -46,7 +46,7 @@ class TestStopRequestTransition : public BaseTestCase {
  private:
     QStateMachine _stateMachine;
     FakeSMFileDownload* _down;
-    StopRequestTransition* _transition;
+    PauseRequestTransition* _transition;
     QState* _s1;
     QFinalState* _s2;
 };

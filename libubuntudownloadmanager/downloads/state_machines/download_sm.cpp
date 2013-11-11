@@ -122,7 +122,7 @@ StartDownloadTransition::onTransition(QEvent * event) {
  * DOWNLOADING LOST CONNECTION
  */
 
-StopRequestTransition::StopRequestTransition(const SMFileDownload* sender,
+PauseRequestTransition::PauseRequestTransition(const SMFileDownload* sender,
                                              const char* signal,
                                              QState* sourceState,
                                              QAbstractState* nextState)
@@ -130,11 +130,12 @@ StopRequestTransition::StopRequestTransition(const SMFileDownload* sender,
 }
 
 void
-StopRequestTransition::onTransition(QEvent * event) {
+PauseRequestTransition::onTransition(QEvent * event) {
     Q_UNUSED(event);
     SMFileDownload* down = download();
-    down->stopRequestDownload();
+    down->pauseRequestDownload();
     down->setState(Download::PAUSE);
+    DownloadSMTransition::onTransition(event);
 }
 
 /*
@@ -153,6 +154,7 @@ CancelDownloadTransition::onTransition(QEvent * event) {
     SMFileDownload* down = download();
     down->cancelRequestDownload();
     down->setState(Download::CANCEL);
+    DownloadSMTransition::onTransition(event);
 }
 
 /**
@@ -204,12 +206,12 @@ class DownloadSMPrivate {
         _initState->addTransition(_transitions.last());
 
         // add the downloading transitions
-        _transitions.append(new StopRequestTransition(_down,
+        _transitions.append(new PauseRequestTransition(_down,
             SIGNAL(connectionDisabled()), _downloadingState,
             _downloadingNotConnectedState));
         _downloadingState->addTransition(_transitions.last());
 
-        _transitions.append(new StopRequestTransition(_down,
+        _transitions.append(new PauseRequestTransition(_down,
             SIGNAL(paused()), _downloadingState, _pausedState));
         _downloadingState->addTransition(_transitions.last());
 
