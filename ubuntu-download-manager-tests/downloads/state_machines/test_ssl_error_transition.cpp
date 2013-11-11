@@ -18,14 +18,14 @@
 
 #include <QSignalSpy>
 #include <QSslError>
-#include "test_ssl_error_transtition.h"
+#include "test_ssl_error_transition.h"
 
-TestSslErrorTranstition::TestSslErrorTranstition(QObject *parent)
-    : BaseTestCase("TestSslErrorTranstition", parent) {
+TestSslErrorTransition::TestSslErrorTransition(QObject *parent)
+    : BaseTestCase("TestSslErrorTransition", parent) {
 }
 
 void
-TestSslErrorTranstition::init() {
+TestSslErrorTransition::init() {
     BaseTestCase::init();
     _down = new FakeSMFileDownload();
     _s1 = new QState();
@@ -40,7 +40,7 @@ TestSslErrorTranstition::init() {
 }
 
 void
-TestSslErrorTranstition::cleanup() {
+TestSslErrorTransition::cleanup() {
     BaseTestCase::cleanup();
     _stateMachine.removeState(_s1);
     _stateMachine.removeState(_s2);
@@ -51,7 +51,7 @@ TestSslErrorTranstition::cleanup() {
 }
 
 void
-TestSslErrorTranstition::testOnTransition() {
+TestSslErrorTransition::testOnTransition() {
     _down->record();
     QList<QSslError> errors;
     errors.append(QSslError(QSslError::CertificateExpired));
