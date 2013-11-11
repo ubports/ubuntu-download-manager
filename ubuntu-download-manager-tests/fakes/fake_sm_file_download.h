@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_SM_FILED_OWNLOAD_H
-#define FAKE_SM_FILED_OWNLOAD_H
+#ifndef FAKE_SM_FILED_DOWNLOAD_H
+#define FAKE_SM_FILED_DOWNLOAD_H
 
 #include <QObject>
 #include <QSslError>
@@ -75,4 +75,4 @@ class FakeSMFileDownload : public SMFileDownload, public Fake{
     Download::State _state;
 };
 
-#endif  // FAKE_SM_FILED_OWNLOAD_H
+#endif  // FAKE_SM_FILED_DOWNLOAD_H
