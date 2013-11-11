@@ -109,6 +109,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void canceled(bool success);
     void error(const QString& error);
     void paused(bool success);
+    void processing(const QString& file);
     void resumed(bool success);
     void started(bool success);
     void progress(qulonglong received, qulonglong total);
