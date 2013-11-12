@@ -105,7 +105,7 @@ class GroupDownloadPrivate {
             }
 
             // ensure that the local path is not used by any other download
-	    // in this group.
+            // in this group.
             QString localFilePath = singleDownload->filePath();
             if (localPaths.contains(localFilePath)) {
                 q->setIsValid(false);
