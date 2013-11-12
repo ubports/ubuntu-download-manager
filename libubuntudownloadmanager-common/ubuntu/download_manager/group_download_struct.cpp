@@ -17,7 +17,7 @@
  */
 
 #include <QDBusMetaType>
-#include "downloads/group_download_struct.h"
+#include "group_download_struct.h"
 #include "system/hash_algorithm.h"
 
 namespace Ubuntu {

@@ -25,7 +25,7 @@
 #include <QtDBus/QDBusContext>
 #include <QSharedPointer>
 #include <QSslCertificate>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 #include "downloads/download.h"
 #include "downloads/queue.h"
 #include "downloads/factory.h"

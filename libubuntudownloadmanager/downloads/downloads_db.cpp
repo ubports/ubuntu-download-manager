@@ -25,8 +25,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/downloads_db.h"
-#include "system/hash_algorithm.h"
 #include "system/logger.h"
 
 #define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\

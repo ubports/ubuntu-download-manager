@@ -23,9 +23,9 @@
 #include <QList>
 #include <QObject>
 #include <QSharedPointer>
+#include <ubuntu/download_manager/group_download_struct.h>
 #include "downloads/download.h"
 #include "downloads/factory.h"
-#include "downloads/group_download_struct.h"
 #include "system/file_manager.h"
 
 namespace Ubuntu {

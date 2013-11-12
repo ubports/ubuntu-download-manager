@@ -17,10 +17,10 @@
  */
 
 #include <QDebug>
+#include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/file_download.h"
 #include "downloads/group_download.h"
-#include "system/hash_algorithm.h"
 #include "system/logger.h"
 #include "system/uuid_factory.h"
 

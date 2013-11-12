@@ -18,14 +18,11 @@ SOURCES += \
     downloads/manager.cpp \
     downloads/download_manager_adaptor.cpp \
     downloads/queue.cpp \
-    downloads/download_struct.cpp \
     downloads/group_download.cpp \
-    downloads/group_download_struct.cpp \
     downloads/group_download_adaptor.cpp \
     downloads/file_download.cpp \
     downloads/sm_file_download.cpp \
     downloads/state_machines/download_sm.cpp \
-    system/hash_algorithm.cpp \
     system/uuid_utils.cpp \
     system/uuid_factory.cpp \
     system/timer.cpp \
@@ -51,14 +48,11 @@ HEADERS +=\
     downloads/manager.h \
     downloads/download_manager_adaptor.h \
     downloads/queue.h \
-    downloads/download_struct.h \
     downloads/group_download.h \
-    downloads/group_download_struct.h \
     downloads/group_download_adaptor.h \
     downloads/file_download.h \
     downloads/sm_file_download.h \
     downloads/state_machines/download_sm.h \
-    system/hash_algorithm.h \
     system/uuid_utils.h \
     system/uuid_factory.h \
     system/timer.h \
@@ -72,8 +66,7 @@ HEADERS +=\
     system/application.h \
     system/apparmor.h \
     system/network_reply.h \
-    system/dbus_proxy.h \
-    metatypes.h
+    system/dbus_proxy.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
@@ -94,3 +87,8 @@ LIBS += -lnih-dbus
 CONFIG += link_pkgconfig
 PKGCONFIG += dbus-1
 
+
+LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntudownloadmanager-common
+
+INCLUDEPATH += $$PWD/../libubuntudownloadmanager-common
+DEPENDPATH += $$PWD/../libubuntudownloadmanager-common

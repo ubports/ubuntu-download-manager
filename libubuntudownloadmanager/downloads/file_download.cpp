@@ -24,8 +24,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+#include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/file_download.h"
-#include "system/hash_algorithm.h"
 #include "system/logger.h"
 #include "system/network_reply.h"
 

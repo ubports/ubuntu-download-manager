@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 #include "downloads/download.h"
 #include "system/apparmor.h"
 #include "system/system_network_info.h"
