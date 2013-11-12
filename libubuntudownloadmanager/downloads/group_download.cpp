@@ -75,6 +75,7 @@ class GroupDownloadPrivate {
         Q_Q(GroupDownload);
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
+        QStringList localPaths;
 
         // build downloads and add them to the q, it will take care of
         // starting them etc..
@@ -101,6 +102,16 @@ class GroupDownloadPrivate {
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
+            }
+
+            // ensure that the local path is not used by any other download.
+            QString localFilePath = singleDownload->filePath();
+            if (localPaths.contains(localFilePath)) {
+                q->setIsValid(false);
+                q->setLastError("Duplicated local path passed: " + localFilePath);
+                break;
+            } else {
+                localPaths.append(localFilePath);
             }
 
             // check that the download is valid, if it is not set to invalid
