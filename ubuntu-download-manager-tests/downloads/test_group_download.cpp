@@ -53,16 +53,11 @@ void
 TestGroupDownload::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_networkInfo != NULL)
-        delete _networkInfo;
-    if (_nam != NULL)
-        delete _nam;
-    if (_processFactory != NULL)
-        delete _processFactory;
-    if (_downloadFactory != NULL)
-        delete _downloadFactory;
-    if (_fileManager != NULL)
-        delete _fileManager;
+    delete _networkInfo;
+    delete _nam;
+    delete _processFactory;
+    delete _downloadFactory;
+    delete _fileManager;
 }
 
 void
