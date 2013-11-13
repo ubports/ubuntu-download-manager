@@ -45,6 +45,7 @@ TestDownloadFactory::cleanup() {
 
     if (_downFactory != NULL)
         delete _downFactory;
+
 }
 
 void
