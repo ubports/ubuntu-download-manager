@@ -19,8 +19,8 @@
 #ifndef DOWNLOADER_LIB_TIMER_H
 #define DOWNLOADER_LIB_TIMER_H
 
+#include <QTimer>
 #include <QObject>
-
 
 namespace Ubuntu {
 
@@ -44,8 +44,7 @@ class Timer : public QObject {
     void timeout();
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    TimerPrivate* d_ptr;
+    QTimer* _timer;
 };
 
 }  // System

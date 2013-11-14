@@ -26,83 +26,27 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
-
-class TimerPrivate {
-    Q_DECLARE_PUBLIC(Timer)
-
- public:
-    explicit TimerPrivate(Timer* parent);
-    ~TimerPrivate();
-
-    bool isActive();
-    void start(int msec);
-    void stop();
-
- private:
-    QTimer* _timer;
-    Timer* q_ptr;
-};
-
-TimerPrivate::TimerPrivate(Timer* parent)
-    : q_ptr(parent) {
-    Q_Q(Timer);
-    _timer = new QTimer();
+Timer::Timer(QObject* parent)
+    : QObject(parent) {
+    _timer = new QTimer(this);
     _timer->setSingleShot(true);
 
-    q->connect(_timer, SIGNAL(timeout()),
-        q, SIGNAL(timeout()));
-}
-
-TimerPrivate::~TimerPrivate() {
-    if (_timer)
-        delete _timer;
-}
-
-
-bool
-TimerPrivate::isActive() {
-    return _timer->isActive();
-}
-
-void
-TimerPrivate::start(int msec) {
-    _timer->start(msec);
-}
-
-void
-TimerPrivate::stop() {
-    _timer->stop();
-}
-
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-Timer::Timer(QObject *parent)
-    : QObject(parent),
-      d_ptr(new TimerPrivate(this)) {
+    connect(_timer, &QTimer::timeout, this, &Timer::timeout);
 }
 
 bool
 Timer::isActive() {
-    Q_D(Timer);
-    return d->isActive();
+    return _timer->isActive();
 }
 
 void
 Timer::start(int msec) {
-    Q_D(Timer);
-    d->start(msec);
+    _timer->start(msec);
 }
 
 void
 Timer::stop() {
-    Q_D(Timer);
-    d->stop();
+    _timer->stop();
 }
 
 }  // System
