@@ -24,44 +24,13 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
-
-class ProcessFactoryPrivate {
-    Q_DECLARE_PUBLIC(ProcessFactory)
- public:
-    explicit ProcessFactoryPrivate(ProcessFactory* parent);
-
-    Process* createProcess();
-
- private:
-    ProcessFactory* q_ptr;
-};
-
-
-ProcessFactoryPrivate::ProcessFactoryPrivate(ProcessFactory* parent)
-    : q_ptr(parent) {
-}
-
-Process*
-ProcessFactoryPrivate::createProcess() {
-    return new Process();
-}
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-ProcessFactory::ProcessFactory(QObject *parent)
-    : QObject(parent),
-      d_ptr(new ProcessFactoryPrivate(this)) {
+ProcessFactory::ProcessFactory(QObject* parent)
+    : QObject(parent) {
 }
 
 Process*
 ProcessFactory::createProcess() {
-    Q_D(ProcessFactory);
-    return d->createProcess();
+    return new Process();
 }
 
 }  // System
