@@ -36,9 +36,10 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
             this, &NetworkReply::finished);
         connect(_reply, &QNetworkReply::sslErrors,
             this, &NetworkReply::sslErrors);
-        // use old style because there is an error signal and error method :-/
-        connect(_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SIGNAL(error(QNetworkReply::NetworkError)));
+	// becuase error is overloaded we need to help the compiler
+	connect(_reply, static_cast<void(QNetworkReply::*)
+	    (QNetworkReply::NetworkError)>(&QNetworkReply::error),
+		this, &NetworkReply::error);
     }
 }
 
