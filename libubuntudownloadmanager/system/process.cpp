@@ -26,88 +26,45 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
 
-class ProcessPrivate {
-    Q_DECLARE_PUBLIC(Process)
-
- public:
-    explicit ProcessPrivate(Process* parent);
-    ~ProcessPrivate();
-
-    void start(const QString& program,
-               const QStringList& arguments,
-               QProcess::OpenMode mode = QProcess::ReadWrite);
-
-    void onReadyReadStandardError();
-    void onReadyReadStandardOutput();
-
- private:
-    QProcess* _process;
-    Process* q_ptr;
-};
-
-ProcessPrivate::ProcessPrivate(Process* parent)
-    : q_ptr(parent) {
-    Q_Q(Process);
-    _process = new QProcess();
+Process::Process(QObject* parent)
+    : QObject(parent) {
+    _process = new QProcess(this);
     _process->setProcessChannelMode(QProcess::SeparateChannels);
 
     // connect so that we foward the signals
-    q->connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)),
-        q, SIGNAL(finished(int, QProcess::ExitStatus)));
-    q->connect(_process, SIGNAL(error(QProcess::ProcessError)),
-        q, SIGNAL(error(QProcess::ProcessError)));
+    connect(_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>
+        (&QProcess::finished),
+            this, &Process::finished);
+    connect(_process, static_cast<void(QProcess::*)(QProcess::ProcessError)>
+            (&QProcess::error),
+                this, &Process::error);
 
     // connect so that we can log the stdout and stderr of the process
-    q->connect(_process, SIGNAL(readyReadStandardError()),
-        q, SLOT(onReadyReadStandardError()));
-    q->connect(_process, SIGNAL(readyReadStandardOutput()),
-        q, SLOT(onReadyReadStandardOutput()));
-}
-
-ProcessPrivate::~ProcessPrivate() {
-    if (_process != NULL)
-        delete _process;
+    connect(_process, &QProcess::readyReadStandardError,
+        this, &Process::onReadyReadStandardError);
+    connect(_process, &QProcess::readyReadStandardOutput,
+        this, &Process::onReadyReadStandardOutput);
 }
 
 void
-ProcessPrivate::start(const QString& program,
-                      const QStringList& arguments,
-                      QProcess::OpenMode mode) {
+Process::start(const QString& program,
+               const QStringList& arguments,
+               QProcess::OpenMode mode) {
     qDebug() << __FUNCTION__ << program << arguments << mode;
     _process->start(program, arguments, mode);
 }
 
 void
-ProcessPrivate::onReadyReadStandardError() {
+Process::onReadyReadStandardError() {
     // use qCritical this is important stuff
     qCritical() << QString(_process->readAllStandardError());
 }
 
 void
-ProcessPrivate::onReadyReadStandardOutput() {
+Process::onReadyReadStandardOutput() {
     // use qDebug
     qDebug() << QString(_process->readAllStandardOutput());
-}
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-Process::Process(QObject *parent)
-    : QObject(parent),
-      d_ptr(new ProcessPrivate(this)) {
-}
-
-void
-Process::start(const QString& program,
-                    const QStringList& arguments,
-                    QProcess::OpenMode mode) {
-    Q_D(Process);
-    d->start(program, arguments, mode);
 }
 
 }  // System
@@ -115,5 +72,3 @@ Process::start(const QString& program,
 }  // DownloadManager
 
 }  // Ubuntu
-
-#include "moc_process.cpp"
