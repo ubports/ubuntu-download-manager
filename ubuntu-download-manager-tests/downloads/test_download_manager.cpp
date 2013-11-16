@@ -34,32 +34,23 @@ TestDownloadManager::init() {
     _app = new FakeApplication();
     _appPointer = QSharedPointer<Application>(_app);
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
-    _networkInfo = new FakeSystemNetworkInfo();
+    _networkInfo = QSharedPointer<FakeSystemNetworkInfo>(new FakeSystemNetworkInfo());
     _q = new FakeDownloadQueue(QSharedPointer<SystemNetworkInfo>(_networkInfo));
-    _uuidFactory = new FakeUuidFactory();
-    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
+    _uuidFactory = QSharedPointer<FakeUuidFactory>(new FakeUuidFactory());
+    _apparmor = new FakeAppArmor(_uuidFactory);
     _requestFactory = new FakeRequestFactory();
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor),
-        QSharedPointer<SystemNetworkInfo>(_networkInfo),
-        QSharedPointer<RequestFactory>(_requestFactory),
+        _networkInfo, QSharedPointer<RequestFactory>(_requestFactory),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
-    _man = new Manager(
-        _appPointer,
-        qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q);
+    _man = new Manager(_appPointer, _conn, _networkInfo.data(),
+        _downloadFactory, _q);
 }
 
 void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_networkInfo)
-        delete _networkInfo;
-    if (_q != NULL)
-        delete _q;
-    if (_uuidFactory)
-        delete _uuidFactory;
     if (_man)
         delete _man;
 }
@@ -262,9 +253,6 @@ TestDownloadManager::testGetAllDownloads() {
     _q->record();
     _conn->record();
 
-    if (_man)
-        delete _man;
-
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
@@ -273,7 +261,7 @@ TestDownloadManager::testGetAllDownloads() {
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_appPointer, _conn, _networkInfo.data(),
         _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -314,9 +302,6 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     _q->record();
     _conn->record();
 
-    if (_man)
-        delete _man;
-
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
@@ -325,7 +310,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_appPointer, _conn, _networkInfo.data(),
         _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -397,10 +382,6 @@ void
 TestDownloadManager::testSetThrottleWithDownloads() {
     QFETCH(qulonglong, speed);
 
-    // add a number of downloads and assert that we do set their throttle limit
-    if (_man)
-        delete _man;
-
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
@@ -409,7 +390,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo()),
         QSharedPointer<RequestFactory>(new FakeRequestFactory()),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_appPointer, _conn, _networkInfo.data(),
         _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),
@@ -504,7 +485,7 @@ TestDownloadManager::testStoppable() {
     _man = new Manager(
         _appPointer,
         qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, true);
+        _networkInfo.data(), _downloadFactory, _q, true);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -516,7 +497,7 @@ TestDownloadManager::testNotStoppable() {
     _man = new Manager(
         _appPointer,
         qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, false);
+        _networkInfo.data(), _downloadFactory, _q, false);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());

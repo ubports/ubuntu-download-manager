@@ -59,7 +59,7 @@ class TestDaemon : public BaseTestCase {
     FakeApplication* _app;
     QSharedPointer<Application> _appPointer;
     FakeDownloadManager* _man;
-    FakeDBusConnection* _conn;
+    QSharedPointer<FakeDBusConnection> _conn;
     Daemon* _daemon;
 };
 
