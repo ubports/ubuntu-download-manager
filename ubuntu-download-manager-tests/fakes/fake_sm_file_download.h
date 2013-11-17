@@ -54,17 +54,21 @@ class FakeSMFileDownload : public SMFileDownload, public Fake{
     Q_OBJECT
  public:
     explicit FakeSMFileDownload(QObject *parent = 0);
-    
+
     void emitError(QString error) override;
     void emitNetworkError(QNetworkReply::NetworkError code) override;
     void emitSslError(const QList<QSslError>& errors) override;
     Download::State state();
     void setState(Download::State state) override;
     void requestDownload() override;
+    void pauseRequestDownload() override;
+    void cancelRequestDownload() override;
 
     void raiseNetworkError(QNetworkReply::NetworkError code);
     void raiseSslError(const QList<QSslError>& errors);
     void raiseDownloadingStarted();
+    void raisePaused();
+    void raiseCanceled();
 
  private:
     Download::State _state;

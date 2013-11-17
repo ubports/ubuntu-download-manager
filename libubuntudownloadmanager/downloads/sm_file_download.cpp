@@ -55,6 +55,16 @@ SMFileDownload::requestDownload() {
     // TODO: perform the request
 }
 
+void
+SMFileDownload::pauseRequestDownload() {
+    // TODO: perform the stop
+}
+
+void
+SMFileDownload::cancelRequestDownload() {
+    // TODO: perform the cancel
+}
+
 }  // Ubuntu
 
 }  // DownloadManager

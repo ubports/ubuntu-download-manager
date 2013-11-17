@@ -118,6 +118,45 @@ StartDownloadTransition::onTransition(QEvent * event) {
     DownloadSMTransition::onTransition(event);
 }
 
+/*
+ * DOWNLOADING LOST CONNECTION
+ */
+
+PauseRequestTransition::PauseRequestTransition(const SMFileDownload* sender,
+                                             const char* signal,
+                                             QState* sourceState,
+                                             QAbstractState* nextState)
+    : DownloadSMTransition(sender, signal, sourceState, nextState){
+}
+
+void
+PauseRequestTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->pauseRequestDownload();
+    down->setState(Download::PAUSE);
+    DownloadSMTransition::onTransition(event);
+}
+
+/*
+ * CANCEL DOWNLOAD TRANSITION
+ */
+
+CancelDownloadTransition::CancelDownloadTransition(const SMFileDownload* sender,
+                                                   QState* sourceState,
+                                                   QAbstractState* nextState)
+    : DownloadSMTransition(sender, SIGNAL(canceled()), sourceState, nextState) {
+}
+
+void
+CancelDownloadTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->cancelRequestDownload();
+    down->setState(Download::CANCEL);
+    DownloadSMTransition::onTransition(event);
+}
+
 /**
  * PRIVATE IMPLEMENTATION
  */
@@ -165,6 +204,28 @@ class DownloadSMPrivate {
         _transitions.append(new SslErrorTransition(_down,
             _initState, _errorState));
         _initState->addTransition(_transitions.last());
+
+        // add the downloading transitions
+        _transitions.append(new PauseRequestTransition(_down,
+            SIGNAL(connectionDisabled()), _downloadingState,
+            _downloadingNotConnectedState));
+        _downloadingState->addTransition(_transitions.last());
+
+        _transitions.append(new PauseRequestTransition(_down,
+            SIGNAL(paused()), _downloadingState, _pausedState));
+        _downloadingState->addTransition(_transitions.last());
+
+        _transitions.append(new CancelDownloadTransition(_down,
+            _downloadingState, _canceledState));
+        _downloadingState->addTransition(_transitions.last());
+
+        _transitions.append(new NetworkErrorTransition(_down,
+            _downloadingState, _errorState));
+        _downloadingState->addTransition(_transitions.last());
+
+        _transitions.append(new SslErrorTransition(_down,
+            _downloadingState, _errorState));
+        _downloadingState->addTransition(_transitions.last());
     }
 
     ~DownloadSMPrivate() {

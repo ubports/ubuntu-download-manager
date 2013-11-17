@@ -116,6 +116,30 @@ FakeSMFileDownload::requestDownload() {
 }
 
 void
+FakeSMFileDownload::pauseRequestDownload() {
+    if (_recording) {
+        QList<QObject*> inParams;
+
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("pauseRequestDownload", params);
+        _called.append(methodData);
+    }
+}
+
+void
+FakeSMFileDownload::cancelRequestDownload() {
+    if (_recording) {
+        QList<QObject*> inParams;
+
+        QList<QObject*> outParams;
+        MethodParams params(inParams, outParams);
+        MethodData methodData("cancelRequestDownload", params);
+        _called.append(methodData);
+    }
+}
+
+void
 FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
     emit error(code);
 }
@@ -128,4 +152,14 @@ FakeSMFileDownload::raiseSslError(const QList<QSslError>& errors) {
 void
 FakeSMFileDownload::raiseDownloadingStarted() {
     emit downloadingStarted();
+}
+
+void
+FakeSMFileDownload::raisePaused() {
+    emit paused();
+}
+
+void
+FakeSMFileDownload::raiseCanceled() {
+    emit canceled();
 }
