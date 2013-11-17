@@ -21,6 +21,7 @@
 
 #include <QNetworkReply>
 #include <QObject>
+#include <QSslError>
 
 namespace Ubuntu {
 
@@ -32,6 +33,10 @@ class SMFileDownload : public QObject {
  public:
     explicit SMFileDownload(QObject *parent = 0);
     
+    virtual void emitError(QString error);
+    virtual void emitNetworkError(QNetworkReply::NetworkError code);
+    virtual void emitSslError(const QList<QSslError>& errors);
+
  signals:
     // the following signals are used to control the move between
     // states in the state machine

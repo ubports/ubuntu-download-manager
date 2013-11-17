@@ -17,6 +17,7 @@
  */
 
 #include <QDebug>
+#include <QNetworkConfigurationManager>
 #include <QNetworkSession>
 #include "logger.h"
 #include "system_network_info.h"
