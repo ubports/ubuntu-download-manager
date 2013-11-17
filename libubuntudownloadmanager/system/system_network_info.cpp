@@ -28,196 +28,154 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
-
-class SystemNetworkInfoPrivate {
-    Q_DECLARE_PUBLIC(SystemNetworkInfo)
-
- public:
-    explicit SystemNetworkInfoPrivate(SystemNetworkInfo* parent)
-        : q_ptr(parent) {
-        Q_Q(SystemNetworkInfo);
-        _info = new QNetworkInfo();
-        _configMan = new QNetworkConfigurationManager();
+SystemNetworkInfo::SystemNetworkInfo(QObject* parent)
+    : QObject(parent) {
+    _info = new QNetworkInfo(this);
+    _configMan = new QNetworkConfigurationManager(this);
 
 #ifdef DEBUG
-        // in debug do log the changes else just fwd them
-        q->connect(_info, SIGNAL(cellIdChanged(int, const QString&)), q,
-            SLOT(onCellIdChanged(int, const QString&)));
-        q->connect(_info, SIGNAL(currentCellDataTechnologyChanged(int, QNetworkInfo::CellDataTechnology)), q,
-            SLOT(onCurrentCellDataTechnologyChanged(int, QNetworkInfo::CellDataTechnology)));
-        q->connect(_info, SIGNAL(currentMobileCountryCodeChanged(int, const QString&)), q,
-            SLOT(onCurrentMobileCountryCodeChanged(int, const QString&)));
-        q->connect(_info, SIGNAL(currentMobileNetworkCodeChanged(int, const QString&)), q,
-            SLOT(onCurrentMobileNetworkCodeChanged(int, const QString&)));
-        q->connect(_info, SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
-            SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
-        q->connect(_info, SIGNAL(locationAreaCodeChanged(int, const QString&)), q,
-            SLOT(onLocationAreaCodeChanged(int, const QString&)));
-        q->connect(_info, SIGNAL(networkInterfaceCountChanged(QNetworkInfo::NetworkMode, int)), q,
-            SLOT(onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode, int)));
-        q->connect(_info, SIGNAL(networkNameChanged(QNetworkInfo::NetworkMode, int, const QString&)), q,
-            SLOT(onNetworkNameChanged(QNetworkInfo::NetworkMode, int, const QString&)));
-        q->connect(_info, SIGNAL(networkSignalStrengthChanged(QNetworkInfo::NetworkMode, int, int)), q,
-            SLOT(onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode, int, int)));
-        q->connect(_info, SIGNAL(networkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)), q,
-            SLOT(onNetworkStatusChanged(QNetworkInfo::NetworkMode, int, QNetworkInfo::NetworkStatus)));
+    // in debug do log the changes else just fwd them
+    connect(_info, &QNetworkInfo::cellIdChanged, this,
+        &SystemNetworkInfo::onCellIdChanged);
+    connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged, this,
+        &SystemNetworkInfo::onCurrentCellDataTechnologyChanged);
+    connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, this,
+        &SystemNetworkInfo::onCurrentMobileCountryCodeChanged);
+    connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, this,
+        &SystemNetworkInfo::onCurrentMobileNetworkCodeChanged);
+    connect(_info, &QNetworkInfo::currentNetworkModeChanged, this,
+        &SystemNetworkInfo::onCurrentNetworkModeChanged);
+    connect(_info, &QNetworkInfo::locationAreaCodeChanged, this,
+        &SystemNetworkInfo::onLocationAreaCodeChanged);
+    connect(_info, &QNetworkInfo::networkInterfaceCountChanged, this,
+        &SystemNetworkInfo::onNetworkInterfaceCountChanged);
+    connect(_info, &QNetworkInfo::networkNameChanged, this,
+        &SystemNetworkInfo::onNetworkNameChanged);
+    connect(_info, &QNetworkInfo::networkSignalStrengthChanged, this,
+        &SystemNetworkInfo::onNetworkSignalStrengthChanged);
+    connect(_info, &QNetworkInfo::networkStatusChanged, this,
+        &SystemNetworkInfo::onNetworkStatusChanged);
 
-        q->connect(_configMan,
-            SIGNAL(onlineStateChanged(bool)), q,
-            SLOT(onOnlineStateChanged(bool)));
+    connect(_configMan,
+        &QNetworkConfigurationManager::onlineStateChanged, this,
+        &SystemNetworkInfo::onOnlineStateChanged);
 #else
-        // connect to interesting signals
-        q->connect(_info, &QNetworkInfo::cellIdChanged, q,
-            &SystemNetworkInfo::cellIdChanged);
-        q->connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged, q,
-            &SystemNetworkInfo::currentCellDataTechnologyChanged);
-        q->connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, q,
-            &SystemNetworkInfo::currentMobileCountryCodeChanged);
-        q->connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, q,
-            &SystemNetworkInfo::currentMobileNetworkCodeChanged);
-        q->connect(_info, &QNetworkInfo::currentNetworkModeChanged, q,
-            &SystemNetworkInfo::currentNetworkModeChanged);
-        q->connect(_info, &QNetworkInfo::locationAreaCodeChanged, q,
-            &SystemNetworkInfo::locationAreaCodeChanged);
-        q->connect(_info, &QNetworkInfo::networkInterfaceCountChanged, q,
-            &SystemNetworkInfo::networkInterfaceCountChanged);
-        q->connect(_info, &QNetworkInfo::networkNameChanged, q,
-            &SystemNetworkInfo::networkNameChanged);
-        q->connect(_info, &QNetworkInfo::networkSignalStrengthChanged, q,
-            &SystemNetworkInfo::networkSignalStrengthChanged);
-        q->connect(_info, &QNetworkInfo::networkStatusChanged, q,
-            &SystemNetworkInfo::networkStatusChanged);
+    // connect to interesting signals
+    connect(_info, &QNetworkInfo::cellIdChanged, q,
+        &SystemNetworkInfo::cellIdChanged);
+    connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged, q,
+        &SystemNetworkInfo::currentCellDataTechnologyChanged);
+    connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, q,
+        &SystemNetworkInfo::currentMobileCountryCodeChanged);
+    connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, q,
+        &SystemNetworkInfo::currentMobileNetworkCodeChanged);
+    connect(_info, &QNetworkInfo::currentNetworkModeChanged, q,
+        &SystemNetworkInfo::currentNetworkModeChanged);
+    connect(_info, &QNetworkInfo::locationAreaCodeChanged, q,
+        &SystemNetworkInfo::locationAreaCodeChanged);
+    connect(_info, &QNetworkInfo::networkInterfaceCountChanged, q,
+        &SystemNetworkInfo::networkInterfaceCountChanged);
+    connect(_info, &QNetworkInfo::networkNameChanged, q,
+        &SystemNetworkInfo::networkNameChanged);
+    connect(_info, &QNetworkInfo::networkSignalStrengthChanged, q,
+        &SystemNetworkInfo::networkSignalStrengthChanged);
+    connect(_info, &QNetworkInfo::networkStatusChanged, q,
+        &SystemNetworkInfo::networkStatusChanged);
 
-        q->connect(_configMan,
-            &QNetworkConfigurationManager::onlineStateChanged, q,
-            &SystemNetworkInfo::onlineStateChanged);
+    connect(_configMan,
+        &QNetworkConfigurationManager::onlineStateChanged, q,
+        &SystemNetworkInfo::onlineStateChanged);
 #endif
 
-    }
-
-    ~SystemNetworkInfoPrivate() {
-        delete _info;
-        delete _configMan;
-    }
-
-    QNetworkInfo::NetworkMode currentNetworkMode() {
-        return _info->currentNetworkMode();
-    }
-
-    bool isOnline() {
-        return _configMan->isOnline();
-    }
-
-    void onOnlineStateChanged(bool online) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << online;
-        emit q->onlineStateChanged(online);
-    }
-
-#if DEBUG
-
-    void onCellIdChanged(int interface, const QString& id) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << interface << id;
-        emit q->cellIdChanged(interface, id);
-    }
-
-    void onCurrentCellDataTechnologyChanged(int interface,
-                                    QNetworkInfo::CellDataTechnology tech) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << interface << tech;
-        emit q->currentCellDataTechnologyChanged(interface, tech);
-    }
-
-    void onCurrentMobileCountryCodeChanged(int interface, const QString& mcc) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << interface << mcc;
-        emit q->currentMobileCountryCodeChanged(interface, mcc);
-    }
-
-    void onCurrentMobileNetworkCodeChanged(int interface, const QString& mnc) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << interface << mnc;
-        emit q->currentMobileNetworkCodeChanged(interface, mnc);
-    }
-
-    void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << mode;
-        emit q->currentNetworkModeChanged(mode);
-    }
-
-    void onLocationAreaCodeChanged(int interface, const QString& lac) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << interface << lac;
-        emit q->locationAreaCodeChanged(interface, lac);
-    }
-
-    void onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode mode,
-                                        int count) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << mode << count;
-        emit q->networkInterfaceCountChanged(mode, count);
-    }
-
-    void onNetworkNameChanged(QNetworkInfo::NetworkMode mode, int interface,
-                              const QString& name) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << mode << interface << name;
-        emit q->networkNameChanged(mode, interface, name);
-    }
-
-    void onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode mode,
-                                        int interface, int strength) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << mode << interface << strength;
-        emit q->networkSignalStrengthChanged(mode, interface, strength);
-    }
-
-    void onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int interface,
-                                QNetworkInfo::NetworkStatus status) {
-        Q_Q(SystemNetworkInfo);
-        TRACE << mode << interface << status;
-        emit q->networkStatusChanged(mode, interface, status);
-    }
-
-#endif
-
- private:
-    QNetworkInfo* _info;
-    QNetworkConfigurationManager* _configMan;
-    SystemNetworkInfo* q_ptr;
-};
-
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-SystemNetworkInfo::SystemNetworkInfo(QObject *parent)
-    : QObject(parent),
-      d_ptr(new SystemNetworkInfoPrivate(this)) {
 }
 
 QNetworkInfo::NetworkMode
 SystemNetworkInfo::currentNetworkMode() {
-    Q_D(SystemNetworkInfo);
-    return d->currentNetworkMode();
+    return _info->currentNetworkMode();
 }
 
 bool
 SystemNetworkInfo::isOnline() {
-    Q_D(SystemNetworkInfo);
-    return d->isOnline();
+    return _configMan->isOnline();
 }
+
+void
+SystemNetworkInfo::onOnlineStateChanged(bool online) {
+    TRACE << online;
+    emit onlineStateChanged(online);
+}
+
+#if DEBUG
+
+void
+SystemNetworkInfo::onCellIdChanged(int interface, const QString& id) {
+    TRACE << interface << id;
+    emit cellIdChanged(interface, id);
+}
+
+void
+SystemNetworkInfo::onCurrentCellDataTechnologyChanged(int interface,
+                                QNetworkInfo::CellDataTechnology tech) {
+    TRACE << interface << tech;
+    emit currentCellDataTechnologyChanged(interface, tech);
+}
+
+void
+SystemNetworkInfo::onCurrentMobileCountryCodeChanged(int interface, const QString& mcc) {
+    TRACE << interface << mcc;
+    emit currentMobileCountryCodeChanged(interface, mcc);
+}
+
+void
+SystemNetworkInfo::onCurrentMobileNetworkCodeChanged(int interface, const QString& mnc) {
+    TRACE << interface << mnc;
+    emit currentMobileNetworkCodeChanged(interface, mnc);
+}
+
+void
+SystemNetworkInfo::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
+    TRACE << mode;
+    emit currentNetworkModeChanged(mode);
+}
+
+void
+SystemNetworkInfo::onLocationAreaCodeChanged(int interface, const QString& lac) {
+    TRACE << interface << lac;
+    emit locationAreaCodeChanged(interface, lac);
+}
+
+void
+SystemNetworkInfo::onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode mode,
+                                                  int count) {
+    TRACE << mode << count;
+    emit networkInterfaceCountChanged(mode, count);
+}
+
+void
+SystemNetworkInfo::onNetworkNameChanged(QNetworkInfo::NetworkMode mode, int interface,
+                                        const QString& name) {
+    TRACE << mode << interface << name;
+    emit networkNameChanged(mode, interface, name);
+}
+
+void
+SystemNetworkInfo::onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode mode,
+                                                  int interface, int strength) {
+    TRACE << mode << interface << strength;
+    emit networkSignalStrengthChanged(mode, interface, strength);
+}
+
+void
+SystemNetworkInfo::onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int interface,
+                                          QNetworkInfo::NetworkStatus status) {
+    TRACE << mode << interface << status;
+    emit networkStatusChanged(mode, interface, status);
+}
+
+#endif
 
 }  // System
 
 }  // DownloadManager
 
 }  // Ubuntu
-
-#include "moc_system_network_info.cpp"
