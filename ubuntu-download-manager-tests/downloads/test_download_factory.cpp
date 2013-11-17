@@ -43,9 +43,7 @@ void
 TestDownloadFactory::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_downFactory != NULL)
-        delete _downFactory;
-
+    delete _downFactory;
 }
 
 void

@@ -32,7 +32,7 @@ TestGroupDownload::init() {
     BaseTestCase::init();
     _id = UuidUtils::getDBusString(QUuid::createUuid());
     _path = "/group/dbus/path";
-    _isConfined = true;
+    _isConfined = false;
     _rootPath = "/random/dbus/path";
     _algo = "Md5";
     _isGSMDownloadAllowed = true;
@@ -846,4 +846,23 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
     group->startDownload();
     QCOMPARE(startedSpy.count(), 1);
     QCOMPARE(finishedSpy.count(), 1);
+}
+
+void
+TestGroupDownload::testDuplicatedLocalPath() {
+    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
+        filePath, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        filePath, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupDownload* group = new GroupDownload(_id, _path, false, _rootPath,
+        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
+        _networkInfo, _downloadFactory, _fileManager);
+
+    QVERIFY(!group->isValid());
 }

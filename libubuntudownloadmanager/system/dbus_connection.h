@@ -28,10 +28,8 @@ namespace DownloadManager {
 
 namespace System {
 
-class DBusConnectionPrivate;
 class DBusConnection : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DBusConnection)
  public:
     explicit DBusConnection(QObject *parent = 0);
 
@@ -43,7 +41,7 @@ class DBusConnection : public QObject {
     virtual QDBusConnection connection();
 
  private:
-    DBusConnectionPrivate* d_ptr;
+    QDBusConnection _conn;
 };
 
 }  // System

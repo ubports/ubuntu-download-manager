@@ -81,6 +81,9 @@ class TestGroupDownload : public BaseTestCase {
     // empty group tests
     void testEmptyGroupRaisesFinish();
 
+    // ensure that local paths are just used once
+    void testDuplicatedLocalPath();
+
  private:
     QString _id;
     QString _path;

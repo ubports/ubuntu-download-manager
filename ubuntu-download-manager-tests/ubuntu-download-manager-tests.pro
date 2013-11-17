@@ -40,7 +40,10 @@ SOURCES += \
     fakes/fake_apparmor.cpp \
     system/test_network_reply.cpp \
     main.cpp \
-    base_testcase.cpp
+    base_testcase.cpp \
+    downloads/state_machines/test_network_error_transition.cpp \
+    downloads/state_machines/test_ssl_error_transition.cpp \
+    fakes/fake_sm_file_download.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -69,7 +72,10 @@ HEADERS += \
     fakes/fake_apparmor.h \
     system/test_network_reply.h \
     test_runner.h \
-    base_testcase.h
+    base_testcase.h \
+    downloads/state_machines/test_network_error_transition.h \
+    downloads/state_machines/test_ssl_error_transition.h \
+    fakes/fake_sm_file_download.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 

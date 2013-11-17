@@ -99,10 +99,8 @@ class SystemNetworkInfoPrivate {
     }
 
     ~SystemNetworkInfoPrivate() {
-        if (_info != NULL)
-            delete _info;
-        if (_configMan != NULL)
-            delete _configMan;
+        delete _info;
+        delete _configMan;
     }
 
     QNetworkInfo::NetworkMode currentNetworkMode() {
