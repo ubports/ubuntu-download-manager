@@ -24,6 +24,8 @@
 #include <QString>
 #include <QSharedPointer>
 #include "dbus_connection.h"
+#include "dbus_proxy.h"
+#include "uuid_factory.h"
 
 
 namespace Ubuntu {
@@ -32,14 +34,13 @@ namespace DownloadManager {
 
 namespace System {
 
-class AppArmorPrivate;
 class AppArmor : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(AppArmor)
 
  public:
     explicit AppArmor(QObject *parent = 0);
     AppArmor(QSharedPointer<DBusConnection> connection, QObject *parent = 0);
+    ~AppArmor();
 
     virtual void getDBusPath(QString& id, QString& dbusPath);
 
@@ -52,10 +53,15 @@ class AppArmor : public QObject {
                                QString& dbusPath,
                                QString& localPath,
                                bool& isConfined);
+ private:
+    QString getLocalPath(const QString& appId);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    AppArmorPrivate* d_ptr;
+    const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
+    static QString UNCONFINED_ID;
+
+    DBusProxy* _dbus;
+    UuidFactory* _uuidFactory;
 };
 
 }  // System
@@ -63,4 +69,5 @@ class AppArmor : public QObject {
 }  // DownloadManager
 
 }  // Ubuntu
+
 #endif  // DOWNLOADER_LIB_APP_ARMOR_H
