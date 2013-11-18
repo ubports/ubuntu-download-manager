@@ -20,6 +20,7 @@
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
 #include <QObject>
+#include <QSslCertificate>
 #include <QSharedPointer>
 #include "app-downloader-lib_global.h"
 #include "downloads/manager.h"
@@ -43,6 +44,15 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
            Timer* timer,
            Manager* man,
            QObject *parent = 0);
+
+    bool isTimeoutEnabled();
+    void enableTimeout(bool enabled);
+
+    bool isStoppable();
+    void setStoppable(bool stoppable);
+
+    QList<QSslCertificate> selfSignedCerts();
+    void setSelfSignedCerts(QList<QSslCertificate> cert);
 
  public slots:  // NOLINT (whitespace/indent)
     void start(QString path="com.canonical.applications.Downloader");
