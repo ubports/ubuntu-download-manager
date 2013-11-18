@@ -52,17 +52,10 @@ void
 TestDownloadQueue::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_q != NULL)
-        delete _q;
-
-    if (_reqFactory != NULL)
-        delete _reqFactory;
-
-    if (_first != NULL)
-        delete _first;
-
-    if (_second != NULL)
-        delete _second;
+    delete _q;
+    delete _reqFactory;
+    delete _first;
+    delete _second;
 }
 
 void

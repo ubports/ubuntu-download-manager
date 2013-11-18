@@ -51,8 +51,7 @@ void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_man)
-        delete _man;
+    delete _man;
 }
 
 QCryptographicHash::Algorithm

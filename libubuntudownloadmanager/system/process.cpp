@@ -69,8 +69,7 @@ ProcessPrivate::ProcessPrivate(Process* parent)
 }
 
 ProcessPrivate::~ProcessPrivate() {
-    if (_process != NULL)
-        delete _process;
+    delete _process;
 }
 
 void

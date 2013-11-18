@@ -39,14 +39,11 @@ void
 TestDaemon::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_app != NULL)
-        delete _app;
-    if (_daemon != NULL)
-        delete _daemon;
-    if (_timer != NULL)
-        delete _timer;
-    if (_man != NULL)
-        delete _man;
+    delete _app;
+    delete _conn;
+    delete _daemon;
+    delete _timer;
+    delete _man;
 }
 
 void
