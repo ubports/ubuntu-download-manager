@@ -54,14 +54,10 @@ void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
-    if (_networkInfo)
-        delete _networkInfo;
-    if (_q != NULL)
-        delete _q;
-    if (_uuidFactory)
-        delete _uuidFactory;
-    if (_man)
-        delete _man;
+    delete _networkInfo;
+    delete _q;
+    delete _uuidFactory;
+    delete _man;
 }
 
 QCryptographicHash::Algorithm

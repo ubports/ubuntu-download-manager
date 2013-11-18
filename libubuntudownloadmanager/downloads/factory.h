@@ -31,10 +31,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class FactoryPrivate;
 class Factory : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Factory)
 
  public:
     Factory(QSharedPointer<AppArmor> apparmor,
@@ -86,8 +84,18 @@ class Factory : public QObject {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    FactoryPrivate* d_ptr;
+
+    void getDownloadPath(const QString& dbusOwner,
+                         const QVariantMap& metadata,
+                         QString& id,
+                         QString& dbusPath,
+                         QString& rootPath,
+                         bool& isConfined);
+ private:
+    QSharedPointer<AppArmor> _apparmor;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<RequestFactory> _nam;
+    QSharedPointer<ProcessFactory> _processFactory;
 };
 
 }  // DownloadManager

@@ -28,19 +28,13 @@ namespace DownloadManager {
 
 namespace System {
 
-class ProcessFactoryPrivate;
 class ProcessFactory : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(ProcessFactory)
 
  public:
     explicit ProcessFactory(QObject *parent = 0);
 
     virtual Process* createProcess();
-
- private:
-    // use pimpl so that we can mantains ABI compatibility
-    ProcessFactoryPrivate* d_ptr;
 };
 
 }  // System

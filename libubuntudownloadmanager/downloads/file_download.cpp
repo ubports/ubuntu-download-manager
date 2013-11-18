@@ -88,10 +88,9 @@ class FileDownloadPrivate {
     ~FileDownloadPrivate() {
         if (_currentData != NULL) {
             _currentData->close();
-            delete _currentData;
         }
-        if (_reply != NULL)
-            delete _reply;
+        delete _currentData;
+        delete _reply;
     }
 
     QUrl url() const {

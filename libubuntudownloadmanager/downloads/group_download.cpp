@@ -40,7 +40,7 @@ class GroupDownloadPrivate {
                   const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downloadFactory,
+                  Factory* downloadFactory,
                   GroupDownload* parent)
         : _downloads(),
           _finishedDownloads(),
@@ -56,7 +56,7 @@ class GroupDownloadPrivate {
                   const QString& algo,
                   bool isGSMDownloadAllowed,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downFactory,
+                  Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   GroupDownload* parent)
         : _downloads(),
@@ -75,6 +75,7 @@ class GroupDownloadPrivate {
         Q_Q(GroupDownload);
         QVariantMap metadata = q->metadata();
         QMap<QString, QString> headers = q->headers();
+        QStringList localPaths;
 
         // build downloads and add them to the q, it will take care of
         // starting them etc..
@@ -101,6 +102,17 @@ class GroupDownloadPrivate {
                     _downFactory->createDownloadForGroup(q->isConfined(),
                         q->rootPath(), url, hash, algo, downloadMetadata,
                         headers));
+            }
+
+            // ensure that the local path is not used by any other download
+            // in this group.
+            QString localFilePath = singleDownload->filePath();
+            if (localPaths.contains(localFilePath)) {
+                q->setIsValid(false);
+                q->setLastError("Duplicated local path passed: " + localFilePath);
+                break;
+            } else {
+                localPaths.append(localFilePath);
             }
 
             // check that the download is valid, if it is not set to invalid
@@ -296,7 +308,7 @@ class GroupDownloadPrivate {
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     QSharedPointer<SystemNetworkInfo> _networkInfo;
-    QSharedPointer<Factory> _downFactory;
+    Factory* _downFactory;
     QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;
 };
@@ -315,7 +327,7 @@ GroupDownload::GroupDownload(const QString& id,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downFactory,
+                  Factory* downFactory,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,
             networkInfo, parent),
@@ -333,7 +345,7 @@ GroupDownload::GroupDownload(const QString& id,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downFactory,
+                  Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,

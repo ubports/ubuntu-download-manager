@@ -53,8 +53,7 @@ TestDownloadsDb::cleanup() {
     BaseTestCase::cleanup();
     QString dbFile = _db->filename();
 
-    if (_db != NULL)
-        delete _db;
+    delete _db;
 
     QFile::remove(dbFile);
 }
