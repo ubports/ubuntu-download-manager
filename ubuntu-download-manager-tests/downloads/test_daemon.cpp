@@ -40,7 +40,6 @@ TestDaemon::cleanup() {
     BaseTestCase::cleanup();
 
     delete _app;
-    delete _conn;
     delete _daemon;
     delete _timer;
     delete _man;
