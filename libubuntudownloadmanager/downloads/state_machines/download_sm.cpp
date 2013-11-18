@@ -157,6 +157,25 @@ CancelDownloadTransition::onTransition(QEvent * event) {
     DownloadSMTransition::onTransition(event);
 }
 
+/*
+ * RESUME DOWNLOAD TRANSITION
+ */
+ResumeDownloadTransition::ResumeDownloadTransition(const SMFileDownload* sender,
+                                                   const char* signal,
+                                                   QState* sourceState,
+                                                   QAbstractState* nextState)
+    : DownloadSMTransition(sender, signal, sourceState, nextState) {
+}
+
+void
+ResumeDownloadTransition::onTransition(QEvent * event) {
+    Q_UNUSED(event);
+    SMFileDownload* down = download();
+    down->requestDownload();
+    down->setState(Download::RESUME);
+    DownloadSMTransition::onTransition(event);
+}
+
 /**
  * PRIVATE IMPLEMENTATION
  */
@@ -226,6 +245,20 @@ class DownloadSMPrivate {
         _transitions.append(new SslErrorTransition(_down,
             _downloadingState, _errorState));
         _downloadingState->addTransition(_transitions.last());
+
+        // add the downloading not connected transitions
+        _transitions.append(new ResumeDownloadTransition(_down,
+            SIGNAL(connectionEnabled()),
+            _downloadingNotConnectedState,
+            _downloadingState));
+        _downloadingNotConnectedState->addTransition(_transitions.last());
+
+        _transitions.append(new CancelDownloadTransition(_down,
+            _downloadingNotConnectedState, _canceledState));
+        _downloadingNotConnectedState->addTransition(_transitions.last());
+
+        _transitions.append(_downloadingNotConnectedState->addTransition(_down,
+            SIGNAL(paused()), _pausedNotConnectedState));
     }
 
     ~DownloadSMPrivate() {
