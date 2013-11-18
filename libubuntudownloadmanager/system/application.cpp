@@ -26,52 +26,21 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
 
-class ApplicationPrivate {
-    Q_DECLARE_PUBLIC(Application)
-
- public:
-    explicit ApplicationPrivate(Application* parent)
-        : q_ptr(parent) {
-    }
-
-    void exit(int returnCode) {
-        // get the application instance and exit
-        QCoreApplication* app = QCoreApplication::instance();
-        app->exit(returnCode);
-    }
-
-    QStringList arguments() {
-        return QCoreApplication::arguments();
-    }
-
- private:
-    Application* q_ptr;
-};
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-
-Application::Application(QObject *parent)
-    : QObject(parent),
-      d_ptr(new ApplicationPrivate(this)) {
+Application::Application(QObject* parent)
+    : QObject(parent) {
 }
 
 void
 Application::exit(int returnCode) {
-    Q_D(Application);
-    d->exit(returnCode);
+    // get the application instance and exit
+    QCoreApplication* app = QCoreApplication::instance();
+    app->exit(returnCode);
 }
 
 QStringList
 Application::arguments() {
-    Q_D(Application);
-    return d->arguments();
+    return QCoreApplication::arguments();
 }
 
 }  // System

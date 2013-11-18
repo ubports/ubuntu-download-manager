@@ -48,7 +48,7 @@ class GroupDownload : public Download {
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downFactory,
+                  Factory* downFactory,
                   QObject* parent = 0);
 
     GroupDownload(const QString& id,
@@ -61,7 +61,7 @@ class GroupDownload : public Download {
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   QSharedPointer<SystemNetworkInfo> networkInfo,
-                  QSharedPointer<Factory> downFactory,
+                  Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent = 0);
 

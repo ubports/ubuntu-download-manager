@@ -26,6 +26,45 @@ SMFileDownload::SMFileDownload(QObject *parent)
     : QObject(parent) {
 }
 
+void
+SMFileDownload::emitError(QString error) {
+    Q_UNUSED(error);
+    // TODO: emit the signal
+}
+
+void
+SMFileDownload::emitNetworkError(QNetworkReply::NetworkError code) {
+    Q_UNUSED(code);
+    // TODO: emit the signal
+}
+
+void
+SMFileDownload::emitSslError(const QList<QSslError>& errors) {
+    Q_UNUSED(errors);
+    // TODO: emit the signal
+}
+
+void
+SMFileDownload::setState(Download::State state) {
+    Q_UNUSED(state);
+    // TODO: set the real state
+}
+
+void
+SMFileDownload::requestDownload() {
+    // TODO: perform the request
+}
+
+void
+SMFileDownload::pauseRequestDownload() {
+    // TODO: perform the stop
+}
+
+void
+SMFileDownload::cancelRequestDownload() {
+    // TODO: perform the cancel
+}
+
 }  // Ubuntu
 
 }  // DownloadManager
