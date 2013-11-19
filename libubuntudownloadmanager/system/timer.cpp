@@ -57,8 +57,7 @@ TimerPrivate::TimerPrivate(Timer* parent)
 }
 
 TimerPrivate::~TimerPrivate() {
-    if (_timer)
-        delete _timer;
+    delete _timer;
 }
 
 

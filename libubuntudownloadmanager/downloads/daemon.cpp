@@ -65,10 +65,8 @@ class DaemonPrivate {
 
     ~DaemonPrivate() {
         // no need to delete the adaptor because the interface is its parent
-        if (_downInterface)
-            delete _downInterface;
-        if (_shutDownTimer)
-            delete _shutDownTimer;
+        delete _downInterface;
+        delete _shutDownTimer;
 
         // stop logging
         Logger::stopLogging();
