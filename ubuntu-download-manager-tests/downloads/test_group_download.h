@@ -81,6 +81,9 @@ class TestGroupDownload : public BaseTestCase {
     // empty group tests
     void testEmptyGroupRaisesFinish();
 
+    // ensure that local paths are just used once
+    void testDuplicatedLocalPath();
+
  private:
     QString _id;
     QString _path;
@@ -92,11 +95,11 @@ class TestGroupDownload : public BaseTestCase {
     QMap<QString, QString> _headers;
     UuidFactory* _uuidFactory;
     FakeAppArmor* _apparmor;
-    FakeSystemNetworkInfo* _networkInfo;
+    QSharedPointer<FakeSystemNetworkInfo> _networkInfo;
     FakeRequestFactory* _nam;
     FakeProcessFactory* _processFactory;
     FakeDownloadFactory* _downloadFactory;
-    FakeFileManager* _fileManager;
+    QSharedPointer<FakeFileManager> _fileManager;
 };
 
 DECLARE_TEST(TestGroupDownload)

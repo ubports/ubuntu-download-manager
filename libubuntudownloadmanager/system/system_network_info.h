@@ -20,6 +20,7 @@
 #define DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 
 #include <QNetworkAccessManager>
+#include <QNetworkConfigurationManager>
 #include <QNetworkInfo>
 #include <QObject>
 
@@ -29,10 +30,8 @@ namespace DownloadManager {
 
 namespace System {
 
-class SystemNetworkInfoPrivate;
 class SystemNetworkInfo : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(SystemNetworkInfo)
 
  public:
     explicit SystemNetworkInfo(QObject *parent = 0);
@@ -58,36 +57,27 @@ class SystemNetworkInfo : public QObject {
     void onlineStateChanged(bool online);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onOnlineStateChanged(bool))
+    void onOnlineStateChanged(bool);
 
 #if DEBUG
     // track the changes so that we get some debug info, else we will just fwd the signals
-    Q_PRIVATE_SLOT(d_func(),
-        void onCellIdChanged(int, const QString&))
-    Q_PRIVATE_SLOT(d_func(),
-        void onCurrentCellDataTechnologyChanged(int,
-                                              QNetworkInfo::CellDataTechnology))
-    Q_PRIVATE_SLOT(d_func(),
-        void onCurrentMobileCountryCodeChanged(int, const QString&))
-    Q_PRIVATE_SLOT(d_func(),
-        void onCurrentMobileNetworkCodeChanged(int, const QString&))
-    Q_PRIVATE_SLOT(d_func(),
-        void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode))
-    Q_PRIVATE_SLOT(d_func(),
-        void onLocationAreaCodeChanged(int, const QString&))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode, int))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkNameChanged(QNetworkInfo::NetworkMode, int, const QString&))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode, int, int))
-    Q_PRIVATE_SLOT(d_func(),
-        void onNetworkStatusChanged(QNetworkInfo::NetworkMode, int,
-                                  QNetworkInfo::NetworkStatus))
+    void onCellIdChanged(int, const QString&);
+    void onCurrentCellDataTechnologyChanged(int,
+        QNetworkInfo::CellDataTechnology);
+    void onCurrentMobileCountryCodeChanged(int, const QString&);
+    void onCurrentMobileNetworkCodeChanged(int, const QString&);
+    void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode);
+    void onLocationAreaCodeChanged(int, const QString&);
+    void onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode, int);
+    void onNetworkNameChanged(QNetworkInfo::NetworkMode, int, const QString&);
+    void onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode, int, int);
+    void onNetworkStatusChanged(QNetworkInfo::NetworkMode, int,
+        QNetworkInfo::NetworkStatus);
 #endif
 
  private:
-    SystemNetworkInfoPrivate* d_ptr;
+    QNetworkInfo* _info;
+    QNetworkConfigurationManager* _configMan;
 };
 
 }  // System

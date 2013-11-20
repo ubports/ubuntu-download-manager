@@ -19,9 +19,11 @@
 #ifndef DOWNLOADER_LIB_REQUEST_FACTORY_H
 #define DOWNLOADER_LIB_REQUEST_FACTORY_H
 
+#include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QObject>
 #include <QSslCertificate>
+#include <QSslError>
 #include "app-downloader-lib_global.h"
 #include "network_reply.h"
 
@@ -31,10 +33,8 @@ namespace DownloadManager {
 
 namespace System {
 
-class RequestFactoryPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
+class RequestFactory : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(RequestFactory)
 
  public:
     RequestFactory(bool stoppable = false, QObject *parent = 0);
@@ -46,13 +46,18 @@ class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
-    Q_PRIVATE_SLOT(d_func(), void onFinished())
-    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
+    void removeNetworkReply(NetworkReply* reply);
+
+ private slots:
+    void onError(QNetworkReply::NetworkError);
+    void onFinished();
+    void onSslErrors(const QList<QSslError>&);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    RequestFactoryPrivate* d_ptr;
+    bool _stoppable = false;
+    QList<NetworkReply*> _replies;
+    QList<QSslCertificate> _certs;
+    QNetworkAccessManager* _nam;
 };
 
 }  // System

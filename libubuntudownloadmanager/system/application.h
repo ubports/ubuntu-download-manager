@@ -28,20 +28,14 @@ namespace DownloadManager {
 
 namespace System {
 
-class ApplicationPrivate;
 class Application : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Application)
 
  public:
     explicit Application(QObject *parent = 0);
 
     virtual void exit(int returnCode = 0);
     virtual QStringList arguments();
-
- private:
-    // use pimpl so that we can mantains ABI compatibility
-    ApplicationPrivate* d_ptr;
 };
 
 }  // System
