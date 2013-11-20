@@ -296,6 +296,14 @@ class DownloadSMPrivate {
 
         _transitions.append(_downloadedState->addTransition(_down,
             SIGNAL(postProcessingStarted()), _postProcessingState));
+
+        // hashing transitions
+        _transitions.append(_hashingState->addTransition(_down,
+            SIGNAL(finished()), _finishedState));
+        _transitions.append(_hashingState->addTransition(_down,
+            SIGNAL(hashingError()), _errorState));
+        _transitions.append(_hashingState->addTransition(_down,
+            SIGNAL(postProcessingStarted()), _postProcessingState));
     }
 
     ~DownloadSMPrivate() {
