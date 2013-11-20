@@ -304,6 +304,12 @@ class DownloadSMPrivate {
             SIGNAL(hashingError()), _errorState));
         _transitions.append(_hashingState->addTransition(_down,
             SIGNAL(postProcessingStarted()), _postProcessingState));
+
+        // post processing transitions
+        _transitions.append(_postProcessingState->addTransition(
+            _down, SIGNAL(finished()), _finishedState));
+        _transitions.append(_postProcessingState->addTransition(
+            _down, SIGNAL(postProcessingError()), _errorState));
     }
 
     ~DownloadSMPrivate() {
