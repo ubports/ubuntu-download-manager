@@ -282,6 +282,20 @@ class DownloadSMPrivate {
 
         _transitions.append(_pausedNotConnectedState->addTransition(_down,
             SIGNAL(connectionEnabled()), _pausedState));
+
+        // downloaded transitions
+        _transitions.append(new CancelDownloadTransition(
+            _down, _downloadedState, _canceledState));
+        _downloadedState->addTransition(_transitions.last());
+
+        _transitions.append(_downloadedState->addTransition(_down,
+            SIGNAL(finished()), _finishedState));
+
+        _transitions.append(_downloadedState->addTransition(_down,
+            SIGNAL(hashingStarted()), _hashingState));
+
+        _transitions.append(_downloadedState->addTransition(_down,
+            SIGNAL(postProcessingStarted()), _postProcessingState));
     }
 
     ~DownloadSMPrivate() {
