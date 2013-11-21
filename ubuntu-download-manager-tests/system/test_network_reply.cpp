@@ -62,7 +62,7 @@ TestNetworkReply::testDownloadProgressForwarded() {
     QSignalSpy spy(_reply, SIGNAL(downloadProgress(qint64, qint64)));
     emit _qReply->downloadProgress(received, total);
 
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toUInt(), received);
     QCOMPARE(arguments.at(1).toUInt(), total);
@@ -73,14 +73,14 @@ TestNetworkReply::testErrorForwarded() {
     QSignalSpy spy(_reply, SIGNAL(error(QNetworkReply::NetworkError)));
     emit _qReply->error(QNetworkReply::NoError);
 
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
 }
 
 void
 TestNetworkReply::testFinishedForwarded() {
     QSignalSpy spy(_reply, SIGNAL(finished()));
     emit _qReply->finished();
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
 }
 
 void
@@ -89,5 +89,5 @@ TestNetworkReply::testSslErrorsForwarded() {
     QSignalSpy spy(_reply, SIGNAL(sslErrors(const QList<QSslError>&)));
     emit _qReply->sslErrors(errors);
 
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
 }
