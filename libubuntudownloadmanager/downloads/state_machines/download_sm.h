@@ -23,6 +23,7 @@
 #include <QAbstractState>
 #include <QState>
 #include <QObject>
+#include <QVariant>
 #include "downloads/sm_file_download.h"
 
 namespace Ubuntu {
@@ -137,7 +138,7 @@ class DownloadSM : public QObject {
  public:
     DownloadSM(SMFileDownload* down, QObject *parent = 0);
     virtual ~DownloadSM();
-
+    
     QString state();
     void setState(QString state);
 
@@ -155,6 +156,12 @@ class DownloadSM : public QObject {
     static QString ERROR;
     static QString CANCELED;
     static QString FINISHED;
+
+ signals:
+    void started();
+    void stopped();
+    void finished();
+    void stateChanged(QString);
 
  private:
     // use pimpl so that we can mantains ABI compatibility
