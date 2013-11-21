@@ -140,6 +140,11 @@ FakeSMFileDownload::cancelRequestDownload() {
 }
 
 void
+FakeSMFileDownload::raiseHeadRequestCompleted() {
+    emit headRequestCompleted();
+}
+
+void
 FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
     emit error(code);
 }
@@ -147,6 +152,16 @@ FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
 void
 FakeSMFileDownload::raiseSslError(const QList<QSslError>& errors) {
     emit sslErrors(errors);
+}
+
+void
+FakeSMFileDownload::raiseConnectionEnabled() {
+    emit connectionEnabled();
+}
+
+void
+FakeSMFileDownload::raiseConnectionDisabled() {
+    emit connectionDisabled();
 }
 
 void
@@ -160,6 +175,36 @@ FakeSMFileDownload::raisePaused() {
 }
 
 void
+FakeSMFileDownload::raiseCompleted() {
+    emit completed();
+}
+
+void
+FakeSMFileDownload::raiseHashingStarted() {
+    emit hashingStarted();
+}
+
+void
+FakeSMFileDownload::raiseHashingError() {
+    emit hashingError();
+}
+
+void
+FakeSMFileDownload::raisePostProcessingStarted() {
+    emit postProcessingStarted();
+}
+
+void
+FakeSMFileDownload::raisePostProcessingError() {
+    emit postProcessingError();
+}
+
+void
 FakeSMFileDownload::raiseCanceled() {
     emit canceled();
+}
+
+void
+FakeSMFileDownload::raiseFinished() {
+    emit finished();
 }

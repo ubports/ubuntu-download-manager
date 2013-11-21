@@ -37,10 +37,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class ManagerPrivate;
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Manager)
 
  public:
     Manager(QSharedPointer<Application> app,
@@ -54,6 +52,7 @@ class Manager : public QObject, public QDBusContext {
             Queue* queue,
             bool stoppable = false,
             QObject *parent = 0);
+    virtual ~Manager();
 
     void loadPreviewsDownloads(const QString &path);
 
@@ -82,11 +81,32 @@ class Manager : public QObject, public QDBusContext {
     void sizeChanged(int count);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onDownloadsChanged(QString))
+
+    typedef std::function<Download*(QString)> DownloadCreationFunc;
+
+    void init();
+
+    void loadPreviewsDownloads(QString path);
+    void addDownload(Download* download);
+    QDBusObjectPath registerDownload(Download* download);
+    QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc);
+    QDBusObjectPath createDownload(const QString& url,
+                                   const QString& hash,
+                                   const QString& algo,
+                                   const QVariantMap& metadata,
+                                   StringMap headers);
+    void onDownloadsChanged(QString);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    ManagerPrivate* d_ptr;
+    QSharedPointer<Application> _app;
+    qulonglong _throttle;
+    QSharedPointer<AppArmor> _apparmor;
+    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    QSharedPointer<ProcessFactory> _processFactory;
+    QSharedPointer<Factory> _downloadFactory;
+    Queue* _downloadsQueue;
+    QSharedPointer<DBusConnection> _conn;
+    bool _stoppable;
 };
 
 }  // DownloadManager

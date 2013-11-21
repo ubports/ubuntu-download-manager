@@ -29,11 +29,10 @@ TestDaemon::init() {
     _timer = new FakeTimer();
     _app = new FakeApplication();
     _appPointer = QSharedPointer<Application>(_app);
-    _conn = new FakeDBusConnection();
-    _man = new FakeDownloadManager(_appPointer,
-        QSharedPointer<DBusConnection>(_conn));
+    _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
+    _man = new FakeDownloadManager(_appPointer, _conn);
     _daemon = new Daemon(_appPointer,
-        _conn, _timer, _man, this);
+        _conn.data(), _timer, _man, this);
 }
 
 void
@@ -41,7 +40,6 @@ TestDaemon::cleanup() {
     BaseTestCase::cleanup();
 
     delete _app;
-    delete _conn;
     delete _daemon;
     delete _timer;
     delete _man;
@@ -185,7 +183,7 @@ TestDaemon::testDisableTimeout() {
     _app->setArguments(args);
 
     // assert that start is never called
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     QList<MethodData> calledMethods = _timer->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
@@ -198,7 +196,7 @@ TestDaemon::testSelfSignedCerts() {
     _app->setArguments(args);
 
     // assert that we set the certs
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
@@ -212,7 +210,7 @@ TestDaemon::testSelfSignedCertsMissingPath() {
     _app->setArguments(args);
 
     // assert that we do not crash
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     QList<MethodData> calledMethods = _man->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
@@ -228,7 +226,7 @@ TestDaemon::testStoppable_data() {
 void
 TestDaemon::testStoppable() {
     QFETCH(bool, enabled);
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     _daemon->setStoppable(enabled);
     QCOMPARE(_daemon->isStoppable(), enabled);
 }
@@ -244,7 +242,7 @@ TestDaemon::testSetTimeout_data() {
 void
 TestDaemon::testSetTimeout() {
     QFETCH(bool, enabled);
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     _daemon->enableTimeout(enabled);
     QCOMPARE(enabled, _daemon->isTimeoutEnabled());
 }
@@ -253,7 +251,7 @@ void
 TestDaemon::testSetSelfSignedSslCerts() {
     QList<QSslCertificate> certs = QSslCertificate::fromPath(
         dataDirectory() + "/*.pem");
-    _daemon = new Daemon(_appPointer, _conn, _timer, _man, this);
+    _daemon = new Daemon(_appPointer, _conn.data(), _timer, _man, this);
     _daemon->setSelfSignedCerts(certs);
     QList<QSslCertificate> daemonCerts = _daemon->selfSignedCerts();
     QCOMPARE(certs.count(), daemonCerts.count());

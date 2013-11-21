@@ -23,6 +23,7 @@
 #include <QAbstractState>
 #include <QState>
 #include <QObject>
+#include <QVariant>
 #include "downloads/sm_file_download.h"
 
 namespace Ubuntu {
@@ -116,18 +117,52 @@ class CancelDownloadTransition : public DownloadSMTransition {
     virtual void onTransition(QEvent * event) override;
 };
 
+class ResumeDownloadTransition : public DownloadSMTransition {
+    Q_OBJECT
+ public:
+    ResumeDownloadTransition(const SMFileDownload* sender,
+                             const char* signal,
+                             QState* sourceState,
+                             QAbstractState* nextState);
+ protected:
+    virtual void onTransition(QEvent * event) override;
+};
+
 class DownloadSMPrivate;
 class DownloadSM : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DownloadSM)
 
+    Q_PROPERTY(QString state READ state WRITE setState)
+
  public:
-    explicit DownloadSM(QObject *parent = 0);
+    DownloadSM(SMFileDownload* down, QObject *parent = 0);
     virtual ~DownloadSM();
+    
+    QString state();
+    void setState(QString state);
+
+    void start();
+
+    static QString IDLE;
+    static QString INIT;
+    static QString DOWNLOADING;
+    static QString DOWNLOADING_NOT_CONNECTED;
+    static QString PAUSED;
+    static QString PAUSED_NOT_CONNECTED;
+    static QString DOWNLOADED;
+    static QString HASHING;
+    static QString POST_PROCESSING;
+    static QString ERROR;
+    static QString CANCELED;
+    static QString FINISHED;
+
  signals:
-    
- public slots:
-    
+    void started();
+    void stopped();
+    void finished();
+    void stateChanged(QString);
+
  private:
     // use pimpl so that we can mantains ABI compatibility
     DownloadSMPrivate* d_ptr;
