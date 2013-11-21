@@ -28,10 +28,8 @@ namespace DownloadManager {
 
 namespace System {
 
-class ProcessPrivate;
 class Process : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Process)
 
  public:
     explicit Process(QObject *parent = 0);
@@ -45,12 +43,11 @@ class Process : public QObject {
     void finished(int exitCode, QProcess::ExitStatus exitStatus);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onReadyReadStandardError())
-    Q_PRIVATE_SLOT(d_func(), void onReadyReadStandardOutput())
+    void onReadyReadStandardError();
+    void onReadyReadStandardOutput();
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    ProcessPrivate* d_ptr;
+    QProcess* _process;
 };
 
 }  // System
