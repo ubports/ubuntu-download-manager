@@ -29,7 +29,7 @@ class FakeDownloadQueue : public Queue, public Fake {
     Q_OBJECT
 
  public:
-    FakeDownloadQueue(QSharedPointer<SystemNetworkInfo> networkInfo,
+    FakeDownloadQueue(SystemNetworkInfo* networkInfo,
                       QObject *parent = 0);
 
     void add(Download* download) override;

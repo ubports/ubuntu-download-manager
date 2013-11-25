@@ -38,7 +38,7 @@ class Queue : public QObject {
     Q_DECLARE_PRIVATE(Queue)
 
  public:
-    explicit Queue(QSharedPointer<SystemNetworkInfo> networkInfo,
+    explicit Queue(SystemNetworkInfo* networkInfo,
                    QObject* parent = 0);
 
     virtual void add(Download* download);

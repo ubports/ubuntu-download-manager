@@ -33,14 +33,14 @@ class QueuePrivate {
     Q_DECLARE_PUBLIC(Queue)
 
  public:
-    QueuePrivate(QSharedPointer<SystemNetworkInfo> networkInfo,
+    QueuePrivate(SystemNetworkInfo* networkInfo,
                  Queue* parent)
         : _current(""),
           _networkInfo(networkInfo),
           q_ptr(parent) {
           Q_Q(Queue);
 
-        q->connect(_networkInfo.data(),
+        q->connect(_networkInfo,
             SIGNAL(currentNetworkModeChanged(QNetworkInfo::NetworkMode)), q,
             SLOT(onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode)));
     }
@@ -188,7 +188,7 @@ class QueuePrivate {
     QString _current;
     QHash<QString, Download*> _downloads;  // quick for access
     QStringList _sortedPaths;  // keep the order
-    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    SystemNetworkInfo* _networkInfo;
     Queue* q_ptr;
 };
 
@@ -196,7 +196,7 @@ class QueuePrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Queue::Queue(QSharedPointer<SystemNetworkInfo> networkInfo,
+Queue::Queue(SystemNetworkInfo* networkInfo,
              QObject* parent)
     : QObject(parent),
       d_ptr(new QueuePrivate(networkInfo, this)) {

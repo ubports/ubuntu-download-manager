@@ -39,8 +39,7 @@ Manager::Manager(QSharedPointer<Application> app,
       _stoppable(stoppable) {
     _conn = connection;
     _apparmor = QSharedPointer<AppArmor>(new AppArmor(connection));
-    _networkInfo = QSharedPointer<SystemNetworkInfo>(
-        new SystemNetworkInfo());
+    _networkInfo =  new SystemNetworkInfo();
     QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
         new RequestFactory(_stoppable));
     _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());

@@ -141,8 +141,7 @@ TestDownloadsDb::testStoreSingleDownload() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    QSharedPointer<SystemNetworkInfo> networkInfo =
-        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo());
+    SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
     QSharedPointer<RequestFactory> nam =
         QSharedPointer<RequestFactory>(new FakeRequestFactory());
     QSharedPointer<ProcessFactory> processFactory =
@@ -238,8 +237,7 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    QSharedPointer<SystemNetworkInfo> networkInfo =
-        QSharedPointer<SystemNetworkInfo>(new FakeSystemNetworkInfo());
+    SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
     QSharedPointer<RequestFactory> nam =
         QSharedPointer<RequestFactory>(new FakeRequestFactory());
     QSharedPointer<ProcessFactory> processFactory =
