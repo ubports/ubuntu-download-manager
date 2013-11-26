@@ -57,6 +57,7 @@ class Download : public QObject {
              const QMap<QString, QString>& headers,
              SystemNetworkInfo* networkInfo,
              QObject* parent = 0);
+    virtual ~Download();
 
     QString downloadId() const {
         return _id;
@@ -175,7 +176,7 @@ class Download : public QObject {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
-    QObject* _adaptor;
+    QObject* _adaptor = NULL;
 };
 
 }  // DownloadManager

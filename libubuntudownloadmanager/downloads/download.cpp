@@ -46,6 +46,12 @@ Download::Download(const QString& id,
       _networkInfo(networkInfo) {
 }
 
+Download::~Download() {
+    if (_adaptor != NULL) {
+        _adaptor->deleteLater();
+    }
+}
+
 void
 Download::setState(Download::State state) {
     _state = state;
