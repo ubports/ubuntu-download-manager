@@ -22,7 +22,7 @@
 FakeDownloadFactory::FakeDownloadFactory(
                                  QSharedPointer<AppArmor> apparmor,
                                  SystemNetworkInfo* networkInfo,
-                                 QSharedPointer<RequestFactory> nam,
+                                 RequestFactory* nam,
                                  QSharedPointer<ProcessFactory> processFactory,
                                  QObject *parent)
     : Factory(apparmor, networkInfo, nam, processFactory, parent),

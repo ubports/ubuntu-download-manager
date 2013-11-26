@@ -37,7 +37,7 @@ namespace DownloadManager {
 
 Factory::Factory(QSharedPointer<AppArmor> apparmor,
                  SystemNetworkInfo* networkInfo,
-                 QSharedPointer<RequestFactory> nam,
+                 RequestFactory* nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent)
     : QObject(parent),

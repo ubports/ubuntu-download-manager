@@ -37,7 +37,7 @@ class Factory : public QObject {
  public:
     Factory(QSharedPointer<AppArmor> apparmor,
             SystemNetworkInfo* networkInfo,
-            QSharedPointer<RequestFactory> nam,
+            RequestFactory* nam,
             QSharedPointer<ProcessFactory> processFactory,
             QObject *parent = 0);
 
@@ -94,7 +94,7 @@ class Factory : public QObject {
  private:
     QSharedPointer<AppArmor> _apparmor;
     SystemNetworkInfo* _networkInfo;
-    QSharedPointer<RequestFactory> _nam;
+    RequestFactory* _nam;
     QSharedPointer<ProcessFactory> _processFactory;
 };
 

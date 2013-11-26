@@ -40,8 +40,7 @@ Manager::Manager(QSharedPointer<Application> app,
     _conn = connection;
     _apparmor = QSharedPointer<AppArmor>(new AppArmor(connection));
     _networkInfo =  new SystemNetworkInfo();
-    QSharedPointer<RequestFactory> nam = QSharedPointer<RequestFactory>(
-        new RequestFactory(_stoppable));
+    RequestFactory* nam = new RequestFactory(_stoppable);
     _processFactory = QSharedPointer<ProcessFactory>(new ProcessFactory());
     _downloadFactory = QSharedPointer<Factory>(
         new Factory(_apparmor, _networkInfo, nam,

@@ -36,13 +36,11 @@ TestDownloadQueue::init() {
     _first = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
         "first-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(), _networkInfo,
-        QSharedPointer<RequestFactory>(_reqFactory),
-        QSharedPointer<ProcessFactory>(_processFactory));
+        _reqFactory, QSharedPointer<ProcessFactory>(_processFactory));
     _second = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
         "second-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>(), _networkInfo,
-        QSharedPointer<RequestFactory>(_reqFactory),
-        QSharedPointer<ProcessFactory>(_processFactory));
+        _reqFactory, QSharedPointer<ProcessFactory>(_processFactory));
     _q = new Queue(_networkInfo);
 }
 

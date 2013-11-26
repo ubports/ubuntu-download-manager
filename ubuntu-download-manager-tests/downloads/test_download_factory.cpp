@@ -31,7 +31,7 @@ TestDownloadFactory::init() {
     _uuidFactory = QSharedPointer<UuidFactory>(new FakeUuidFactory());
     _apparmor = new FakeAppArmor(_uuidFactory);
     _networkInfo =  new FakeSystemNetworkInfo();
-    _nam = QSharedPointer<RequestFactory>(new FakeRequestFactory());
+    _nam = new FakeRequestFactory();
     _processFactory = QSharedPointer<ProcessFactory>(
         new FakeProcessFactory());
     _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor),
