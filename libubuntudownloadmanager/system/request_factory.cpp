@@ -92,6 +92,18 @@ RequestFactory::setInstance(RequestFactory* instance) {
 }
 
 void
+RequestFactory::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
+}
+
+void
 RequestFactory::removeNetworkReply(NetworkReply* reply) {
     if (_replies.contains(reply)) {
         _replies.removeAll(reply);

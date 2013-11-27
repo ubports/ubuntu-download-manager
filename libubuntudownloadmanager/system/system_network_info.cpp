@@ -119,6 +119,18 @@ SystemNetworkInfo::setInstance(SystemNetworkInfo* instance) {
 }
 
 void
+SystemNetworkInfo::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
+}
+
+void
 SystemNetworkInfo::onOnlineStateChanged(bool online) {
     TRACE << online;
     emit onlineStateChanged(online);
