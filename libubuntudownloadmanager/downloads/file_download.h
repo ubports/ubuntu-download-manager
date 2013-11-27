@@ -46,7 +46,7 @@ class FileDownload : public Download {
                  const QMap<QString, QString>& headers,
                  SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
-                 QSharedPointer<ProcessFactory> processFactory,
+                 ProcessFactory* processFactory,
                  QObject* parent = 0);
     FileDownload(const QString& id,
                  const QString& path,
@@ -59,7 +59,7 @@ class FileDownload : public Download {
                  const QMap<QString, QString>& headers,
                  SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
-                 QSharedPointer<ProcessFactory> processFactory,
+                 ProcessFactory* processFactory,
                  QObject* parent = 0);
     virtual ~FileDownload();
 
@@ -124,7 +124,7 @@ class FileDownload : public Download {
     NetworkReply* _reply = NULL;
     QFile* _currentData = NULL;
     RequestFactory* _requestFactory;
-    QSharedPointer<ProcessFactory> _processFactory;
+    ProcessFactory* _processFactory;
 };
 
 }  // DownloadManager

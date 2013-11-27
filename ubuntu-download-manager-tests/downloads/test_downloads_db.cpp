@@ -143,8 +143,7 @@ TestDownloadsDb::testStoreSingleDownload() {
 
     SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
     RequestFactory* nam = new FakeRequestFactory();
-    QSharedPointer<ProcessFactory> processFactory =
-        QSharedPointer<ProcessFactory>(new FakeProcessFactory());
+    ProcessFactory* processFactory = new FakeProcessFactory();
 
     FakeDownload* download = new FakeDownload(id, path, false, "", url, hash,
         hashAlgoString, metadata, headers, networkInfo, nam, processFactory);
@@ -238,8 +237,7 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
     SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
     RequestFactory* nam = new FakeRequestFactory();
-    QSharedPointer<ProcessFactory> processFactory =
-        QSharedPointer<ProcessFactory>(new FakeProcessFactory());
+    ProcessFactory* processFactory = new FakeProcessFactory();
 
     FakeDownload* download = new FakeDownload(id, path, true, "", url, hash,
         hashAlgoString, metadata, headers, networkInfo, nam, processFactory);

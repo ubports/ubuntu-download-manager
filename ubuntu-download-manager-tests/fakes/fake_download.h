@@ -39,7 +39,7 @@ class FakeDownload : public FileDownload, public Fake {
                  const QMap<QString, QString>& headers,
                  SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
-                 QSharedPointer<ProcessFactory> processFactory,
+                 ProcessFactory* processFactory,
                  QObject* parent = 0);
     FakeDownload(const QString& id,
                  const QString& path,
@@ -52,7 +52,7 @@ class FakeDownload : public FileDownload, public Fake {
                  const QMap<QString, QString> &headers,
                  SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
-                 QSharedPointer<ProcessFactory> processFactory,
+                 ProcessFactory* processFactory,
                  QObject* parent = 0);
 
     bool canDownload() override;
