@@ -36,8 +36,6 @@ class SystemNetworkInfo : public QObject {
     Q_OBJECT
 
  public:
-    explicit SystemNetworkInfo(QObject *parent = 0);
-
     virtual QNetworkInfo::NetworkMode currentNetworkMode();
     virtual bool isOnline();
 
@@ -62,6 +60,10 @@ class SystemNetworkInfo : public QObject {
 
     // network status signals
     void onlineStateChanged(bool online);
+
+ protected:
+    // left protected so that teh child fake class can use it
+    explicit SystemNetworkInfo(QObject *parent = 0);
 
  private:
     void onOnlineStateChanged(bool);

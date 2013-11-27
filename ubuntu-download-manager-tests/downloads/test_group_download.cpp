@@ -38,13 +38,11 @@ TestGroupDownload::init() {
     _isGSMDownloadAllowed = true;
     _networkInfo = new FakeSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
-    _nam = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
     _uuidFactory = new UuidFactory();
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor),
-        _nam, _processFactory);
+        QSharedPointer<AppArmor>(_apparmor), _processFactory);
     _fileManager = QSharedPointer<FakeFileManager>(new FakeFileManager());
 }
 

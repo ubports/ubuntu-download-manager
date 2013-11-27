@@ -96,7 +96,6 @@ class TestGroupDownload : public BaseTestCase {
     UuidFactory* _uuidFactory;
     FakeAppArmor* _apparmor;
     FakeSystemNetworkInfo* _networkInfo;
-    FakeRequestFactory* _nam;
     FakeProcessFactory* _processFactory;
     FakeDownloadFactory* _downloadFactory;
     QSharedPointer<FakeFileManager> _fileManager;

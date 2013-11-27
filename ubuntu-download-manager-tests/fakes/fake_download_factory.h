@@ -31,7 +31,6 @@ class FakeDownloadFactory : public Factory, public Fake {
 
  public:
     FakeDownloadFactory(QSharedPointer<AppArmor> apparmor,
-                        RequestFactory* nam,
                         ProcessFactory* processFactory,
                         QObject *parent = 0);
 
@@ -72,7 +71,6 @@ class FakeDownloadFactory : public Factory, public Fake {
 
  private:
     QSharedPointer<AppArmor> _apparmor;
-    RequestFactory* _nam;
     ProcessFactory* _processFactory;
     QList<Download*> _downloads;
 };

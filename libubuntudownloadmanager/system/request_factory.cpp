@@ -25,6 +25,10 @@ namespace DownloadManager {
 
 namespace System {
 
+RequestFactory* RequestFactory::_instance = NULL;
+bool RequestFactory::_isStoppable = false;
+QMutex RequestFactory::_mutex;
+
 RequestFactory::RequestFactory(bool stoppable, QObject* parent)
     : QObject(parent),
       _stoppable(stoppable) {
@@ -64,6 +68,27 @@ RequestFactory::acceptedCertificates() {
 void
 RequestFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     _certs = certs;
+}
+
+RequestFactory*
+RequestFactory::instance() {
+    if(_instance == NULL) {
+        _mutex.lock();
+        if(_instance == NULL)
+            _instance = new RequestFactory(_isStoppable);
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+RequestFactory::setStoppable(bool stoppable) {
+    _isStoppable = stoppable;
+}
+
+void
+RequestFactory::setInstance(RequestFactory* instance) {
+    _instance = instance;
 }
 
 void

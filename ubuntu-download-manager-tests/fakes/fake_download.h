@@ -37,7 +37,6 @@ class FakeDownload : public FileDownload, public Fake {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);
     FakeDownload(const QString& id,
@@ -49,7 +48,6 @@ class FakeDownload : public FileDownload, public Fake {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString> &headers,
-                 RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);
 

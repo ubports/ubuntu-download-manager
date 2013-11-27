@@ -44,7 +44,6 @@ class FileDownload : public Download {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);
     FileDownload(const QString& id,
@@ -56,7 +55,6 @@ class FileDownload : public Download {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);
     virtual ~FileDownload();

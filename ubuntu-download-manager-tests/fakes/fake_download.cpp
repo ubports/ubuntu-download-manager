@@ -26,11 +26,10 @@ FakeDownload::FakeDownload(const QString& id,
                            const QUrl& url,
                            const QVariantMap& metadata,
                            const QMap<QString, QString> &headers,
-                           RequestFactory* nam,
                            ProcessFactory* processFactory,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, metadata,
-                headers, nam, processFactory, parent),
+                headers, processFactory, parent),
         _canDownload(true) {
 }
 
@@ -43,11 +42,10 @@ FakeDownload::FakeDownload(const QString& id,
                            const QString& algo,
                            const QVariantMap& metadata,
                            const QMap<QString, QString>& headers,
-                           RequestFactory* nam,
                            ProcessFactory* processFactory,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, hash, algo,
-                metadata, headers, nam, processFactory, parent),
+                metadata, headers, processFactory, parent),
         _canDownload(true) {
 }
 

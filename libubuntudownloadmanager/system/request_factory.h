@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_REQUEST_FACTORY_H
 #define DOWNLOADER_LIB_REQUEST_FACTORY_H
 
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QObject>
@@ -37,13 +38,20 @@ class RequestFactory : public QObject {
     Q_OBJECT
 
  public:
-    RequestFactory(bool stoppable = false, QObject *parent = 0);
-
     virtual NetworkReply* get(const QNetworkRequest& request);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+
+    static RequestFactory* instance();
+    static void setStoppable(bool stoppable);
+
+    // only used for testing purposes
+    static void setInstance(RequestFactory* instance);
+
+ protected:
+    RequestFactory(bool stoppable = false, QObject *parent = 0);
 
  private:
     void removeNetworkReply(NetworkReply* reply);
@@ -54,6 +62,12 @@ class RequestFactory : public QObject {
     void onSslErrors(const QList<QSslError>&);
 
  private:
+    // used for the singleton
+    static RequestFactory* _instance;
+    static QMutex _mutex;
+    static bool _isStoppable;
+
+    // instance vars
     bool _stoppable = false;
     QList<NetworkReply*> _replies;
     QList<QSslCertificate> _certs;
