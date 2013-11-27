@@ -27,7 +27,7 @@ bool
 FakeFileManager::remove(const QString& path) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(path));
+        inParams.append(new StringWrapper(path, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);

@@ -44,9 +44,9 @@ FakeProcess::start(const QString& program,
                    QProcess::OpenMode mode) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(program));
-        inParams.append(new StringListWrapper(arguments));
-        inParams.append(new OpenModeWrapper(mode));
+        inParams.append(new StringWrapper(program, this));
+        inParams.append(new StringListWrapper(arguments, this));
+        inParams.append(new OpenModeWrapper(mode, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);

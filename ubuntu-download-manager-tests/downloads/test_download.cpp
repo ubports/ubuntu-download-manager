@@ -1439,7 +1439,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     // write something in the expected file
     QString fileName = download->filePath();
-    QFile* file = new QFile(fileName);
+    QScopedPointer<QFile> file(new QFile(fileName));
     file->open(QIODevice::ReadWrite | QFile::Append);
     file->write("my data goes here");
     file->close();
@@ -1644,7 +1644,7 @@ void
 TestDownload::testInvalidFilePresent() {
     // create a file so that we get an error
     QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
-    QFile* file = new QFile(filePath);
+    QScopedPointer<QFile> file(new QFile(filePath));
     file->open(QIODevice::ReadWrite | QFile::Append);
     file->write("data data data!");
     file->close();

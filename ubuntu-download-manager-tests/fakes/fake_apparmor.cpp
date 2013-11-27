@@ -34,8 +34,8 @@ FakeAppArmor::getDBusPath(QString& id, QString& dbusPath) {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
-        outParams.append(new StringWrapper(id));
-        outParams.append(new StringWrapper(dbusPath));
+        outParams.append(new StringWrapper(id, this));
+        outParams.append(new StringWrapper(dbusPath, this));
         MethodParams params(inParams, outParams);
         MethodData methodData("getDBusPath", params);
         _called.append(methodData);
@@ -63,13 +63,13 @@ FakeAppArmor::getSecurePath(const QString& connName,
     isConfined = _isConfined;
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(id));
-        inParams.append(new StringWrapper(connName));
+        inParams.append(new StringWrapper(id, this));
+        inParams.append(new StringWrapper(connName, this));
 
         QList<QObject*> outParams;
-        outParams.append(new StringWrapper(id));
-        outParams.append(new StringWrapper(dbusPath));
-        outParams.append(new StringWrapper(localPath));
+        outParams.append(new StringWrapper(id, this));
+        outParams.append(new StringWrapper(dbusPath, this));
+        outParams.append(new StringWrapper(localPath, this));
         MethodParams params(inParams, outParams);
         MethodData methodData("getSecurePath", params);
         _called.append(methodData);

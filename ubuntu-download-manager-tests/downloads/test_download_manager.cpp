@@ -50,6 +50,10 @@ void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
+    delete _networkInfo;
+    delete _q;
+    delete _requestFactory;
+    delete _downloadFactory;
     delete _man;
 }
 

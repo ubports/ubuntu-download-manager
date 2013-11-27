@@ -41,6 +41,8 @@ void
 TestDownloadFactory::cleanup() {
     BaseTestCase::cleanup();
 
+    delete _networkInfo;
+    delete _processFactory;
     delete _downFactory;
 }
 
@@ -50,8 +52,8 @@ TestDownloadFactory::testCreateDownload() {
 
     // create a download, assert that it was
     // created and that the id and the path are correctly set
-    Download* download = _downFactory->createDownload("", QUrl(),
-        QVariantMap(), QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -71,8 +73,8 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     QString algo = "Md5";
 
     // same as above but assert hash and hash algo
-    Download* download = _downFactory->createDownload("", QUrl(),
-        hash, algo, QVariantMap(), QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        hash, algo, QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -83,7 +85,9 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 
-    FileDownload* single = reinterpret_cast<FileDownload*>(download);
+    // no need to worry about the pointer because it will be
+    // deleted by the QScopedPointer
+    FileDownload* single = reinterpret_cast<FileDownload*>(download.data());
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
@@ -94,9 +98,9 @@ TestDownloadFactory::testCreateGroupDownload() {
 
     // create a download, assert that it was
     // created and that the id and the path are correctly set
-    Download* download = _downFactory->createDownload("",
+    QScopedPointer<Download> download(_downFactory->createDownload("",
         QList<GroupDownloadStruct>(), "Md5",
-        true, QVariantMap(), QMap<QString, QString>());
+        true, QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -119,8 +123,8 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
     QVariantMap metadata;
     metadata["objectpath"] = id;
 
-    Download* download = _downFactory->createDownload("", QUrl(),
-        metadata, QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        metadata, QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -139,8 +143,8 @@ TestDownloadFactory::testCreateDownloadWithNullUuid() {
     QVariantMap metadata;
     metadata["objectpath"] = "bad-id";
 
-    Download* download = _downFactory->createDownload("", QUrl(),
-        QVariantMap(), QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -165,8 +169,8 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QString algo = "Md5";
 
     // same as above but assert hash and hash algo
-    Download* download = _downFactory->createDownload("", QUrl(),
-        hash, algo, metadata, QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        hash, algo, metadata, QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -175,7 +179,8 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QCOMPARE(download->downloadId(), id);
     QCOMPARE(download->path(), path->value());
 
-    FileDownload* single = reinterpret_cast<FileDownload*>(download);
+    // not to worry, QSCopedPointer will take care of the pointer
+    FileDownload* single = reinterpret_cast<FileDownload*>(download.data());
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
@@ -191,8 +196,8 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
     QString algo = "Md5";
 
     // same as above but assert hash and hash algo
-    Download* download = _downFactory->createDownload("", QUrl(),
-        hash, algo, metadata, QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
+        hash, algo, metadata, QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -203,7 +208,8 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
     QCOMPARE(download->downloadId(), id->value());
     QCOMPARE(download->path(), path->value());
 
-    FileDownload* single = reinterpret_cast<FileDownload*>(download);
+    // not to worry the QScopedPointer will take care of the pointer
+    FileDownload* single = reinterpret_cast<FileDownload*>(download.data());
     QCOMPARE(hash, single->hash());
     QCOMPARE(HashAlgorithm::getHashAlgo(algo), single->hashAlgorithm());
 }
@@ -219,9 +225,9 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
     QVariantMap metadata;
     metadata["objectpath"] = id;
 
-    Download* download = _downFactory->createDownload("",
+    QScopedPointer<Download> download(_downFactory->createDownload("",
         QList<GroupDownloadStruct>(), "Md5",
-        true, metadata, QMap<QString, QString>());
+        true, metadata, QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -240,9 +246,9 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
     QVariantMap metadata;
     metadata["objectpath"] = "bad-id";
 
-    Download* download = _downFactory->createDownload("",
+    QScopedPointer<Download> download(_downFactory->createDownload("",
         QList<GroupDownloadStruct>(), "Md5",
-        true, metadata, QMap<QString, QString>());
+        true, metadata, QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -257,8 +263,8 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
 void
 TestDownloadFactory::testCreateDownloadForGroup() {
     _apparmor->record();
-    Download* download = _downFactory->createDownloadForGroup(true, "", QUrl(),
-        QVariantMap(), QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownloadForGroup(true, "", QUrl(),
+        QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -274,8 +280,8 @@ TestDownloadFactory::testCreateDownloadForGroup() {
 void
 TestDownloadFactory::testCreateDownloadForGroupWithHash() {
     _apparmor->record();
-    Download* download = _downFactory->createDownloadForGroup(true, "", QUrl(),
-        "", "Md5", QVariantMap(), QMap<QString, QString>());
+    QScopedPointer<Download> download(_downFactory->createDownloadForGroup(true, "", QUrl(),
+        "", "Md5", QVariantMap(), QMap<QString, QString>()));
 
     QList<MethodData> calledMethods = _apparmor->calledMethods();
     QCOMPARE(1, calledMethods.count());

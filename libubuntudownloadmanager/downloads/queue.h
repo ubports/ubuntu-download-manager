@@ -36,6 +36,7 @@ class Queue : public QObject {
 
  public:
     explicit Queue(QObject* parent = 0);
+    virtual ~Queue();
 
     virtual void add(Download* download);
 

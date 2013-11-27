@@ -74,7 +74,7 @@ void
 FakeNetworkReply::setReadBufferSize(uint size) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new UintWrapper(size));
+        inParams.append(new UintWrapper(size, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -104,10 +104,10 @@ bool
 FakeNetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new SslErrorsListWrapper(errors));
+        inParams.append(new SslErrorsListWrapper(errors, this));
 
         QList<QObject*> outParams;
-        outParams.append(new BoolWrapper(_canIgnoreSsl));
+        outParams.append(new BoolWrapper(_canIgnoreSsl, this));
         MethodParams params(inParams, outParams);
         MethodData methodData("canIgnoreSslErrors", params);
         _called.append(methodData);
