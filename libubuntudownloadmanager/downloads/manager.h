@@ -99,7 +99,6 @@ class Manager : public QObject, public QDBusContext {
     QSharedPointer<Application> _app;
     qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
-    ProcessFactory* _processFactory;
     QSharedPointer<Factory> _downloadFactory;
     Queue* _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;

@@ -37,7 +37,6 @@ class FakeDownload : public FileDownload, public Fake {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 ProcessFactory* processFactory,
                  QObject* parent = 0);
     FakeDownload(const QString& id,
                  const QString& path,
@@ -48,7 +47,6 @@ class FakeDownload : public FileDownload, public Fake {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString> &headers,
-                 ProcessFactory* processFactory,
                  QObject* parent = 0);
 
     bool canDownload() override;

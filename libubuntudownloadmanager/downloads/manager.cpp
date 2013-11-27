@@ -39,9 +39,8 @@ Manager::Manager(QSharedPointer<Application> app,
     _conn = connection;
     _apparmor = QSharedPointer<AppArmor>(new AppArmor(connection));
     RequestFactory::setStoppable(_stoppable);
-    _processFactory = new ProcessFactory();
     _downloadFactory = QSharedPointer<Factory>(
-        new Factory(_apparmor, _processFactory));
+        new Factory(_apparmor));
     _downloadsQueue = new Queue(this);
     init();
 }

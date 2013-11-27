@@ -36,7 +36,6 @@ class Factory : public QObject {
 
  public:
     Factory(QSharedPointer<AppArmor> apparmor,
-            ProcessFactory* processFactory,
             QObject *parent = 0);
 
     // create downloads comming from a dbus call
@@ -91,7 +90,6 @@ class Factory : public QObject {
                          bool& isConfined);
  private:
     QSharedPointer<AppArmor> _apparmor;
-    ProcessFactory* _processFactory;
 };
 
 }  // DownloadManager

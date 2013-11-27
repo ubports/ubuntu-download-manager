@@ -36,11 +36,9 @@ namespace DownloadManager {
 
 
 Factory::Factory(QSharedPointer<AppArmor> apparmor,
-                 ProcessFactory* processFactory,
                  QObject* parent)
     : QObject(parent),
-        _apparmor(apparmor),
-        _processFactory(processFactory) {
+        _apparmor(apparmor) {
 }
 
 void
@@ -82,7 +80,7 @@ Factory::createDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, _processFactory);
+        url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -102,7 +100,7 @@ Factory::createDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers, _processFactory);
+        rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -138,7 +136,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, _processFactory);
+        url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -156,7 +154,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers, _processFactory);
+        rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
