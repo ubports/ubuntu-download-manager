@@ -39,6 +39,7 @@ class ProcessFactory : public QObject {
 
     // only used for testing so that we can inject a fake
     static void setInstance(ProcessFactory* instance);
+    static void deleteInstance();
 
  protected:
     explicit ProcessFactory(QObject *parent = 0);

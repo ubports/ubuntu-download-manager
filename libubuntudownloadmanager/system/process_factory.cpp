@@ -48,6 +48,18 @@ ProcessFactory::instance() {
 }
 
 void
+ProcessFactory::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
+}
+
+void
 ProcessFactory::setInstance(ProcessFactory* instance) {
     _instance = instance;
 }

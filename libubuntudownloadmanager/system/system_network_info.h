@@ -43,6 +43,7 @@ class SystemNetworkInfo : public QObject {
 
     // only used for testing so that we can inject a fake
     static void setInstance(SystemNetworkInfo* instance);
+    static void deleteInstance();
 
  signals:
 

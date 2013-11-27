@@ -49,6 +49,7 @@ class RequestFactory : public QObject {
 
     // only used for testing purposes
     static void setInstance(RequestFactory* instance);
+    static void deleteInstance();
 
  protected:
     RequestFactory(bool stoppable = false, QObject *parent = 0);
