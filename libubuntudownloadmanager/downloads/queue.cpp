@@ -20,17 +20,17 @@
 #include <QSignalMapper>
 #include "downloads/queue.h"
 #include "system/logger.h"
+#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-Queue::Queue(SystemNetworkInfo* networkInfo,
-             QObject* parent)
+Queue::Queue(QObject* parent)
     : QObject(parent),
-      _current(""),
-      _networkInfo(networkInfo) {
-    connect(_networkInfo, &SystemNetworkInfo::currentNetworkModeChanged,
+      _current("") {
+    connect(SystemNetworkInfo::instance(),
+        &SystemNetworkInfo::currentNetworkModeChanged,
         this, &Queue::onCurrentNetworkModeChanged);
 }
 

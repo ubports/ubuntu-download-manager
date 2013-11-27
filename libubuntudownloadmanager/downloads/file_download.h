@@ -44,7 +44,6 @@ class FileDownload : public Download {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);
@@ -57,7 +56,6 @@ class FileDownload : public Download {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 SystemNetworkInfo* networkInfo,
                  RequestFactory* nam,
                  ProcessFactory* processFactory,
                  QObject* parent = 0);

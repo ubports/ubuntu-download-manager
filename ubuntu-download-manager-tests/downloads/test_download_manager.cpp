@@ -35,14 +35,15 @@ TestDownloadManager::init() {
     _appPointer = QSharedPointer<Application>(_app);
     _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
     _networkInfo = new FakeSystemNetworkInfo();
-    _q = new FakeDownloadQueue(_networkInfo);
+    SystemNetworkInfo::setInstance(_networkInfo);
+    _q = new FakeDownloadQueue();
     _uuidFactory = QSharedPointer<FakeUuidFactory>(new FakeUuidFactory());
     _apparmor = new FakeAppArmor(_uuidFactory);
     _requestFactory = new FakeRequestFactory();
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), _networkInfo, _requestFactory,
+        QSharedPointer<AppArmor>(_apparmor), _requestFactory,
         new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo, _downloadFactory, _q);
+    _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 }
 
 void
@@ -254,10 +255,9 @@ TestDownloadManager::testGetAllDownloads() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
-        _downloadFactory, _q);
+        QSharedPointer<AppArmor>(_apparmor), new FakeRequestFactory(),
+        new FakeProcessFactory());
+    _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -301,10 +301,9 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
-        _downloadFactory, _q);
+        QSharedPointer<AppArmor>(_apparmor), new FakeRequestFactory(),
+        new FakeProcessFactory());
+    _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -379,10 +378,9 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
-        _downloadFactory, _q);
+        QSharedPointer<AppArmor>(_apparmor), new FakeRequestFactory(),
+        new FakeProcessFactory());
+    _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -475,7 +473,7 @@ TestDownloadManager::testStoppable() {
     _app->record();
     _man = new Manager(
         _appPointer, qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, true);
+        _downloadFactory, _q, true);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -486,7 +484,7 @@ TestDownloadManager::testNotStoppable() {
     _app->record();
     _man = new Manager(
         _appPointer, qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, false);
+        _downloadFactory, _q, false);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());

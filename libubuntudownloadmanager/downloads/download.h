@@ -55,8 +55,8 @@ class Download : public QObject {
              const QString& rootPath,
              const QVariantMap& metadata,
              const QMap<QString, QString>& headers,
-             SystemNetworkInfo* networkInfo,
              QObject* parent = 0);
+
     virtual ~Download();
 
     QString downloadId() const {
@@ -155,10 +155,6 @@ class Download : public QObject {
     void stateChanged();
 
  protected:
-    SystemNetworkInfo* networkInfo() const {
-        return _networkInfo;
-    }
-
     void setIsValid(bool isValid);
     void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);

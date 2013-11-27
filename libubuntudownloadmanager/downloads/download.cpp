@@ -26,13 +26,12 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 Download::Download(const QString& id,
-                const QString& path,
-                bool isConfined,
-                const QString& rootPath,
-                const QVariantMap& metadata,
-                const QMap<QString, QString>& headers,
-                SystemNetworkInfo* networkInfo,
-                QObject* parent)
+                   const QString& path,
+                   bool isConfined,
+                   const QString& rootPath,
+                   const QVariantMap& metadata,
+                   const QMap<QString, QString>& headers,
+                   QObject* parent)
     : QObject(parent),
       _id(id),
       _throttle(0),
@@ -42,8 +41,8 @@ Download::Download(const QString& id,
       _isConfined(isConfined),
       _rootPath(rootPath),
       _metadata(metadata),
-      _headers(headers),
-      _networkInfo(networkInfo) {
+      _headers(headers) {
+    _networkInfo = SystemNetworkInfo::instance();
 }
 
 Download::~Download() {

@@ -31,7 +31,6 @@
 #include "downloads/factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
-#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
@@ -47,7 +46,6 @@ class Manager : public QObject, public QDBusContext {
             QObject *parent = 0);
     Manager(QSharedPointer<Application> app,
             QSharedPointer<DBusConnection> connection,
-            SystemNetworkInfo* networkInfo,
             Factory* downloadFactory,
             Queue* queue,
             bool stoppable = false,
@@ -101,7 +99,6 @@ class Manager : public QObject, public QDBusContext {
     QSharedPointer<Application> _app;
     qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
-    SystemNetworkInfo* _networkInfo;
     ProcessFactory* _processFactory;
     QSharedPointer<Factory> _downloadFactory;
     Queue* _downloadsQueue;

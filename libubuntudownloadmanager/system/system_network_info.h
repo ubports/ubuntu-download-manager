@@ -19,6 +19,8 @@
 #ifndef DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 #define DOWNLOADER_LIB_SYSTEM_NETWORK_INFO_H
 
+#include <QAtomicPointer>
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkConfigurationManager>
 #include <QNetworkInfo>
@@ -38,6 +40,11 @@ class SystemNetworkInfo : public QObject {
 
     virtual QNetworkInfo::NetworkMode currentNetworkMode();
     virtual bool isOnline();
+
+    static SystemNetworkInfo* instance();
+
+    // only used for testing so that we can inject a fake
+    static void setInstance(SystemNetworkInfo* instance);
 
  signals:
 
@@ -76,6 +83,11 @@ class SystemNetworkInfo : public QObject {
 #endif
 
  private:
+    // used for the singleton
+    static SystemNetworkInfo* _instance;
+    static QMutex _mutex;
+
+    // internal vars
     QNetworkInfo* _info;
     QNetworkConfigurationManager* _configMan;
 };

@@ -37,15 +37,13 @@ GroupDownload::GroupDownload(const QString& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,
-            networkInfo, parent),
+            parent),
       _downloads(),
       _finishedDownloads(),
       _downloadsProgress(),
-      _networkInfo(networkInfo),
       _downFactory(downFactory) {
     _fileManager = QSharedPointer<FileManager>(new FileManager());
     init(downloads, algo, isGSMDownloadAllowed);
@@ -60,16 +58,14 @@ GroupDownload::GroupDownload(const QString& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,
-            networkInfo, parent),
+            parent),
       _downloads(),
       _finishedDownloads(),
       _downloadsProgress(),
-      _networkInfo(networkInfo),
       _downFactory(downFactory),
       _fileManager(fileManager) {
     init(downloads, algo, isGSMDownloadAllowed);

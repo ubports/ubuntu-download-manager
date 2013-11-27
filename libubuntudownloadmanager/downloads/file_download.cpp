@@ -46,12 +46,10 @@ FileDownload::FileDownload(const QString& id,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
                    RequestFactory* nam,
                    ProcessFactory* processFactory,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
-            parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
       _totalSize(0),
       _url(url),
       _hash(""),
@@ -70,12 +68,10 @@ FileDownload::FileDownload(const QString& id,
                    const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
-                   SystemNetworkInfo* networkInfo,
                    RequestFactory* nam,
                    ProcessFactory* processFactory,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
-            parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
       _totalSize(0),
       _url(url),
       _hash(hash),
@@ -392,13 +388,13 @@ FileDownload::onOnlineStateChanged(bool online) {
 
 void
 FileDownload::init() {
-    _connected = networkInfo()->isOnline();
+    SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
+    _connected = networkInfo->isOnline();
     _downloading = false;
 
     // connect to the network changed signals
-    connect(networkInfo(),
-        SIGNAL(onlineStateChanged(bool)), this,
-        SLOT(onOnlineStateChanged(bool)));
+    connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
+        this, &FileDownload::onOnlineStateChanged);
 
     _filePath = saveFileName();
     _reply = NULL;
