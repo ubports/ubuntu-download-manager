@@ -37,9 +37,8 @@ Manager::Manager(QSharedPointer<Application> app,
       _throttle(0),
       _stoppable(stoppable) {
     _conn = connection;
-    _apparmor = new AppArmor(connection);
     RequestFactory::setStoppable(_stoppable);
-    _downloadFactory = new Factory(_apparmor);
+    _downloadFactory = new Factory(this);
     _downloadsQueue = new Queue(this);
     init();
 }
@@ -62,8 +61,8 @@ Manager::Manager(QSharedPointer<Application> app,
 }
 
 Manager::~Manager() {
-    delete _downloadFactory;
     delete _downloadsQueue;
+    delete _downloadFactory;
 }
 
 void

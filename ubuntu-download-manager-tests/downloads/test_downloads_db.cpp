@@ -238,10 +238,10 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
-    FakeDownload* secondDownload = new FakeDownload(id, newPath, true, "",
-        url, hash, hashAlgoString, metadata, headers);
+    QScopedPointer<FakeDownload> secondDownload(new FakeDownload(id, newPath, true, "",
+        url, hash, hashAlgoString, metadata, headers));
 
-    _db->storeSingleDownload(secondDownload);
+    _db->storeSingleDownload(secondDownload.data());
 
     // query that the download is there and that the data is correct
     QSqlDatabase db = _db->db();

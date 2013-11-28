@@ -34,8 +34,10 @@ class Factory : public QObject {
     Q_OBJECT
 
  public:
+    explicit Factory(QObject* parent = 0);
     Factory(AppArmor* apparmor,
             QObject *parent = 0);
+    virtual ~Factory();
 
     // create downloads comming from a dbus call
 

@@ -52,7 +52,6 @@ TestDownloadManager::cleanup() {
 
     SystemNetworkInfo::deleteInstance();
     RequestFactory::deleteInstance();
-    delete _apparmor;
     delete _man;
 }
 
