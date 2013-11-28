@@ -105,9 +105,12 @@ SystemNetworkInfo::isOnline() {
 SystemNetworkInfo*
 SystemNetworkInfo::instance() {
     if(_instance == NULL) {
+        qDebug() << "Instance is null";
         _mutex.lock();
-        if(_instance == NULL)
+        if(_instance == NULL){
+            qDebug() << "Create new instance";
             _instance = new SystemNetworkInfo();
+        }
         _mutex.unlock();
     }
     return _instance;

@@ -32,9 +32,7 @@ TestDownloadFactory::init() {
     _apparmor = new FakeAppArmor(_uuidFactory);
     _networkInfo =  new FakeSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
-    _processFactory =  new FakeProcessFactory();
-    _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor),
-        _processFactory);
+    _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor));
 }
 
 void
@@ -42,7 +40,6 @@ TestDownloadFactory::cleanup() {
     BaseTestCase::cleanup();
 
     delete _networkInfo;
-    delete _processFactory;
     delete _downFactory;
 }
 

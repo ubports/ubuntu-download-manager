@@ -31,6 +31,7 @@ TestDownloadQueue::init() {
     _isConfined = true;
     _rootPath = "/random/root/path";
     _networkInfo = new FakeSystemNetworkInfo();
+    SystemNetworkInfo::setInstance(_networkInfo);
     _processFactory = new FakeProcessFactory();
     _first = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
         "first-path", _isConfined, _rootPath, QUrl(),
