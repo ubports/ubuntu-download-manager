@@ -48,19 +48,6 @@ class GroupDownload : public Download {
                   const QMap<QString, QString>& headers,
                   Factory* downFactory,
                   QObject* parent = 0);
-
-    GroupDownload(const QString& id,
-                  const QString& path,
-                  bool isConfined,
-                  const QString& rootPath,
-                  QList<GroupDownloadStruct> downloads,
-                  const QString& algo,
-                  bool isGSMDownloadAllowed,
-                  const QVariantMap& metadata,
-                  const QMap<QString, QString>& headers,
-                  Factory* downFactory,
-                  QSharedPointer<FileManager> fileManager,
-                  QObject* parent = 0);
     virtual ~GroupDownload();
 
     virtual void cancelDownload() override;
@@ -92,7 +79,7 @@ class GroupDownload : public Download {
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     Factory* _downFactory = NULL;
-    QSharedPointer<FileManager> _fileManager;
+    FileManager* _fileManager = NULL;
 };
 
 }  // DownloadManager

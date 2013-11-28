@@ -97,7 +97,7 @@ class TestGroupDownload : public BaseTestCase {
     FakeAppArmor* _apparmor;
     FakeSystemNetworkInfo* _networkInfo;
     FakeDownloadFactory* _downloadFactory;
-    QSharedPointer<FakeFileManager> _fileManager;
+    FakeFileManager* _fileManager;
 };
 
 DECLARE_TEST(TestGroupDownload)
