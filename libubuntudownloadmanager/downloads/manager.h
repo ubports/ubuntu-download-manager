@@ -98,7 +98,7 @@ class Manager : public QObject, public QDBusContext {
  private:
     QSharedPointer<Application> _app;
     qulonglong _throttle;
-    QSharedPointer<AppArmor> _apparmor;
+    AppArmor* _apparmor;
     QSharedPointer<Factory> _downloadFactory;
     Queue* _downloadsQueue;
     QSharedPointer<DBusConnection> _conn;

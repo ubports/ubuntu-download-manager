@@ -20,7 +20,6 @@
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include <QSharedPointer>
 #include "metatypes.h"
 #include "downloads/download.h"
 #include "system/apparmor.h"
@@ -35,7 +34,7 @@ class Factory : public QObject {
     Q_OBJECT
 
  public:
-    Factory(QSharedPointer<AppArmor> apparmor,
+    Factory(AppArmor* apparmor,
             QObject *parent = 0);
 
     // create downloads comming from a dbus call
@@ -89,7 +88,7 @@ class Factory : public QObject {
                          QString& rootPath,
                          bool& isConfined);
  private:
-    QSharedPointer<AppArmor> _apparmor;
+    AppArmor* _apparmor;
 };
 
 }  // DownloadManager
