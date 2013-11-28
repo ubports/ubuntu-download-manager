@@ -20,7 +20,7 @@
 #include "fake_download_factory.h"
 
 FakeDownloadFactory::FakeDownloadFactory(
-                                 QSharedPointer<AppArmor> apparmor,
+                                 AppArmor* apparmor,
                                  SystemNetworkInfo* networkInfo,
                                  RequestFactory* nam,
                                  ProcessFactory* processFactory,

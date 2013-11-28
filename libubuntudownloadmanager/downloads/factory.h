@@ -20,7 +20,6 @@
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include <QSharedPointer>
 #include "metatypes.h"
 #include "downloads/download.h"
 #include "system/apparmor.h"
@@ -35,7 +34,7 @@ class Factory : public QObject {
     Q_OBJECT
 
  public:
-    Factory(QSharedPointer<AppArmor> apparmor,
+    Factory(AppArmor* apparmor,
             SystemNetworkInfo* networkInfo,
             RequestFactory* nam,
             ProcessFactory* processFactory,
@@ -92,7 +91,7 @@ class Factory : public QObject {
                          QString& rootPath,
                          bool& isConfined);
  private:
-    QSharedPointer<AppArmor> _apparmor;
+    AppArmor* _apparmor;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _nam;
     ProcessFactory* _processFactory;
