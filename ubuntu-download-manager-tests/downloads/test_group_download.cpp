@@ -49,7 +49,7 @@ void
 TestGroupDownload::cleanup() {
     BaseTestCase::cleanup();
 
-    delete _networkInfo;
+    SystemNetworkInfo::deleteInstance();
     delete _downloadFactory;
 }
 

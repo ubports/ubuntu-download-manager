@@ -32,13 +32,12 @@ TestDownloadQueue::init() {
     _rootPath = "/random/root/path";
     _networkInfo = new FakeSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
-    _processFactory = new FakeProcessFactory();
     _first = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
         "first-path", _isConfined, _rootPath, QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _processFactory);
+        QVariantMap(), QMap<QString, QString>());
     _second = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
         "second-path", _isConfined, _rootPath, QUrl(),
-        QVariantMap(), QMap<QString, QString>(), _processFactory);
+        QVariantMap(), QMap<QString, QString>());
     _q = new Queue();
 }
 
@@ -46,6 +45,7 @@ void
 TestDownloadQueue::cleanup() {
     BaseTestCase::cleanup();
 
+    SystemNetworkInfo::deleteInstance();
     delete _q;
 }
 

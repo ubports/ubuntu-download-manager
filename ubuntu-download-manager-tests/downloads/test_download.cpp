@@ -55,9 +55,9 @@ void
 TestDownload::cleanup() {
     BaseTestCase::cleanup();
 
-    delete _networkInfo;
-    delete _reqFactory;
-    delete _processFactory;
+    SystemNetworkInfo::deleteInstance();
+    RequestFactory::deleteInstance();
+    ProcessFactory::deleteInstance();
 }
 
 void
