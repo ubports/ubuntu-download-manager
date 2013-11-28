@@ -43,7 +43,8 @@ TestGroupDownload::init() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(_uuidFactory));
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor), _processFactory);
-    _fileManager = QSharedPointer<FakeFileManager>(new FakeFileManager());
+    _fileManager = new FakeFileManager();
+    FileManager::setInstance(_fileManager);
 }
 
 void

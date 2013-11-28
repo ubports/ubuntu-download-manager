@@ -86,13 +86,7 @@ namespace DownloadManager {
 
 DownloadsDb::DownloadsDb(QObject* parent)
     : QObject(parent) {
-    _fileManager = new FileManager();
-    internalInit();
-}
-
-DownloadsDb::DownloadsDb(FileManager* fileManager, QObject* parent)
-    : QObject(parent),
-      _fileManager(fileManager) {
+    _fileManager = FileManager::instance();
     internalInit();
 }
 
