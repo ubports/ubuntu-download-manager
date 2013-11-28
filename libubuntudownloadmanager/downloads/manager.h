@@ -23,7 +23,6 @@
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
 #include <QtDBus/QDBusContext>
-#include <QSharedPointer>
 #include <QSslCertificate>
 #include "metatypes.h"
 #include "downloads/download.h"
@@ -41,12 +40,12 @@ class Manager : public QObject, public QDBusContext {
     Q_OBJECT
 
  public:
-    Manager(QSharedPointer<Application> app,
-            QSharedPointer<DBusConnection> connection,
+    Manager(Application* app,
+            DBusConnection* connection,
             bool stoppable = false,
             QObject *parent = 0);
-    Manager(QSharedPointer<Application> app,
-            QSharedPointer<DBusConnection> connection,
+    Manager(Application* app,
+            DBusConnection* connection,
             SystemNetworkInfo* networkInfo,
             Factory* downloadFactory,
             Queue* queue,
@@ -98,14 +97,14 @@ class Manager : public QObject, public QDBusContext {
     void onDownloadsChanged(QString);
 
  private:
-    QSharedPointer<Application> _app;
+    Application* _app;
     qulonglong _throttle;
     AppArmor* _apparmor;
     SystemNetworkInfo* _networkInfo;
     ProcessFactory* _processFactory;
-    QSharedPointer<Factory> _downloadFactory;
+    Factory* _downloadFactory;
     Queue* _downloadsQueue;
-    QSharedPointer<DBusConnection> _conn;
+    DBusConnection* _conn;
     bool _stoppable;
 };
 

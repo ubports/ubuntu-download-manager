@@ -18,10 +18,9 @@
 
 #include "./fake_download_manager.h"
 
-FakeDownloadManager::FakeDownloadManager(
-                                    QSharedPointer<Application> app,
-                                    QSharedPointer<DBusConnection> connection,
-                                    QObject *parent)
+FakeDownloadManager::FakeDownloadManager(Application* app,
+                                         DBusConnection* connection,
+                                         QObject *parent)
     : Manager(app, connection, parent),
       Fake() {
 }

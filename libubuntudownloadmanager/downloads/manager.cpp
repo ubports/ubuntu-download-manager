@@ -28,8 +28,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-Manager::Manager(QSharedPointer<Application> app,
-                 QSharedPointer<DBusConnection> connection,
+Manager::Manager(Application* app,
+                 DBusConnection* connection,
                  bool stoppable,
                  QObject* parent)
     : QObject(parent),
@@ -42,15 +42,14 @@ Manager::Manager(QSharedPointer<Application> app,
     _networkInfo =  new SystemNetworkInfo();
     RequestFactory* nam = new RequestFactory(_stoppable);
     _processFactory = new ProcessFactory();
-    _downloadFactory = QSharedPointer<Factory>(
-        new Factory(_apparmor, _networkInfo, nam,
-            _processFactory));
+    _downloadFactory = new Factory(_apparmor, _networkInfo, nam,
+            _processFactory);
     _downloadsQueue = new Queue(_networkInfo);
     init();
 }
 
-Manager::Manager(QSharedPointer<Application> app,
-                 QSharedPointer<DBusConnection> connection,
+Manager::Manager(Application* app,
+                 DBusConnection* connection,
                  SystemNetworkInfo* networkInfo,
                  Factory* downloadFactory,
                  Queue* queue,

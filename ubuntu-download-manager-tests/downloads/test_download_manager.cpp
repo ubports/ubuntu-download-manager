@@ -32,8 +32,7 @@ void
 TestDownloadManager::init() {
     BaseTestCase::init();
     _app = new FakeApplication();
-    _appPointer = QSharedPointer<Application>(_app);
-    _conn = QSharedPointer<FakeDBusConnection>(new FakeDBusConnection());
+    _conn = new FakeDBusConnection();
     _networkInfo = new FakeSystemNetworkInfo();
     _q = new FakeDownloadQueue(_networkInfo);
     _uuidFactory = QSharedPointer<FakeUuidFactory>(new FakeUuidFactory());
@@ -41,7 +40,7 @@ TestDownloadManager::init() {
     _requestFactory = new FakeRequestFactory();
     _downloadFactory = new FakeDownloadFactory(_apparmor, _networkInfo,
         _requestFactory, new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo, _downloadFactory, _q);
+    _man = new Manager(_app, _conn, _networkInfo, _downloadFactory, _q);
 }
 
 void
@@ -255,7 +254,7 @@ TestDownloadManager::testGetAllDownloads() {
     _downloadFactory = new FakeDownloadFactory(_apparmor,
         new FakeSystemNetworkInfo(), new FakeRequestFactory(),
         new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_app, _conn, _networkInfo,
         _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -302,7 +301,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     _downloadFactory = new FakeDownloadFactory(_apparmor,
         new FakeSystemNetworkInfo(), new FakeRequestFactory(),
         new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_app, _conn, _networkInfo,
         _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -380,7 +379,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     _downloadFactory = new FakeDownloadFactory(_apparmor,
         new FakeSystemNetworkInfo(), new FakeRequestFactory(),
         new FakeProcessFactory());
-    _man = new Manager(_appPointer, _conn, _networkInfo,
+    _man = new Manager(_app, _conn, _networkInfo,
         _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),
@@ -472,9 +471,8 @@ TestDownloadManager::testSetSelfSignedCerts() {
 void
 TestDownloadManager::testStoppable() {
     _app->record();
-    _man = new Manager(
-        _appPointer, qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, true);
+    _man = new Manager(_app, _conn, _networkInfo,
+        _downloadFactory, _q, true);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -483,9 +481,8 @@ TestDownloadManager::testStoppable() {
 void
 TestDownloadManager::testNotStoppable() {
     _app->record();
-    _man = new Manager(
-        _appPointer, qSharedPointerCast<DBusConnection>(_conn),
-        _networkInfo, _downloadFactory, _q, false);
+    _man = new Manager(_app, _conn, _networkInfo,
+        _downloadFactory, _q, false);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());

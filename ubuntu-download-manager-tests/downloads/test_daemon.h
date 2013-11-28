@@ -57,9 +57,8 @@ class TestDaemon : public BaseTestCase {
  private:
     FakeTimer* _timer;
     FakeApplication* _app;
-    QSharedPointer<Application> _appPointer;
     FakeDownloadManager* _man;
-    QSharedPointer<FakeDBusConnection> _conn;
+    FakeDBusConnection* _conn;
     Daemon* _daemon;
 };
 
