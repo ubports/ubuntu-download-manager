@@ -32,7 +32,7 @@ TestDownloadFactory::init() {
     _apparmor = new FakeAppArmor(_uuidFactory);
     _networkInfo =  new FakeSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
-    _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor));
+    _downFactory = new Factory(_apparmor);
 }
 
 void

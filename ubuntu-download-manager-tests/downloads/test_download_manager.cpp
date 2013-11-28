@@ -42,7 +42,7 @@ TestDownloadManager::init() {
     _requestFactory = new FakeRequestFactory();
     RequestFactory::setInstance(_requestFactory);
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeProcessFactory());
+        _apparmor, new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 }
 
@@ -258,7 +258,7 @@ TestDownloadManager::testGetAllDownloads() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeProcessFactory());
+        _apparmor, new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -303,7 +303,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeProcessFactory());
+        _apparmor, new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
@@ -379,7 +379,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeProcessFactory());
+        _apparmor, new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _downloadFactory, _q);
 
     QString firstUrl("http://www.ubuntu.com"),

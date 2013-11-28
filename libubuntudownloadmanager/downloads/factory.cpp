@@ -35,7 +35,7 @@ namespace DownloadManager {
  */
 
 
-Factory::Factory(QSharedPointer<AppArmor> apparmor,
+Factory::Factory(AppArmor* apparmor,
                  QObject* parent)
     : QObject(parent),
         _apparmor(apparmor) {
