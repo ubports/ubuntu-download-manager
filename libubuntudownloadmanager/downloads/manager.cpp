@@ -27,8 +27,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-Manager::Manager(QSharedPointer<Application> app,
-                 QSharedPointer<DBusConnection> connection,
+Manager::Manager(Application* app,
+                 DBusConnection* connection,
                  bool stoppable,
                  QObject* parent)
     : QObject(parent),
@@ -43,8 +43,8 @@ Manager::Manager(QSharedPointer<Application> app,
     init();
 }
 
-Manager::Manager(QSharedPointer<Application> app,
-                 QSharedPointer<DBusConnection> connection,
+Manager::Manager(Application* app,
+                 DBusConnection* connection,
                  Factory* downloadFactory,
                  Queue* queue,
                  bool stoppable,
