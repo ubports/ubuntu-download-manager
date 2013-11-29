@@ -36,8 +36,6 @@ class TestDaemon : public BaseTestCase {
 
  private slots:  // NOLINT(whitespace/indent)
 
-    void init() override;
-    void cleanup() override;
     void testStart();
     void testStartPath();
     void testStartFailServiceRegister();
@@ -53,13 +51,6 @@ class TestDaemon : public BaseTestCase {
     void testSetTimeout_data();
     void testSetTimeout();
     void testSetSelfSignedSslCerts();
-
- private:
-    FakeTimer* _timer;
-    FakeApplication* _app;
-    FakeDownloadManager* _man;
-    FakeDBusConnection* _conn;
-    Daemon* _daemon;
 };
 
 DECLARE_TEST(TestDaemon)
