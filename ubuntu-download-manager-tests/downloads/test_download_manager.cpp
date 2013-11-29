@@ -467,7 +467,7 @@ TestDownloadManager::testSetSelfSignedCerts() {
 void
 TestDownloadManager::testStoppable() {
     _app->record();
-    _man = new Manager(_appPointer, _conn,
+    _man = new Manager(_app, _conn,
         _downloadFactory, _q, true);
     _man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
