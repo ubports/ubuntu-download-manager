@@ -24,6 +24,17 @@ TestDaemon::TestDaemon(QObject *parent)
 }
 
 void
+TestDaemon::init() {
+    BaseTestCase::init();
+}
+
+void
+TestDaemon::cleanup() {
+    BaseTestCase::cleanup();
+    SystemNetworkInfo::deleteInstance();
+}
+
+void
 TestDaemon::testStart() {
     FakeTimer* timer = new FakeTimer();
     FakeDBusConnection* conn = new FakeDBusConnection();
