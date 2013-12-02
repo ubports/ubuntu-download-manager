@@ -37,7 +37,7 @@ SslErrorsListWrapper::setValue(QList<QSslError> value) {
 }
 
 FakeNetworkReply::FakeNetworkReply(QObject *parent)
-    : NetworkReply(new FakeQNetworkReply(parent)),
+    : NetworkReply(new FakeQNetworkReply(), parent),
       Fake() {
 }
 

@@ -46,6 +46,8 @@ TestDownloadQueue::cleanup() {
     BaseTestCase::cleanup();
 
     SystemNetworkInfo::deleteInstance();
+    delete _first;
+    delete _second;
     delete _q;
 }
 

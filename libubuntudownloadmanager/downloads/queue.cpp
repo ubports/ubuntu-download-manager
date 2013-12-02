@@ -34,10 +34,6 @@ Queue::Queue(QObject* parent)
         this, &Queue::onCurrentNetworkModeChanged);
 }
 
-Queue::~Queue() {
-    qDeleteAll(_downloads.values());
-}
-
 void
 Queue::add(Download* download) {
     // connect to the signals and append to the list

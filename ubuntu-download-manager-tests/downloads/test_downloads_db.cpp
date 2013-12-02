@@ -57,6 +57,7 @@ TestDownloadsDb::cleanup() {
 
     QFile::remove(dbFile);
     SystemNetworkInfo::deleteInstance();
+    FileManager::deleteInstance();
 }
 
 void

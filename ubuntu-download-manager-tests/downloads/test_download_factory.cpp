@@ -17,6 +17,7 @@
  */
 
 #include <downloads/file_download.h>
+#include <system/file_manager.h>
 #include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "test_download_factory.h"
@@ -41,6 +42,8 @@ TestDownloadFactory::cleanup() {
 
     SystemNetworkInfo::deleteInstance();
     delete _downFactory;
+    FileManager::deleteInstance();
+    RequestFactory::deleteInstance();
 }
 
 void

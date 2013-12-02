@@ -299,5 +299,3 @@ GroupDownload::onFinished(const QString& file) {
 }  // DownloadManager
 
 }  // Ubuntu
-
-#include "moc_group_download.cpp"

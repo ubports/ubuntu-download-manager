@@ -32,6 +32,7 @@ void
 TestDaemon::cleanup() {
     BaseTestCase::cleanup();
     SystemNetworkInfo::deleteInstance();
+    RequestFactory::deleteInstance();
 }
 
 void
