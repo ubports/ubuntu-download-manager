@@ -35,16 +35,19 @@ namespace DownloadManager {
  */
 
 
-Factory::Factory(QSharedPointer<AppArmor> apparmor,
-                 QSharedPointer<SystemNetworkInfo> networkInfo,
-                 QSharedPointer<RequestFactory> nam,
-                 QSharedPointer<ProcessFactory> processFactory,
+Factory::Factory(QObject* parent)
+    : QObject(parent) {
+    _apparmor = new AppArmor(this);
+}
+
+Factory::Factory(AppArmor* apparmor,
                  QObject* parent)
     : QObject(parent),
-        _apparmor(apparmor),
-        _networkInfo(networkInfo),
-        _nam(nam),
-        _processFactory(processFactory) {
+        _apparmor(apparmor) {
+}
+
+Factory::~Factory() {
+    delete _apparmor;
 }
 
 void
@@ -86,7 +89,7 @@ Factory::createDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, _networkInfo, _nam, _processFactory);
+        url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -106,8 +109,7 @@ Factory::createDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
-        _processFactory);
+        rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -127,8 +129,7 @@ Factory::createDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
-        downloads, algo, allowed3G, metadata, headers, _networkInfo,
-        this);
+        downloads, algo, allowed3G, metadata, headers, this);
     GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -144,7 +145,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, _networkInfo, _nam, _processFactory);
+        url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -162,8 +163,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
-        _processFactory);
+        rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -171,12 +171,12 @@ Factory::createDownloadForGroup(bool isConfined,
 
 QList<QSslCertificate>
 Factory::acceptedCertificates() {
-    return _nam->acceptedCertificates();
+    return RequestFactory::instance()->acceptedCertificates();
 }
 
 void
 Factory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    _nam->setAcceptedCertificates(certs);
+    RequestFactory::instance()->setAcceptedCertificates(certs);
 }
 
 }  // DownloadManager

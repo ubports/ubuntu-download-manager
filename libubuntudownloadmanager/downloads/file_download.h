@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
+#include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
 #include <QSharedPointer>
@@ -32,10 +33,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class FileDownloadPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
+class FileDownload : public Download {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(FileDownload)
 
  public:
     FileDownload(const QString& id,
@@ -45,9 +44,6 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 QSharedPointer<SystemNetworkInfo> networkInfo,
-                 QSharedPointer<RequestFactory> nam,
-                 QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
     FileDownload(const QString& id,
                  const QString& path,
@@ -58,16 +54,25 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 QSharedPointer<SystemNetworkInfo> networkInfo,
-                 QSharedPointer<RequestFactory> nam,
-                 QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
+    virtual ~FileDownload();
 
     // gets for internal state
-    QUrl url();
-    QString filePath();
-    QString hash();
-    QCryptographicHash::Algorithm hashAlgorithm();
+    QUrl url() const {
+        return _url;
+    }
+
+    QString filePath() const {
+        return _filePath;
+    }
+
+    QString hash() const {
+        return _hash;
+    }
+
+    QCryptographicHash::Algorithm hashAlgorithm() const {
+        return _algo;
+    }
 
     // methods that do perform the download
     virtual void cancelDownload() override;
@@ -83,27 +88,36 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
  signals:
     void finished(const QString& path);
 
- private:
-    // private slots used to keep track of the qnetwork reply state
-
-    Q_PRIVATE_SLOT(d_func(), void onDownloadProgress(qint64, qint64))
-    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
-    Q_PRIVATE_SLOT(d_func(), void onFinished())
-    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
-
-    // private slots used to keep track of the post download command
-
-    Q_PRIVATE_SLOT(d_func(), void onProcessError(QProcess::ProcessError error))
-    Q_PRIVATE_SLOT(d_func(), void onProcessFinished(int exitCode,
-                                              QProcess::ExitStatus exitStatus))
-
-    // private slot used to keep track of the connection
-    Q_PRIVATE_SLOT(d_func(),
-        void onOnlineStateChanged(bool))
+ protected:
+    void emitError(const QString& error) override;
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    FileDownloadPrivate* d_ptr;
+    QNetworkRequest buildRequest();
+    void cleanUpCurrentData();
+    void connectToReplySignals();
+    void disconnectFromReplySignals();
+    void init();
+    void onDownloadProgress(qint64 currentProgress, qint64);
+    void onError(QNetworkReply::NetworkError);
+    void onFinished();
+    void onSslErrors(const QList<QSslError>&);
+    void onProcessError(QProcess::ProcessError error);
+    void onProcessFinished(int exitCode,
+                           QProcess::ExitStatus exitStatus);
+    void onOnlineStateChanged(bool);
+    QString saveFileName();
+
+ private:
+    bool _downloading = false;
+    bool _connected = false;
+    qulonglong _totalSize = 0;
+    QUrl _url;
+    QString _filePath;
+    QString _hash;
+    QCryptographicHash::Algorithm _algo;
+    NetworkReply* _reply = NULL;
+    QFile* _currentData = NULL;
+    RequestFactory* _requestFactory;
 };
 
 }  // DownloadManager

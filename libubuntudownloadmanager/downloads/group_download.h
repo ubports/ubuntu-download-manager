@@ -26,16 +26,15 @@
 #include <ubuntu/download_manager/group_download_struct.h>
 #include "downloads/download.h"
 #include "downloads/factory.h"
+#include "downloads/file_download.h"
 #include "system/file_manager.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class GroupDownloadPrivate;
 class GroupDownload : public Download {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(GroupDownload)
 
  public:
     GroupDownload(const QString& id,
@@ -47,23 +46,9 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
                   Factory* downFactory,
                   QObject* parent = 0);
-
-    GroupDownload(const QString& id,
-                  const QString& path,
-                  bool isConfined,
-                  const QString& rootPath,
-                  QList<GroupDownloadStruct> downloads,
-                  const QString& algo,
-                  bool isGSMDownloadAllowed,
-                  const QVariantMap& metadata,
-                  const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
-                  Factory* downFactory,
-                  QSharedPointer<FileManager> fileManager,
-                  QObject* parent = 0);
+    virtual ~GroupDownload();
 
     virtual void cancelDownload() override;
     virtual void pauseDownload() override;
@@ -80,16 +65,21 @@ class GroupDownload : public Download {
     void finished(const QStringList &path);
 
  private:
-    // private slots used to keep track of the diff downloads
-
-    Q_PRIVATE_SLOT(d_func(), void onError(const QString& error))
-    Q_PRIVATE_SLOT(d_func(), void onProgress(qulonglong received,
-        qulonglong total))
-    Q_PRIVATE_SLOT(d_func(), void onFinished(const QString& file))
+    void cancelAllDownloads();
+    void connectToDownloadSignals(FileDownload* singleDownload);
+    void init(QList<GroupDownloadStruct> downloads,
+              const QString& algo,
+              bool isGSMDownloadAllowed);
+    void onError(const QString& error);
+    void onProgress(qulonglong received, qulonglong total);
+    void onFinished(const QString& file);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    GroupDownloadPrivate* d_ptr;
+    QList<FileDownload*> _downloads;
+    QStringList _finishedDownloads;
+    QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
+    Factory* _downFactory = NULL;
+    FileManager* _fileManager = NULL;
 };
 
 }  // DownloadManager

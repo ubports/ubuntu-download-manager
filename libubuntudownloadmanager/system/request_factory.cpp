@@ -17,8 +17,6 @@
  */
 
 #include <QDebug>
-#include <QNetworkAccessManager>
-#include <QSslError>
 #include "request_factory.h"
 
 namespace Ubuntu {
@@ -27,141 +25,136 @@ namespace DownloadManager {
 
 namespace System {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
+RequestFactory* RequestFactory::_instance = NULL;
+bool RequestFactory::_isStoppable = false;
+QMutex RequestFactory::_mutex;
 
-class RequestFactoryPrivate {
-    Q_DECLARE_PUBLIC(RequestFactory)
-
- public:
-    RequestFactoryPrivate(bool stoppable, RequestFactory* parent)
-        : _stoppable(stoppable),
-        q_ptr(parent) {
-        _nam = new QNetworkAccessManager();
-    }
-
-    NetworkReply* get(const QNetworkRequest& request) {
-        Q_Q(RequestFactory);
-
-        QNetworkReply* qreply = _nam->get(request);
-        NetworkReply* reply = new NetworkReply(qreply);
-
-        if (_certs.count() > 0) {
-            reply->setAcceptedCertificates(_certs);
-        }
-
-        if (_stoppable) {
-            // if the daemon was started as stoppable it means that
-            // we are in testing mode and we do not want to keep
-            // the connections for too long
-            _replies.append(reply);
-
-            q->connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                q, SLOT(onError(QNetworkReply::NetworkError)));
-            q->connect(reply, SIGNAL(finished()),
-                q, SLOT(onFinished()));
-            q->connect(reply, SIGNAL(sslErrors(const QList<QSslError>&)),
-                q, SLOT(onSslErrors(const QList<QSslError>&)));
-        }
-        return reply;
-    }
-
-    QList<QSslCertificate> acceptedCertificates() {
-        return _certs;
-    }
-
-    void setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-        _certs = certs;
-    }
-
-    void removeNetworkReply(NetworkReply* reply) {
-        if (_replies.contains(reply)) {
-            _replies.removeAll(reply);
-            // stoppable is not really needed but is better check
-            if (_stoppable && _replies.count() == 0) {
-                qDebug() << "Clearing the connections cache.";
-                _nam->clearAccessCache();
-            }
-        }
-    }
-
-    void onError(QNetworkReply::NetworkError) {
-        Q_Q(RequestFactory);
-        NetworkReply* sender = qobject_cast<NetworkReply*>(q->sender());
-        removeNetworkReply(sender);
-    }
-
-    void onFinished() {
-        Q_Q(RequestFactory);
-        NetworkReply* sender = qobject_cast<NetworkReply*>(q->sender());
-        removeNetworkReply(sender);
-    }
-
-    void onSslErrors(const QList<QSslError>& errors) {
-        Q_Q(RequestFactory);
-        NetworkReply* sender = qobject_cast<NetworkReply*>(q->sender());
-        // only remove the connection and clear the cache if we cannot
-        // ignore the ssl errors!
-
-        foreach(QSslError error, errors) {
-            QSslError::SslError type = error.error();
-            if (type != QSslError::NoError &&
-                type != QSslError::SelfSignedCertificate) {
-                // we only support self signed certificates all errors
-                // will not be ignored
-                qDebug() << "SSL error type not ignored clearing cache";
-                removeNetworkReply(sender);
-            } else if (type == QSslError::SelfSignedCertificate) {
-                // just ignore those errors of the added errors
-                if (!_certs.contains(error.certificate())) {
-                    qDebug() << "SSL certificate not ignored clearing cache";
-                    removeNetworkReply(sender);
-                }
-            }
-       }
-
-    }
-
- private:
-    bool _stoppable = false;
-    QList<NetworkReply*> _replies;
-    QList<QSslCertificate> _certs;
-    QNetworkAccessManager* _nam;
-    RequestFactory* q_ptr;
-};
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-RequestFactory::RequestFactory(bool stoppable, QObject *parent)
+RequestFactory::RequestFactory(bool stoppable, QObject* parent)
     : QObject(parent),
-      d_ptr(new RequestFactoryPrivate(stoppable, this)) {
+      _stoppable(stoppable) {
+    _nam = new QNetworkAccessManager(this);
 }
 
 NetworkReply*
 RequestFactory::get(const QNetworkRequest& request) {
-    Q_D(RequestFactory);
-    return d->get(request);
+    QNetworkReply* qreply = _nam->get(request);
+    NetworkReply* reply = new NetworkReply(qreply);
+
+    if (_certs.count() > 0) {
+        reply->setAcceptedCertificates(_certs);
+    }
+
+    if (_stoppable) {
+        // if the daemon was started as stoppable it means that
+        // we are in testing mode and we do not want to keep
+        // the connections for too long
+        _replies.append(reply);
+
+        connect(reply, &NetworkReply::error,
+            this, &RequestFactory::onError);
+        connect(reply, &NetworkReply::finished,
+            this, &RequestFactory::onFinished);
+        connect(reply, &NetworkReply::sslErrors,
+            this, &RequestFactory::onSslErrors);
+    }
+    return reply;
 }
 
 QList<QSslCertificate>
 RequestFactory::acceptedCertificates() {
-    Q_D(RequestFactory);
-    return d->acceptedCertificates();
+    return _certs;
 }
 
 void
 RequestFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    Q_D(RequestFactory);
-    d->setAcceptedCertificates(certs);
+    _certs = certs;
 }
+
+RequestFactory*
+RequestFactory::instance() {
+    if(_instance == NULL) {
+        _mutex.lock();
+        if(_instance == NULL)
+            _instance = new RequestFactory(_isStoppable);
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+RequestFactory::setStoppable(bool stoppable) {
+    _isStoppable = stoppable;
+}
+
+void
+RequestFactory::setInstance(RequestFactory* instance) {
+    _instance = instance;
+}
+
+void
+RequestFactory::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
+}
+
+void
+RequestFactory::removeNetworkReply(NetworkReply* reply) {
+    if (_replies.contains(reply)) {
+        _replies.removeAll(reply);
+        // stoppable is not really needed but is better check
+        if (_stoppable && _replies.count() == 0) {
+            qDebug() << "Clearing the connections cache.";
+            _nam->clearAccessCache();
+        }
+    }
+}
+
+void
+RequestFactory::onError(QNetworkReply::NetworkError) {
+    NetworkReply* senderObj = qobject_cast<NetworkReply*>(sender());
+    removeNetworkReply(senderObj);
+}
+
+void
+RequestFactory::onFinished() {
+    NetworkReply* senderObj = qobject_cast<NetworkReply*>(sender());
+    removeNetworkReply(senderObj);
+}
+
+void
+RequestFactory::onSslErrors(const QList<QSslError>& errors) {
+    NetworkReply* senderObj = qobject_cast<NetworkReply*>(sender());
+    // only remove the connection and clear the cache if we cannot
+    // ignore the ssl errors!
+
+    foreach(QSslError error, errors) {
+        QSslError::SslError type = error.error();
+        if (type != QSslError::NoError &&
+            type != QSslError::SelfSignedCertificate) {
+            // we only support self signed certificates all errors
+            // will not be ignored
+            qDebug() << "SSL error type not ignored clearing cache";
+            removeNetworkReply(senderObj);
+        } else if (type == QSslError::SelfSignedCertificate) {
+            // just ignore those errors of the added errors
+            if (!_certs.contains(error.certificate())) {
+                qDebug() << "SSL certificate not ignored clearing cache";
+                removeNetworkReply(senderObj);
+            }
+        }
+   }
+
+}
+
 
 }  // System
 
 }  // DownloadManager
 
 }  // Ubuntu
-
-#include "moc_request_factory.cpp"

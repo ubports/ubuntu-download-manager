@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 2013 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,41 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_TIMER_H
-#define DOWNLOADER_LIB_TIMER_H
+#include "state.h"
 
-#include <QTimer>
-#include <QObject>
-
-namespace Ubuntu {
-
-namespace DownloadManager {
-
-namespace System {
-
-class TimerPrivate;
-class Timer : public QObject {
-    Q_OBJECT
-    Q_DECLARE_PRIVATE(Timer)
-
- public:
-    explicit Timer(QObject *parent = 0);
-
-    virtual bool isActive();
-    virtual void start(int msec);
-    virtual void stop();
-
- signals:
-    void timeout();
-
- private:
-    QTimer* _timer;
-};
-
-}  // System
-
-}  // DownloadManager
-
-}  // Ubuntu
-
-#endif  // DOWNLOADER_LIB_TIMER_H
+State::State(QObject* obj,
+             const char* property,
+             QVariant value,
+             QState* parent)
+    : QState(parent){
+    // simply add the property
+    assignProperty(obj, property, value);
+}

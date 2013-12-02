@@ -18,10 +18,8 @@
 
 #include "./fake_download_queue.h"
 
-FakeDownloadQueue::FakeDownloadQueue(
-                               QSharedPointer<SystemNetworkInfo> networkInfo,
-                               QObject *parent)
-    : Queue(networkInfo, parent),
+FakeDownloadQueue::FakeDownloadQueue(QObject *parent)
+    : Queue(parent),
     Fake() {
 }
 

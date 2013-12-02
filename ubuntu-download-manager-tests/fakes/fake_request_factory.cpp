@@ -38,11 +38,11 @@ FakeRequestFactory::FakeRequestFactory(QObject *parent)
 NetworkReply*
 FakeRequestFactory::get(const QNetworkRequest& request) {
     // return a FakeQNetworkReply
-    FakeNetworkReply* reply = new FakeNetworkReply();
+    FakeNetworkReply* reply = new FakeNetworkReply(this);
 
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new RequestWrapper(request));
+        inParams.append(new RequestWrapper(request, this));
 
         QList<QObject*> outParams;
         outParams.append(reply);

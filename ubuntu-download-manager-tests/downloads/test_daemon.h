@@ -53,14 +53,6 @@ class TestDaemon : public BaseTestCase {
     void testSetTimeout_data();
     void testSetTimeout();
     void testSetSelfSignedSslCerts();
-
- private:
-    FakeTimer* _timer;
-    FakeApplication* _app;
-    QSharedPointer<Application> _appPointer;
-    FakeDownloadManager* _man;
-    FakeDBusConnection* _conn;
-    Daemon* _daemon;
 };
 
 DECLARE_TEST(TestDaemon)

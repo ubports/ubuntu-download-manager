@@ -19,9 +19,12 @@
 #ifndef DOWNLOADER_LIB_REQUEST_FACTORY_H
 #define DOWNLOADER_LIB_REQUEST_FACTORY_H
 
+#include <QMutex>
+#include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QObject>
 #include <QSslCertificate>
+#include <QSslError>
 #include "app-downloader-lib_global.h"
 #include "network_reply.h"
 
@@ -31,28 +34,45 @@ namespace DownloadManager {
 
 namespace System {
 
-class RequestFactoryPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT RequestFactory : public QObject {
+class RequestFactory : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(RequestFactory)
 
  public:
-    RequestFactory(bool stoppable = false, QObject *parent = 0);
-
     virtual NetworkReply* get(const QNetworkRequest& request);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
- private:
-    Q_PRIVATE_SLOT(d_func(), void onError(QNetworkReply::NetworkError))
-    Q_PRIVATE_SLOT(d_func(), void onFinished())
-    Q_PRIVATE_SLOT(d_func(), void onSslErrors(const QList<QSslError>&))
+    static RequestFactory* instance();
+    static void setStoppable(bool stoppable);
+
+    // only used for testing purposes
+    static void setInstance(RequestFactory* instance);
+    static void deleteInstance();
+
+ protected:
+    RequestFactory(bool stoppable = false, QObject *parent = 0);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    RequestFactoryPrivate* d_ptr;
+    void removeNetworkReply(NetworkReply* reply);
+
+ private slots:
+    void onError(QNetworkReply::NetworkError);
+    void onFinished();
+    void onSslErrors(const QList<QSslError>&);
+
+ private:
+    // used for the singleton
+    static RequestFactory* _instance;
+    static QMutex _mutex;
+    static bool _isStoppable;
+
+    // instance vars
+    bool _stoppable = false;
+    QList<NetworkReply*> _replies;
+    QList<QSslCertificate> _certs;
+    QNetworkAccessManager* _nam;
 };
 
 }  // System

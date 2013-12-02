@@ -36,7 +36,9 @@ SOURCES += \
     system/application.cpp \
     system/apparmor.cpp \
     system/network_reply.cpp \
-    system/dbus_proxy.cpp
+    system/dbus_proxy.cpp \
+    downloads/state_machines/state.cpp \
+    downloads/state_machines/final_state.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -67,6 +69,8 @@ HEADERS +=\
     system/apparmor.h \
     system/network_reply.h \
     system/dbus_proxy.h
+    downloads/state_machines/state.h \
+    downloads/state_machines/final_state.h
 
 OTHER_FILES += \
     generate_adaptors.sh \

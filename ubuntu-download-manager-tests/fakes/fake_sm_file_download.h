@@ -64,12 +64,21 @@ class FakeSMFileDownload : public SMFileDownload, public Fake{
     void pauseRequestDownload() override;
     void cancelRequestDownload() override;
 
+    // used to raise signals used in tests
+    void raiseHeadRequestCompleted();
     void raiseNetworkError(QNetworkReply::NetworkError code);
     void raiseSslError(const QList<QSslError>& errors);
+    void raiseConnectionEnabled();
+    void raiseConnectionDisabled();
     void raiseDownloadingStarted();
     void raisePaused();
+    void raiseCompleted();
+    void raiseHashingStarted();
+    void raiseHashingError();
+    void raisePostProcessingStarted();
+    void raisePostProcessingError();
     void raiseCanceled();
-    void raiseResumed();
+    void raiseFinished();
 
  private:
     Download::State _state;

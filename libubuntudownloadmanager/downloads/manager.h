@@ -23,7 +23,6 @@
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
 #include <QtDBus/QDBusContext>
-#include <QSharedPointer>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
 #include "downloads/download.h"
@@ -31,29 +30,26 @@
 #include "downloads/factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
-#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class ManagerPrivate;
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Manager)
 
  public:
-    Manager(QSharedPointer<Application> app,
-            QSharedPointer<DBusConnection> connection,
+    Manager(Application* app,
+            DBusConnection* connection,
             bool stoppable = false,
             QObject *parent = 0);
-    Manager(QSharedPointer<Application> app,
-            QSharedPointer<DBusConnection> connection,
-            SystemNetworkInfo* networkInfo,
+    Manager(Application* app,
+            DBusConnection* connection,
             Factory* downloadFactory,
             Queue* queue,
             bool stoppable = false,
             QObject *parent = 0);
+    virtual ~Manager();
 
     void loadPreviewsDownloads(const QString &path);
 
@@ -82,11 +78,29 @@ class Manager : public QObject, public QDBusContext {
     void sizeChanged(int count);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onDownloadsChanged(QString))
+
+    typedef std::function<Download*(QString)> DownloadCreationFunc;
+
+    void init();
+
+    void loadPreviewsDownloads(QString path);
+    void addDownload(Download* download);
+    QDBusObjectPath registerDownload(Download* download);
+    QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc);
+    QDBusObjectPath createDownload(const QString& url,
+                                   const QString& hash,
+                                   const QString& algo,
+                                   const QVariantMap& metadata,
+                                   StringMap headers);
+    void onDownloadsChanged(QString);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    ManagerPrivate* d_ptr;
+    Application* _app;
+    qulonglong _throttle;
+    Factory* _downloadFactory;
+    Queue* _downloadsQueue;
+    DBusConnection* _conn;
+    bool _stoppable;
 };
 
 }  // DownloadManager

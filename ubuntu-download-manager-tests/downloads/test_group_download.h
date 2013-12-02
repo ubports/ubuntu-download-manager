@@ -95,11 +95,9 @@ class TestGroupDownload : public BaseTestCase {
     QMap<QString, QString> _headers;
     UuidFactory* _uuidFactory;
     FakeAppArmor* _apparmor;
-    QSharedPointer<FakeSystemNetworkInfo> _networkInfo;
-    FakeRequestFactory* _nam;
-    FakeProcessFactory* _processFactory;
+    FakeSystemNetworkInfo* _networkInfo;
     FakeDownloadFactory* _downloadFactory;
-    QSharedPointer<FakeFileManager> _fileManager;
+    FakeFileManager* _fileManager;
 };
 
 DECLARE_TEST(TestGroupDownload)

@@ -71,13 +71,12 @@ class TestDownloadManager : public BaseTestCase {
 
  private:
     FakeApplication* _app;
-    QSharedPointer<Application> _appPointer;
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _requestFactory;
     FakeDownloadFactory* _downloadFactory;
-    QSharedPointer<FakeDBusConnection> _conn;
+    FakeDBusConnection* _conn;
     FakeDownloadQueue* _q;
-    FakeUuidFactory* _uuidFactory;
+    QSharedPointer<FakeUuidFactory> _uuidFactory;
     FakeAppArmor* _apparmor;
     Manager* _man;
 };

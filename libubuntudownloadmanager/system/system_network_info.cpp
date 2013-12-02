@@ -28,6 +28,9 @@ namespace DownloadManager {
 
 namespace System {
 
+SystemNetworkInfo* SystemNetworkInfo::_instance = NULL;
+QMutex SystemNetworkInfo::_mutex;
+
 SystemNetworkInfo::SystemNetworkInfo(QObject* parent)
     : QObject(parent) {
     _info = new QNetworkInfo(this);
@@ -97,6 +100,37 @@ SystemNetworkInfo::currentNetworkMode() {
 bool
 SystemNetworkInfo::isOnline() {
     return _configMan->isOnline();
+}
+
+SystemNetworkInfo*
+SystemNetworkInfo::instance() {
+    if(_instance == NULL) {
+        qDebug() << "Instance is null";
+        _mutex.lock();
+        if(_instance == NULL){
+            qDebug() << "Create new instance";
+            _instance = new SystemNetworkInfo();
+        }
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+SystemNetworkInfo::setInstance(SystemNetworkInfo* instance) {
+    _instance = instance;
+}
+
+void
+SystemNetworkInfo::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
 }
 
 void

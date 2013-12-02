@@ -47,7 +47,9 @@ SOURCES += \
     downloads/state_machines/test_start_download_transition.cpp \
     downloads/state_machines/test_stop_request_transition.cpp \
     downloads/state_machines/test_cancel_download_transition.cpp \
-    downloads/state_machines/test_resume_download_transition.cpp
+    downloads/state_machines/test_resume_download_transition.cpp \
+    downloads/state_machines/test_final_state.cpp \
+    downloads/state_machines/test_file_download_sm.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -83,7 +85,9 @@ HEADERS += \
     downloads/state_machines/test_start_download_transition.h \
     downloads/state_machines/test_stop_request_transition.h \
     downloads/state_machines/test_cancel_download_transition.h \
-    downloads/state_machines/test_resume_download_transition.h
+    downloads/state_machines/test_resume_download_transition.h \
+    downloads/state_machines/test_final_state.h \
+    downloads/state_machines/test_file_download_sm.h
 
 LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 

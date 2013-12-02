@@ -27,7 +27,7 @@ void
 FakeApplication::exit(int returnCode) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new IntWrapper(returnCode));
+        inParams.append(new IntWrapper(returnCode, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);

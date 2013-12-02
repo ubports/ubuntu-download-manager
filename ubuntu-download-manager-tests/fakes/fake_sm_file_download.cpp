@@ -58,7 +58,7 @@ void
 FakeSMFileDownload::emitError(QString error) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(error));
+        inParams.append(new StringWrapper(error, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -71,7 +71,7 @@ void
 FakeSMFileDownload::emitNetworkError(QNetworkReply::NetworkError code) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new NetworkErrorWrapper(code));
+        inParams.append(new NetworkErrorWrapper(code, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -84,7 +84,7 @@ void
 FakeSMFileDownload::emitSslError(const QList<QSslError>& errors) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new SslErrorsWrapper(errors));
+        inParams.append(new SslErrorsWrapper(errors, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -140,6 +140,11 @@ FakeSMFileDownload::cancelRequestDownload() {
 }
 
 void
+FakeSMFileDownload::raiseHeadRequestCompleted() {
+    emit headRequestCompleted();
+}
+
+void
 FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
     emit error(code);
 }
@@ -147,6 +152,16 @@ FakeSMFileDownload::raiseNetworkError(QNetworkReply::NetworkError code) {
 void
 FakeSMFileDownload::raiseSslError(const QList<QSslError>& errors) {
     emit sslErrors(errors);
+}
+
+void
+FakeSMFileDownload::raiseConnectionEnabled() {
+    emit connectionEnabled();
+}
+
+void
+FakeSMFileDownload::raiseConnectionDisabled() {
+    emit connectionDisabled();
 }
 
 void
@@ -160,6 +175,36 @@ FakeSMFileDownload::raisePaused() {
 }
 
 void
+FakeSMFileDownload::raiseCompleted() {
+    emit completed();
+}
+
+void
+FakeSMFileDownload::raiseHashingStarted() {
+    emit hashingStarted();
+}
+
+void
+FakeSMFileDownload::raiseHashingError() {
+    emit hashingError();
+}
+
+void
+FakeSMFileDownload::raisePostProcessingStarted() {
+    emit postProcessingStarted();
+}
+
+void
+FakeSMFileDownload::raisePostProcessingError() {
+    emit postProcessingError();
+}
+
+void
 FakeSMFileDownload::raiseCanceled() {
     emit canceled();
+}
+
+void
+FakeSMFileDownload::raiseFinished() {
+    emit finished();
 }

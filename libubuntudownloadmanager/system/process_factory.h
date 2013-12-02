@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_PROCESS_FACTORY_H
 #define DOWNLOADER_LIB_PROCESS_FACTORY_H
 
+#include <QMutex>
 #include <QObject>
 #include "process.h"
 
@@ -32,9 +33,21 @@ class ProcessFactory : public QObject {
     Q_OBJECT
 
  public:
+    virtual Process* createProcess();
+
+    static ProcessFactory* instance();
+
+    // only used for testing so that we can inject a fake
+    static void setInstance(ProcessFactory* instance);
+    static void deleteInstance();
+
+ protected:
     explicit ProcessFactory(QObject *parent = 0);
 
-    virtual Process* createProcess();
+ private:
+    // used for the singleton
+    static ProcessFactory* _instance;
+    static QMutex _mutex;
 };
 
 }  // System

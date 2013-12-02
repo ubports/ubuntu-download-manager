@@ -28,14 +28,11 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class DownloadsDbPrivate;
 class DownloadsDb : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(DownloadsDb)
 
  public:
     explicit DownloadsDb(QObject *parent = 0);
-    DownloadsDb(FileManager* fileManager, QObject *parent = 0);
 
     QSqlDatabase db();
     QString filename();
@@ -44,8 +41,16 @@ class DownloadsDb : public QObject {
     bool storeSingleDownload(FileDownload* download);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    DownloadsDbPrivate* d_ptr;
+    QString headersToString(const QMap<QString, QString>& headers);
+    void internalInit();
+    QString metadataToString(const QVariantMap& metadata);
+    QString stateToString(Download::State state);
+    Download::State stringToState(QString state);
+
+ private:
+    QString _dbName;
+    FileManager* _fileManager;
+    QSqlDatabase _db;
 };
 
 }  // DownloadManager

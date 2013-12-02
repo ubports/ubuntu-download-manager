@@ -26,12 +26,9 @@ FakeDownload::FakeDownload(const QString& id,
                            const QUrl& url,
                            const QVariantMap& metadata,
                            const QMap<QString, QString> &headers,
-                           QSharedPointer<SystemNetworkInfo> networkInfo,
-                           QSharedPointer<RequestFactory> nam,
-                           QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, metadata,
-                headers, networkInfo, nam, processFactory, parent),
+                headers, parent),
         _canDownload(true) {
 }
 
@@ -44,12 +41,9 @@ FakeDownload::FakeDownload(const QString& id,
                            const QString& algo,
                            const QVariantMap& metadata,
                            const QMap<QString, QString>& headers,
-                           QSharedPointer<SystemNetworkInfo> networkInfo,
-                           QSharedPointer<RequestFactory> nam,
-                           QSharedPointer<ProcessFactory> processFactory,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, hash, algo,
-                metadata, headers, networkInfo, nam, processFactory, parent),
+                metadata, headers, parent),
         _canDownload(true) {
 }
 
@@ -72,7 +66,7 @@ void
 FakeDownload::setThrottle(qulonglong speed) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new UintWrapper(speed));
+        inParams.append(new UintWrapper(speed, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);

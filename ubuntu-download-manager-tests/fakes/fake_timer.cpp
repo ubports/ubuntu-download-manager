@@ -29,7 +29,7 @@ FakeTimer::isActive() {
         QList<QObject*> inParams;
 
         QList<QObject*> outParams;
-        outParams.append(new BoolWrapper(_isActive));
+        outParams.append(new BoolWrapper(_isActive, this));
 
         MethodParams params(inParams, outParams);
         MethodData methodData("isActive", params);
@@ -47,7 +47,7 @@ void
 FakeTimer::start(int msec) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new IntWrapper(msec));
+        inParams.append(new IntWrapper(msec, this));
 
         QList<QObject*> outParams;
 
