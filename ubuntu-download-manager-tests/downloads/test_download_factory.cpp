@@ -19,7 +19,6 @@
 #include <downloads/file_download.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/file_manager.h>
-#include <system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "test_download_factory.h"
 

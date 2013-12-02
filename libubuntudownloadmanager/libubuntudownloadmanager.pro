@@ -68,7 +68,7 @@ HEADERS +=\
     system/application.h \
     system/apparmor.h \
     system/network_reply.h \
-    system/dbus_proxy.h
+    system/dbus_proxy.h \
     downloads/state_machines/state.h \
     downloads/state_machines/final_state.h
 
