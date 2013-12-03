@@ -1,8 +1,10 @@
+include(../common-project-config.pri)
+include(../common-vars.pri)
+
 QT       += network dbus systeminfo sql
 QT       -= gui
 
 TARGET = ubuntudownloadmanager
-QMAKE_CXXFLAGS += -std=c++0x -Werror
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
@@ -83,16 +85,14 @@ OTHER_FILES += \
     downloads/com.canonical.applications.download.xml \
     downloads/generate_adaptors.sh
 
-target.path = /usr/lib/
-INSTALLS += target
+include(../common-installs-config.pri)
 
 LIBS += -lnih-dbus
 
-CONFIG += link_pkgconfig
 PKGCONFIG += dbus-1
 
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntudownloadmanager-common
+LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager-common
 DEPENDPATH += $$PWD/../libubuntudownloadmanager-common

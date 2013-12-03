@@ -1,15 +1,11 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2013-06-17T13:18:37
-#
-#-------------------------------------------------
+include( ../common-project-config.pri )
+include( ../common-vars.pri )
 
 QT       += network core testlib dbus systeminfo sql
 
 QT       -= gui
 
 TARGET = ubuntu-download-manager-tests
-QMAKE_CXXFLAGS += -std=c++0x -Werror
 CONFIG   += console
 CONFIG   -= app_bundle
 
