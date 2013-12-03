@@ -4,7 +4,7 @@ include(../common-vars.pri)
 QT       += network dbus systeminfo sql
 QT       -= gui
 
-TARGET = ubuntudownloadmanager
+TARGET = ubuntu-download-manager-priv
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY

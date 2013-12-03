@@ -28,10 +28,10 @@ INSTALLS += dbus_system_conf
 
 include( ../common-installs-config.pri )
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
-INCLUDEPATH += $$PWD/../libubuntudownloadmanager
-DEPENDPATH += $$PWD/../libubuntudownloadmanager
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
+DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
 OTHER_FILES += \
     ubuntu-download-manager.service \

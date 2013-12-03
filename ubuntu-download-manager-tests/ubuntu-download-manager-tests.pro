@@ -85,10 +85,10 @@ HEADERS += \
     downloads/state_machines/test_final_state.h \
     downloads/state_machines/test_file_download_sm.h
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
-INCLUDEPATH += $$PWD/../libubuntudownloadmanager
-DEPENDPATH += $$PWD/../libubuntudownloadmanager
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
+DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
@@ -96,5 +96,5 @@ INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
 DEPENDPATH += $$PWD/../ubuntu-udownload-manager-common
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../libubuntudownloadmanager ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check

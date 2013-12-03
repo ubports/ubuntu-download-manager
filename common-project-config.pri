@@ -27,12 +27,7 @@ isEmpty( PREFIX ) {
     message("==== install prefix set to `$${INSTALL_PREFIX}'")
 }
 
-ARCH = $$system(uname -m)
-contains( ARCH, x86_64 ) {
-    INSTALL_LIBDIR = $${INSTALL_PREFIX}/lib64
-} else {
-    INSTALL_LIBDIR = $${INSTALL_PREFIX}/lib
-}
+INSTALL_LIBDIR = $${INSTALL_PREFIX}/lib
 
 # default library directory can be overriden by defining LIBDIR when
 # running qmake
