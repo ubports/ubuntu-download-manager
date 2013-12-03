@@ -44,7 +44,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     explicit Manager(QObject* parent);
 
     virtual Download* createDownload(DownloadStruct downStruct);
-    virtual void createDownload(DownloadStruct downStrcut, DownloadCreationCb cb);
+    virtual void createDownload(DownloadStruct downStruct, DownloadCreationCb cb);
     virtual GroupDownload* createDownload(GroupDownloadStruct  groupStruct);
     virtual void createDownload(GroupDownloadStruct  groupStruct, GroupCreationCb cb);
 

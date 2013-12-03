@@ -40,18 +40,18 @@ class ManagerPrivate {
         return NULL;
     }
 
-    void createDownload(DownloadStruct downStrcut, DownloadCreationCb cb) {
+    void createDownload(DownloadStruct downStruct, DownloadCreationCb cb) {
         Q_UNUSED(downStruct);
         Q_UNUSED(cb);
     }
 
     GroupDownload* createDownload(GroupDownloadStruct  groupStruct) {
-        Q_UNUSED(downStruct);
+        Q_UNUSED(groupStruct);
         return NULL;
     }
 
     void createDownload(GroupDownloadStruct  groupStruct, GroupCreationCb cb) {
-        Q_UNUSED(downStruct);
+        Q_UNUSED(groupStruct);
         Q_UNUSED(cb);
     }
 
@@ -74,9 +74,9 @@ Manager::createDownload(DownloadStruct downStruct) {
 }
 
 void
-Manager::createDownload(DownloadStruct downStrcut, DownloadCreationCb cb) {
+Manager::createDownload(DownloadStruct downStruct, DownloadCreationCb cb) {
     Q_D(Manager);
-    d->createDownload(downStruct, db);
+    d->createDownload(downStruct, cb);
 }
 
 GroupDownload*
