@@ -6,7 +6,7 @@ includedir=${prefix}/include/ubuntu/download_manager
 Name: ubuntu-download-manager-common
 Description: Common Ubuntu Download Manager lib
 Version: $$PROJECT_VERSION
-Libs: -L${libdir} -lubuntudownloadmanager-common
+Libs: -L${libdir} -lubuntu-download-manager-common
 Requires: Qt5Core Qt5DBus
 Cflags:  -I${includedir}
 

@@ -36,4 +36,4 @@ include(../common-pkgconfig.pri)
 INSTALLS += pkgconfig
 
 OTHER_FILES += \
-    ubuntudownloadmanager-common.pc.in
+    ubuntu-download-manager-common.pc.in
