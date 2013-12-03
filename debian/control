@@ -36,7 +36,18 @@ Depends: ${misc:Depends},
 Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
- This package includes the shared library.
+ This package includes the private shared library.
+
+Package: ubuntu-download-manager-client1
+Section: libs
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ubuntu-download-manager-common1 (= ${binary:Version}),
+Description: Ubuntu Download Manager - shared library
+ Ubuntu Download Manager performs downloads from a centralized location.
+ .
+ This package includes the public shared library.
 
 Package: ubuntu-download-manager
 Section: net

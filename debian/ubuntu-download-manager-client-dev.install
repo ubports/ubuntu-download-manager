@@ -1,0 +1,3 @@
+usr/include/ubuntu/download_manager
+usr/lib/*/libubuntu-download-manager-client.so
+usr/lib/*/pkgconfig/ubuntu-download-manager-client.pc
