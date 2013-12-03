@@ -31,7 +31,7 @@ headers.files = $$public_headers
 
 include(../common-installs-config.pri)
 
-pkgconfig.files = ubuntudownloadmanager-common.pc
+pkgconfig.files = ubuntu-download-manager-common.pc
 include(../common-pkgconfig.pri)
 INSTALLS += pkgconfig
 
