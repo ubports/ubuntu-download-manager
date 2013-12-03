@@ -92,7 +92,7 @@ LIBS += -lnih-dbus
 PKGCONFIG += dbus-1
 
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntu-download-manager-common
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
-INCLUDEPATH += $$PWD/../libubuntudownloadmanager-common
-DEPENDPATH += $$PWD/../libubuntudownloadmanager-common
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
+DEPENDPATH += $$PWD/../ubuntu-download-manager-common

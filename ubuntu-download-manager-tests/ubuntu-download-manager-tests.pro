@@ -90,11 +90,11 @@ LIBS += -L$$OUT_PWD/../libubuntudownloadmanager/ -lubuntudownloadmanager
 INCLUDEPATH += $$PWD/../libubuntudownloadmanager
 DEPENDPATH += $$PWD/../libubuntudownloadmanager
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntudownloadmanager-common
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
-INCLUDEPATH += $$PWD/../libubuntudownloadmanager-common
-DEPENDPATH += $$PWD/../libubuntudownloadmanager-common
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
+DEPENDPATH += $$PWD/../ubuntu-udownload-manager-common
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../libubuntudownloadmanager-common:$$OUT_PWD/../libubuntudownloadmanager ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../libubuntudownloadmanager ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check

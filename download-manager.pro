@@ -4,12 +4,12 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    libubuntudownloadmanager-common \
+    ubuntu-download-manager-common \
     libubuntudownloadmanager \
     ubuntu-download-manager \
     ubuntu-download-manager-tests
 
-libubuntudownloadmanager.depends = libubuntudownloadmanager-common
+libubuntudownloadmanager.depends = ubuntu-download-manager-common
 
 ubuntu-download-manager.depends = libubuntudownloadmanager
 

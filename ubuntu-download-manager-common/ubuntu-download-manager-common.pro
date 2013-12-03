@@ -20,7 +20,7 @@ public_headers = \
     ubuntu/download_manager/group_download_struct.h
 
 private_headers = \
-    libubuntudownloadmanager-common_global.h \
+    ubuntu_download_manager_common_global.h \
     ubuntu/download_manager/system/hash_algorithm.h
 
 HEADERS +=\

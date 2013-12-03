@@ -37,7 +37,7 @@ OTHER_FILES += \
     ubuntu-download-manager.service \
     com.canonical.applications.Downloader.conf
 
-LIBS += -L$$OUT_PWD/../libubuntudownloadmanager-common/ -lubuntudownloadmanager-common
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
-INCLUDEPATH += $$PWD/../libubuntudownloadmanager-common
-DEPENDPATH += $$PWD/../libubuntudownloadmanager-common
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
+DEPENDPATH += $$PWD/../ubuntu-download-manager-common
