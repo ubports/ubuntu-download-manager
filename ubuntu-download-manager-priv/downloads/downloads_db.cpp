@@ -125,7 +125,11 @@ bool
 DownloadsDb::init() {
     TRACE;
     // create the required tables
-    qDebug() << "open the db" << _db.open();
+    bool opened = _db.open();
+    if (!opened) {
+        qCritical() << _db.lastError();
+        return false;
+    }
 
     _db.transaction();
 
@@ -190,8 +194,8 @@ DownloadsDb::stringToState(QString state) {
 
 QString
 DownloadsDb::metadataToString(const QVariantMap& metadata) {
-    QJsonDocument json = QJsonDocument::fromVariant(QVariant(metadata));
-    return QString(json.toJson());
+    QJsonDocument jsonDoc = QJsonDocument::fromVariant(QVariant(metadata));
+    return QString(jsonDoc.toJson());
 }
 
 QString
@@ -200,15 +204,20 @@ DownloadsDb::headersToString(const QMap<QString, QString>& headers) {
     foreach(const QString& key, headers.keys()) {
         headersVariant[key] = headers[key];
     }
-    QJsonDocument json = QJsonDocument::fromVariant(
+    QJsonDocument jsonDoc = QJsonDocument::fromVariant(
         QVariant(headersVariant));
-    return QString(json.toJson());
+    return QString(jsonDoc.toJson());
 }
 
 bool
 DownloadsDb::storeSingleDownload(FileDownload* download) {
     // decide if we store it as a new download or update an existing one
-    _db.open();
+    bool opened = _db.open();
+
+    if (!opened) {
+        qCritical() << _db.lastError();
+        return false;
+    }
 
     QSqlQuery query;
     query.prepare(PRESENT_SINGLE_DOWNLOAD);
