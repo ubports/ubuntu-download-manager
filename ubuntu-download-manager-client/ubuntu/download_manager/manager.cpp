@@ -45,12 +45,12 @@ class ManagerPrivate {
         Q_UNUSED(cb);
     }
 
-    GroupDownload* createDownload(GroupDownloadStruct  groupStruct) {
+    GroupDownload* createDownload(GroupDownloadStruct groupStruct) {
         Q_UNUSED(groupStruct);
         return NULL;
     }
 
-    void createDownload(GroupDownloadStruct  groupStruct, GroupCreationCb cb) {
+    void createDownload(GroupDownloadStruct groupStruct, GroupCreationCb cb) {
         Q_UNUSED(groupStruct);
         Q_UNUSED(cb);
     }
