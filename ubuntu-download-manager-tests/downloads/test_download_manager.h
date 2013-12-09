@@ -72,7 +72,7 @@ class TestDownloadManager : public BaseTestCase {
  private:
     FakeApplication* _app;
     QSharedPointer<Application> _appPointer;
-    QSharedPointer<FakeSystemNetworkInfo> _networkInfo;
+    FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _requestFactory;
     FakeDownloadFactory* _downloadFactory;
     QSharedPointer<FakeDBusConnection> _conn;

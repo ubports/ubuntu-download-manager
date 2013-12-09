@@ -47,7 +47,7 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QObject* parent = 0);
 
@@ -60,7 +60,7 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent = 0);

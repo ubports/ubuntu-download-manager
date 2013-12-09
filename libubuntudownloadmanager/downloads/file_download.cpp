@@ -409,7 +409,7 @@ class FileDownloadPrivate {
         _downloading = false;
 
         // connect to the network changed signals
-        q->connect(q->networkInfo().data(),
+        q->connect(q->networkInfo(),
             SIGNAL(onlineStateChanged(bool)), q,
             SLOT(onOnlineStateChanged(bool)));
 
@@ -558,7 +558,7 @@ FileDownload::FileDownload(const QString& id,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   SystemNetworkInfo* networkInfo,
                    QSharedPointer<RequestFactory> nam,
                    QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)
@@ -576,7 +576,7 @@ FileDownload::FileDownload(const QString& id,
                    const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
-                   QSharedPointer<SystemNetworkInfo> networkInfo,
+                   SystemNetworkInfo* networkInfo,
                    QSharedPointer<RequestFactory> nam,
                    QSharedPointer<ProcessFactory> processFactory,
                    QObject* parent)

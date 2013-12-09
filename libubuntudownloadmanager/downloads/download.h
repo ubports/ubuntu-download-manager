@@ -35,10 +35,8 @@ namespace DownloadManager {
 
 using namespace System;
 
-class DownloadPrivate;
-class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
+class Download : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Download)
 
  public:
     enum State {
@@ -57,29 +55,49 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
              const QString& rootPath,
              const QVariantMap& metadata,
              const QMap<QString, QString>& headers,
-             QSharedPointer<SystemNetworkInfo> networkInfo,
+             SystemNetworkInfo* networkInfo,
              QObject* parent = 0);
+    virtual ~Download();
 
-    QString downloadId();
+    QString downloadId() const {
+        return _id;
+    }
 
-    QString path();
+    QString path() const {
+        return _dbusPath;
+    }
 
-    bool isConfined();
+    bool isConfined() const {
+        return _isConfined;
+    }
 
-    QString rootPath();
+    QString rootPath() const {
+        return _rootPath;
+    }
 
-    Download::State state();
+    Download::State state() const {
+        return _state;
+    }
+
     void setState(Download::State state);
 
-    QObject* adaptor();
+    QObject* adaptor() const {
+        return _adaptor;
+    }
     void setAdaptor(QObject* adaptor);
 
-    QMap<QString, QString> headers();
+    QMap<QString, QString> headers() const {
+        return _headers;
+    }
 
     virtual bool canDownload();
 
-    virtual bool isValid();
-    virtual QString lastError();
+    virtual bool isValid() const {
+        return _isValid;
+    }
+    virtual QString lastError() const {
+        return _lastError;
+    }
 
     // methods to be overriden by the children
     virtual void cancelDownload() = 0;
@@ -90,15 +108,34 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
     // the downloader takes care of the actual download operations
-    QVariantMap metadata();
+    QVariantMap metadata() const {
+        return _metadata;
+    }
+
     virtual void setThrottle(qulonglong speed);
-    virtual qulonglong throttle();
+
+    virtual qulonglong throttle() {
+        return _throttle;
+    }
+
     void allowGSMDownload(bool allowed);
     bool isGSMDownloadAllowed();
-    void cancel();
-    void pause();
-    void resume();
-    void start();
+
+    inline void cancel() {
+        setState(Download::CANCEL);
+    }
+
+    inline void pause() {
+        setState(Download::PAUSE);
+    }
+
+    inline void resume() {
+        setState(Download::RESUME);
+    }
+
+    inline void start() {
+        setState(Download::START);
+    }
 
     // slots to be implemented by the children
     virtual qulonglong progress() = 0;
@@ -118,14 +155,28 @@ class APPDOWNLOADERLIBSHARED_EXPORT Download : public QObject {
     void stateChanged();
 
  protected:
-    QSharedPointer<SystemNetworkInfo> networkInfo();
+    SystemNetworkInfo* networkInfo() const {
+        return _networkInfo;
+    }
+
     void setIsValid(bool isValid);
     void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    DownloadPrivate* d_ptr;
+    bool _isValid = true;
+    QString _lastError = "";
+    QString _id;
+    qulonglong _throttle;
+    bool _allowGSMDownload;
+    Download::State _state;
+    QString _dbusPath;
+    bool _isConfined;
+    QString _rootPath;
+    QVariantMap _metadata;
+    QMap<QString, QString> _headers;
+    SystemNetworkInfo* _networkInfo;
+    QObject* _adaptor = NULL;
 };
 
 }  // DownloadManager

@@ -45,7 +45,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
                  const QUrl& url,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 SystemNetworkInfo* networkInfo,
                  QSharedPointer<RequestFactory> nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
@@ -58,7 +58,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT FileDownload : public Download {
                  const QString& algo,
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
-                 QSharedPointer<SystemNetworkInfo> networkInfo,
+                 SystemNetworkInfo* networkInfo,
                  QSharedPointer<RequestFactory> nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);

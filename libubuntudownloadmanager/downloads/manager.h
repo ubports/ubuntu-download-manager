@@ -101,7 +101,7 @@ class Manager : public QObject, public QDBusContext {
     QSharedPointer<Application> _app;
     qulonglong _throttle;
     QSharedPointer<AppArmor> _apparmor;
-    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    SystemNetworkInfo* _networkInfo;
     QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<Factory> _downloadFactory;
     Queue* _downloadsQueue;

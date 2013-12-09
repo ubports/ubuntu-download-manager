@@ -36,8 +36,7 @@ TestGroupDownload::init() {
     _rootPath = "/random/dbus/path";
     _algo = "Md5";
     _isGSMDownloadAllowed = true;
-    _networkInfo = QSharedPointer<FakeSystemNetworkInfo>(
-        new FakeSystemNetworkInfo());
+    _networkInfo = new FakeSystemNetworkInfo();
     _nam = new FakeRequestFactory();
     _processFactory = new FakeProcessFactory();
     _uuidFactory = new UuidFactory();

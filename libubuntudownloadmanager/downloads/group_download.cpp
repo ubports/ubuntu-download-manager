@@ -39,7 +39,7 @@ class GroupDownloadPrivate {
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   const QString& algo,
                   bool isGSMDownloadAllowed,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downloadFactory,
                   GroupDownload* parent)
         : _downloads(),
@@ -55,7 +55,7 @@ class GroupDownloadPrivate {
     GroupDownloadPrivate(QList<GroupDownloadStruct> downloads,
                   const QString& algo,
                   bool isGSMDownloadAllowed,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   GroupDownload* parent)
@@ -307,7 +307,7 @@ class GroupDownloadPrivate {
     QList<FileDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
-    QSharedPointer<SystemNetworkInfo> _networkInfo;
+    SystemNetworkInfo* _networkInfo;
     Factory* _downFactory;
     QSharedPointer<FileManager> _fileManager;
     GroupDownload* q_ptr;
@@ -326,7 +326,7 @@ GroupDownload::GroupDownload(const QString& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers,
@@ -344,7 +344,7 @@ GroupDownload::GroupDownload(const QString& id,
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  QSharedPointer<SystemNetworkInfo> networkInfo,
+                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
                   QSharedPointer<FileManager> fileManager,
                   QObject* parent)

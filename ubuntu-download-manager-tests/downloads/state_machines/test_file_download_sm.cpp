@@ -35,9 +35,10 @@ TestFileDownloadSM::init() {
 
 void
 TestFileDownloadSM::cleanup() {
-    BaseTestCase::cleanup();
-    delete _stateMachine;
     delete _down;
+    delete _stateMachine;
+
+    BaseTestCase::cleanup();
 }
 
 void
