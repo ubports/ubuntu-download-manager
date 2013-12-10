@@ -34,6 +34,10 @@
 #define METADATA_FILE_NAME "metadata"
 #define METADATA_COMMAND_KEY "post-download-command"
 #define METADATA_COMMAND_FILE_KEY "$file"
+#define NETWORK_ERROR "NETWORK ERROR"
+#define HASH_ERROR "HASH ERROR"
+#define COMMAND_ERROR "COMMAND ERROR"
+#define SSL_ERROR "SSL ERROR"
 
 namespace Ubuntu {
 
@@ -207,7 +211,7 @@ FileDownload::startDownload() {
 
 qulonglong
 FileDownload::progress() {
-    return (_currentData == NULL)?0:_currentData->size();
+    return (_currentData == NULL) ? 0 : _currentData->size();
 }
 
 qulonglong
@@ -256,7 +260,7 @@ void
 FileDownload::onError(QNetworkReply::NetworkError code) {
     qCritical() << _url << "ERROR:" << ":" << code;
     _downloading = false;
-    emitError("NETWORK ERROR");
+    emitError(NETWORK_ERROR);
 }
 
 void
@@ -273,8 +277,8 @@ FileDownload::onFinished() {
         QString fileSig = QString(
             QCryptographicHash::hash(data, _algo).toHex());
         if (fileSig != _hash) {
-            qCritical() << "HASH ERROR:" << fileSig << "!=" << _hash;
-            emitError("HASH ERROR");
+            qCritical() << HASH_ERROR << fileSig << "!=" << _hash;
+            emitError(HASH_ERROR);
             return;
         }
     }
@@ -293,9 +297,8 @@ FileDownload::onFinished() {
         QStringList commandData =
             metadata()[METADATA_COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
-            // raise error, command metadata was passed without the commnad
             qCritical() << "COMMAND DATA MISSING";
-            emitError("COMMAND ERROR");
+            emitError(COMMAND_ERROR);
             return;
         } else {
             // first item of the string list is the commnad
@@ -341,14 +344,14 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
     TRACE << errors;
     if (!_reply->canIgnoreSslErrors(errors)) {
         _downloading = false;
-        emitError("SSL ERROR");
+        emitError(SSL_ERROR);
     }
 }
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
     TRACE << error;
-    emitError("COMMAND ERROR");
+    emitError(COMMAND_ERROR);
 }
 
 void
@@ -363,7 +366,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         qDebug() << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
-        emitError("COMMAND ERROR");
+        emitError(COMMAND_ERROR);
     }
 }
 
@@ -400,7 +403,7 @@ FileDownload::init() {
         SIGNAL(onlineStateChanged(bool)), this,
         SLOT(onOnlineStateChanged(bool)));
 
-    _filePath = saveFileName();
+    _filePath = getSaveFileName();
     _reply = NULL;
     _currentData = NULL;
 
@@ -440,7 +443,7 @@ FileDownload::disconnectFromReplySignals() {
 }
 
 QString
-FileDownload::saveFileName() {
+FileDownload::getSaveFileName() {
     QString path = _url.path();
     QString basename = QFileInfo(path).fileName();
 
