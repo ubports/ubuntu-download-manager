@@ -44,7 +44,10 @@ SOURCES += \
     downloads/state_machines/test_cancel_download_transition.cpp \
     downloads/state_machines/test_resume_download_transition.cpp \
     downloads/state_machines/test_final_state.cpp \
-    downloads/state_machines/test_file_download_sm.cpp
+    downloads/state_machines/test_file_download_sm.cpp \
+    client/test_download_watch.cpp \
+    client/test_group_watch.cpp \
+    fakes/dbus_pending_reply.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -81,7 +84,10 @@ HEADERS += \
     downloads/state_machines/test_cancel_download_transition.h \
     downloads/state_machines/test_resume_download_transition.h \
     downloads/state_machines/test_final_state.h \
-    downloads/state_machines/test_file_download_sm.h
+    downloads/state_machines/test_file_download_sm.h \
+    client/test_download_watch.h \
+    client/test_group_watch.h \
+    fakes/dbus_pending_reply.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
@@ -92,6 +98,11 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
 DEPENDPATH += $$PWD/../ubuntu-udownload-manager-common
+
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-client/ -lubuntu-download-manager-client
+
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-client
+DEPENDPATH += $$PWD/../ubuntu-download-manager-client
 
 check.depends = $${TARGET}
 check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv ./$${TARGET}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 2013 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,38 +16,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DBUS_CONNECTION_H
-#define DOWNLOADER_LIB_DBUS_CONNECTION_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DBUS_PENDING_CALL_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DBUS_PENDING_CALL_H
 
+#include <QDBusError>
+#include <QDBusPendingCall>
 #include <QObject>
-#include <QtDBus/QDBusConnection>
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-namespace System {
+namespace DBus {
 
-class DBusConnection : public QObject {
+class PendingReply : public QObject {
     Q_OBJECT
- public:
-    explicit DBusConnection(QObject *parent = 0);
 
-    virtual bool registerService(const QString& serviceName);
-    virtual bool registerObject(const QString& path, QObject* object,
-        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
-    virtual void unregisterObject(const QString& path,
-        QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
-    virtual QDBusConnection connection();
+ public:
+    PendingReply(QDBusPendingCallWatcher* watch, QObject *parent = 0);
+
+    virtual bool isError();
+    virtual QDBusError error() const;
+    template<class T> T value();
 
  private:
-    QDBusConnection _conn;
+    QDBusPendingCallWatcher* _watch;
 };
 
-}  // System
+}  // DBus
 
 }  // DownloadManager
 
 }  // Ubuntu
 
-#endif  // DOWNLOADER_LIB_DBUS_CONNECTION_H
+#endif // UBUNTU_DOWNLOADMANAGER_CLIENT_DBUS_PENDING_CALL_H

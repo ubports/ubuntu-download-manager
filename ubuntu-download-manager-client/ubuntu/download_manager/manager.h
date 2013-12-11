@@ -20,37 +20,65 @@
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_H
 
 #include <functional>
+#include <QList>
+#include <QDBusConnection>
 #include <QObject>
+#include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
-#include "ubuntu-download-manager-client_global.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
 class Download;
+class Error;
 class GroupDownload;
+class ManagerInterface;
 
 typedef std::function<void(Download*)> DownloadCreationCb;
 typedef std::function<void(GroupDownload*)> GroupCreationCb;
+typedef std::function<void(Error*)> ErrorCb;
 
 class ManagerPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
+class Manager : public QObject {
     Q_DECLARE_PRIVATE(Manager)
     Q_OBJECT
 
  public:
-    explicit Manager(QObject* parent);
+
+    virtual ~Manager();
+    static Manager* createSessionManager(QObject* parent=0);
+    static Manager* createSystemManager(QObject* parent=0);
 
     virtual Download* createDownload(DownloadStruct downStruct);
-    virtual void createDownload(DownloadStruct downStruct, DownloadCreationCb cb);
-    virtual GroupDownload* createDownload(GroupDownloadStruct groupStruct);
-    virtual void createDownload(GroupDownloadStruct groupStruct, GroupCreationCb cb);
+    virtual void createDownload(DownloadStruct downStruct,
+                                DownloadCreationCb cb,
+                                ErrorCb errCb);
+    virtual GroupDownload* createDownload(StructList downs,
+                                          const QString &algorithm,
+                                          bool allowed3G,
+                                          const QVariantMap &metadata,
+                                          StringMap headers);
+    virtual void createDownload(StructList downs,
+                                const QString &algorithm,
+                                bool allowed3G,
+                                const QVariantMap &metadata,
+                                StringMap headers,
+                                GroupCreationCb cb,
+                                ErrorCb errCb);
 
  signals:
     void downloadCreated(Download* down);
     void groupCreated(GroupDownload* down);
+
+ protected:
+    Manager(QDBusConnection conn, QObject* parent);
+    // used for testing purposes
+    Manager(ManagerInterface* interface, QObject* parent);
+
+ private:
+    Q_PRIVATE_SLOT(d_func(), void onWatcherDone())
 
  private:
     // use pimpl pattern so that users do not have to be recompiled

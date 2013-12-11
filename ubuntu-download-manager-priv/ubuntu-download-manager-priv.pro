@@ -34,7 +34,6 @@ SOURCES += \
     system/process.cpp \
     system/logger.cpp \
     system/file_manager.cpp \
-    system/dbus_connection.cpp \
     system/application.cpp \
     system/apparmor.cpp \
     system/network_reply.cpp \
@@ -66,7 +65,6 @@ HEADERS +=\
     system/process.h \
     system/logger.h \
     system/file_manager.h \
-    system/dbus_connection.h \
     system/application.h \
     system/apparmor.h \
     system/network_reply.h \

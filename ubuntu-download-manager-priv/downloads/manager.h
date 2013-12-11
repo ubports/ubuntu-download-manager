@@ -25,11 +25,11 @@
 #include <QtDBus/QDBusContext>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "downloads/download.h"
 #include "downloads/queue.h"
 #include "downloads/factory.h"
 #include "system/application.h"
-#include "system/dbus_connection.h"
 
 namespace Ubuntu {
 

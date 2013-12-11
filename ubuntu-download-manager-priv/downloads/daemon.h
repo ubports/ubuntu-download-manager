@@ -22,10 +22,10 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "app-downloader-lib_global.h"
 #include "downloads/manager.h"
 #include "system/application.h"
-#include "system/dbus_connection.h"
 #include "system/timer.h"
 
 namespace Ubuntu {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 2013 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,43 +16,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "dbus_connection.h"
+#include <QDBusPendingReply>
+#include "pending_reply.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-namespace System {
+namespace DBus {
 
-DBusConnection::DBusConnection(QObject* parent)
+PendingReply::PendingReply(QDBusPendingCallWatcher* watch, QObject* parent)
     : QObject(parent),
-     _conn(QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "DBUS")) {
+    _watch(watch) {
 }
 
 bool
-DBusConnection::registerService(const QString& serviceName) {
-    return _conn.registerService(serviceName);
+PendingReply::isError() {
+    return _watch->isError();
 }
 
-bool
-DBusConnection::registerObject(const QString& path,
-                    QObject* object,
-                    QDBusConnection::RegisterOptions options) {
-    return _conn.registerObject(path, object, options);
+QDBusError
+PendingReply::error() const {
+    return _watch->error();
 }
 
-void
-DBusConnection::unregisterObject(const QString& path,
-                      QDBusConnection::UnregisterMode mode) {
-    return _conn.unregisterObject(path, mode);
+template<typename T>
+T PendingReply::value() {
+    QDBusPendingReply<T> reply = *_watch;
+    return reply.value();
 }
 
-QDBusConnection
-DBusConnection::connection() {
-    return _conn;
-}
-
-}  // System
+}  // DBus
 
 }  // DownloadManager
 
