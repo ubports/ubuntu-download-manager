@@ -21,9 +21,9 @@
 
 #include <QObject>
 
-class BaseTestCase : public QObject
-{
+class BaseTestCase : public QObject {
     Q_OBJECT
+
  public:
     BaseTestCase(const QString& testName, QObject *parent = 0);
     

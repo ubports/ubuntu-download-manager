@@ -31,6 +31,8 @@ namespace DownloadManager {
 
 using namespace System;
 
+namespace Daemon {
+
 class Queue : public QObject {
     Q_OBJECT
 
@@ -62,6 +64,8 @@ class Queue : public QObject {
     QHash<QString, Download*> _downloads;  // quick for access
     QStringList _sortedPaths;  // keep the order
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

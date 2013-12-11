@@ -28,6 +28,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 class DownloadsDb : public QObject {
     Q_OBJECT
 
@@ -52,6 +54,8 @@ class DownloadsDb : public QObject {
     FileManager* _fileManager;
     QSqlDatabase _db;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

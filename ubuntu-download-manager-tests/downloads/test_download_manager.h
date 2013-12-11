@@ -34,6 +34,9 @@
 #include "test_runner.h"
 #include "base_testcase.h"
 
+using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::DownloadManager::Daemon;
+
 class TestDownloadManager : public BaseTestCase {
     Q_OBJECT
 

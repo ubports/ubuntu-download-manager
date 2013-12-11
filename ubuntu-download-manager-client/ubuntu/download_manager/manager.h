@@ -48,8 +48,8 @@ class Manager : public QObject {
  public:
 
     virtual ~Manager();
-    static Manager* createSessionManager(QObject* parent=0);
-    static Manager* createSystemManager(QObject* parent=0);
+    static Manager* createSessionManager(QString path = "", QObject* parent=0);
+    static Manager* createSystemManager(QString path = "", QObject* parent=0);
 
     virtual Download* createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
@@ -73,7 +73,7 @@ class Manager : public QObject {
     void groupCreated(GroupDownload* down);
 
  protected:
-    Manager(QDBusConnection conn, QObject* parent);
+    Manager(QDBusConnection conn, QString path = "", QObject* parent= 0);
     // used for testing purposes
     Manager(ManagerInterface* interface, QObject* parent);
 

@@ -24,7 +24,7 @@
 #include <downloads/sm_file_download.h>
 #include "fakes/fake.h"
 
-using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::DownloadManager::Daemon;
 
 class NetworkErrorWrapper : public QObject {
     Q_OBJECT

@@ -30,10 +30,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
-
+namespace Daemon {
 
 Factory::Factory(QObject* parent)
     : QObject(parent) {
@@ -178,6 +175,8 @@ void
 Factory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     RequestFactory::instance()->setAcceptedCertificates(certs);
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

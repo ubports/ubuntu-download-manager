@@ -20,11 +20,12 @@
 #include <QCoreApplication>
 #include <downloads/daemon.h>
 
+using namespace Ubuntu::DownloadManager::Daemon;
+
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);
 
-    Ubuntu::DownloadManager::Daemon* daemon =
-        new Ubuntu::DownloadManager::Daemon();
+    Daemon* daemon = new Daemon();
     // use a singleShot timer so that we start after exec so that exit works
     QTimer::singleShot(0, daemon, SLOT(start()));
 

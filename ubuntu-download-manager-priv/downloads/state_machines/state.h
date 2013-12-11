@@ -22,11 +22,27 @@
 #include <QState>
 #include <QVariant>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace Daemon {
+
+namespace StateMachines {
+
 class State : public QState {
     Q_OBJECT
  public:
     State(QObject* obj, const char* property, QVariant value, QState* parent = 0);
     
 };
+
+}  // StateMachines
+
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_STATE_H

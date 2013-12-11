@@ -30,6 +30,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 class Factory : public QObject {
     Q_OBJECT
 
@@ -92,6 +94,8 @@ class Factory : public QObject {
  private:
     AppArmor* _apparmor;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

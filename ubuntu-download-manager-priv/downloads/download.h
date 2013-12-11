@@ -35,6 +35,8 @@ namespace DownloadManager {
 
 using namespace System;
 
+namespace Daemon {
+
 class Download : public QObject {
     Q_OBJECT
 
@@ -174,6 +176,8 @@ class Download : public QObject {
     SystemNetworkInfo* _networkInfo;
     QObject* _adaptor = NULL;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

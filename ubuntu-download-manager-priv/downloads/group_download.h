@@ -33,6 +33,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 class GroupDownload : public Download {
     Q_OBJECT
 
@@ -81,6 +83,8 @@ class GroupDownload : public Download {
     Factory* _downFactory = NULL;
     FileManager* _fileManager = NULL;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

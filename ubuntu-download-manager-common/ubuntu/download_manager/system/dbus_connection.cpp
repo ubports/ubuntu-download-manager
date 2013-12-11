@@ -40,6 +40,11 @@ DBusConnection::registerService(const QString& serviceName) {
 }
 
 bool
+DBusConnection::unregisterService(const QString& serviceName) {
+    return _conn.unregisterService(serviceName);
+}
+
+bool
 DBusConnection::registerObject(const QString& path,
                     QObject* object,
                     QDBusConnection::RegisterOptions options) {

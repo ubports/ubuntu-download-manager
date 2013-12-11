@@ -42,9 +42,9 @@ class ManagerPrivate {
     Q_DECLARE_PUBLIC(Manager)
 
  public:
-    ManagerPrivate(QDBusConnection conn, Manager* parent)
+    ManagerPrivate(QDBusConnection conn, QString path, Manager* parent)
         : q_ptr(parent) {
-        _dbusInterface = new ManagerInterface(DOWNLOAD_SERVICE, MANAGER_PATH,
+        _dbusInterface = new ManagerInterface(path, MANAGER_PATH,
             conn);
     }
 
@@ -139,9 +139,9 @@ class ManagerPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Manager::Manager(QDBusConnection conn, QObject* parent)
+Manager::Manager(QDBusConnection conn, QString path, QObject* parent)
     : QObject(parent),
-      d_ptr(new ManagerPrivate(conn, this)){
+      d_ptr(new ManagerPrivate(conn, path, this)){
 }
 
 Manager::Manager(ManagerInterface* interface, QObject* parent)
@@ -154,13 +154,21 @@ Manager::~Manager() {
 }
 
 Manager*
-Manager::createSessionManager(QObject* parent) {
-    return new Manager(QDBusConnection::sessionBus(), parent);
+Manager::createSessionManager(QString path, QObject* parent) {
+    if (path.isEmpty()) {
+        return new Manager(QDBusConnection::sessionBus(), DOWNLOAD_SERVICE, parent);
+    } else {
+        return new Manager(QDBusConnection::sessionBus(), path, parent);
+    }
 }
 
 Manager*
-Manager::createSystemManager(QObject* parent) {
-    return new Manager(QDBusConnection::systemBus(), parent);
+Manager::createSystemManager(QString path, QObject* parent) {
+    if (path.isEmpty()) {
+        return new Manager(QDBusConnection::systemBus(), DOWNLOAD_SERVICE, parent);
+    } else {
+        return new Manager(QDBusConnection::systemBus(), path, parent);
+    }
 }
 
 Download*

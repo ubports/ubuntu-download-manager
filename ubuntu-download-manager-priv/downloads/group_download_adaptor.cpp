@@ -22,6 +22,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 /*
  * Implementation of adaptor class GroupDownloadAdaptor
  */
@@ -111,6 +113,8 @@ qulonglong GroupDownloadAdaptor::totalSize()
     QMetaObject::invokeMethod(parent(), "totalSize", Q_RETURN_ARG(qulonglong, total));
     return total;
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

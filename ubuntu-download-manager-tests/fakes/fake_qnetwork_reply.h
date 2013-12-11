@@ -20,7 +20,7 @@
 #define FAKE_QNETWORK_REPLY_H
 
 #include <QNetworkReply>
-#include "./fake.h"
+#include "fake.h"
 
 
 class FakeQNetworkReply : public QNetworkReply, public Fake {

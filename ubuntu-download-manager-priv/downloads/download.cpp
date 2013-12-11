@@ -25,6 +25,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 Download::Download(const QString& id,
                    const QString& path,
                    bool isConfined,
@@ -122,6 +124,8 @@ Download::emitError(const QString& errorStr) {
     setState(Download::ERROR);
     emit error(errorStr);
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

@@ -30,6 +30,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 namespace StateMachines {
 
 
@@ -450,6 +452,8 @@ DownloadSM::~DownloadSM() {
 }
 
 }  // StateMachines
+
+}  // Daemon
 
 }  // DownloadManager
 

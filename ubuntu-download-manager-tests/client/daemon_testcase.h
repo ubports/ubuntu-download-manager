@@ -16,39 +16,31 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_RESUME_DOWNLOAD_TRANSITION_H
-#define TEST_RESUME_DOWNLOAD_TRANSITION_H
+#ifndef DAEMON_TESTCASE_H
+#define DAEMON_TESTCASE_H
 
-#include <QFinalState>
 #include <QObject>
-#include <QState>
-#include <QStateMachine>
-#include <downloads/state_machines/download_sm.h>
+#include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
 #include "base_testcase.h"
-#include "test_runner.h"
-#include "fakes/fake_sm_file_download.h"
 
-using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
+using namespace Ubuntu::DownloadManager;
 
-class TestResumeDownloadTransition : public BaseTestCase {
+class DaemonTestCase : public BaseTestCase {
     Q_OBJECT
+
  public:
-    explicit TestResumeDownloadTransition(QObject *parent = 0);
-    
- private slots:  // NOLINT(whitespace/indent)
+    DaemonTestCase(const QString& testName, QObject *parent = 0);
+
+    QString daemonPath();
+
+ protected slots:  // NOLINT(whitespace/indent)
 
     void init() override;
     void cleanup() override;
-    void testOnTransition();
 
  private:
-    QStateMachine _stateMachine;
-    FakeSMFileDownload* _down;
-    ResumeDownloadTransition* _transition;
-    QState* _s1;
-    QFinalState* _s2;
+    QString _daemonPath;
+    Daemon::Daemon* _daemon;
 };
 
-DECLARE_TEST(TestResumeDownloadTransition)
-
-#endif // TEST_RESUME_DOWNLOAD_TRANSITION_H
+#endif // DAEMON_TESTCASE_H

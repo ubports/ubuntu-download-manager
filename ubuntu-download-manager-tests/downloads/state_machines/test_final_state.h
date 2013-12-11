@@ -28,7 +28,7 @@
 #include "test_runner.h"
 
 
-using namespace Ubuntu::DownloadManager::StateMachines;
+using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
 
 class TestFinalStateHelperObject : public QObject {
     Q_OBJECT

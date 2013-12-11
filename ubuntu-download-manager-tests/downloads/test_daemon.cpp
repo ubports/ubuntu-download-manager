@@ -19,6 +19,8 @@
 #include <QDebug>
 #include "test_daemon.h"
 
+using namespace Ubuntu::DownloadManager::Daemon;
+
 TestDaemon::TestDaemon(QObject *parent)
     : BaseTestCase("TestDaemon", parent) {
 }

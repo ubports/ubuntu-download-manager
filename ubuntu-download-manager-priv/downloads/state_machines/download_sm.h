@@ -30,6 +30,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 namespace StateMachines {
 
 class DownloadSMTransition : public QSignalTransition {
@@ -169,6 +171,8 @@ class DownloadSM : public QObject {
 };
 
 }  // StateMachines
+
+}  // Daemon
 
 }  // DownloadManager
 

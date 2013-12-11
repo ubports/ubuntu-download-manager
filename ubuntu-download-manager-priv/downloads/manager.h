@@ -35,6 +35,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
 
@@ -102,6 +104,8 @@ class Manager : public QObject, public QDBusContext {
     DBusConnection* _conn;
     bool _stoppable;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

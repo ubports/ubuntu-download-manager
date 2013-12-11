@@ -22,6 +22,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 SMFileDownload::SMFileDownload(QObject *parent)
     : QObject(parent) {
 }
@@ -64,6 +66,8 @@ void
 SMFileDownload::cancelRequestDownload() {
     // TODO: perform the cancel
 }
+
+}  // Daemon
 
 }  // Ubuntu
 

@@ -39,6 +39,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 FileDownload::FileDownload(const QString& id,
                    const QString& path,
                    bool isConfined,
@@ -506,6 +508,8 @@ FileDownload::emitError(const QString& error) {
     cleanUpCurrentData();
     Download::emitError(error);
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

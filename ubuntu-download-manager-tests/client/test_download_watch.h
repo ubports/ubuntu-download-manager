@@ -23,12 +23,12 @@
 #include <ubuntu/download_manager/error.h>
 #include <ubuntu/download_manager/manager_pendingcall_watcher.h>
 #include <QObject>
-#include "base_testcase.h"
+#include "daemon_testcase.h"
 #include "test_runner.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class TestDownloadWatch : public BaseTestCase {
+class TestDownloadWatch : public DaemonTestCase {
     Q_OBJECT
 
  public:
@@ -49,7 +49,6 @@ class TestDownloadWatch : public BaseTestCase {
     bool _calledSuccess = false;
     bool _calledError = false;
     DownloadManagerPendingCallWatcher* _watcher;
-
 };
 
 DECLARE_TEST(TestDownloadWatch)

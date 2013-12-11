@@ -18,6 +18,14 @@
 
 #include "state.h"
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace Daemon {
+
+namespace StateMachines {
+
 State::State(QObject* obj,
              const char* property,
              QVariant value,
@@ -26,3 +34,11 @@ State::State(QObject* obj,
     // simply add the property
     assignProperty(obj, property, value);
 }
+
+}  // StateMachines
+
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubuntu

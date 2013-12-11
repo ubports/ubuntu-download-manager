@@ -29,6 +29,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 /*
  * Adaptor class for interface com.canonical.applications.DownloadManager
  */
@@ -98,6 +100,8 @@ public Q_SLOTS: // METHODS
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

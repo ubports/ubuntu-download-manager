@@ -35,6 +35,7 @@ class DBusConnection : public QObject {
     DBusConnection(QDBusConnection conn, QObject* parent = 0);
 
     virtual bool registerService(const QString& serviceName);
+    virtual bool unregisterService(const QString& serviceName);
     virtual bool registerObject(const QString& path, QObject* object,
         QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
     virtual void unregisterObject(const QString& path,

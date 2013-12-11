@@ -16,44 +16,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "test_download_watch.h"
+#include "daemon_testcase.h"
 
-TestDownloadWatch::TestDownloadWatch(QObject *parent)
-    : DaemonTestCase("TestDownloadWatch", parent) {
+DaemonTestCase::DaemonTestCase(const QString& testName, QObject* parent)
+    : BaseTestCase(testName, parent) {
+}
+
+
+QString
+DaemonTestCase::daemonPath() {
+    return _daemonPath;
 }
 
 void
-TestDownloadWatch::onSuccessCb(Download* down) {
-    delete down;
-}
-
-void
-TestDownloadWatch::onErrorCb(Error* err) {
-    delete err;
-}
-
-void
-TestDownloadWatch::init() {
-    _calledSuccess = false;
-    _calledError = false;
+DaemonTestCase::init() {
+    // WARNING: create a path for this exact test.. we might have
+    // issues if we have to two object with the same name
+    _daemonPath = "com.canonical.applications.testing.Downloader."
+        + objectName();
+    _daemon = new Daemon::Daemon();
+    _daemon->enableTimeout(false);
+    _daemon->start(_daemonPath);
     BaseTestCase::init();
 }
 
 void
-TestDownloadWatch::cleanup() {
-    delete _watcher;
+DaemonTestCase::cleanup() {
+    _daemon->stop();  // unregisters the service although the delete should do
+                      // the same.. but I like to be explicit
+    delete _daemon;
+
     BaseTestCase::cleanup();
-}
-
-void
-TestDownloadWatch::testCallbackIsExecuted() {
-
-    QVERIFY(_calledSuccess);
-    QVERIFY(!_calledError);
-}
-
-void
-TestDownloadWatch::testErrCallbackIsExecuted() {
-    QVERIFY(!_calledSuccess);
-    QVERIFY(_calledError);
 }

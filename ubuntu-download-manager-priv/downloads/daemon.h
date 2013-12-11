@@ -32,6 +32,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 class DaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
@@ -57,6 +59,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
 
  public slots:  // NOLINT (whitespace/indent)
     void start(QString path="com.canonical.applications.Downloader");
+    void stop();
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onTimeout())
@@ -66,6 +69,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     DaemonPrivate* d_ptr;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

@@ -26,7 +26,7 @@
 #include "fakes/fake_process.h"
 #include "test_download.h"
 
-using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::DownloadManager::Daemon;
 
 TestDownload::TestDownload(QObject* parent)
     : BaseTestCase("TestDownload", parent) {

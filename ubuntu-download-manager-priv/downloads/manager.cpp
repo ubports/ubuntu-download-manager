@@ -27,6 +27,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 Manager::Manager(Application* app,
                  DBusConnection* connection,
                  bool stoppable,
@@ -239,6 +241,7 @@ Manager::exit() {
     }
 }
 
+}  // Daemon
 
 }  // DownloadManager
 

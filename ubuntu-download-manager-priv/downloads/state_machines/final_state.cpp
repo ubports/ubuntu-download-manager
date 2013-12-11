@@ -23,6 +23,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 namespace StateMachines {
 
 FinalState::FinalState(QState* parent)
@@ -67,6 +69,8 @@ FinalState::onEntry(QEvent* event) {
 }
 
 }  // StateMachines
+
+}  // Daemon
 
 }  // DownloadManager
 

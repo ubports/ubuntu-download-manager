@@ -34,6 +34,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 /**
  * PRIVATE IMPLEMENATION
  */
@@ -80,6 +82,9 @@ class DaemonPrivate {
 
     void enableTimeout(bool enabled) {
         _isTimeoutEnabled = enabled;
+        if (!_isTimeoutEnabled) {
+            _shutDownTimer->stop();
+        }
     }
 
     bool isStoppable() {
@@ -100,11 +105,11 @@ class DaemonPrivate {
 
     void start(QString path) {
         TRACE;
+        _path = path;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
-        bool ret = _conn->registerService(path);
+        bool ret = _conn->registerService(_path);
         if (ret) {
-            qDebug() << "Service registered to"
-                << "com.canonical.applications.Downloader";
+            qDebug() << "Service registered to" << _path;
             ret = _conn->registerObject("/", _downInterface);
             qDebug() << ret;
             if (!ret) {
@@ -117,6 +122,14 @@ class DaemonPrivate {
         qCritical() << "Could not register service"
             << _conn->connection().lastError();
         _app->exit(-1);
+    }
+
+    void stop() {
+        // stop listening in the service
+        bool ret = _conn->unregisterService(_path);
+        if (!ret) {
+            qCritical() << "Could not unregister service at" << _path;
+        }
     }
 
     void onTimeout() {
@@ -194,6 +207,7 @@ class DaemonPrivate {
     }
 
  private:
+    QString _path = "";
     bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
@@ -268,6 +282,14 @@ Daemon::start(QString path) {
     Q_D(Daemon);
     d->start(path);
 }
+
+void
+Daemon::stop() {
+    Q_D(Daemon);
+    d->stop();
+}
+
+}  // Daemon
 
 }  // DownloadManager
 

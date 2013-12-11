@@ -28,7 +28,7 @@
 #include "test_runner.h"
 #include "fakes/fake_sm_file_download.h"
 
-using namespace Ubuntu::DownloadManager::StateMachines;
+using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
 
 class TestSslErrorTransition : public BaseTestCase {
     Q_OBJECT

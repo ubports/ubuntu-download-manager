@@ -24,7 +24,7 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include "fake.h"
 
-using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::DownloadManager::Daemon;
 
 class FakeDownload : public FileDownload, public Fake {
     Q_OBJECT

@@ -28,6 +28,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
                   bool isConfined,
@@ -295,6 +297,8 @@ GroupDownload::onFinished(const QString& file) {
         emit finished(_finishedDownloads);
     }
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

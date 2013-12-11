@@ -28,6 +28,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 namespace StateMachines {
 
 struct PropertyAssignment {
@@ -67,6 +69,8 @@ class FinalState : public QFinalState {
 };
 
 }  // StateMachines
+
+}  // Daemon
 
 }  // DownloadManager
 
