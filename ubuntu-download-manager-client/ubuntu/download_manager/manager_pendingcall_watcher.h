@@ -19,8 +19,7 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 
-#include "dbus/pending_call_watcher.h"
-#include "dbus/pending_reply.h"
+#include <QDBusPendingCallWatcher>
 
 namespace Ubuntu {
 
@@ -34,7 +33,7 @@ typedef std::function<void(Download*)> DownloadCreationCb;
 typedef std::function<void(GroupDownload*)> GroupCreationCb;
 typedef std::function<void(Error*)> ErrorCb;
 
-class DownloadManagerPendingCallWatcher : public DBus::PendingCallWatcher {
+class DownloadManagerPendingCallWatcher : public QDBusPendingCallWatcher {
     Q_OBJECT
 
  public:
@@ -47,7 +46,7 @@ class DownloadManagerPendingCallWatcher : public DBus::PendingCallWatcher {
     void callbackExecuted();
     
  private slots:
-    void onFinished(DBus::PendingReply* reply);
+    void onFinished(QDBusPendingCallWatcher* watcher);
 
  private:
     DownloadCreationCb _cb;
@@ -55,7 +54,7 @@ class DownloadManagerPendingCallWatcher : public DBus::PendingCallWatcher {
 };
 
 
-class GroupManagerPendingCallWatcher : public DBus::PendingCallWatcher {
+class GroupManagerPendingCallWatcher : public QDBusPendingCallWatcher {
     Q_OBJECT
 
  public:
@@ -68,7 +67,7 @@ class GroupManagerPendingCallWatcher : public DBus::PendingCallWatcher {
     void callbackExecuted();
 
  private slots:
-    void onFinished(DBus::PendingReply* reply);
+    void onFinished(QDBusPendingCallWatcher* watcher);
 
  private:
     GroupCreationCb _cb;

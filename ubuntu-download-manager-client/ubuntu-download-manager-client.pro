@@ -14,9 +14,7 @@ SOURCES += ubuntu/download_manager/manager.cpp \
            ubuntu/download_manager/download.cpp \
            ubuntu/download_manager/group_download.cpp \
            ubuntu/download_manager/manager_pendingcall_watcher.cpp \
-           ubuntu/download_manager/error.cpp \
-           ubuntu/download_manager/dbus/pending_reply.cpp \
-           ubuntu/download_manager/dbus/pending_call_watcher.cpp
+           ubuntu/download_manager/error.cpp
 
 public_headers = \
     ubuntu/download_manager/manager.h \
@@ -27,9 +25,7 @@ public_headers = \
 private_headers = \
     ubuntu-download-manager-client_global.h \
     ubuntu/download_manager/manager_interface.h \
-    ubuntu/download_manager/manager_pendingcall_watcher.h \
-    ubuntu/download_manager/dbus/pending_reply.h \
-    ubuntu/download_manager/dbus/pending_call_watcher.h
+    ubuntu/download_manager/manager_pendingcall_watcher.h
 
 HEADERS +=\
     $$public_headers \

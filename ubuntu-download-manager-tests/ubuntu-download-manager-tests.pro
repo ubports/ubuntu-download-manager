@@ -47,7 +47,6 @@ SOURCES += \
     downloads/state_machines/test_file_download_sm.cpp \
     client/test_download_watch.cpp \
     client/test_group_watch.cpp \
-    fakes/dbus_pending_reply.cpp \
     client/daemon_testcase.cpp
 
 HEADERS += \
@@ -88,7 +87,6 @@ HEADERS += \
     downloads/state_machines/test_file_download_sm.h \
     client/test_download_watch.h \
     client/test_group_watch.h \
-    fakes/dbus_pending_reply.h \
     client/daemon_testcase.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv

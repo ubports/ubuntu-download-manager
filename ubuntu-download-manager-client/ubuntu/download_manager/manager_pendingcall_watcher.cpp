@@ -33,26 +33,28 @@ DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
                                                   DownloadCreationCb cb,
                                                   ErrorCb errCb,
                                                   QObject* parent)
-    : DBus::PendingCallWatcher(call, parent),
+    : QDBusPendingCallWatcher(call, parent),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &PendingCallWatcher::finished,
+    connect(this, &QDBusPendingCallWatcher::finished,
         this, &DownloadManagerPendingCallWatcher::onFinished);
 }
 
-void DownloadManagerPendingCallWatcher::onFinished(
-                                          DBus::PendingReply* reply) {
-        if (reply->isError()) {
-            // creater error and deal with it
-            Error* err = new Error(reply->error());
-            _errCb(err);
-        } else {
-            QDBusObjectPath path = reply->value<QDBusObjectPath>();
-            Download* down = new Download(path);
-            _cb(down);
-        }
-        reply->deleteLater();
+void
+DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+
+    QDBusPendingReply<QDBusObjectPath> reply = *watcher;
+    if (reply.isError()) {
+        // creater error and deal with it
+        Error* err = new Error(reply.error());
+        _errCb(err);
+    } else {
+        QDBusObjectPath path = reply.value();
+        Download* down = new Download(path);
+        _cb(down);
+    }
     emit callbackExecuted();
+    watcher->deleteLater();
 }
 
 
@@ -61,25 +63,27 @@ GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
                                             GroupCreationCb cb,
                                             ErrorCb errCb,
                                             QObject* parent)
-    : DBus::PendingCallWatcher(call, parent),
+    : QDBusPendingCallWatcher(call, parent),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &PendingCallWatcher::finished,
+    connect(this, &QDBusPendingCallWatcher::finished,
         this, &GroupManagerPendingCallWatcher::onFinished);
 }
 
-void GroupManagerPendingCallWatcher::onFinished(DBus::PendingReply* reply) {
-        if (reply->isError()) {
-            // creater error and deal with it
-            Error* err = new Error(reply->error());
-            _errCb(err);
-        } else {
-            QDBusObjectPath path = reply->value<QDBusObjectPath>();
-            GroupDownload* down = new GroupDownload(path);
-            _cb(down);
-        }
-        reply->deleteLater();
+void
+GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+    QDBusPendingReply<QDBusObjectPath> reply = *watcher;
+    if (reply.isError()) {
+        // creater error and deal with it
+        Error* err = new Error(reply.error());
+        _errCb(err);
+    } else {
+        QDBusObjectPath path = reply.value();
+        GroupDownload* down = new GroupDownload(path);
+        _cb(down);
+    }
     emit callbackExecuted();
+    watcher->deleteLater();
 }
 
 }  // DownloadManager
