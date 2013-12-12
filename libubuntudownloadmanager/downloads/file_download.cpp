@@ -183,7 +183,11 @@ FileDownload::startDownload() {
     // create file that will be used to mantain the state of the
     // download when resumed.
     _currentData = new QFile(_filePath);
-    _currentData->open(QIODevice::ReadWrite | QFile::Append);
+    bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
+
+    if (!canWrite) {
+        emit started(false);
+    }
 
     qDebug() << "Network is accessible, performing download request";
     // signals should take care of calling deleteLater on the
