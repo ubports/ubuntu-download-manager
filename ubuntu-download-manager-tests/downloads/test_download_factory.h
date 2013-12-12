@@ -57,7 +57,7 @@ class TestDownloadFactory : public BaseTestCase {
  private:
     FakeAppArmor* _apparmor;
     SystemNetworkInfo* _networkInfo;
-    QSharedPointer<RequestFactory> _nam;
+    RequestFactory* _nam;
     QSharedPointer<ProcessFactory> _processFactory;
     QSharedPointer<UuidFactory> _uuidFactory;
     Factory* _downFactory;

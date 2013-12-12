@@ -38,7 +38,7 @@ class FakeDownload : public FileDownload, public Fake {
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
                  SystemNetworkInfo* networkInfo,
-                 QSharedPointer<RequestFactory> nam,
+                 RequestFactory* nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
     FakeDownload(const QString& id,
@@ -51,7 +51,7 @@ class FakeDownload : public FileDownload, public Fake {
                  const QVariantMap& metadata,
                  const QMap<QString, QString> &headers,
                  SystemNetworkInfo* networkInfo,
-                 QSharedPointer<RequestFactory> nam,
+                 RequestFactory* nam,
                  QSharedPointer<ProcessFactory> processFactory,
                  QObject* parent = 0);
 

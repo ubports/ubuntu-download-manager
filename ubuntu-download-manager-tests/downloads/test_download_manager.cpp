@@ -41,7 +41,7 @@ TestDownloadManager::init() {
     _requestFactory = new FakeRequestFactory();
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor),
-        _networkInfo, QSharedPointer<RequestFactory>(_requestFactory),
+        _networkInfo, _requestFactory,
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new Manager(_appPointer, _conn, _networkInfo, _downloadFactory, _q);
 }
@@ -256,7 +256,7 @@ TestDownloadManager::testGetAllDownloads() {
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        new FakeRequestFactory(),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
@@ -304,8 +304,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
-        QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
+        new FakeRequestFactory(), QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
 
@@ -383,7 +382,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         new UuidFactory()));
     _downloadFactory = new FakeDownloadFactory(
         QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        QSharedPointer<RequestFactory>(new FakeRequestFactory()),
+        new FakeRequestFactory(),
         QSharedPointer<ProcessFactory>(new FakeProcessFactory()));
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
