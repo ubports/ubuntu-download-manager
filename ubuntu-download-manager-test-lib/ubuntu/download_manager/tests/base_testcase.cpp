@@ -90,7 +90,6 @@ BaseTestCase::removeDir(const QString& dirName) {
 
 void
 BaseTestCase::init() {
-    qCritical() << "NAseTestCase::init";
     qInstallMessageHandler(noMessageOutput);
     QStandardPaths::enableTestMode(true);
 }

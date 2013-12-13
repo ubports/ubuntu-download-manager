@@ -30,13 +30,13 @@ DaemonTestCase::daemonPath() {
 
 void
 DaemonTestCase::init() {
-    BaseTestCase::init();
-
     // WARNING: create a path for this exact test.. we might have
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
         + objectName();
     _daemon = new Daemon::Daemon(this);
+
+    BaseTestCase::init();
     _daemon->enableTimeout(false);
     _daemon->start(_daemonPath);
 }

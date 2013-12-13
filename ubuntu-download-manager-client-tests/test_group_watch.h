@@ -29,7 +29,7 @@
 
 using namespace Ubuntu::DownloadManager;
 
-class TestGroupWatch : public BaseTestCase {
+class TestGroupWatch : public DaemonTestCase {
     Q_OBJECT
 
  public:
@@ -49,6 +49,9 @@ class TestGroupWatch : public BaseTestCase {
  private:
     bool _calledSuccess = false;
     bool _calledError = false;
+    QString _algo;
+    QVariantMap _metadata;
+    QMap<QString, QString> _headers;
     Manager* _manager;
 };
 

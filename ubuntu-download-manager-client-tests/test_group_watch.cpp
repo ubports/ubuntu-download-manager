@@ -16,10 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QSignalSpy>
 #include "test_group_watch.h"
 
 TestGroupWatch::TestGroupWatch(QObject* parent)
-    : BaseTestCase("TestGroupWatch", parent) {
+    : DaemonTestCase("TestGroupWatch", parent) {
 }
 
 void
@@ -39,6 +40,7 @@ TestGroupWatch::init() {
     DaemonTestCase::init();
     _calledSuccess = false;
     _calledError = false;
+    _algo = "Md5";
     _manager = Manager::createSessionManager(daemonPath(), this);
 }
 
@@ -50,8 +52,48 @@ TestGroupWatch::cleanup() {
 
 void
 TestGroupWatch::testCallbackIsExecuted() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupCreationCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+        std::placeholders::_1);
+    ErrorCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+        std::placeholders::_1);
+
+    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
+        cb, errCb);
+
+    QTRY_COMPARE(spy.count(), 1);
+    QVERIFY(_calledSuccess);
+    QVERIFY(!_calledError);
 }
 
 void
 TestGroupWatch::testErrCallbackIsExecuted() {
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "local_file", ""));  // same local path that raises an error
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    GroupCreationCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+        std::placeholders::_1);
+    ErrorCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+        std::placeholders::_1);
+
+    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
+        cb, errCb);
+
+    QTRY_COMPARE(spy.count(), 1);
+    QVERIFY(!_calledSuccess);
+    QVERIFY(_calledError);
 }
