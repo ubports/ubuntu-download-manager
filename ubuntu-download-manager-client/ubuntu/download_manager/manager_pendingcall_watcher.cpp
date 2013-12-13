@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
 #include "download.h"
