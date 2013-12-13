@@ -24,11 +24,13 @@
 #include "downloads/group_download_struct.h"
 #include "downloads/download_struct.h"
 
+using namespace Ubuntu::DownloadManager;
+
 typedef QMap<QString, QString> StringMap;
-typedef QList<Ubuntu::DownloadManager::GroupDownloadStruct> StructList;
+typedef QList<GroupDownloadStruct> StructList;
 
 
-Q_DECLARE_METATYPE(Ubuntu::DownloadManager::DownloadStruct)
+Q_DECLARE_METATYPE(DownloadStruct)
 Q_DECLARE_METATYPE(StringMap)
 Q_DECLARE_METATYPE(StructList)
 
