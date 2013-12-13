@@ -23,11 +23,11 @@
 #include <QObject>
 #include <downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include "fakes/fake_system_network_info.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_process_factory.h"
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server/process_factory.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
 class TestDownload: public BaseTestCase {
     Q_OBJECT

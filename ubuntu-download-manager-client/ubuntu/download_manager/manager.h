@@ -26,6 +26,7 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
+#include "ubuntu-download-manager-client_global.h"
 
 namespace Ubuntu {
 
@@ -41,16 +42,12 @@ typedef std::function<void(GroupDownload*)> GroupCreationCb;
 typedef std::function<void(Error*)> ErrorCb;
 
 class ManagerPrivate;
-class Manager : public QObject {
+class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     Q_DECLARE_PRIVATE(Manager)
     Q_OBJECT
 
  public:
-
     virtual ~Manager();
-    static Manager* createSessionManager(QString path = "", QObject* parent=0);
-    static Manager* createSystemManager(QString path = "", QObject* parent=0);
-
     virtual Download* createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
                                 DownloadCreationCb cb,
@@ -67,6 +64,9 @@ class Manager : public QObject {
                                 StringMap headers,
                                 GroupCreationCb cb,
                                 ErrorCb errCb);
+
+    static Manager* createSessionManager(QString path = "", QObject* parent=0);
+    static Manager* createSystemManager(QString path = "", QObject* parent=0);
 
  signals:
     void downloadCreated(Download* down);

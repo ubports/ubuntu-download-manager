@@ -24,16 +24,22 @@
 #include <QSharedPointer>
 #include <ubuntu/download_manager/system/dbus_connection.h>
 #include "app-downloader-lib_global.h"
-#include "downloads/manager.h"
-#include "system/application.h"
-#include "system/timer.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace System {
+
+class Application;
+class DBusConnection;
+class Timer;
+
+}
+
 namespace Daemon {
 
+class Manager;
 class DaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
@@ -41,9 +47,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
 
  public:
     explicit Daemon(QObject *parent = 0);
-    Daemon(Application* app,
-           DBusConnection* conn,
-           Timer* timer,
+    Daemon(System::Application* app,
+           System::DBusConnection* conn,
+           System::Timer* timer,
            Manager* man,
            QObject *parent = 0);
     virtual ~Daemon();

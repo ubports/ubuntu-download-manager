@@ -25,6 +25,7 @@
 #include "downloads/download_manager_adaptor.h"
 #include "system/application.h"
 #include "system/logger.h"
+#include "system/timer.h"
 
 #define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"

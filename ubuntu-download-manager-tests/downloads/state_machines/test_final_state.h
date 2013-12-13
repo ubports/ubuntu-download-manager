@@ -24,8 +24,8 @@
 #include <QStateMachine>
 #include <QSignalTransition>
 #include <downloads/state_machines/final_state.h>
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
 
 using namespace Ubuntu::DownloadManager::Daemon::StateMachines;

@@ -22,8 +22,8 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <downloads/downloads_db.h>
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;
 

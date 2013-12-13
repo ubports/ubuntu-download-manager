@@ -21,12 +21,12 @@
 
 #include <QObject>
 #include <downloads/daemon.h>
-#include "fakes/fake_application.h"
-#include "fakes/fake_dbus_connection.h"
-#include "fakes/fake_download_manager.h"
-#include "fakes/fake_timer.h"
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/server/application.h>
+#include <ubuntu/download_manager/tests/server/dbus_connection.h>
+#include <ubuntu/download_manager/tests/server/manager.h>
+#include <ubuntu/download_manager/tests/server/timer.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
 class TestDaemon : public BaseTestCase {
     Q_OBJECT

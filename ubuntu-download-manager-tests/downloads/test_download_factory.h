@@ -21,13 +21,13 @@
 
 #include <QObject>
 #include <downloads/factory.h>
-#include "fakes/fake_apparmor.h"
-#include "fakes/fake_system_network_info.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_process_factory.h"
-#include "fakes/fake_uuid_factory.h"
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/server/apparmor.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server//process_factory.h>
+#include <ubuntu/download_manager/tests/server/uuid_factory.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;

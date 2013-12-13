@@ -20,6 +20,7 @@
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_ERROR_H
 
 #include <QObject>
+#include "ubuntu-download-manager-client_global.h"
 
 class QDBusError;
 
@@ -27,7 +28,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class Error : public QObject {
+class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Error : public QObject {
     Q_OBJECT
 
 public:

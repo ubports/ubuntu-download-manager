@@ -17,37 +17,15 @@ SOURCES += \
     downloads/test_group_download.cpp \
     downloads/test_downloads_db.cpp \
     downloads/test_download_factory.cpp \
-    fakes/fake.cpp \
-    fakes/fake_dbus_connection.cpp \
-    fakes/fake_download.cpp \
-    fakes/fake_network_reply.cpp \
-    fakes/fake_qnetwork_reply.cpp \
-    fakes/fake_request_factory.cpp \
-    fakes/fake_download_queue.cpp \
-    fakes/fake_uuid_factory.cpp \
-    fakes/fake_system_network_info.cpp \
-    fakes/fake_process.cpp \
-    fakes/fake_process_factory.cpp \
-    fakes/fake_application.cpp \
-    fakes/fake_timer.cpp \
-    fakes/fake_download_manager.cpp \
-    fakes/fake_download_factory.cpp \
-    fakes/fake_file_manager.cpp \
-    fakes/fake_apparmor.cpp \
     main.cpp \
-    base_testcase.cpp \
     downloads/state_machines/test_network_error_transition.cpp \
     downloads/state_machines/test_ssl_error_transition.cpp \
-    fakes/fake_sm_file_download.cpp \
     downloads/state_machines/test_start_download_transition.cpp \
     downloads/state_machines/test_stop_request_transition.cpp \
     downloads/state_machines/test_cancel_download_transition.cpp \
     downloads/state_machines/test_resume_download_transition.cpp \
     downloads/state_machines/test_final_state.cpp \
-    downloads/state_machines/test_file_download_sm.cpp \
-    client/test_download_watch.cpp \
-    client/test_group_watch.cpp \
-    client/daemon_testcase.cpp
+    downloads/state_machines/test_file_download_sm.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -57,37 +35,14 @@ HEADERS += \
     downloads/test_group_download.h \
     downloads/test_downloads_db.h \
     downloads/test_download_factory.h \
-    fakes/fake.h \
-    fakes/fake_dbus_connection.h \
-    fakes/fake_download.h \
-    fakes/fake_network_reply.h \
-    fakes/fake_qnetwork_reply.h \
-    fakes/fake_request_factory.h \
-    fakes/fake_download_queue.h \
-    fakes/fake_uuid_factory.h \
-    fakes/fake_system_network_info.h \
-    fakes/fake_process.h \
-    fakes/fake_process_factory.h \
-    fakes/fake_application.h \
-    fakes/fake_timer.h \
-    fakes/fake_download_manager.h \
-    fakes/fake_download_factory.h \
-    fakes/fake_file_manager.h \
-    fakes/fake_apparmor.h \
-    test_runner.h \
-    base_testcase.h \
     downloads/state_machines/test_network_error_transition.h \
     downloads/state_machines/test_ssl_error_transition.h \
-    fakes/fake_sm_file_download.h \
     downloads/state_machines/test_start_download_transition.h \
     downloads/state_machines/test_stop_request_transition.h \
     downloads/state_machines/test_cancel_download_transition.h \
     downloads/state_machines/test_resume_download_transition.h \
     downloads/state_machines/test_final_state.h \
-    downloads/state_machines/test_file_download_sm.h \
-    client/test_download_watch.h \
-    client/test_group_watch.h \
-    client/daemon_testcase.h
+    downloads/state_machines/test_file_download_sm.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
@@ -99,11 +54,11 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
 DEPENDPATH += $$PWD/../ubuntu-udownload-manager-common
 
-LIBS += -L$$OUT_PWD/../ubuntu-download-manager-client/ -lubuntu-download-manager-client
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manager-test-lib
 
-INCLUDEPATH += $$PWD/../ubuntu-download-manager-client
-DEPENDPATH += $$PWD/../ubuntu-download-manager-client
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib
+DEPENDPATH += $$PWD/../ubuntu-download-manager-test-lib
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv:$$OUT_PWD/../ubuntu-download-manager-test-lib ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check

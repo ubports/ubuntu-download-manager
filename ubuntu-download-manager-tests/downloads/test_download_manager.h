@@ -23,16 +23,16 @@
 #include <QSharedPointer>
 #include <downloads/manager.h>
 #include <downloads/file_download.h>
-#include "fakes/fake_application.h"
-#include "fakes/fake_apparmor.h"
-#include "fakes/fake_dbus_connection.h"
-#include "fakes/fake_download_queue.h"
-#include "fakes/fake_download_factory.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_uuid_factory.h"
-#include "fakes/fake_system_network_info.h"
-#include "test_runner.h"
-#include "base_testcase.h"
+#include <ubuntu/download_manager/tests/server/application.h>
+#include <ubuntu/download_manager/tests/server/apparmor.h>
+#include <ubuntu/download_manager/tests/server/dbus_connection.h>
+#include <ubuntu/download_manager/tests/server/queue.h>
+#include <ubuntu/download_manager/tests/server/factory.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server/uuid_factory.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
 
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;

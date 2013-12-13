@@ -22,8 +22,8 @@
 #include <QSslError>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/uuid_utils.h>
-#include "fakes/fake_network_reply.h"
-#include "fakes/fake_process.h"
+#include <ubuntu/download_manager/tests/server/network_reply.h>
+#include <ubuntu/download_manager/tests/server/process.h>
 #include "test_download.h"
 
 using namespace Ubuntu::DownloadManager::Daemon;

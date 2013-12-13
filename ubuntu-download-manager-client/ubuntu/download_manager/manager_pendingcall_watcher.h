@@ -19,6 +19,7 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 
+#include <functional>
 #include <QDBusPendingCallWatcher>
 
 namespace Ubuntu {

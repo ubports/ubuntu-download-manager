@@ -22,12 +22,12 @@
 #include <QObject>
 #include <downloads/download_adaptor.h>
 #include <downloads/queue.h>
-#include "fakes/fake_download.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_process_factory.h"
-#include "fakes/fake_system_network_info.h"
-#include "test_runner.h"
-#include "base_testcase.h"
+#include <ubuntu/download_manager/tests/server/download.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server/process_factory.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
 
 class TestDownloadQueue : public BaseTestCase {
     Q_OBJECT

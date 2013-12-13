@@ -21,6 +21,7 @@
 
 #include <QDBusObjectPath>
 #include <QObject>
+#include "ubuntu-download-manager-client_global.h"
 
 namespace Ubuntu {
 
@@ -29,7 +30,7 @@ namespace DownloadManager {
 class Error;
 class ManagerPrivate;
 class GroupDownloadPrivate;
-class GroupDownload : public QObject {
+class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT GroupDownload : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(GroupDownload)
 
