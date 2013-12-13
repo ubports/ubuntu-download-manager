@@ -76,8 +76,8 @@ class ManagerPrivate {
     }
 
     void createDownload(DownloadStruct downStruct,
-                        DownloadCreationCb cb,
-                        ErrorCb errCb) {
+                        DownloadCb cb,
+                        DownloadCb errCb) {
         Q_Q(Manager);
         QDBusPendingCall call =
             _dbusInterface->createDownload(downStruct);
@@ -114,8 +114,8 @@ class ManagerPrivate {
                         bool allowed3G,
                         const QVariantMap& metadata,
                         StringMap headers,
-                        GroupCreationCb cb,
-                        ErrorCb errCb) {
+                        GroupCb cb,
+                        GroupCb errCb) {
         Q_Q(Manager);
         QDBusPendingCall call =
             _dbusInterface->createDownloadGroup(downs,
@@ -181,8 +181,8 @@ Manager::createDownload(DownloadStruct downStruct) {
 
 void
 Manager::createDownload(DownloadStruct downStruct,
-                        DownloadCreationCb cb,
-                        ErrorCb errCb) {
+                        DownloadCb cb,
+                        DownloadCb errCb) {
     Q_D(Manager);
     d->createDownload(downStruct, cb, errCb);
 }
@@ -203,8 +203,8 @@ Manager::createDownload(StructList downs,
                         bool allowed3G,
                         const QVariantMap& metadata,
                         StringMap headers,
-                        GroupCreationCb cb,
-                        ErrorCb errCb) {
+                        GroupCb cb,
+                        GroupCb errCb) {
     Q_D(Manager);
     d->createDownload(downs, algorithm, allowed3G, metadata, headers, cb,
         errCb);

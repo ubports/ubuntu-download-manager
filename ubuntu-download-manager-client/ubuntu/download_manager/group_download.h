@@ -38,6 +38,9 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT GroupDownload : public QObject {
     friend class ManagerPrivate;
     friend class GroupManagerPendingCallWatcher;
 
+ public:
+
+    virtual ~GroupDownload();
     bool isError();
     Error* error();
 
@@ -46,6 +49,8 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT GroupDownload : public QObject {
     GroupDownload(QDBusObjectPath path, QObject* parent = 0);
     
  private:
+    // TODO(mandel): move this to pimpl, here to ensure no mem leaks atm
+    Error* _error = NULL;
     // use pimpl pattern so that users do not have to be recompiled
     GroupDownloadPrivate* d_ptr;
 

@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "error.h"
 #include "download.h"
 
 namespace Ubuntu {
@@ -23,7 +24,8 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 Download::Download(Error* err, QObject* parent)
-    : QObject(parent) {
+    : QObject(parent),
+      _error(err) {
     // TODO(mandel): complete implementation
     Q_UNUSED(err);
 }
@@ -32,6 +34,10 @@ Download::Download(QDBusObjectPath path, QObject* parent)
     : QObject(parent) {
     // TODO(mandel): complete implementation
     Q_UNUSED(path);
+}
+
+Download::~Download() {
+    delete _error;
 }
 
 bool

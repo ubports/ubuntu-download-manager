@@ -30,7 +30,7 @@ TestDownloadWatch::onSuccessCb(Download* down) {
 }
 
 void
-TestDownloadWatch::onErrorCb(Error* err) {
+TestDownloadWatch::onErrorCb(Download* err) {
     _calledError = true;
     delete err;
 }
@@ -56,9 +56,9 @@ TestDownloadWatch::testCallbackIsExecuted() {
     QMap<QString, QString> headers;
     DownloadStruct down(url, metadata, headers);
 
-    DownloadCreationCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
+    DownloadCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
         std::placeholders::_1);
-    ErrorCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
+    DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
@@ -76,9 +76,9 @@ TestDownloadWatch::testErrCallbackIsExecuted() {
     QMap<QString, QString> headers;
     DownloadStruct down(url, metadata, headers);
 
-    DownloadCreationCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
+    DownloadCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
         std::placeholders::_1);
-    ErrorCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
+    DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));

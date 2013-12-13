@@ -30,17 +30,16 @@ class Download;
 class Error;
 class GroupDownload;
 
-typedef std::function<void(Download*)> DownloadCreationCb;
-typedef std::function<void(GroupDownload*)> GroupCreationCb;
-typedef std::function<void(Error*)> ErrorCb;
+typedef std::function<void(Download*)> DownloadCb;
+typedef std::function<void(GroupDownload*)> GroupCb;
 
 class DownloadManagerPendingCallWatcher : public QDBusPendingCallWatcher {
     Q_OBJECT
 
  public:
     DownloadManagerPendingCallWatcher(const QDBusPendingCall& call,
-                                      DownloadCreationCb cb,
-                                      ErrorCb errCb,
+                                      DownloadCb cb,
+                                      DownloadCb errCb,
                                       QObject* parent = 0);
     
  signals:
@@ -50,8 +49,8 @@ class DownloadManagerPendingCallWatcher : public QDBusPendingCallWatcher {
     void onFinished(QDBusPendingCallWatcher* watcher);
 
  private:
-    DownloadCreationCb _cb;
-    ErrorCb _errCb;
+    DownloadCb _cb;
+    DownloadCb _errCb;
 };
 
 
@@ -60,8 +59,8 @@ class GroupManagerPendingCallWatcher : public QDBusPendingCallWatcher {
 
  public:
     GroupManagerPendingCallWatcher(const QDBusPendingCall& call,
-                                   GroupCreationCb cb,
-                                   ErrorCb errCb,
+                                   GroupCb cb,
+                                   GroupCb errCb,
                                    QObject* parent = 0);
 
  signals:
@@ -71,8 +70,8 @@ class GroupManagerPendingCallWatcher : public QDBusPendingCallWatcher {
     void onFinished(QDBusPendingCallWatcher* watcher);
 
  private:
-    GroupCreationCb _cb;
-    ErrorCb _errCb;
+    GroupCb _cb;
+    GroupCb _errCb;
 };
 
 }  // DownloadManager

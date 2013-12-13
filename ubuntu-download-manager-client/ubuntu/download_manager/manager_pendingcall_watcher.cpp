@@ -32,8 +32,8 @@ namespace DownloadManager {
 
 DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
                                                   const QDBusPendingCall& call,
-                                                  DownloadCreationCb cb,
-                                                  ErrorCb errCb,
+                                                  DownloadCb cb,
+                                                  DownloadCb errCb,
                                                   QObject* parent)
     : QDBusPendingCallWatcher(call, parent),
       _cb(cb),
@@ -50,8 +50,8 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
         auto err = new Error(reply.error());
-        _errCb(err);
         auto down = new Download(err);
+        _errCb(down);
         emit man->downloadCreated(down);
     } else {
         qDebug() << "Success!";
@@ -67,8 +67,8 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
 
 GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
                                             const QDBusPendingCall& call,
-                                            GroupCreationCb cb,
-                                            ErrorCb errCb,
+                                            GroupCb cb,
+                                            GroupCb errCb,
                                             QObject* parent)
     : QDBusPendingCallWatcher(call, parent),
       _cb(cb),
@@ -84,8 +84,8 @@ GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     if (reply.isError()) {
         // creater error and deal with it
         auto err = new Error(reply.error());
-        _errCb(err);
         auto down = new GroupDownload(err);
+        _errCb(down);
         emit man->groupCreated(down);
     } else {
         QDBusObjectPath path = reply.value();

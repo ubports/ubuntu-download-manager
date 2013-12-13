@@ -24,7 +24,8 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 GroupDownload::GroupDownload(Error* err, QObject* parent)
-    : QObject(parent) {
+    : QObject(parent),
+      _error(err) {
     // TODO(mandel): complete implementation
     Q_UNUSED(err);
 }
@@ -33,6 +34,10 @@ GroupDownload::GroupDownload(QDBusObjectPath path, QObject *parent)
     : QObject(parent) {
     // TODO(mandel): complete implementation
     Q_UNUSED(path);
+}
+
+GroupDownload::~GroupDownload() {
+    delete _error;
 }
 
 bool

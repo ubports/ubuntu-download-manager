@@ -37,7 +37,8 @@ class TestDownloadWatch : public DaemonTestCase {
 
  private:
     void onSuccessCb(Download* down);
-    void onErrorCb(Error* err);
+    void onErrorCb(Download* err);
+    void onDownloadError(Download* down);
 
  private slots:  // NOLINT(whitespace/indent)
 

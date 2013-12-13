@@ -37,7 +37,7 @@ class TestGroupWatch : public DaemonTestCase {
 
  private:
     void onSuccessCb(GroupDownload* down);
-    void onErrorCb(Error* err);
+    void onErrorCb(GroupDownload* err);
 
  private slots:  // NOLINT(whitespace/indent)
 

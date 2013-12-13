@@ -30,7 +30,7 @@ TestGroupWatch::onSuccessCb(GroupDownload* down) {
 }
 
 void
-TestGroupWatch::onErrorCb(Error* err) {
+TestGroupWatch::onErrorCb(GroupDownload* err) {
     delete err;
     _calledError = true;
 }
@@ -60,9 +60,9 @@ TestGroupWatch::testCallbackIsExecuted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupCreationCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+    GroupCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
         std::placeholders::_1);
-    ErrorCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+    GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
@@ -84,9 +84,9 @@ TestGroupWatch::testErrCallbackIsExecuted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupCreationCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+    GroupCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
         std::placeholders::_1);
-    ErrorCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+    GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));

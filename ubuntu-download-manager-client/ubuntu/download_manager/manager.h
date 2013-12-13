@@ -37,9 +37,8 @@ class Error;
 class GroupDownload;
 class ManagerInterface;
 
-typedef std::function<void(Download*)> DownloadCreationCb;
-typedef std::function<void(GroupDownload*)> GroupCreationCb;
-typedef std::function<void(Error*)> ErrorCb;
+typedef std::function<void(Download*)> DownloadCb;
+typedef std::function<void(GroupDownload*)> GroupCb;
 
 class ManagerPrivate;
 class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
@@ -54,8 +53,8 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     virtual ~Manager();
     virtual Download* createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
-                                DownloadCreationCb cb,
-                                ErrorCb errCb);
+                                DownloadCb cb,
+                                DownloadCb errCb);
     virtual GroupDownload* createDownload(StructList downs,
                                           const QString &algorithm,
                                           bool allowed3G,
@@ -66,8 +65,8 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
                                 bool allowed3G,
                                 const QVariantMap &metadata,
                                 StringMap headers,
-                                GroupCreationCb cb,
-                                ErrorCb errCb);
+                                GroupCb cb,
+                                GroupCb errCb);
 
     static Manager* createSessionManager(QString path = "", QObject* parent=0);
     static Manager* createSystemManager(QString path = "", QObject* parent=0);
