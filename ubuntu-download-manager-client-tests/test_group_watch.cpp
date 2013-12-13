@@ -36,25 +36,22 @@ TestGroupWatch::onErrorCb(Error* err) {
 
 void
 TestGroupWatch::init() {
+    DaemonTestCase::init();
     _calledSuccess = false;
     _calledError = false;
-    BaseTestCase::init();
+    _manager = Manager::createSessionManager(daemonPath(), this);
 }
 
 void
 TestGroupWatch::cleanup() {
-    delete _watcher;
-    BaseTestCase::cleanup();
+    delete _manager;
+    DaemonTestCase::cleanup();
 }
 
 void
 TestGroupWatch::testCallbackIsExecuted() {
-    QVERIFY(_calledSuccess);
-    QVERIFY(!_calledError);
 }
 
 void
 TestGroupWatch::testErrCallbackIsExecuted() {
-    QVERIFY(!_calledSuccess);
-    QVERIFY(_calledError);
 }

@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QDir>
 #include <QtGlobal>
 #include <QStandardPaths>
@@ -89,6 +90,7 @@ BaseTestCase::removeDir(const QString& dirName) {
 
 void
 BaseTestCase::init() {
+    qCritical() << "NAseTestCase::init";
     qInstallMessageHandler(noMessageOutput);
     QStandardPaths::enableTestMode(true);
 }

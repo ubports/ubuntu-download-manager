@@ -25,11 +25,13 @@ TestDownloadWatch::TestDownloadWatch(QObject *parent)
 
 void
 TestDownloadWatch::onSuccessCb(Download* down) {
+    _calledSuccess = true;
     delete down;
 }
 
 void
 TestDownloadWatch::onErrorCb(Error* err) {
+    _calledError = true;
     delete err;
 }
 
@@ -43,8 +45,8 @@ TestDownloadWatch::init() {
 
 void
 TestDownloadWatch::cleanup() {
-    DaemonTestCase::cleanup();
     delete _manager;
+    DaemonTestCase::cleanup();
 }
 
 void
@@ -79,7 +81,10 @@ TestDownloadWatch::testErrCallbackIsExecuted() {
     ErrorCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
+    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
+
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }

@@ -45,16 +45,18 @@ DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
 void
 DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
+    auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
-        Error* err = new Error(reply.error());
+        auto err = new Error(reply.error());
         _errCb(err);
+        auto down = new Download(err);
+        emit man->downloadCreated(down);
     } else {
         qDebug() << "Success!";
-        QDBusObjectPath path = reply.value();
-        Download* down = new Download(path);
-        Manager* man = static_cast<Manager*>(parent());
+        auto path = reply.value();
+        auto down = new Download(path);
         emit man->downloadCreated(down);
         _cb(down);
     }
@@ -78,14 +80,16 @@ GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
 void
 GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
+    auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         // creater error and deal with it
-        Error* err = new Error(reply.error());
+        auto err = new Error(reply.error());
         _errCb(err);
+        auto down = new GroupDownload(err);
+        emit man->groupCreated(down);
     } else {
         QDBusObjectPath path = reply.value();
-        GroupDownload* down = new GroupDownload(path);
-        Manager* man = static_cast<Manager*>(parent());
+        auto down = new GroupDownload(path);
         emit man->groupCreated(down);
         _cb(down);
     }

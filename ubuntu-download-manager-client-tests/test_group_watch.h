@@ -19,11 +19,12 @@
 #ifndef TEST_GROUP_WATCH_H
 #define TEST_GROUP_WATCH_H
 
-#include <ubuntu/download_manager/error.h>
+#include <functional>
 #include <ubuntu/download_manager/group_download.h>
-#include <ubuntu/download_manager/manager_pendingcall_watcher.h>
+#include <ubuntu/download_manager/error.h>
+#include <ubuntu/download_manager/manager.h>
 #include <QObject>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 
 using namespace Ubuntu::DownloadManager;
@@ -48,7 +49,7 @@ class TestGroupWatch : public BaseTestCase {
  private:
     bool _calledSuccess = false;
     bool _calledError = false;
-    GroupManagerPendingCallWatcher* _watcher = NULL;
+    Manager* _manager;
 };
 
 DECLARE_TEST(TestGroupWatch)
