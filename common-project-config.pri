@@ -7,7 +7,7 @@ CONFIG         += link_pkgconfig
 
 TOP_SRC_DIR     = $$PWD
 TOP_BUILD_DIR   = $${TOP_SRC_DIR}/$${BUILD_DIR}
-QMAKE_LIBDIR   += $${TOP_BUILD_DIR}/Accounts
+QMAKE_LIBDIR   += $${TOP_BUILD_DIR}
 INCLUDEPATH    += $${TOP_SRC_DIR}
 QMAKE_CXXFLAGS +=  -std=c++11 -Werror
 

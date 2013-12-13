@@ -105,7 +105,7 @@ class FileDownload : public Download {
     void onProcessFinished(int exitCode,
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
-    QString saveFileName();
+    QString getSaveFileName();
 
  private:
     bool _downloading = false;

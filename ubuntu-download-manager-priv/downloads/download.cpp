@@ -53,8 +53,10 @@ Download::~Download() {
 
 void
 Download::setState(Download::State state) {
-    _state = state;
-    emit stateChanged();
+    if (_state != state) {
+        _state = state;
+        emit stateChanged();
+    }
 }
 
 void
