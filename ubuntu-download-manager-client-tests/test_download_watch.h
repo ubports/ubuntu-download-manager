@@ -27,6 +27,8 @@
 #include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 
+using namespace Ubuntu::DownloadManager;
+
 class TestDownloadWatch : public DaemonTestCase {
     Q_OBJECT
 
@@ -47,7 +49,7 @@ class TestDownloadWatch : public DaemonTestCase {
  private:
     bool _calledSuccess = false;
     bool _calledError = false;
-    Ubuntu::DownloadManager::Manager* _manager;
+    Manager* _manager;
 };
 
 DECLARE_TEST(TestDownloadWatch)

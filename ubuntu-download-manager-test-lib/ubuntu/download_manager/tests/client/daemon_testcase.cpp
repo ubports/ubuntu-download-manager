@@ -46,6 +46,5 @@ DaemonTestCase::cleanup() {
     _daemon->stop();  // unregisters the service although the delete should do
                       // the same.. but I like to be explicit
     delete _daemon;
-
     BaseTestCase::cleanup();
 }

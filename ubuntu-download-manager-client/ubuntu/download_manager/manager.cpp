@@ -65,11 +65,13 @@ class ManagerPrivate {
         // blocking other method should be used
         reply.waitForFinished();
         if (reply.isError()) {
-            Error* err = new Error(reply.error());
+            auto err = new Error(reply.error());
             return new Download(err);
         } else {
-            QDBusObjectPath path = reply.value();
-            return new Download(path, q);
+            auto path = reply.value();
+            auto down = new Download(path, q);
+            emit q->downloadCreated(down);
+            return down;
         }
     }
 
@@ -79,8 +81,7 @@ class ManagerPrivate {
         Q_Q(Manager);
         QDBusPendingCall call =
             _dbusInterface->createDownload(downStruct);
-        DownloadManagerPendingCallWatcher* watcher =
-            new DownloadManagerPendingCallWatcher(call, cb, errCb,
+        auto watcher = new DownloadManagerPendingCallWatcher(call, cb, errCb,
                 static_cast<QObject*>(q));
         q->connect(watcher, SIGNAL(callbackExecuted()),
             q, SLOT(onWatcherDone()));
@@ -101,8 +102,10 @@ class ManagerPrivate {
             Error* err = new Error(reply.error());
             return new GroupDownload(err);
         } else {
-            QDBusObjectPath path = reply.value();
-            return new GroupDownload(path, q);
+            auto path = reply.value();
+            auto down = new GroupDownload(path, q);
+            emit q->groupCreated(down);
+            return down;
         }
     }
 
@@ -117,8 +120,7 @@ class ManagerPrivate {
         QDBusPendingCall call =
             _dbusInterface->createDownloadGroup(downs,
                 algorithm, allowed3G, metadata, headers);
-        GroupManagerPendingCallWatcher* watcher =
-            new GroupManagerPendingCallWatcher(call, cb, errCb,
+        auto watcher = new GroupManagerPendingCallWatcher(call, cb, errCb,
                 static_cast<QObject*>(q));
         q->connect(watcher, SIGNAL(callbackExecuted()),
             q, SLOT(onWatcherDone()));
@@ -126,7 +128,7 @@ class ManagerPrivate {
 
     void onWatcherDone() {
         Q_Q(Manager);
-        QObject* senderObj = q->sender();
+        auto senderObj = q->sender();
         senderObj->deleteLater();
     }
 

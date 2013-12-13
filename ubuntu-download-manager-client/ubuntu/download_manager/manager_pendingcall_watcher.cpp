@@ -21,6 +21,7 @@
 #include "download.h"
 #include "error.h"
 #include "group_download.h"
+#include "manager.h"
 #include "manager_pendingcall_watcher.h"
 
 namespace Ubuntu {
@@ -42,15 +43,18 @@ DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
 
 void
 DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
-
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     if (reply.isError()) {
+        qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
         Error* err = new Error(reply.error());
         _errCb(err);
     } else {
+        qDebug() << "Success!";
         QDBusObjectPath path = reply.value();
         Download* down = new Download(path);
+        Manager* man = static_cast<Manager*>(parent());
+        emit man->downloadCreated(down);
         _cb(down);
     }
     emit callbackExecuted();
@@ -80,6 +84,8 @@ GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     } else {
         QDBusObjectPath path = reply.value();
         GroupDownload* down = new GroupDownload(path);
+        Manager* man = static_cast<Manager*>(parent());
+        emit man->groupCreated(down);
         _cb(down);
     }
     emit callbackExecuted();

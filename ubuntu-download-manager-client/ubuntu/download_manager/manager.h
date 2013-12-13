@@ -46,6 +46,10 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     Q_DECLARE_PRIVATE(Manager)
     Q_OBJECT
 
+    // allow watchers to emit the signals
+    friend class DownloadManagerPendingCallWatcher;
+    friend class GroupManagerPendingCallWatcher;
+
  public:
     virtual ~Manager();
     virtual Download* createDownload(DownloadStruct downStruct);

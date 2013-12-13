@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QSignalSpy>
 #include "test_download_watch.h"
 
 TestDownloadWatch::TestDownloadWatch(QObject *parent)
@@ -37,7 +38,7 @@ TestDownloadWatch::init() {
     DaemonTestCase::init();
     _calledSuccess = false;
     _calledError = false;
-    _manager = Ubuntu::DownloadManager::Manager::createSessionManager(daemonPath(), this);
+    _manager = Manager::createSessionManager(daemonPath(), this);
 }
 
 void
@@ -58,8 +59,10 @@ TestDownloadWatch::testCallbackIsExecuted() {
     ErrorCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
+    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
 
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }

@@ -212,11 +212,11 @@ class DaemonPrivate {
     bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
-    Application* _app;
-    Timer* _shutDownTimer;
-    DBusConnection* _conn;
-    Manager* _downInterface;
-    DownloadManagerAdaptor* _downAdaptor;
+    Application* _app = NULL;
+    Timer* _shutDownTimer = NULL;
+    DBusConnection* _conn = NULL;
+    Manager* _downInterface = NULL;
+    DownloadManagerAdaptor* _downAdaptor = NULL;
     Daemon* q_ptr;
 };
 
