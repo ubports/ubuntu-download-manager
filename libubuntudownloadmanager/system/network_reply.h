@@ -30,13 +30,12 @@ namespace DownloadManager {
 
 namespace System {
 
-class NetworkReplyPrivate;
 class NetworkReply : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(NetworkReply)
 
  public:
-    explicit NetworkReply(QNetworkReply* reply, QObject *parent = 0);
+    NetworkReply(QNetworkReply* reply, QObject *parent = 0);
+    virtual ~NetworkReply();
 
     virtual QByteArray readAll();
     virtual void abort();
@@ -52,8 +51,9 @@ class NetworkReply : public QObject {
     void sslErrors(const QList<QSslError>& errors);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    NetworkReplyPrivate* d_ptr;
+    QList<QSslCertificate> _certs;
+    QList<QSslError> _sslErrors;
+    QNetworkReply* _reply;
 };
 
 }  // System

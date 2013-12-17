@@ -84,233 +84,190 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class DownloadsDbPrivate {
-    Q_DECLARE_PUBLIC(DownloadsDb)
-
- public:
-    explicit DownloadsDbPrivate(DownloadsDb* parent)
-        : q_ptr(parent) {
-        _fileManager = new FileManager();
-        internalInit();
-    }
-
-    DownloadsDbPrivate(FileManager* fileManager, DownloadsDb* parent)
-        : _fileManager(fileManager),
-          q_ptr(parent) {
-        internalInit();
-    }
-
-    QSqlDatabase db() {
-        return _db;
-    }
-
-    QString filename() {
-        return _dbName;
-    }
-
-    bool dbExists() {
-        return _fileManager->exists(_dbName);
-    }
-
-    void internalInit() {
-
-        QString dataPath = QStandardPaths::writableLocation(
-            QStandardPaths::DataLocation);
-        QString path = dataPath + QDir::separator() + "ubuntu-download-manager";
-
-        bool wasCreated = QDir().mkpath(path);
-        if (!wasCreated) {
-            qCritical() << "Could not create the data path" << path;
-        }
-        _dbName = path + QDir::separator() + "downloads.db";
-        _db = QSqlDatabase::addDatabase("QSQLITE");
-        _db.setDatabaseName(_dbName);
-        qDebug() << "Db file is" << _dbName;
-    }
-
-    bool init() {
-        TRACE;
-        // create the required tables
-        qDebug() << "open the db" << _db.open();
-
-        _db.transaction();
-
-        // create the required tables and indexes
-        bool success = true;
-        QSqlQuery query;
-        success &= query.exec(SINGLE_DOWNLOAD_TABLE);
-        success &= query.exec(GROUP_DOWNLOAD_TABLE);
-        success &= query.exec(GROUP_DOWNLOAD_RELATION);
-
-        if (success)
-            _db.commit();
-        else
-            _db.rollback();
-        _db.close();
-        return success;
-    }
-
-    QString stateToString(Download::State state) {
-        switch (state) {
-            case Download::IDLE:
-                return IDLE_STRING;
-            case Download::START:
-                return START_STRING;
-            case Download::PAUSE:
-                return PAUSE_STRING;
-            case Download::RESUME:
-                return RESUME_STRING;
-            case Download::CANCEL:
-                return CANCEL_STRING;
-            case Download::FINISH:
-                return FINISH_STRING;
-            case Download::ERROR:
-                return ERROR_STRING;
-            default:
-                return IDLE_STRING;
-        }
-    }
-
-    Download::State stringToState(QString state) {
-        QString lowerState = state.toLower();
-
-        if (lowerState == IDLE_STRING)
-            return Download::IDLE;
-
-        if (lowerState == START_STRING)
-            return Download::START;
-
-        if (lowerState == PAUSE_STRING)
-            return Download::PAUSE;
-
-        if (lowerState == RESUME_STRING)
-            return Download::RESUME;
-
-        if (lowerState == CANCEL_STRING)
-            return Download::CANCEL;
-
-        if (lowerState == FINISH_STRING)
-            return Download::FINISH;
-
-        if (lowerState == ERROR_STRING)
-            return Download::ERROR;
-
-        // default case
-        return Download::IDLE;
-    }
-
-    QString metadataToString(const QVariantMap& metadata) {
-        QJsonDocument json = QJsonDocument::fromVariant(QVariant(metadata));
-        return QString(json.toJson());
-    }
-
-    QString headersToString(const QMap<QString, QString>& headers) {
-        QVariantMap headersVariant;
-        foreach(const QString& key, headers.keys()) {
-            headersVariant[key] = headers[key];
-        }
-        QJsonDocument json = QJsonDocument::fromVariant(
-            QVariant(headersVariant));
-        return QString(json.toJson());
-    }
-
-    bool storeSingleDownload(FileDownload* download) {
-        // decide if we store it as a new download or update an existing one
-        _db.open();
-
-        QSqlQuery query;
-        query.prepare(PRESENT_SINGLE_DOWNLOAD);
-        query.bindValue(":uuid", download->downloadId());
-
-        query.exec();
-        int rows = 0;
-        if (query.next())
-            rows = query.value(0).toInt();
-
-        if (rows > 0) {
-            qDebug() << "Update download";
-            query.prepare(UPDATE_SINGLE_DOWNLOAD);
-        } else {
-            qDebug() << "Insert download";
-            query.prepare(INSERT_SINGLE_DOWNLOAD);
-        }
-
-        query.bindValue(":uuid", download->downloadId());
-        query.bindValue(":url", download->url().toString());
-        query.bindValue(":dbus_path", download->path());
-        query.bindValue(":local_path", download->filePath());
-        query.bindValue(":hash", download->hash());
-        query.bindValue(":hash_algo",
-            HashAlgorithm::getHashAlgo(download->hashAlgorithm()));
-        query.bindValue(":state", stateToString(download->state()));
-        query.bindValue(":total_size",
-            QString::number(download->totalSize()));
-        query.bindValue(":throttle",
-            QString::number(download->throttle()));
-        query.bindValue(":metadata",
-            metadataToString(download->metadata()));
-        query.bindValue(":headers",
-            headersToString(download->headers()));
-
-        bool success = query.exec();
-        if (!success)
-            qDebug() << query.lastError();
-
-        _db.close();
-
-        return success;
-    }
-
- private:
-    QString _dbName;
-    FileManager* _fileManager;
-    QSqlDatabase _db;
-    DownloadsDb* q_ptr;
-};
-
-/*
- * PUBLIC IMPLEMENTATION
- */
-
-DownloadsDb::DownloadsDb(QObject *parent)
-    : QObject(parent),
-      d_ptr(new DownloadsDbPrivate(this)) {
+DownloadsDb::DownloadsDb(QObject* parent)
+    : QObject(parent) {
+    _fileManager = new FileManager();
+    internalInit();
 }
 
-DownloadsDb::DownloadsDb(FileManager* fileManager, QObject *parent)
+DownloadsDb::DownloadsDb(FileManager* fileManager, QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadsDbPrivate(fileManager, this)) {
+      _fileManager(fileManager) {
+    internalInit();
 }
 
 QSqlDatabase
 DownloadsDb::db() {
-    Q_D(DownloadsDb);
-    return d->db();
+    return _db;
 }
 
 QString
 DownloadsDb::filename() {
-    Q_D(DownloadsDb);
-    return d->filename();
+    return _dbName;
 }
 
 bool
 DownloadsDb::dbExists() {
-    Q_D(DownloadsDb);
-    return d->dbExists();
+    return _fileManager->exists(_dbName);
+}
+
+void
+DownloadsDb::internalInit() {
+    QString dataPath = QStandardPaths::writableLocation(
+        QStandardPaths::DataLocation);
+    QString path = dataPath + QDir::separator() + "ubuntu-download-manager";
+
+    bool wasCreated = QDir().mkpath(path);
+    if (!wasCreated) {
+        qCritical() << "Could not create the data path" << path;
+    }
+    _dbName = path + QDir::separator() + "downloads.db";
+    _db = QSqlDatabase::addDatabase("QSQLITE");
+    _db.setDatabaseName(_dbName);
+    qDebug() << "Db file is" << _dbName;
 }
 
 bool
 DownloadsDb::init() {
-    Q_D(DownloadsDb);
-    return d->init();
+    TRACE;
+    // create the required tables
+    bool opened = _db.open();
+    if (!opened) {
+        qCritical() << _db.lastError();
+        return false;
+    }
+
+    _db.transaction();
+
+    // create the required tables and indexes
+    bool success = true;
+    QSqlQuery query;
+    success &= query.exec(SINGLE_DOWNLOAD_TABLE);
+    success &= query.exec(GROUP_DOWNLOAD_TABLE);
+    success &= query.exec(GROUP_DOWNLOAD_RELATION);
+
+    if (success)
+        _db.commit();
+    else
+        _db.rollback();
+    _db.close();
+    return success;
+}
+
+QString
+DownloadsDb::stateToString(Download::State state) {
+    switch (state) {
+        case Download::IDLE:
+            return IDLE_STRING;
+        case Download::START:
+            return START_STRING;
+        case Download::PAUSE:
+            return PAUSE_STRING;
+        case Download::RESUME:
+            return RESUME_STRING;
+        case Download::CANCEL:
+            return CANCEL_STRING;
+        case Download::FINISH:
+            return FINISH_STRING;
+        case Download::ERROR:
+            return ERROR_STRING;
+        default:
+            return IDLE_STRING;
+    }
+}
+
+Download::State
+DownloadsDb::stringToState(QString state) {
+    QString lowerState = state.toLower();
+    if (lowerState == IDLE_STRING)
+        return Download::IDLE;
+    if (lowerState == START_STRING)
+        return Download::START;
+    if (lowerState == PAUSE_STRING)
+        return Download::PAUSE;
+    if (lowerState == RESUME_STRING)
+        return Download::RESUME;
+    if (lowerState == CANCEL_STRING)
+        return Download::CANCEL;
+    if (lowerState == FINISH_STRING)
+        return Download::FINISH;
+    if (lowerState == ERROR_STRING)
+        return Download::ERROR;
+
+    // default case
+    return Download::IDLE;
+}
+
+QString
+DownloadsDb::metadataToString(const QVariantMap& metadata) {
+    QJsonDocument jsonDoc = QJsonDocument::fromVariant(QVariant(metadata));
+    return QString(jsonDoc.toJson());
+}
+
+QString
+DownloadsDb::headersToString(const QMap<QString, QString>& headers) {
+    QVariantMap headersVariant;
+    foreach(const QString& key, headers.keys()) {
+        headersVariant[key] = headers[key];
+    }
+    QJsonDocument jsonDoc = QJsonDocument::fromVariant(
+        QVariant(headersVariant));
+    return QString(jsonDoc.toJson());
 }
 
 bool
 DownloadsDb::storeSingleDownload(FileDownload* download) {
-    Q_D(DownloadsDb);
-    return d->storeSingleDownload(download);
+    // decide if we store it as a new download or update an existing one
+    bool opened = _db.open();
+
+    if (!opened) {
+        qCritical() << _db.lastError();
+        return false;
+    }
+
+    QSqlQuery query;
+    query.prepare(PRESENT_SINGLE_DOWNLOAD);
+    query.bindValue(":uuid", download->downloadId());
+
+    query.exec();
+    int rows = 0;
+    if (query.next())
+        rows = query.value(0).toInt();
+
+    if (rows > 0) {
+        qDebug() << "Update download";
+        query.prepare(UPDATE_SINGLE_DOWNLOAD);
+    } else {
+        qDebug() << "Insert download";
+        query.prepare(INSERT_SINGLE_DOWNLOAD);
+    }
+
+    query.bindValue(":uuid", download->downloadId());
+    query.bindValue(":url", download->url().toString());
+    query.bindValue(":dbus_path", download->path());
+    query.bindValue(":local_path", download->filePath());
+    query.bindValue(":hash", download->hash());
+    query.bindValue(":hash_algo",
+        HashAlgorithm::getHashAlgo(download->hashAlgorithm()));
+    query.bindValue(":state", stateToString(download->state()));
+    query.bindValue(":total_size",
+        QString::number(download->totalSize()));
+    query.bindValue(":throttle",
+        QString::number(download->throttle()));
+    query.bindValue(":metadata",
+        metadataToString(download->metadata()));
+    query.bindValue(":headers",
+        headersToString(download->headers()));
+
+    bool success = query.exec();
+    if (!success)
+        qDebug() << query.lastError();
+
+    _db.close();
+
+    return success;
 }
+
 
 }  // DownloadManager
 
