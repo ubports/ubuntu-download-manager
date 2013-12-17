@@ -39,9 +39,8 @@ TestDownloadManager::init() {
     _uuidFactory = QSharedPointer<FakeUuidFactory>(new FakeUuidFactory());
     _apparmor = new FakeAppArmor(_uuidFactory);
     _requestFactory = new FakeRequestFactory();
-    _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), _networkInfo, _requestFactory,
-        new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(_apparmor, _networkInfo,
+        _requestFactory, new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _networkInfo, _downloadFactory, _q);
 }
 
@@ -253,9 +252,9 @@ TestDownloadManager::testGetAllDownloads() {
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(_apparmor,
+        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
+        new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
 
@@ -300,9 +299,9 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(_apparmor,
+        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
+        new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
 
@@ -378,9 +377,9 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     // do not use the fake uuid factory, else we only get one object path
     _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        QSharedPointer<AppArmor>(_apparmor), new FakeSystemNetworkInfo(),
-        new FakeRequestFactory(), new FakeProcessFactory());
+    _downloadFactory = new FakeDownloadFactory(_apparmor,
+        new FakeSystemNetworkInfo(), new FakeRequestFactory(),
+        new FakeProcessFactory());
     _man = new Manager(_appPointer, _conn, _networkInfo,
         _downloadFactory, _q);
 

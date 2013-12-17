@@ -33,8 +33,7 @@ TestDownloadFactory::init() {
     _networkInfo =  new FakeSystemNetworkInfo();
     _nam = new FakeRequestFactory();
     _processFactory =  new FakeProcessFactory();
-    _downFactory = new Factory(QSharedPointer<AppArmor>(_apparmor),
-        _networkInfo, _nam, _processFactory);
+    _downFactory = new Factory(_apparmor, _networkInfo, _nam, _processFactory);
 }
 
 void
