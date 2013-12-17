@@ -38,7 +38,6 @@ SOURCES += \
     fakes/fake_download_factory.cpp \
     fakes/fake_file_manager.cpp \
     fakes/fake_apparmor.cpp \
-    system/test_network_reply.cpp \
     main.cpp \
     base_testcase.cpp \
     downloads/state_machines/test_network_error_transition.cpp \
@@ -76,7 +75,6 @@ HEADERS += \
     fakes/fake_download_factory.h \
     fakes/fake_file_manager.h \
     fakes/fake_apparmor.h \
-    system/test_network_reply.h \
     test_runner.h \
     base_testcase.h \
     downloads/state_machines/test_network_error_transition.h \
