@@ -38,7 +38,7 @@ class Factory : public QObject {
     Factory(QSharedPointer<AppArmor> apparmor,
             SystemNetworkInfo* networkInfo,
             RequestFactory* nam,
-            QSharedPointer<ProcessFactory> processFactory,
+            ProcessFactory* processFactory,
             QObject *parent = 0);
 
     // create downloads comming from a dbus call
@@ -95,7 +95,7 @@ class Factory : public QObject {
     QSharedPointer<AppArmor> _apparmor;
     SystemNetworkInfo* _networkInfo;
     RequestFactory* _nam;
-    QSharedPointer<ProcessFactory> _processFactory;
+    ProcessFactory* _processFactory;
 };
 
 }  // DownloadManager
