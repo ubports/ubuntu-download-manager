@@ -44,13 +44,13 @@ class DaemonPrivate {
  public:
     explicit DaemonPrivate(Daemon* parent)
         : q_ptr(parent) {
-        _app = QSharedPointer<Application>(new Application());
-        _conn = QSharedPointer<DBusConnection>(new DBusConnection());
+        _app = new Application();
+        _conn = new DBusConnection();
         _shutDownTimer = new Timer();
         init();
     }
 
-    DaemonPrivate(QSharedPointer<Application> app,
+    DaemonPrivate(Application* app,
                   DBusConnection* conn,
                   Timer* timer,
                   Manager* man,
@@ -65,6 +65,8 @@ class DaemonPrivate {
 
     ~DaemonPrivate() {
         // no need to delete the adaptor because the interface is its parent
+        delete _app;
+        delete _conn;
         delete _downInterface;
         delete _shutDownTimer;
 
@@ -195,9 +197,9 @@ class DaemonPrivate {
     bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
-    QSharedPointer<Application> _app;
+    Application* _app;
     Timer* _shutDownTimer;
-    QSharedPointer<DBusConnection> _conn;
+    DBusConnection* _conn;
     Manager* _downInterface;
     DownloadManagerAdaptor* _downAdaptor;
     Daemon* q_ptr;
@@ -212,13 +214,17 @@ Daemon::Daemon(QObject *parent)
       d_ptr(new DaemonPrivate(this)) {
 }
 
-Daemon::Daemon(QSharedPointer<Application> app,
+Daemon::Daemon(Application* app,
                DBusConnection* conn,
                Timer* timer,
                Manager* man,
                QObject *parent)
     : QObject(parent),
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
+}
+
+Daemon::~Daemon() {
+    delete d_ptr;
 }
 
 bool

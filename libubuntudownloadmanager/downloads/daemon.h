@@ -39,11 +39,12 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
 
  public:
     explicit Daemon(QObject *parent = 0);
-    Daemon(QSharedPointer<Application> app,
+    Daemon(Application* app,
            DBusConnection* conn,
            Timer* timer,
            Manager* man,
            QObject *parent = 0);
+    virtual ~Daemon();
 
     bool isTimeoutEnabled();
     void enableTimeout(bool enabled);
