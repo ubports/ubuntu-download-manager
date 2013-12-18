@@ -21,16 +21,10 @@
 
 FakeDownloadFactory::FakeDownloadFactory(
                                  AppArmor* apparmor,
-                                 SystemNetworkInfo* networkInfo,
-                                 RequestFactory* nam,
-                                 ProcessFactory* processFactory,
                                  QObject *parent)
-    : Factory(apparmor, networkInfo, nam, processFactory, parent),
+    : Factory(apparmor, parent),
       Fake(),
-      _apparmor(apparmor),
-      _networkInfo(networkInfo),
-      _nam(nam),
-      _processFactory(processFactory) {
+      _apparmor(apparmor) {
 }
 
 Download*
@@ -50,7 +44,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
-        metadata, headers, _networkInfo, _nam, _processFactory);
+        metadata, headers);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -75,7 +69,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
-        hash, algo, metadata, headers, _networkInfo, _nam, _processFactory);
+        hash, algo, metadata, headers);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -103,8 +97,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        QUrl(), "", algo, metadata, headers, _networkInfo, _nam,
-        _processFactory);
+        QUrl(), "", algo, metadata, headers);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -126,7 +119,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, _networkInfo, _nam, _processFactory);
+        url, metadata, headers);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -144,8 +137,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers, _networkInfo, _nam,
-        _processFactory);
+        rootPath, url, hash, algo, metadata, headers);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;

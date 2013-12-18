@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_FILE_MANAGER_H
 #define DOWNLOADER_LIB_FILE_MANAGER_H
 
+#include <QMutex>
 #include <QObject>
 
 namespace Ubuntu {
@@ -31,10 +32,23 @@ class FileManager : public QObject {
     Q_OBJECT
 
  public:
-    explicit FileManager(QObject *parent = 0) : QObject(parent) {}
-
     virtual bool remove(const QString& path);
     virtual bool exists(const QString& path);
+
+    static FileManager* instance();
+
+    // only used for testing so that we can inject a fake
+    static void setInstance(FileManager* instance);
+    static void deleteInstance();
+
+ protected:
+    explicit FileManager(QObject *parent = 0) : QObject(parent) {}
+
+ private:
+    // used for the singleton
+    static FileManager* _instance;
+    static QMutex _mutex;
+
 };
 
 }  // System

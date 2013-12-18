@@ -24,6 +24,9 @@ namespace DownloadManager {
 
 namespace System {
 
+ProcessFactory* ProcessFactory::_instance = NULL;
+QMutex ProcessFactory::_mutex;
+
 ProcessFactory::ProcessFactory(QObject* parent)
     : QObject(parent) {
 }
@@ -31,6 +34,34 @@ ProcessFactory::ProcessFactory(QObject* parent)
 Process*
 ProcessFactory::createProcess() {
     return new Process();
+}
+
+ProcessFactory*
+ProcessFactory::instance() {
+    if(_instance == NULL) {
+        _mutex.lock();
+        if(_instance == NULL)
+            _instance = new ProcessFactory();
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+ProcessFactory::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
+}
+
+void
+ProcessFactory::setInstance(ProcessFactory* instance) {
+    _instance = instance;
 }
 
 }  // System

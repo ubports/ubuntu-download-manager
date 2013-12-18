@@ -24,7 +24,6 @@
 #include <QSharedPointer>
 #include "downloads/download.h"
 #include "downloads/download_adaptor.h"
-#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
@@ -36,8 +35,7 @@ class Queue : public QObject {
     Q_OBJECT
 
  public:
-    explicit Queue(SystemNetworkInfo* networkInfo,
-                   QObject* parent = 0);
+    explicit Queue(QObject* parent = 0);
 
     virtual void add(Download* download);
 
@@ -63,7 +61,6 @@ class Queue : public QObject {
     QString _current;
     QHash<QString, Download*> _downloads;  // quick for access
     QStringList _sortedPaths;  // keep the order
-    SystemNetworkInfo* _networkInfo;
 };
 
 }  // DownloadManager

@@ -33,7 +33,6 @@ class DownloadsDb : public QObject {
 
  public:
     explicit DownloadsDb(QObject *parent = 0);
-    DownloadsDb(FileManager* fileManager, QObject *parent = 0);
 
     QSqlDatabase db();
     QString filename();

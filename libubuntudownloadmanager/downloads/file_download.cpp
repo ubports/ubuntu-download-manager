@@ -50,18 +50,12 @@ FileDownload::FileDownload(const QString& id,
                    const QUrl& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
-            parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
       _totalSize(0),
       _url(url),
       _hash(""),
-      _algo(QCryptographicHash::Md5),
-      _requestFactory(nam),
-      _processFactory(processFactory) {
+      _algo(QCryptographicHash::Md5) {
     init();
 }
 
@@ -74,17 +68,11 @@ FileDownload::FileDownload(const QString& id,
                    const QString& algo,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
-                   SystemNetworkInfo* networkInfo,
-                   RequestFactory* nam,
-                   ProcessFactory* processFactory,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, networkInfo,
-            parent),
+    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
       _totalSize(0),
       _url(url),
-      _hash(hash),
-      _requestFactory(nam),
-      _processFactory(processFactory) {
+      _hash(hash) {
     init();
     _algo = HashAlgorithm::getHashAlgo(algo);
     // check that the algorithm is correct if the hash is not emtpy
@@ -318,7 +306,8 @@ FileDownload::onFinished() {
                     args << arg;
             }
 
-            Process* postDownloadProcess = _processFactory->createProcess();
+            Process* postDownloadProcess =
+                ProcessFactory::instance()->createProcess();
 
             // connect to signals so that we can tell the clients that
             // the operation succeed
@@ -399,13 +388,14 @@ FileDownload::onOnlineStateChanged(bool online) {
 
 void
 FileDownload::init() {
-    _connected = networkInfo()->isOnline();
+    _requestFactory = RequestFactory::instance();
+    SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
+    _connected = networkInfo->isOnline();
     _downloading = false;
 
     // connect to the network changed signals
-    connect(networkInfo(),
-        SIGNAL(onlineStateChanged(bool)), this,
-        SLOT(onOnlineStateChanged(bool)));
+    connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
+        this, &FileDownload::onOnlineStateChanged);
 
     _filePath = getSaveFileName();
     _reply = NULL;

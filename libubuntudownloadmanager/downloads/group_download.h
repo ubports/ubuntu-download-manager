@@ -46,22 +46,7 @@ class GroupDownload : public Download {
                   bool isGSMDownloadAllowed,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
                   Factory* downFactory,
-                  QObject* parent = 0);
-
-    GroupDownload(const QString& id,
-                  const QString& path,
-                  bool isConfined,
-                  const QString& rootPath,
-                  QList<GroupDownloadStruct> downloads,
-                  const QString& algo,
-                  bool isGSMDownloadAllowed,
-                  const QVariantMap& metadata,
-                  const QMap<QString, QString>& headers,
-                  SystemNetworkInfo* networkInfo,
-                  Factory* downFactory,
-                  QSharedPointer<FileManager> fileManager,
                   QObject* parent = 0);
     virtual ~GroupDownload();
 
@@ -93,9 +78,8 @@ class GroupDownload : public Download {
     QList<FileDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
-    SystemNetworkInfo* _networkInfo = NULL;
     Factory* _downFactory = NULL;
-    QSharedPointer<FileManager> _fileManager;
+    FileManager* _fileManager = NULL;
 };
 
 }  // DownloadManager

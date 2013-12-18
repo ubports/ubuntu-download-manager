@@ -30,7 +30,6 @@
 #include "downloads/factory.h"
 #include "system/application.h"
 #include "system/dbus_connection.h"
-#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
@@ -46,7 +45,6 @@ class Manager : public QObject, public QDBusContext {
             QObject *parent = 0);
     Manager(Application* app,
             DBusConnection* connection,
-            SystemNetworkInfo* networkInfo,
             Factory* downloadFactory,
             Queue* queue,
             bool stoppable = false,
@@ -100,8 +98,6 @@ class Manager : public QObject, public QDBusContext {
     Application* _app;
     qulonglong _throttle;
     AppArmor* _apparmor;
-    SystemNetworkInfo* _networkInfo;
-    ProcessFactory* _processFactory;
     Factory* _downloadFactory;
     Queue* _downloadsQueue;
     DBusConnection* _conn;

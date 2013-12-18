@@ -31,9 +31,6 @@ class FakeDownloadFactory : public Factory, public Fake {
 
  public:
     FakeDownloadFactory(AppArmor* apparmor,
-                        SystemNetworkInfo* networkInfo,
-                        RequestFactory* nam,
-                        ProcessFactory* processFactory,
                         QObject *parent = 0);
 
     Download* createDownload(const QString& downloadOwner,
@@ -73,9 +70,6 @@ class FakeDownloadFactory : public Factory, public Fake {
 
  private:
     AppArmor* _apparmor;
-    SystemNetworkInfo* _networkInfo;
-    RequestFactory* _nam;
-    ProcessFactory* _processFactory;
     QList<Download*> _downloads;
 };
 

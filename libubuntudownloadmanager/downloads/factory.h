@@ -35,9 +35,6 @@ class Factory : public QObject {
 
  public:
     Factory(AppArmor* apparmor,
-            SystemNetworkInfo* networkInfo,
-            RequestFactory* nam,
-            ProcessFactory* processFactory,
             QObject *parent = 0);
 
     // create downloads comming from a dbus call
@@ -92,9 +89,6 @@ class Factory : public QObject {
                          bool& isConfined);
  private:
     AppArmor* _apparmor;
-    SystemNetworkInfo* _networkInfo;
-    RequestFactory* _nam;
-    ProcessFactory* _processFactory;
 };
 
 }  // DownloadManager

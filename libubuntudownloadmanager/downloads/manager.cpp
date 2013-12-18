@@ -22,7 +22,6 @@
 #include "downloads/manager.h"
 #include "system/apparmor.h"
 #include "system/request_factory.h"
-#include "system/system_network_info.h"
 
 namespace Ubuntu {
 
@@ -39,18 +38,14 @@ Manager::Manager(Application* app,
       _stoppable(stoppable) {
     _conn = connection;
     _apparmor = new AppArmor(connection);
-    _networkInfo =  new SystemNetworkInfo();
-    RequestFactory* nam = new RequestFactory(_stoppable);
-    _processFactory = new ProcessFactory();
-    _downloadFactory = new Factory(_apparmor, _networkInfo, nam,
-            _processFactory);
-    _downloadsQueue = new Queue(_networkInfo);
+    RequestFactory::setStoppable(_stoppable);
+    _downloadFactory = new Factory(_apparmor);
+    _downloadsQueue = new Queue(this);
     init();
 }
 
 Manager::Manager(Application* app,
                  DBusConnection* connection,
-                 SystemNetworkInfo* networkInfo,
                  Factory* downloadFactory,
                  Queue* queue,
                  bool stoppable,
@@ -59,7 +54,6 @@ Manager::Manager(Application* app,
       QDBusContext(),
       _app(app),
       _throttle(0),
-      _networkInfo(networkInfo),
       _downloadFactory(downloadFactory),
       _downloadsQueue(queue),
       _stoppable(stoppable) {

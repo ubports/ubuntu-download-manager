@@ -86,13 +86,7 @@ namespace DownloadManager {
 
 DownloadsDb::DownloadsDb(QObject* parent)
     : QObject(parent) {
-    _fileManager = new FileManager();
-    internalInit();
-}
-
-DownloadsDb::DownloadsDb(FileManager* fileManager, QObject* parent)
-    : QObject(parent),
-      _fileManager(fileManager) {
+    _fileManager = FileManager::instance();
     internalInit();
 }
 
@@ -131,11 +125,7 @@ bool
 DownloadsDb::init() {
     TRACE;
     // create the required tables
-    bool opened = _db.open();
-    if (!opened) {
-        qCritical() << _db.lastError();
-        return false;
-    }
+    qDebug() << "open the db" << _db.open();
 
     _db.transaction();
 
@@ -200,8 +190,8 @@ DownloadsDb::stringToState(QString state) {
 
 QString
 DownloadsDb::metadataToString(const QVariantMap& metadata) {
-    QJsonDocument jsonDoc = QJsonDocument::fromVariant(QVariant(metadata));
-    return QString(jsonDoc.toJson());
+    QJsonDocument json = QJsonDocument::fromVariant(QVariant(metadata));
+    return QString(json.toJson());
 }
 
 QString
@@ -210,20 +200,15 @@ DownloadsDb::headersToString(const QMap<QString, QString>& headers) {
     foreach(const QString& key, headers.keys()) {
         headersVariant[key] = headers[key];
     }
-    QJsonDocument jsonDoc = QJsonDocument::fromVariant(
+    QJsonDocument json = QJsonDocument::fromVariant(
         QVariant(headersVariant));
-    return QString(jsonDoc.toJson());
+    return QString(json.toJson());
 }
 
 bool
 DownloadsDb::storeSingleDownload(FileDownload* download) {
     // decide if we store it as a new download or update an existing one
-    bool opened = _db.open();
-
-    if (!opened) {
-        qCritical() << _db.lastError();
-        return false;
-    }
+    _db.open();
 
     QSqlQuery query;
     query.prepare(PRESENT_SINGLE_DOWNLOAD);

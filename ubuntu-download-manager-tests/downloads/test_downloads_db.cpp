@@ -141,12 +141,10 @@ TestDownloadsDb::testStoreSingleDownload() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
-    RequestFactory* nam = new FakeRequestFactory();
     ProcessFactory* processFactory = new FakeProcessFactory();
 
     FakeDownload* download = new FakeDownload(id, path, false, "", url, hash,
-        hashAlgoString, metadata, headers, networkInfo, nam, processFactory);
+        hashAlgoString, metadata, headers, processFactory);
 
     _db->storeSingleDownload(download);
     // query that the download is there and that the data is correct
@@ -235,20 +233,17 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    SystemNetworkInfo* networkInfo = new FakeSystemNetworkInfo();
-    RequestFactory* nam = new FakeRequestFactory();
     ProcessFactory* processFactory = new FakeProcessFactory();
 
     FakeDownload* download = new FakeDownload(id, path, true, "", url, hash,
-        hashAlgoString, metadata, headers, networkInfo, nam, processFactory);
+        hashAlgoString, metadata, headers, processFactory);
 
     _db->storeSingleDownload(download);
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
     FakeDownload* secondDownload = new FakeDownload(id, newPath, true, "",
-        url, hash, hashAlgoString, metadata, headers, networkInfo, nam,
-        processFactory);
+        url, hash, hashAlgoString, metadata, headers, processFactory);
 
     _db->storeSingleDownload(secondDownload);
 

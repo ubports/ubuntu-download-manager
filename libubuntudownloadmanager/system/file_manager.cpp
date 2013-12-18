@@ -25,6 +25,9 @@ namespace DownloadManager {
 
 namespace System {
 
+FileManager* FileManager::_instance = NULL;
+QMutex FileManager::_mutex;
+
 bool
 FileManager::remove(const QString& path) {
     return QFile::remove(path);
@@ -33,6 +36,31 @@ FileManager::remove(const QString& path) {
 bool
 FileManager::exists(const QString& path) {
     return QFile::exists(path);
+}
+
+FileManager* FileManager::instance() {
+    if(_instance == NULL) {
+        _mutex.lock();
+        if(_instance == NULL)
+            _instance = new FileManager();
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void FileManager::setInstance(FileManager* instance) {
+    _instance = instance;
+}
+
+void FileManager::deleteInstance() {
+    if(_instance != NULL) {
+        _mutex.lock();
+        if(_instance != NULL) {
+            delete _instance;
+            _instance = NULL;
+        }
+        _mutex.unlock();
+    }
 }
 
 }  // System
