@@ -44,7 +44,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
-        metadata, headers);
+        metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -69,7 +69,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
-        hash, algo, metadata, headers);
+        hash, algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -97,7 +97,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        QUrl(), "", algo, metadata, headers);
+        QUrl(), "", algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -119,7 +119,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers);
+        url, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -137,7 +137,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
     Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers);
+        rootPath, url, hash, algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;

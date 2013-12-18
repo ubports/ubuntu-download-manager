@@ -58,7 +58,7 @@ void
 FakeSMFileDownload::emitError(QString error) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new StringWrapper(error));
+        inParams.append(new StringWrapper(error, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -71,7 +71,7 @@ void
 FakeSMFileDownload::emitNetworkError(QNetworkReply::NetworkError code) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new NetworkErrorWrapper(code));
+        inParams.append(new NetworkErrorWrapper(code, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
@@ -84,7 +84,7 @@ void
 FakeSMFileDownload::emitSslError(const QList<QSslError>& errors) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new SslErrorsWrapper(errors));
+        inParams.append(new SslErrorsWrapper(errors, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);

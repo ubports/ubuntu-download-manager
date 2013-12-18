@@ -56,6 +56,8 @@ TestDownloadsDb::cleanup() {
     delete _db;
 
     QFile::remove(dbFile);
+    SystemNetworkInfo::deleteInstance();
+    FileManager::deleteInstance();
 }
 
 void
@@ -141,12 +143,10 @@ TestDownloadsDb::testStoreSingleDownload() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    ProcessFactory* processFactory = new FakeProcessFactory();
+    QScopedPointer<FakeDownload> download(new FakeDownload(id, path, false, "", url, hash,
+        hashAlgoString, metadata, headers));
 
-    FakeDownload* download = new FakeDownload(id, path, false, "", url, hash,
-        hashAlgoString, metadata, headers, processFactory);
-
-    _db->storeSingleDownload(download);
+    _db->storeSingleDownload(download.data());
     // query that the download is there and that the data is correct
     QSqlDatabase db = _db->db();
     db.open();
@@ -233,19 +233,17 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    ProcessFactory* processFactory = new FakeProcessFactory();
+    QScopedPointer<FakeDownload> download(new FakeDownload(id, path, true, "", url, hash,
+        hashAlgoString, metadata, headers));
 
-    FakeDownload* download = new FakeDownload(id, path, true, "", url, hash,
-        hashAlgoString, metadata, headers, processFactory);
-
-    _db->storeSingleDownload(download);
+    _db->storeSingleDownload(download.data());
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
-    FakeDownload* secondDownload = new FakeDownload(id, newPath, true, "",
-        url, hash, hashAlgoString, metadata, headers, processFactory);
+    QScopedPointer<FakeDownload> secondDownload(new FakeDownload(id, newPath, true, "",
+        url, hash, hashAlgoString, metadata, headers));
 
-    _db->storeSingleDownload(secondDownload);
+    _db->storeSingleDownload(secondDownload.data());
 
     // query that the download is there and that the data is correct
     QSqlDatabase db = _db->db();

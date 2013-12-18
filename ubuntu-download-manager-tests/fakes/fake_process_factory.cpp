@@ -26,7 +26,7 @@ FakeProcessFactory::FakeProcessFactory(QObject *parent)
 
 Process*
 FakeProcessFactory::createProcess() {
-    FakeProcess* process = new FakeProcess();
+    FakeProcess* process = new FakeProcess(this);
 
     if (_recording) {
         QList<QObject*> inParams;

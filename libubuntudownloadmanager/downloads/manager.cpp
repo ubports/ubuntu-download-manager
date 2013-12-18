@@ -37,9 +37,8 @@ Manager::Manager(Application* app,
       _throttle(0),
       _stoppable(stoppable) {
     _conn = connection;
-    _apparmor = new AppArmor(connection);
     RequestFactory::setStoppable(_stoppable);
-    _downloadFactory = new Factory(_apparmor);
+    _downloadFactory = new Factory(this);
     _downloadsQueue = new Queue(this);
     init();
 }
@@ -63,6 +62,7 @@ Manager::Manager(Application* app,
 
 Manager::~Manager() {
     delete _downloadsQueue;
+    delete _downloadFactory;
 }
 
 void

@@ -61,7 +61,6 @@ class TestDownloadQueue : public BaseTestCase {
     bool _isConfined;
     QString _rootPath;
     FakeSystemNetworkInfo* _networkInfo;
-    FakeProcessFactory* _processFactory;
     FakeDownload* _first;
     FakeDownload* _second;
     Queue* _q;

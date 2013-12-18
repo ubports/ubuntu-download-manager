@@ -398,8 +398,6 @@ FileDownload::init() {
         this, &FileDownload::onOnlineStateChanged);
 
     _filePath = getSaveFileName();
-    _reply = NULL;
-    _currentData = NULL;
 
     // ensure that the download is valid
     if (!_url.isValid()) {

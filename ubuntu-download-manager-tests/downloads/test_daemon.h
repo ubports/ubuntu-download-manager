@@ -36,6 +36,8 @@ class TestDaemon : public BaseTestCase {
 
  private slots:  // NOLINT(whitespace/indent)
 
+    void init() override;
+    void cleanup() override;
     void testStart();
     void testStartPath();
     void testStartFailServiceRegister();

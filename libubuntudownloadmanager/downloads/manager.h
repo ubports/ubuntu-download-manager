@@ -97,7 +97,6 @@ class Manager : public QObject, public QDBusContext {
  private:
     Application* _app;
     qulonglong _throttle;
-    AppArmor* _apparmor;
     Factory* _downloadFactory;
     Queue* _downloadsQueue;
     DBusConnection* _conn;

@@ -35,10 +35,19 @@ namespace DownloadManager {
  */
 
 
+Factory::Factory(QObject* parent)
+    : QObject(parent) {
+    _apparmor = new AppArmor(this);
+}
+
 Factory::Factory(AppArmor* apparmor,
                  QObject* parent)
     : QObject(parent),
         _apparmor(apparmor) {
+}
+
+Factory::~Factory() {
+    delete _apparmor;
 }
 
 void

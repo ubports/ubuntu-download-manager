@@ -41,7 +41,7 @@ TestDownloadManager::init() {
     _requestFactory = new FakeRequestFactory();
     RequestFactory::setInstance(_requestFactory);
     _downloadFactory = new FakeDownloadFactory(
-        _apparmor, new FakeProcessFactory());
+        _apparmor);
     _man = new Manager(_app, _conn, _downloadFactory, _q);
 }
 
@@ -49,7 +49,12 @@ void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
+    SystemNetworkInfo::deleteInstance();
+    RequestFactory::deleteInstance();
+    ProcessFactory::deleteInstance();
     delete _man;
+    delete _conn;
+    delete _app;
 }
 
 QCryptographicHash::Algorithm
@@ -246,18 +251,20 @@ TestDownloadManager::testCreateDownloadWithHash() {
 
 void
 TestDownloadManager::testGetAllDownloads() {
+    FakeDownloadQueue* q = new FakeDownloadQueue();
+    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
+        apparmor);
+
     // add a number of downloads and assert that all the paths are returned
-    _q->record();
+    q->record();
     _conn->record();
 
     // do not use the fake uuid factory, else we only get one object path
-    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        _apparmor, new FakeProcessFactory());
-    _man = new Manager(_app, _conn, _downloadFactory, _q);
+    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
 
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -265,18 +272,18 @@ TestDownloadManager::testGetAllDownloads() {
     QVariantMap firstMetadata, secondMetadata, thirdMetadata;
     StringMap firstHeaders, secondHeaders, thirdHeaders;
 
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
     // get the diff create downloads and theri paths so
     // that we can assert that they are returned
-    QList<MethodData> calledMethods = _q->calledMethods();
+    QList<MethodData> calledMethods = q->calledMethods();
     QCOMPARE(3, calledMethods.count());
     QList<QString> paths;
     for (int index = 0; index < calledMethods.count(); index++) {
@@ -285,24 +292,26 @@ TestDownloadManager::testGetAllDownloads() {
         paths << download->path();
     }
 
-    QList<QDBusObjectPath> allDownloads = _man->getAllDownloads();
+    QList<QDBusObjectPath> allDownloads = man->getAllDownloads();
     QCOMPARE(paths.count(), allDownloads.count());
 }
 
 void
 TestDownloadManager::testAllDownloadsWithMetadata() {
+    FakeDownloadQueue* q = new FakeDownloadQueue();
+    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
+        apparmor);
+
     // add a number of downloads and assert that all the paths are returned
-    _q->record();
+    q->record();
     _conn->record();
 
     // do not use the fake uuid factory, else we only get one object path
-    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        _apparmor, new FakeProcessFactory());
-    _man = new Manager(_app, _conn, _downloadFactory, _q);
+    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
 
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -314,18 +323,18 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
     QCOMPARE(spy.count(), 3);
 
     // get the diff create downloads and theri paths so that we
     // can assert that they are returned
-    QList<MethodData> calledMethods = _q->calledMethods();
+    QList<MethodData> calledMethods = q->calledMethods();
     QCOMPARE(3, calledMethods.count());
     QList<QString> downloads;
     for (int index = 0; index < calledMethods.count(); index++) {
@@ -334,7 +343,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         downloads << download->path();
     }
 
-    QList<QDBusObjectPath> filtered = _man->getAllDownloadsWithMetadata(
+    QList<QDBusObjectPath> filtered = man->getAllDownloadsWithMetadata(
         "type", "first");
 
     QCOMPARE(2, filtered.count());
@@ -372,11 +381,13 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     QFETCH(qulonglong, speed);
 
     // do not use the fake uuid factory, else we only get one object path
-    _apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+    FakeDownloadQueue* q = new FakeDownloadQueue();
+    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
         new UuidFactory()));
-    _downloadFactory = new FakeDownloadFactory(
-        _apparmor, new FakeProcessFactory());
-    _man = new Manager(_app, _conn, _downloadFactory, _q);
+    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
+        apparmor);
+
+    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -388,16 +399,16 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     secondMetadata["type"] = "second";
     thirdMetadata["type"] = "first";
 
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    _man->createDownload(
+    man->createDownload(
         DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
-    _man->setDefaultThrottle(speed);
+    man->setDefaultThrottle(speed);
 
-    QList<MethodData> calledMethods = _q->calledMethods();
+    QList<MethodData> calledMethods = q->calledMethods();
     for (int index = 0; index < calledMethods.count(); index++) {
         FileDownload* download = reinterpret_cast<FileDownload*>(
             calledMethods[index].params().inParams()[0]);
@@ -466,20 +477,30 @@ TestDownloadManager::testSetSelfSignedCerts() {
 
 void
 TestDownloadManager::testStoppable() {
+    FakeDownloadQueue* q = new FakeDownloadQueue();
+    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
+        apparmor);
     _app->record();
-    _man = new Manager(_app, _conn,
-        _downloadFactory, _q, true);
-    _man->exit();
+
+    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q, true));
+    man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
 
 void
 TestDownloadManager::testNotStoppable() {
+    FakeDownloadQueue* q = new FakeDownloadQueue();
+    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
+        new UuidFactory()));
+    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
+        apparmor);
     _app->record();
-    _man = new Manager(_app, _conn,
-        _downloadFactory, _q, false);
-    _man->exit();
+
+    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q, false));
+    man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }

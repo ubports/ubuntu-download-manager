@@ -66,7 +66,7 @@ void
 FakeDownload::setThrottle(qulonglong speed) {
     if (_recording) {
         QList<QObject*> inParams;
-        inParams.append(new UintWrapper(speed));
+        inParams.append(new UintWrapper(speed, this));
 
         QList<QObject*> outParams;
         MethodParams params(inParams, outParams);
