@@ -26,6 +26,7 @@
 #include "fakes/fake_system_network_info.h"
 #include "fakes/fake_request_factory.h"
 #include "fakes/fake_process_factory.h"
+#include "fakes/fake_file_manager.h"
 #include "base_testcase.h"
 #include "test_runner.h"
 
@@ -140,6 +141,11 @@ class TestDownload: public BaseTestCase {
     // processing signal tests
     void testProcessingJustOnce();
 
+    // ensure that if we cannot handle the file system
+    // we fwd the error
+    void testFileSystemErrorProgress();
+    void testFileSystemErrorPause();
+
  private:
     QString _id;
     bool _isConfined;
@@ -152,6 +158,7 @@ class TestDownload: public BaseTestCase {
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
+    FakeFileManager* _fileManager;
 };
 
 Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)
