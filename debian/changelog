@@ -1,3 +1,118 @@
+ubuntu-download-manager (0.3+14.04.20131219-0ubuntu1) trusty; urgency=low
+
+  [ Loïc Minier ]
+  * Always honor UBUNTU_DOWNLOADER_DEBUG; we should consider switching
+    release builds to -UDEBUG, but this is too intrusive right now; LP:
+    #1240656. (LP: #1240656)
+
+  [ Michael McCracken ]
+  * change command for 'make check' to work when not in tree (LP:
+    #1249470). (LP: #1249470)
+
+  [ Manuel de la Pena ]
+  * Fix a number of logging problems found when we went to production.
+    (LP: #1240656, #1241009, #1241005, #1240967)
+  * Move download ids to be strings, that way applications have more
+    predictable ways to connect to the current downloads. At the moment
+    only not confined apps can use predictable ids. (LP: #1234965)
+  * Group all system related files under the same dir.
+  * Moved all downloads related to the same directory.
+  * Renamed the DownloadDaemon to Daemon to remove the redundancy in the
+    name.
+  * Rename DownloadFactory to Factory to remove the redundancy in the
+    name.
+  * Rename the DownloaderQueue to Queue to remove the redundancy in the
+    name.
+  * Rename DownloadManager to Manager to remove the name redundancy.
+  * Rename SIngleDownlaod to FileDownload so that it makes more sense.
+  * Start using namespaces planning ahead when we have a client library.
+  * Add the use of a new namespace for system realted classes.
+  * Sort the files under the test project so that working on it is
+    simpler.
+  * Add documentation about the state machine to be used for the
+    downloads and its initial skeleton.
+  * Ensure that finished is raised when the group download is empty.
+    (LP: #1245597)
+  * Allow to pass the path of the service to be started so that it is
+    easier to test. (LP: #1195657)
+  * Create the download state machine and add the states defined in the
+    docs diagram.
+  * Provide a processing signal for when the downloading is done and a
+    process is being executed. (LP: #1248770)
+  * Provide setters and getters for the daemon command line args. Added
+    self signed ssl certs for testing purposes. (LP: #1249336)
+  * Add the header transitions. There is not yet nothing done because
+    parsing the header info for the attachment name is harder than
+    expected.
+  * Ensure that group downloads do not allow two same local paths in the
+    same group. (LP: #1250181)
+  * Remove all the checks against NULL before calling delete. (LP:
+    #1250409)
+  * Remove the not needed pimpl pattern from the DBusConnection class.
+    (LP: #1251008)
+  * Remove the pimpl patter from the Application class. (LP: #1251003)
+  * Add the transitions for the init state.
+  * Added the downloading state transitions.
+  * Remove the pimpl patter from the system network info. Because pimpl
+    is out we can use the new signal connection. (LP: #1250946)
+  * Remove the use of the pimpl pattern in the factory object because is
+    not needed. Fix some issues with the tests after the change. (LP:
+    #1250927)
+  * Added downloading not connected state transitions.
+  * Remove the pimpl pattern from the ProcessFactory. (LP: #1251269)
+  * Remove pimpl from apparmor because it is a class that will not be
+    shared outside the project and therefore it does not need it. (LP:
+    #1250999)
+  * Remove the not needed pimpl pattern in the RequestFactory class.
+    (LP: #1251294)
+  * Added the paused state transitions.
+  * Added paused not connected state transitions.
+  * Added the downloaded state transitions.
+  * Added hashing state transitions.
+  * Add post processing state transitions.
+  * Remove the pimpl pattern from the manager class because it is not
+    exposed to any other project via headers. (LP: #1251885)
+  * Keep track of the state in the state machine so that tests are
+    easier to perform.
+  * Add tests to ensure that the state machine works as expected. A
+    number of new transitions have been added to pass the tests because
+    they were missing.
+  * Remove the not needed pimpl patter from the Timer class. (LP:
+    #1251312)
+  * Remove pimpl pattern from the Process class. (LP: #1251183)
+  * Remove pimpl implementation from the NetworkReply object. Moved
+    signals to use new way to connect. (LP: #1250990)
+  * Remove the pimpl pattern from the DownloadsDb because that class
+    will never be exposed to other projects. (LP: #1255932)
+  * Move the XML files to the docs folder. (LP: #1257280)
+  * Remove the pimpl pattern from the base download class. (LP:
+    #1253045)
+  * Remove the pimpl pattern from the group download class. (LP:
+    #1253045)
+  * Remove the pimpl implementation from the file download so that we
+    have a simpler implementation.
+  * Do not use the namespace inside the macro so that we fix the issue
+    where the method is not known because the struct is not recognized.
+    (LP: #1260729)
+  * Remove the pimpl pattern from the Queue since it is a class not to
+    be shared outside the project. (LP: #1252256)
+  * Move from using a smartpointer to a pointer so that we can manage a
+    singleton better and we remove mem leaks in the tests. (LP:
+    #1259152)
+  * Stop using the shared pointer to move to a pointer so that we manage
+    memory better and we have no mem leaks. (LP: #1259154)
+  * Use pointers instead of shared pointers to later deal with the mem
+    management better. (LP: #1259155, #1259157)
+  * Use singletons in all those objects that have the same lifespan as
+    the daemon. (LP: #1259158)
+  * Solve all known mem leaks from the project. (LP: #1251884, #1250932,
+    #1254741)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 207
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 19 Dec 2013 04:54:42 +0000
+
 ubuntu-download-manager (0.3-0ubuntu1) saucy; urgency=low
 
   [ Manuel de la Pena ]
