@@ -19,6 +19,8 @@
 #ifndef DOWNLOADER_LIB_FILE_MANAGER_H
 #define DOWNLOADER_LIB_FILE_MANAGER_H
 
+#include <QIODevice>
+#include <QFile>
 #include <QMutex>
 #include <QObject>
 
@@ -28,10 +30,39 @@ namespace DownloadManager {
 
 namespace System {
 
+class File : public QObject {
+    Q_OBJECT
+
+    // only allow the use of the file manager to create files
+    friend class FileManager;
+ public:
+    virtual ~File();
+
+    // wrappers around the used QFile methods
+    void close();
+    virtual QFile::FileError error() const;  // virtual for testing purposes
+    QString fileName() const;
+    virtual bool flush();  // virtual for testing purposes
+    bool open(QIODevice::OpenMode mode);
+    QByteArray readAll();
+    bool remove();
+    bool reset();
+    qint64 size() const;
+    qint64 write(const QByteArray& byteArray);
+
+ protected:
+    explicit File(const QString& name);
+
+ private:
+    QFile* _file = NULL;
+
+};
+
 class FileManager : public QObject {
     Q_OBJECT
 
  public:
+    virtual File* createFile(const QString& name);
     virtual bool remove(const QString& path);
     virtual bool exists(const QString& path);
 

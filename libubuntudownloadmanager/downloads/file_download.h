@@ -19,13 +19,13 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
-#include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
 #include "app-downloader-lib_global.h"
 #include "downloads/download.h"
+#include "system/file_manager.h"
 
 #define LOCAL_PATH_KEY "local-path"
 
@@ -96,6 +96,7 @@ class FileDownload : public Download {
     void cleanUpCurrentData();
     void connectToReplySignals();
     void disconnectFromReplySignals();
+    bool flushFile();
     void init();
     void onDownloadProgress(qint64 currentProgress, qint64);
     void onError(QNetworkReply::NetworkError);
@@ -116,7 +117,7 @@ class FileDownload : public Download {
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = NULL;
-    QFile* _currentData = NULL;
+    File* _currentData = NULL;
     RequestFactory* _requestFactory;
 };
 
