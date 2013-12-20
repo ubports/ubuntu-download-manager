@@ -49,6 +49,8 @@ TestDownload::init() {
     RequestFactory::setInstance(_reqFactory);
     _processFactory = new FakeProcessFactory();
     ProcessFactory::setInstance(_processFactory);
+    _fileManager = new FakeFileManager();
+    FileManager::setInstance(_fileManager);
 }
 
 void
@@ -58,6 +60,7 @@ TestDownload::cleanup() {
     SystemNetworkInfo::deleteInstance();
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
+    FileManager::deleteInstance();
 }
 
 void
@@ -1720,4 +1723,76 @@ TestDownload::testProcessingJustOnce() {
     reply->emitFinished();
 
     QCOMPARE(processingSpy.count(), 1);
+}
+
+void
+TestDownload::testFileSystemErrorProgress() {
+    // get the file manager instance and make it return a fake file
+    // that will return an error
+    QScopedPointer<FakeFile> file(new FakeFile("test_file"));
+    file->setError(QFile::WriteError);
+    _fileManager->setFile(file.data());
+
+    QByteArray fileData(0, 'f');
+    qulonglong received = 67ULL;
+    qulonglong total = 200ULL;
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(error(QString)));
+
+    // start the download so that we do have access to the reply
+    download->start();  // change state
+    download->startDownload();
+
+    auto calledMethods = _reqFactory->calledMethods();
+    auto reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+    reply->setData(fileData);
+    emit reply->downloadProgress(received, total);
+
+    // assert that the error signal is emitted
+    QCOMPARE(spy.count(), 1);
+    auto arguments = spy.takeFirst();
+    // assert that the size is not the received but the file size
+    QCOMPARE(arguments.at(0).toString(),
+        QString("FILE SYSTEM ERROR: %1").arg(QFile::WriteError));
+    _fileManager->setFile(NULL);
+}
+
+void
+TestDownload::testFileSystemErrorPause() {
+    // get the file manager instance and make it return a fake file
+    // that will return an error
+    QScopedPointer<FakeFile> file(new FakeFile("test_file"));
+    file->setError(QFile::WriteError);
+    _fileManager->setFile(file.data());
+
+    QByteArray fileData(0, 'f');
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(error(QString)));
+
+    // start the download so that we do have access to the reply
+    download->start();  // change state
+    download->startDownload();
+
+    auto calledMethods = _reqFactory->calledMethods();
+    auto reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+    reply->setData(fileData);
+
+    download->pause();  // change state
+    download->pauseDownload();  // method under test
+
+    // assert that the error signal is emitted
+    QCOMPARE(spy.count(), 1);
+    auto arguments = spy.takeFirst();
+    // assert that the size is not the received but the file size
+    QCOMPARE(arguments.at(0).toString(),
+        QString("FILE SYSTEM ERROR: %1").arg(QFile::WriteError));
+    _fileManager->setFile(NULL);
 }

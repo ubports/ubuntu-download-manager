@@ -38,6 +38,7 @@
 #define HASH_ERROR "HASH ERROR"
 #define COMMAND_ERROR "COMMAND ERROR"
 #define SSL_ERROR "SSL ERROR"
+#define FILE_SYSTEM_ERROR "FILE SYSTEM ERROR: %1"
 
 namespace Ubuntu {
 
@@ -132,11 +133,15 @@ FileDownload::pauseDownload() {
     // do abort before reading
     _reply->abort();
     _currentData->write(_reply->readAll());
-    _reply->deleteLater();
-    _reply = NULL;
-    qDebug() << "EMIT paused(true)";
-    _downloading = false;
-    emit paused(true);
+    if (!flushFile()) {
+        emit paused(false);
+    } else {
+        _reply->deleteLater();
+        _reply = NULL;
+        qDebug() << "EMIT paused(true)";
+        _downloading = false;
+        emit paused(true);
+    }
 }
 
 void
@@ -184,7 +189,7 @@ FileDownload::startDownload() {
 
     // create file that will be used to mantain the state of the
     // download when resumed.
-    _currentData = new QFile(_filePath);
+    _currentData = FileManager::instance()->createFile(_filePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
@@ -228,7 +233,9 @@ FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
     // write the current info we have, just in case we are killed in the
     // middle of the download
     _currentData->write(_reply->readAll());
-    _currentData->flush();
+    if (!flushFile()) {
+        return;
+    }
     qulonglong received = _currentData->size();
 
     if (bytesTotal == -1) {
@@ -400,8 +407,6 @@ FileDownload::init() {
         this, &FileDownload::onOnlineStateChanged);
 
     _filePath = getSaveFileName();
-    _reply = NULL;
-    _currentData = NULL;
 
     // ensure that the download is valid
     if (!_url.isValid()) {
@@ -436,6 +441,17 @@ FileDownload::disconnectFromReplySignals() {
         disconnect(_reply, &NetworkReply::sslErrors,
             this, &FileDownload::onSslErrors);
     }
+}
+
+bool
+FileDownload::flushFile() {
+    auto flushed  = _currentData->flush();
+    if (!flushed) {
+        auto err = _currentData->error();
+        qCritical() << "Could not write that in the file system" << err;
+        emitError(QString(FILE_SYSTEM_ERROR).arg(err));
+    }
+    return flushed;
 }
 
 QString
