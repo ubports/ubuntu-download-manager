@@ -75,7 +75,6 @@ TestDaemon::testStartPath() {
     FakeTimer* timer = new FakeTimer();
     FakeDBusConnection* conn = new FakeDBusConnection();
     conn->setRegisterServiceResult(true);
-    conn->setRegisterServiceResult(true);
     conn->setRegisterObjectResult(true);
     conn->record();
     FakeApplication* app = new FakeApplication();

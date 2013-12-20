@@ -25,8 +25,71 @@ namespace DownloadManager {
 
 namespace System {
 
+File::File(const QString& name) {
+    _file = new QFile(name);
+}
+
+File::~File() {
+    delete _file;
+}
+
+void
+File::close() {
+    _file->close();
+}
+
+QFile::FileError
+File::error() const {
+    return _file->error();
+}
+
+QString
+File::fileName() const {
+    return _file->fileName();
+}
+
+bool
+File::flush() {
+    return _file->flush();
+}
+
+bool
+File::open(QIODevice::OpenMode mode) {
+    return _file->open(mode);
+}
+
+QByteArray
+File::readAll() {
+    return _file->readAll();
+}
+
+bool
+File::remove() {
+    return _file->remove();
+}
+
+bool
+File::reset() {
+    return _file->reset();
+}
+
+qint64
+File::size() const {
+    return _file->size();
+}
+
+qint64
+File::write(const QByteArray& byteArray) {
+    return _file->write(byteArray);
+}
+
 FileManager* FileManager::_instance = NULL;
 QMutex FileManager::_mutex;
+
+File*
+FileManager::createFile(const QString& name) {
+    return new File(name);
+}
 
 bool
 FileManager::remove(const QString& path) {

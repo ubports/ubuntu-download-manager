@@ -23,6 +23,7 @@
 #include <QObject>
 #include <downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/download_manager/tests/server/file_manager.h>
 #include <ubuntu/download_manager/tests/server/system_network_info.h>
 #include <ubuntu/download_manager/tests/server/request_factory.h>
 #include <ubuntu/download_manager/tests/server/process_factory.h>
@@ -140,6 +141,11 @@ class TestDownload: public BaseTestCase {
     // processing signal tests
     void testProcessingJustOnce();
 
+    // ensure that if we cannot handle the file system
+    // we fwd the error
+    void testFileSystemErrorProgress();
+    void testFileSystemErrorPause();
+
  private:
     QString _id;
     bool _isConfined;
@@ -152,6 +158,7 @@ class TestDownload: public BaseTestCase {
     FakeSystemNetworkInfo* _networkInfo;
     FakeRequestFactory* _reqFactory;
     FakeProcessFactory* _processFactory;
+    FakeFileManager* _fileManager;
 };
 
 Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)

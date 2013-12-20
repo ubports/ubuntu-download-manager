@@ -18,9 +18,51 @@
 
 #include "file_manager.h"
 
+FakeFile::FakeFile(const QString& name)
+    : File(name) {
+}
+
+QFile::FileError
+FakeFile::error() const {
+    if(_errWasSet) {
+        return _err;
+    } else {
+        return File::error();
+    }
+}
+
+bool
+FakeFile::flush() {
+    if(_errWasSet) {
+        return false;
+    } else {
+        return File::flush();
+    }
+}
+
+void
+FakeFile::setError(QFile::FileError err) {
+    _err = err;
+    _errWasSet  = true;
+}
+
 FakeFileManager::FakeFileManager(QObject *parent)
     : FileManager(parent),
       Fake() {
+}
+
+File*
+FakeFileManager::createFile(const QString& name) {
+    if (_file == NULL) {
+        return FileManager::createFile(name);
+    } else {
+        return _file;
+    }
+}
+
+void
+FakeFileManager::setFile(File* file) {
+    _file = file;
 }
 
 bool
