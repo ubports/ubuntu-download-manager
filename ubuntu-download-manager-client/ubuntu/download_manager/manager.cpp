@@ -126,6 +126,91 @@ class ManagerPrivate {
             q, SLOT(onWatcherDone()));
     }
 
+    bool isError() {
+        return _isError;
+    }
+
+    Error* lastError() {
+        return _lastError;
+    }
+
+    void setLastError(const QDBusError& err) {
+        Q_Q(Manager);
+        // delete the last if error if present to keep mem to a minimum
+        if (_lastError != NULL) {
+            delete _lastError;
+        }
+        _lastError = new Error(err, q);
+        _isError = true;
+    }
+
+    void allowMobileDataDownload(bool allowed) {
+        QDBusPendingReply<> reply =
+            _dbusInterface->allowGSMDownload(allowed);
+        // we block but because we expect it to be fast
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = reply.error();
+            qCritical() << "Error setting mobile data" << err;
+            setLastError(err);
+        }
+    }
+
+    bool isMobileDataDownload() {
+        QDBusPendingReply<bool> reply =
+            _dbusInterface->isGSMDownloadAllowed();
+        // we block but because we expect it to be fast
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = reply.error();
+            qCritical() << "Error getting if mobile data is enabled"
+                << err;
+            setLastError(err);
+            return false;
+        } else {
+            return reply.value();
+        }
+    }
+
+    qulonglong defaultThrottle() {
+        QDBusPendingReply<qulonglong> reply =
+            _dbusInterface->defaultThrottle();
+        // we block but because we expect it to be fast
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = reply.error();
+            qCritical() << "Error getting the default throttle" << err;
+            setLastError(err);
+            return 0;
+        } else {
+            return reply.value();
+        }
+    }
+
+    void setDefaultThrottle(qulonglong speed) {
+        QDBusPendingReply<> reply =
+            _dbusInterface->setDefaultThrottle(speed);
+        // we block but because we expect it to be fast
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = reply.error();
+            qCritical() << "Error setting default throttle" << err;
+            setLastError(err);
+        }
+    }
+
+    void exit() {
+        QDBusPendingReply<> reply =
+            _dbusInterface->exit();
+        // we block but because we expect it to be fast
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = reply.error();
+            qCritical() << "Error setting killing the daemon" << err;
+            setLastError(err);
+        }
+    }
+
     void onWatcherDone() {
         Q_Q(Manager);
         auto senderObj = q->sender();
@@ -133,6 +218,8 @@ class ManagerPrivate {
     }
 
  private:
+    bool _isError = false;
+    Error* _lastError = NULL;
     ManagerInterface* _dbusInterface;
     Manager* q_ptr;
 };
@@ -208,6 +295,48 @@ Manager::createDownload(StructList downs,
     Q_D(Manager);
     d->createDownload(downs, algorithm, allowed3G, metadata, headers, cb,
         errCb);
+}
+
+bool
+Manager::isError() {
+    Q_D(Manager);
+    return d->isError();
+}
+
+Error*
+Manager::lastError() {
+    Q_D(Manager);
+    return d->lastError();
+}
+
+void
+Manager::allowMobileDataDownload(bool allowed) {
+    Q_D(Manager);
+    d->allowMobileDataDownload(allowed);
+}
+
+bool
+Manager::isMobileDataDownload() {
+    Q_D(Manager);
+    return d->isMobileDataDownload();
+}
+
+qulonglong
+Manager::defaultThrottle() {
+    Q_D(Manager);
+    return d->defaultThrottle();
+}
+
+void
+Manager::setDefaultThrottle(qulonglong speed) {
+    Q_D(Manager);
+    d->setDefaultThrottle(speed);
+}
+
+void
+Manager::exit() {
+    Q_D(Manager);
+    d->exit();
 }
 
 }  // DownloadManager

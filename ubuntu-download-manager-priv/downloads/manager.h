@@ -60,20 +60,21 @@ class Manager : public QObject, public QDBusContext {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  public slots:  // NOLINT(whitespace/indent)
-    QDBusObjectPath createDownload(DownloadStruct download);
+    virtual QDBusObjectPath createDownload(DownloadStruct download);
 
-    QDBusObjectPath createDownloadGroup(StructList downloads,
-                                        const QString& algorithm,
-                                        bool allowed3G,
-                                        const QVariantMap& metadata,
-                                        StringMap headers);
+    virtual QDBusObjectPath createDownloadGroup(StructList downloads,
+                                                const QString& algorithm,
+                                                bool allowed3G,
+                                                const QVariantMap& metadata,
+                                                StringMap headers);
 
-    qulonglong defaultThrottle();
-    void setDefaultThrottle(qulonglong speed);
-    QList<QDBusObjectPath> getAllDownloads();
-    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name,
-                                                       const QString& value);
-    void exit();
+    virtual qulonglong defaultThrottle();
+    virtual void setDefaultThrottle(qulonglong speed);
+    virtual QList<QDBusObjectPath> getAllDownloads();
+    virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
+                                                      const QString& name,
+                                                      const QString& value);
+    virtual void exit();
 
  signals:
     void downloadCreated(const QDBusObjectPath& path);
