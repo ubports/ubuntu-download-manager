@@ -25,13 +25,33 @@
 
 using namespace Ubuntu::DownloadManager::System;
 
+class FakeFile : public File {
+    Q_OBJECT
+
+ public:
+    explicit FakeFile(const QString& name);
+    QFile::FileError error() const override;
+    bool flush() override;
+
+    void setError(QFile::FileError err);
+
+ private:
+    bool _errWasSet = false;
+    QFile::FileError _err;
+};
+
 class FakeFileManager : public FileManager, public Fake {
     Q_OBJECT
 
  public:
     explicit FakeFileManager(QObject *parent = 0);
 
+    File* createFile(const QString& name) override;
+    void setFile(File* file);
     bool remove(const QString& path) override;
+
+ private:
+    File* _file = NULL;
 };
 
 #endif  // FAKE_FILE_MANAGER_H
