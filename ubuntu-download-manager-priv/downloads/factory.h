@@ -20,7 +20,7 @@
 #define DOWNLOADER_LIB_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 #include "downloads/download.h"
 #include "system/apparmor.h"
 #include "system/system_network_info.h"

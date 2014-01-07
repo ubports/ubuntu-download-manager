@@ -1,8 +1,10 @@
+include(../common-project-config.pri)
+include(../common-vars.pri)
+
 QT       += network dbus systeminfo sql
 QT       -= gui
 
-TARGET = ubuntudownloadmanager
-QMAKE_CXXFLAGS += -std=c++0x -Werror
+TARGET = ubuntu-download-manager-priv
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
@@ -18,14 +20,11 @@ SOURCES += \
     downloads/manager.cpp \
     downloads/download_manager_adaptor.cpp \
     downloads/queue.cpp \
-    downloads/download_struct.cpp \
     downloads/group_download.cpp \
-    downloads/group_download_struct.cpp \
     downloads/group_download_adaptor.cpp \
     downloads/file_download.cpp \
     downloads/sm_file_download.cpp \
     downloads/state_machines/download_sm.cpp \
-    system/hash_algorithm.cpp \
     system/uuid_utils.cpp \
     system/uuid_factory.cpp \
     system/timer.cpp \
@@ -53,14 +52,11 @@ HEADERS +=\
     downloads/manager.h \
     downloads/download_manager_adaptor.h \
     downloads/queue.h \
-    downloads/download_struct.h \
     downloads/group_download.h \
-    downloads/group_download_struct.h \
     downloads/group_download_adaptor.h \
     downloads/file_download.h \
     downloads/sm_file_download.h \
     downloads/state_machines/download_sm.h \
-    system/hash_algorithm.h \
     system/uuid_utils.h \
     system/uuid_factory.h \
     system/timer.h \
@@ -75,7 +71,6 @@ HEADERS +=\
     system/apparmor.h \
     system/network_reply.h \
     system/dbus_proxy.h \
-    metatypes.h \
     downloads/state_machines/state.h \
     downloads/state_machines/final_state.h
 
@@ -90,11 +85,14 @@ OTHER_FILES += \
     downloads/com.canonical.applications.download.xml \
     downloads/generate_adaptors.sh
 
-target.path = /usr/lib/
-INSTALLS += target
+include(../common-installs-config.pri)
 
 LIBS += -lnih-dbus
 
-CONFIG += link_pkgconfig
 PKGCONFIG += dbus-1
 
+
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
+
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
+DEPENDPATH += $$PWD/../ubuntu-download-manager-common

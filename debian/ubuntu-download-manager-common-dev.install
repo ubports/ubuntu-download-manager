@@ -1,0 +1,5 @@
+usr/include/ubuntu/download_manager/metatypes.h
+usr/include/ubuntu/download_manager/download_struct.h
+usr/include/ubuntu/download_manager/group_download_struct.h
+usr/lib/*/libubuntu-download-manager-common.so
+usr/lib/*/pkgconfig/ubuntu-download-manager-common.pc

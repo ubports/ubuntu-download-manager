@@ -14,7 +14,7 @@
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 
 QT_BEGIN_NAMESPACE
 class QByteArray;

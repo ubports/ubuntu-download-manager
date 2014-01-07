@@ -17,11 +17,22 @@ Homepage: https://launchpad.net/ubuntu-system-image
 # upstream branch
 Vcs-Bzr: lp:ubuntu-download-manager
 
-Package: libubuntudownloadmanager1
+Package: ubuntu-download-manager-common1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Description: Ubuntu Download Manager - shared common library
+ Ubuntu Download Manager performs downloads from a centralized location.
+ .
+ This package includes the common shared library between the client lib and and the service lib.
+
+Package: ubuntu-download-manager-priv1
+Section: libs
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ubuntu-download-manager-common1 (= ${binary:Version}),
 Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
@@ -32,7 +43,7 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libubuntudownloadmanager1 (= ${binary:Version}),
+         ubuntu-download-manager-priv1 (= ${binary:Version}),
 Description: Ubuntu Download Manager - daemon
  Ubuntu Download Manager performs downloads from a centralized location.
  .

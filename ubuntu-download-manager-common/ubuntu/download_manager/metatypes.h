@@ -21,8 +21,8 @@
 
 #include <QMap>
 #include <QList>
-#include "downloads/group_download_struct.h"
-#include "downloads/download_struct.h"
+#include "group_download_struct.h"
+#include "download_struct.h"
 
 using namespace Ubuntu::DownloadManager;
 

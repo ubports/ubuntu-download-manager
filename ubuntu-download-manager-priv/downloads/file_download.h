@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
+#include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
 #include <QSharedPointer>

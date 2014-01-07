@@ -22,7 +22,7 @@
 #include <QDir>
 #include <QObject>
 #include <downloads/file_download.h>
-#include <metatypes.h>
+#include <ubuntu/download_manager/metatypes.h>
 #include "fakes/fake_system_network_info.h"
 #include "fakes/fake_request_factory.h"
 #include "fakes/fake_process_factory.h"

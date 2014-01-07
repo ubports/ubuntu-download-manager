@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "downloads/download_struct.h"
+#include "download_struct.h"
 
 namespace Ubuntu {
 

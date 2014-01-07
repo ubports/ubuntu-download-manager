@@ -20,7 +20,7 @@
 #include <QNetworkRequest>
 #include <QSignalSpy>
 #include <QSslError>
-#include <system/hash_algorithm.h>
+#include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/uuid_utils.h>
 #include "fakes/fake_network_reply.h"
 #include "fakes/fake_process.h"

@@ -19,7 +19,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtDBus/QtDBus>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 
 /*
  * Proxy class for interface org.freedesktop.DBus
