@@ -105,12 +105,9 @@ class DaemonPrivate {
     }
 
     void start(QString path) {
-    qDebug() << "THREAD ID =>>>" << QThread::currentThreadId();
-    qDebug() << "path";
         TRACE;
         _path = path;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
-        qDebug() << "ADAPTOR";
         bool ret = _conn->registerService(_path);
         if (ret) {
             qDebug() << "Service registered to" << _path;

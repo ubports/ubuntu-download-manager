@@ -27,10 +27,36 @@ TestingDaemon::TestingDaemon(QObject *parent)
     : Daemon(&TestingDaemon::createManager, parent) {
 }
 
+TestingDaemon::~TestingDaemon() {
+    delete _testsAdaptor;
+}
+
 void
 TestingDaemon::returnDBusErrors(bool errors) {
     TestingManager* man = qobject_cast<TestingManager*>(manager());
     man->returnDBusErrors(errors);
+}
+
+QString
+TestingDaemon::daemonPath() {
+    return _path;
+}
+
+void
+TestingDaemon::setDaemonPath(QString path) {
+    _path = path;
+}
+
+void
+TestingDaemon::start(QString path) {
+    if (_path.isEmpty()) {
+        Daemon::start(path);
+    } else {
+        Daemon::start(_path);
+    }
+    auto man = manager();
+    TestingManager* manager = qobject_cast<TestingManager*>(man);
+    _testsAdaptor = new TestingManagerAdaptor(manager);
 }
 
 Manager*

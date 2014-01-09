@@ -69,7 +69,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     void setSelfSignedCerts(QList<QSslCertificate> cert);
 
  public slots:  // NOLINT (whitespace/indent)
-    void start(QString path="com.canonical.applications.Downloader");
+    virtual void start(QString path="com.canonical.applications.Downloader");
     void stop();
 
  protected:

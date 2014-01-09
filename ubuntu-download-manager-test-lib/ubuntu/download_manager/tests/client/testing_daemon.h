@@ -22,19 +22,30 @@
 #include <QDBusError>
 #include <QObject>
 #include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
+#include "testing_manager_adaptor.h"
 
 class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
     Q_OBJECT
  public:
     explicit TestingDaemon(QObject *parent = 0);
+    virtual ~TestingDaemon();
 
     // let the client test to tell the manager to return dbus errors
     void returnDBusErrors(bool errors);
+
+    QString daemonPath();
+    void setDaemonPath(QString path);
+
+ public slots:
+    void start(QString path="com.canonical.applications.testing.Downloader") override;
 
  private:
     static Ubuntu::DownloadManager::Daemon::Manager* createManager(
          Ubuntu::DownloadManager::System::Application* app,
          Ubuntu::DownloadManager::System::DBusConnection* conn);
+
+    QString _path;
+    TestingManagerAdaptor* _testsAdaptor = NULL;
 
 };
 

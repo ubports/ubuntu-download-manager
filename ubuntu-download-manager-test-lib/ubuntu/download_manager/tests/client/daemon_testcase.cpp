@@ -38,7 +38,7 @@ void DaemonTestCase::initTestCase() {
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
         + objectName();
-    
+
     _daemonThread = new DaemonThread(_daemonPath, this);
     _daemonThread->start();
 }

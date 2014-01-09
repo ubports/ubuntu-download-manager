@@ -1,0 +1,9 @@
+<node>
+  <interface name="com.canonical.applications.testing.DownloadManager">
+
+    <method name="returnDBusErrors">
+        <arg name="returnErrors" type="b" direction="in"/>
+    </method>
+
+ </interface>
+</node>

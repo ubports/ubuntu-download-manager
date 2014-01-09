@@ -34,8 +34,6 @@ class TestingManager : public Manager {
             QObject *parent = 0)
         : Manager(app, connection, stoppable, parent) {}
 
-    void returnDBusErrors(bool errors);
-
  public slots:  // NOLINT(whitespace/indent)
     QDBusObjectPath createDownload(DownloadStruct download) override;
 
@@ -54,6 +52,8 @@ class TestingManager : public Manager {
                                               const QString& name,
                                               const QString& value) override;
     void exit() override;
+
+    void returnDBusErrors(bool errors);
 
  private:
     bool _returnErrors = false;

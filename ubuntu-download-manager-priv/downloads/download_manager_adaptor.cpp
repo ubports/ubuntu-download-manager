@@ -8,7 +8,6 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#include <QDebug>
 #include "download_manager_adaptor.h"
 #include <QtCore/QMetaObject>
 #include <QtCore/QByteArray>
@@ -42,7 +41,6 @@ DownloadManagerAdaptor::~DownloadManagerAdaptor()
 
 void DownloadManagerAdaptor::allowGSMDownload(bool allowed)
 {
-    qDebug() << "ALLO GSM IN ADAPTOR";
     // handle method call com.canonical.applications.DownloadManager.allowGSMDownload
     QMetaObject::invokeMethod(parent(), "allowGSMDownload", Q_ARG(bool, allowed));
 }
