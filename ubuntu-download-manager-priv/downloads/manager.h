@@ -70,6 +70,8 @@ class Manager : public QObject, public QDBusContext {
 
     virtual qulonglong defaultThrottle();
     virtual void setDefaultThrottle(qulonglong speed);
+    virtual void allowGSMDownload(bool allowed);
+    virtual bool isGSMDownloadAllowed();
     virtual QList<QDBusObjectPath> getAllDownloads();
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
@@ -98,12 +100,13 @@ class Manager : public QObject, public QDBusContext {
     void onDownloadsChanged(QString);
 
  private:
-    Application* _app;
+    Application* _app = NULL;
     qulonglong _throttle;
-    Factory* _downloadFactory;
-    Queue* _downloadsQueue;
-    DBusConnection* _conn;
-    bool _stoppable;
+    Factory* _downloadFactory = NULL;
+    Queue* _downloadsQueue = NULL;
+    DBusConnection* _conn = NULL;
+    bool _stoppable = false;
+    bool _allowMobileData = true;
 };
 
 }  // Daemon

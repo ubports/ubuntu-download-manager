@@ -30,21 +30,32 @@ DaemonTestCase::daemonPath() {
 
 void
 DaemonTestCase::init() {
+    BaseTestCase::init();
+}
+
+void DaemonTestCase::initTestCase() {
     // WARNING: create a path for this exact test.. we might have
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
         + objectName();
-    _daemon = new Daemon::Daemon(this);
-
-    BaseTestCase::init();
-    _daemon->enableTimeout(false);
-    _daemon->start(_daemonPath);
+    
+    _daemonThread = new DaemonThread(_daemonPath, this);
+    _daemonThread->start();
 }
 
 void
 DaemonTestCase::cleanup() {
-    _daemon->stop();  // unregisters the service although the delete should do
-                      // the same.. but I like to be explicit
-    delete _daemon;
     BaseTestCase::cleanup();
+}
+
+void
+DaemonTestCase::cleanupTestCase() {
+    _daemonThread->quit();
+    _daemonThread->wait();
+    _daemonThread->deleteLater();
+}
+
+void
+DaemonTestCase::returnDBusErrors(bool errors) {
+    _daemonThread->returnDBusErrors(errors);
 }

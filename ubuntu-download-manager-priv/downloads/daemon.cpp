@@ -105,9 +105,12 @@ class DaemonPrivate {
     }
 
     void start(QString path) {
+    qDebug() << "THREAD ID =>>>" << QThread::currentThreadId();
+    qDebug() << "path";
         TRACE;
         _path = path;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
+        qDebug() << "ADAPTOR";
         bool ret = _conn->registerService(_path);
         if (ret) {
             qDebug() << "Service registered to" << _path;
@@ -131,6 +134,10 @@ class DaemonPrivate {
         if (!ret) {
             qCritical() << "Could not unregister service at" << _path;
         }
+    }
+
+    Manager* manager() {
+        return _downInterface;
     }
 
     void onTimeout() {
@@ -238,6 +245,16 @@ Daemon::Daemon(Application* app,
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
 }
 
+Daemon::Daemon(ManagerConstructor manConstructor, QObject *parent)
+    : QObject(parent) {
+    auto app = new Application();
+    auto conn = new DBusConnection();
+    auto timer = new Timer();
+    auto man = manConstructor(app, conn);
+    qDebug() << man;
+    d_ptr = new DaemonPrivate(app, conn, timer, man, this);
+}
+
 Daemon::~Daemon() {
     delete d_ptr;
 }
@@ -288,6 +305,12 @@ void
 Daemon::stop() {
     Q_D(Daemon);
     d->stop();
+}
+
+Manager*
+Daemon::manager() {
+    Q_D(Daemon);
+    return d->manager();
 }
 
 }  // Daemon

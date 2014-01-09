@@ -19,20 +19,23 @@
 #ifndef TESTING_DAEMON_H
 #define TESTING_DAEMON_H
 
+#include <QDBusError>
 #include <QObject>
 #include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
 
-using namespace Ubuntu::DownloadManager;
-
-class TestingDaemon : public Daemon {
+class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
     Q_OBJECT
  public:
     explicit TestingDaemon(QObject *parent = 0);
-    
- signals:
-    
- public slots:
-    
+
+    // let the client test to tell the manager to return dbus errors
+    void returnDBusErrors(bool errors);
+
+ private:
+    static Ubuntu::DownloadManager::Daemon::Manager* createManager(
+         Ubuntu::DownloadManager::System::Application* app,
+         Ubuntu::DownloadManager::System::DBusConnection* conn);
+
 };
 
 #endif // TESTING_DAEMON_H

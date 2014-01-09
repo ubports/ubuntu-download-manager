@@ -18,10 +18,6 @@
 
 #include "testing_manager.h"
 
-TestingManager::TestingManager(QObject *parent) :
-    QObject(parent) {
-}
-
 void
 TestingManager::returnDBusErrors(bool errors) {
     _returnErrors = errors;
@@ -30,7 +26,7 @@ TestingManager::returnDBusErrors(bool errors) {
 QDBusObjectPath
 TestingManager::createDownload(DownloadStruct download) {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "createDownload");
     }
     return Manager::createDownload(download);
@@ -43,7 +39,7 @@ TestingManager::createDownloadGroup(StructList downloads,
                                     const QVariantMap& metadata,
                                     StringMap headers) {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "createDownloadGroup");
     }
     return Manager::createDownloadGroup(downloads, algorithm, allowed3G,
@@ -53,7 +49,7 @@ TestingManager::createDownloadGroup(StructList downloads,
 qulonglong
 TestingManager::defaultThrottle() {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "defaultThrottle");
     }
     return Manager::defaultThrottle();
@@ -62,16 +58,36 @@ TestingManager::defaultThrottle() {
 void
 TestingManager::setDefaultThrottle(qulonglong speed) {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "setDefaultThrottle");
     }
     Manager::setDefaultThrottle(speed);
 }
 
+void
+TestingManager::allowGSMDownload(bool allowed) {
+    if (calledFromDBus() && _returnErrors) {
+        qDebug() << "Send error";
+        sendErrorReply(QDBusError::Other,
+        "setDefaultThrottle");
+    }
+    Manager::allowGSMDownload(allowed);
+}
+
+bool
+TestingManager::isGSMDownloadAllowed() {
+    if (calledFromDBus() && _returnErrors) {
+        qDebug() << "Send error";
+        sendErrorReply(QDBusError::Other,
+        "setDefaultThrottle");
+    }
+    return Manager::isGSMDownloadAllowed();
+}
+
 QList<QDBusObjectPath>
 TestingManager::getAllDownloads() {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "getAllDownloads");
     }
     return Manager::getAllDownloads();
@@ -81,7 +97,7 @@ QList<QDBusObjectPath>
 TestingManager::getAllDownloadsWithMetadata(const QString& name,
                                             const QString& value) {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "getAllDownloadsWithMetadata");
     }
     return Manager::getAllDownloadsWithMetadata(name, value);
@@ -90,7 +106,7 @@ TestingManager::getAllDownloadsWithMetadata(const QString& name,
 void
 TestingManager::exit() {
     if (calledFromDBus() && _returnErrors) {
-        sendErrorReply(QDBusError::InvalidMember,
+        sendErrorReply(QDBusError::Other,
         "exit");
         return;
     }

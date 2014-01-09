@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include "test_manager.h"
 
 TestManager::TestManager(QObject *parent)
@@ -25,15 +26,21 @@ TestManager::TestManager(QObject *parent)
 void
 TestManager::init() {
     DaemonTestCase::init();
+    _man = Manager::createSessionManager(daemonPath(), this);
 }
 
 void
 TestManager::cleanup() {
+    delete _man;
     DaemonTestCase::cleanup();
 }
 
 void
 TestManager::testAllowMobileDataDownload_data() {
+    QTest::addColumn<bool>("enabled");
+
+    QTest::newRow("Enabled") << true;
+    QTest::newRow("Disabled") << false;
 }
 
 void
@@ -43,7 +50,10 @@ TestManager::testAllowMobileDataDownload() {
 
 void
 TestManager::testAllowMobileDataDownloadError() {
-    QFAIL("Not implemented");
+    qDebug() << "THREAD ID =>>>" << QThread::currentThreadId();
+    returnDBusErrors(true);
+    _man->allowMobileDataDownload(true);
+    QVERIFY(_man->isError());
 }
 
 void
@@ -53,6 +63,7 @@ TestManager::testIsMobileDataDownload() {
 
 void
 TestManager::testIsMobileDataDownloadError() {
+    returnDBusErrors(true);
     QFAIL("Not implemented");
 }
 
@@ -72,11 +83,14 @@ TestManager::testSetDefaultThrottle_data() {
 
 void
 TestManager::testSetDefaultThrottle() {
-    QFAIL("Not implemented");
+    returnDBusErrors(true);
+    _man->setDefaultThrottle(30);
+    QVERIFY(_man->isError());
 }
 
 void
 TestManager::testSetDefaultThrottleError() {
+    returnDBusErrors(true);
     QFAIL("Not implemented");
 }
 
@@ -87,5 +101,6 @@ TestManager::testExit() {
 
 void
 TestManager::testExitError() {
+    returnDBusErrors(true);
     QFAIL("Not implemented");
 }

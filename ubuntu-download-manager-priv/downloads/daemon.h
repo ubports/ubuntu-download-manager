@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
+#include <functional>
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
@@ -41,6 +42,10 @@ namespace Daemon {
 
 class Manager;
 class DaemonPrivate;
+
+typedef std::function<Manager*(System::Application*, System::DBusConnection*)>
+    ManagerConstructor;
+
 class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
     Q_OBJECT
@@ -66,6 +71,13 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
  public slots:  // NOLINT (whitespace/indent)
     void start(QString path="com.canonical.applications.Downloader");
     void stop();
+
+ protected:
+    // constructor that can be used to pass a special case of manager
+    // this is useful when a subclass was to speciallize the manager
+    Daemon(ManagerConstructor manConstructor, QObject* parent = 0);
+
+    Manager* manager();
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onTimeout())

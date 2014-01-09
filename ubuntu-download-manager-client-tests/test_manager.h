@@ -20,14 +20,18 @@
 #define TEST_MANAGER_H
 
 #include <QObject>
+#include <ubuntu/download_manager/manager.h>
 #include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 
+using namespace Ubuntu::DownloadManager;
+
 class TestManager : public DaemonTestCase {
     Q_OBJECT
+
  public:
     explicit TestManager(QObject* parent = 0);
-    
+
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
@@ -44,6 +48,9 @@ class TestManager : public DaemonTestCase {
     void testSetDefaultThrottleError();
     void testExit();
     void testExitError();
+
+ private:
+    Manager* _man;
 };
 
 DECLARE_TEST(TestManager)

@@ -16,8 +16,25 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
+#include <ubuntu/download_manager/system/dbus_connection.h>
+#include <system/application.h>
+#include <system/timer.h>
+#include "testing_manager.h"
 #include "testing_daemon.h"
 
 TestingDaemon::TestingDaemon(QObject *parent)
-    : QObject(parent) {
+    : Daemon(&TestingDaemon::createManager, parent) {
+}
+
+void
+TestingDaemon::returnDBusErrors(bool errors) {
+    TestingManager* man = qobject_cast<TestingManager*>(manager());
+    man->returnDBusErrors(errors);
+}
+
+Manager*
+TestingDaemon::createManager(System::Application* app,
+                             System::DBusConnection* conn) {
+    return new TestingManager(app, conn, true);
 }

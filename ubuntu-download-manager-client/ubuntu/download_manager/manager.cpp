@@ -44,6 +44,7 @@ class ManagerPrivate {
  public:
     ManagerPrivate(QDBusConnection conn, QString path, Manager* parent)
         : q_ptr(parent) {
+        init();
         _dbusInterface = new ManagerInterface(path, MANAGER_PATH,
             conn);
     }
@@ -52,10 +53,21 @@ class ManagerPrivate {
     ManagerPrivate(ManagerInterface* interface, Manager* parent)
         : _dbusInterface(interface),
           q_ptr(parent) {
+        init();
     }
 
     ~ManagerPrivate() {
         delete _dbusInterface;
+    }
+
+    void init() {
+        qRegisterMetaType<Download*>();
+        qRegisterMetaType<GroupDownload*>();
+        qRegisterMetaType<Error*>();
+        qDBusRegisterMetaType<StringMap>();
+        qDBusRegisterMetaType<DownloadStruct>();
+        qDBusRegisterMetaType<GroupDownloadStruct>();
+        qDBusRegisterMetaType<StructList>();
     }
 
     Download* createDownload(DownloadStruct downStruct) {

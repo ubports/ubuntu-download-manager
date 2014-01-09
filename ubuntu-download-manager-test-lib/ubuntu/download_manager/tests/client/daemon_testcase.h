@@ -19,11 +19,46 @@
 #ifndef DAEMON_TESTCASE_H
 #define DAEMON_TESTCASE_H
 
+#include <QDebug>
+#include <QThread>
 #include <QObject>
-#include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
 #include "ubuntu/download_manager/tests/base_testcase.h"
+#include "testing_daemon.h"
 
 using namespace Ubuntu::DownloadManager;
+
+class DaemonThread : public QThread {
+    Q_OBJECT
+
+ public:
+    DaemonThread(QString path, QObject* parent=0)
+        : QThread(parent),
+          _path(path) {
+    }
+
+    virtual ~DaemonThread() {
+        _daemon->stop();
+        delete _daemon;
+    }
+
+    void returnDBusErrors(bool errors) {
+        _daemon->returnDBusErrors(errors);
+    }
+
+ protected:
+    void run() override {
+        _daemon = new TestingDaemon();
+        _daemon->enableTimeout(false);
+        qDebug() << "Star daemon" << _path;
+        _daemon->start(_path);
+        QThread::run();
+    }
+
+ private:
+    QString _path;
+    bool _started = false;
+    TestingDaemon* _daemon = NULL;
+};
 
 class DaemonTestCase : public BaseTestCase {
     Q_OBJECT
@@ -36,11 +71,18 @@ class DaemonTestCase : public BaseTestCase {
  protected slots:  // NOLINT(whitespace/indent)
 
     void init() override;
+    virtual void initTestCase();
     void cleanup() override;
+    virtual void cleanupTestCase();
+    void returnDBusErrors(bool errors);
+
+ signals:
+    void daemonStarted();
+    void daemonStopped();
 
  private:
     QString _daemonPath;
-    Daemon::Daemon* _daemon;
+    DaemonThread* _daemonThread;
 };
 
 #endif // DAEMON_TESTCASE_H

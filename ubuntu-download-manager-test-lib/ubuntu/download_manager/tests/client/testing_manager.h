@@ -35,7 +35,7 @@ class TestingManager : public Manager {
         : Manager(app, connection, stoppable, parent) {}
 
     void returnDBusErrors(bool errors);
-    
+
  public slots:  // NOLINT(whitespace/indent)
     QDBusObjectPath createDownload(DownloadStruct download) override;
 
@@ -47,6 +47,8 @@ class TestingManager : public Manager {
 
     qulonglong defaultThrottle() override;
     void setDefaultThrottle(qulonglong speed) override;
+    void allowGSMDownload(bool allowed) override;
+    bool isGSMDownloadAllowed() override;
     QList<QDBusObjectPath> getAllDownloads() override;
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                               const QString& name,
