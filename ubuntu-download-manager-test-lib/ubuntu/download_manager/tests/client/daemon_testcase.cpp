@@ -46,7 +46,6 @@ DaemonTestCase::daemonPath() {
 
 void
 DaemonTestCase::onProcessError(QProcess::ProcessError error) {
-    qDebug() << "ERROR!!!!!!!!!!!!!";
     qDebug() << error << _process->readAllStandardError() << _process->readAllStandardOutput();
     QFAIL("Daemon process could not be started.");
 }
@@ -71,7 +70,6 @@ DaemonTestCase::init() {
     // loop until the service is registered
     auto conn = QDBusConnection::sessionBus();
     while(!conn.interface()->isServiceRegistered(_daemonPath));
-    qDebug() << "STARTED!!!!!!!!!!!!!!!!!!!";
 }
 
 void
@@ -84,7 +82,6 @@ DaemonTestCase::cleanup() {
 
     while(conn.interface()->isServiceRegistered(_daemonPath));
     _process->waitForFinished();
-    qDebug() << "STOPED!!!!!!!!!!!!!!!!!!!";
 
     delete _process;
     BaseTestCase::cleanup();

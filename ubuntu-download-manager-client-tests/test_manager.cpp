@@ -45,7 +45,9 @@ TestManager::testAllowMobileDataDownload_data() {
 
 void
 TestManager::testAllowMobileDataDownload() {
-    QFAIL("Not implemented");
+    QFETCH(bool, enabled);
+    _man->allowMobileDataDownload(enabled);
+    QCOMPARE(enabled, _man->isMobileDataDownload());
 }
 
 void
@@ -56,50 +58,46 @@ TestManager::testAllowMobileDataDownloadError() {
 }
 
 void
-TestManager::testIsMobileDataDownload() {
-    QFAIL("Not implemented");
-}
-
-void
 TestManager::testIsMobileDataDownloadError() {
     returnDBusErrors(true);
-    QFAIL("Not implemented");
-}
-
-void
-TestManager::testDefaultThrottle() {
-    QFAIL("Not implemented");
+    _man->isMobileDataDownload();
+    QVERIFY(_man->isError());
 }
 
 void
 TestManager::testDefaultThrottleError() {
-    QFAIL("Not implemented");
+    returnDBusErrors(true);
+    _man->defaultThrottle();
+    QVERIFY(_man->isError());
 }
 
 void
 TestManager::testSetDefaultThrottle_data() {
+    QTest::addColumn<uint>("speed");
+
+    QTest::newRow("First row") << 200u;
+    QTest::newRow("Second row") << 1212u;
+    QTest::newRow("Third row") << 998u;
+    QTest::newRow("Last row") << 60u;
 }
 
 void
 TestManager::testSetDefaultThrottle() {
+    QFETCH(uint, speed);
+    _man->setDefaultThrottle(speed);
+    QCOMPARE(speed, (uint)_man->defaultThrottle());
+}
+
+void
+TestManager::testSetDefaultThrottleError() {
     returnDBusErrors(true);
     _man->setDefaultThrottle(30);
     QVERIFY(_man->isError());
 }
 
 void
-TestManager::testSetDefaultThrottleError() {
-    returnDBusErrors(true);
-    QFAIL("Not implemented");
-}
-
-void
-TestManager::testExit() {
-    QFAIL("Not implemented");
-}
-
-void
 TestManager::testExitError() {
     returnDBusErrors(true);
-    QFAIL("Not implemented");
+    _man->exit();
+    QVERIFY(_man->isError());
 }

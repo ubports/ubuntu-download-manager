@@ -39,14 +39,11 @@ class TestManager : public LocalTreeTestCase {
     void testAllowMobileDataDownload_data();
     void testAllowMobileDataDownload();
     void testAllowMobileDataDownloadError();
-    void testIsMobileDataDownload();
     void testIsMobileDataDownloadError();
-    void testDefaultThrottle();
     void testDefaultThrottleError();
     void testSetDefaultThrottle_data();
     void testSetDefaultThrottle();
     void testSetDefaultThrottleError();
-    void testExit();
     void testExitError();
 
  private:
