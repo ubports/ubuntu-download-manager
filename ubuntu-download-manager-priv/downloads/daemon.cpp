@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -216,11 +216,11 @@ class DaemonPrivate {
     bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
-    Application* _app = NULL;
-    Timer* _shutDownTimer = NULL;
-    DBusConnection* _conn = NULL;
-    Manager* _downInterface = NULL;
-    DownloadManagerAdaptor* _downAdaptor = NULL;
+    Application* _app = nullptr;
+    Timer* _shutDownTimer = nullptr;
+    DBusConnection* _conn = nullptr;
+    Manager* _downInterface = nullptr;
+    DownloadManagerAdaptor* _downAdaptor = nullptr;
     Daemon* q_ptr;
 };
 
