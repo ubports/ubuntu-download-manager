@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -68,15 +68,15 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
                                 GroupCb cb,
                                 GroupCb errCb);
 
-    static Manager* createSessionManager(QString path = "", QObject* parent=0);
-    static Manager* createSystemManager(QString path = "", QObject* parent=0);
+    static Manager* createSessionManager(const QString& path = "", QObject* parent=0);
+    static Manager* createSystemManager(const QString& path = "", QObject* parent=0);
 
  signals:
     void downloadCreated(Download* down);
     void groupCreated(GroupDownload* down);
 
  protected:
-    Manager(QDBusConnection conn, QString path = "", QObject* parent= 0);
+    Manager(QDBusConnection conn, cosnt QString& path = "", QObject* parent= 0);
     // used for testing purposes
     Manager(ManagerInterface* interface, QObject* parent);
 

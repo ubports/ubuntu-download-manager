@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -42,7 +42,7 @@ class ManagerPrivate {
     Q_DECLARE_PUBLIC(Manager)
 
  public:
-    ManagerPrivate(QDBusConnection conn, QString path, Manager* parent)
+    ManagerPrivate(QDBusConnection conn, const QString& path, Manager* parent)
         : q_ptr(parent) {
         _dbusInterface = new ManagerInterface(path, MANAGER_PATH,
             conn);
@@ -141,7 +141,7 @@ class ManagerPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Manager::Manager(QDBusConnection conn, QString path, QObject* parent)
+Manager::Manager(QDBusConnection conn, const QString& path, QObject* parent)
     : QObject(parent),
       d_ptr(new ManagerPrivate(conn, path, this)){
 }
@@ -156,7 +156,7 @@ Manager::~Manager() {
 }
 
 Manager*
-Manager::createSessionManager(QString path, QObject* parent) {
+Manager::createSessionManager(const QString& path, QObject* parent) {
     if (path.isEmpty()) {
         return new Manager(QDBusConnection::sessionBus(), DOWNLOAD_SERVICE, parent);
     } else {
@@ -165,7 +165,7 @@ Manager::createSessionManager(QString path, QObject* parent) {
 }
 
 Manager*
-Manager::createSystemManager(QString path, QObject* parent) {
+Manager::createSystemManager(const QString& path, QObject* parent) {
     if (path.isEmpty()) {
         return new Manager(QDBusConnection::systemBus(), DOWNLOAD_SERVICE, parent);
     } else {
