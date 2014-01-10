@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QDBusObjectPath>
 #include <ubuntu/download_manager/system/dbus_connection.h>
 #include "download.h"
@@ -61,8 +62,8 @@ class ManagerPrivate {
     }
 
     void init() {
-        qRegisterMetaType<Download*>();
-        qRegisterMetaType<GroupDownload*>();
+        qRegisterMetaType<Download*>("Download*");
+        qRegisterMetaType<GroupDownload*>("GroupDownload*");
         qRegisterMetaType<Error*>();
         qDBusRegisterMetaType<StringMap>();
         qDBusRegisterMetaType<DownloadStruct>();

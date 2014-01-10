@@ -16,15 +16,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QStandardPaths>
 #include <QCoreApplication>
 #include <QDebug>
-#include <QStringList> 
+#include <QStringList>
 #include <QTimer>
 #include <ubuntu/download_manager/tests/client/testing_daemon.h>
 #define RETURN_ERRORS "-return-errors"
 #define DAEMON_PATH "-daemon-path"
 
 int main(int argc, char *argv[]) {
+    QStandardPaths::enableTestMode(true);
     QCoreApplication a(argc, argv);
 
     // similar to a real daemon but allows to force certain cases, for example,

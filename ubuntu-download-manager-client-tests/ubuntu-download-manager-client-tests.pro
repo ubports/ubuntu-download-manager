@@ -13,12 +13,14 @@ TEMPLATE = app
 HEADERS += \
     test_group_watch.h \
     test_download_watch.h \
-    test_manager.h
+    test_manager.h \
+    local_tree_testcase.h
 
 SOURCES += main.cpp \
     test_group_watch.cpp \
     test_download_watch.cpp \
-    test_manager.cpp
+    test_manager.cpp \
+    local_tree_testcase.cpp
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 

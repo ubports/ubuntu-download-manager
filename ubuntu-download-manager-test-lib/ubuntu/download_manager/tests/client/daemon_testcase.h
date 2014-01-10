@@ -20,69 +20,39 @@
 #define DAEMON_TESTCASE_H
 
 #include <QDebug>
-#include <QThread>
 #include <QObject>
+#include <QProcess>
 #include "ubuntu/download_manager/tests/base_testcase.h"
 #include "testing_daemon.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class DaemonThread : public QThread {
-    Q_OBJECT
-
- public:
-    DaemonThread(QString path, QObject* parent=0)
-        : QThread(parent),
-          _path(path) {
-    }
-
-    virtual ~DaemonThread() {
-        _daemon->stop();
-        delete _daemon;
-    }
-
-    void returnDBusErrors(bool errors) {
-        _daemon->returnDBusErrors(errors);
-    }
-
- protected:
-    void run() override {
-        _daemon = new TestingDaemon();
-        _daemon->enableTimeout(false);
-        qDebug() << "Star daemon" << _path;
-        _daemon->start(_path);
-        QThread::run();
-    }
-
- private:
-    QString _path;
-    bool _started = false;
-    TestingDaemon* _daemon = NULL;
-};
-
 class DaemonTestCase : public BaseTestCase {
     Q_OBJECT
 
  public:
-    DaemonTestCase(const QString& testName, QObject *parent = 0);
+    DaemonTestCase(const QString& testName,
+                   QObject* parent = 0);
+    DaemonTestCase(const QString& testName,
+                   const QString& daemonProcess,
+                   QObject* parent = 0);
 
     QString daemonPath();
+
+ private slots:
+    void onProcessError(QProcess::ProcessError error);
 
  protected slots:  // NOLINT(whitespace/indent)
 
     void init() override;
-    virtual void initTestCase();
     void cleanup() override;
-    virtual void cleanupTestCase();
     void returnDBusErrors(bool errors);
-
- signals:
-    void daemonStarted();
-    void daemonStopped();
 
  private:
     QString _daemonPath;
-    DaemonThread* _daemonThread;
+    QString _daemonProcess;
+    QProcess* _process = nullptr;
+
 };
 
 #endif // DAEMON_TESTCASE_H

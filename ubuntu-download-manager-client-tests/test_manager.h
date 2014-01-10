@@ -21,12 +21,12 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/manager.h>
-#include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
+#include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class TestManager : public DaemonTestCase {
+class TestManager : public LocalTreeTestCase {
     Q_OBJECT
 
  public:

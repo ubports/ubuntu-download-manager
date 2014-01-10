@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,28 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef BASE_TESTCASE_H
-#define BASE_TESTCASE_H
+#include "local_tree_testcase.h"
+#define TEST_DAEMON "../ubuntu-download-manager-test-daemon/ubuntu-download-manager-test-daemon"
 
-#include <QTest>
-#include <QObject>
-
-class BaseTestCase : public QObject {
-    Q_OBJECT
-
- public:
-    BaseTestCase(const QString& testName, QObject *parent = 0);
-
-    QString testDirectory();
-    QString dataDirectory();
-
- protected slots:  // NOLINT(whitespace/indent)
-
-    virtual void init();
-    virtual void cleanup();
-
- private:
-    bool removeDir(const QString& dirName);
-};
-
-#endif // BASE_TESTCASE_H
+LocalTreeTestCase::LocalTreeTestCase(const QString& testName,
+                                     QObject* parent)
+    : DaemonTestCase(testName, TEST_DAEMON, parent) {
+}

@@ -20,7 +20,7 @@
 #include "test_group_watch.h"
 
 TestGroupWatch::TestGroupWatch(QObject* parent)
-    : DaemonTestCase("TestGroupWatch", parent) {
+    : LocalTreeTestCase("TestGroupWatch", parent) {
 }
 
 void
@@ -37,7 +37,7 @@ TestGroupWatch::onErrorCb(GroupDownload* err) {
 
 void
 TestGroupWatch::init() {
-    DaemonTestCase::init();
+    LocalTreeTestCase::init();
     _calledSuccess = false;
     _calledError = false;
     _algo = "Md5";
@@ -47,7 +47,7 @@ TestGroupWatch::init() {
 void
 TestGroupWatch::cleanup() {
     delete _manager;
-    DaemonTestCase::cleanup();
+    LocalTreeTestCase::cleanup();
 }
 
 void

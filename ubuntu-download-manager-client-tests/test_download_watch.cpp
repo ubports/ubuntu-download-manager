@@ -20,7 +20,7 @@
 #include "test_download_watch.h"
 
 TestDownloadWatch::TestDownloadWatch(QObject *parent)
-    : DaemonTestCase("TestDownloadWatch", parent) {
+    : LocalTreeTestCase("TestDownloadWatch", parent) {
 }
 
 void
@@ -37,7 +37,7 @@ TestDownloadWatch::onErrorCb(Download* err) {
 
 void
 TestDownloadWatch::init() {
-    DaemonTestCase::init();
+    LocalTreeTestCase::init();
     _calledSuccess = false;
     _calledError = false;
     _manager = Manager::createSessionManager(daemonPath(), this);
@@ -46,7 +46,7 @@ TestDownloadWatch::init() {
 void
 TestDownloadWatch::cleanup() {
     delete _manager;
-    DaemonTestCase::cleanup();
+    LocalTreeTestCase::cleanup();
 }
 
 void

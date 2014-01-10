@@ -24,12 +24,12 @@
 #include <ubuntu/download_manager/error.h>
 #include <ubuntu/download_manager/manager.h>
 #include <QObject>
-#include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
+#include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class TestDownloadWatch : public DaemonTestCase {
+class TestDownloadWatch : public LocalTreeTestCase {
     Q_OBJECT
 
  public:

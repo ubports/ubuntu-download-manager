@@ -20,19 +20,19 @@
 #include "test_manager.h"
 
 TestManager::TestManager(QObject *parent)
-    : DaemonTestCase("TestManager", parent) {
+    : LocalTreeTestCase("TestManager", parent) {
 }
 
 void
 TestManager::init() {
-    DaemonTestCase::init();
+    LocalTreeTestCase::init();
     _man = Manager::createSessionManager(daemonPath(), this);
 }
 
 void
 TestManager::cleanup() {
+    LocalTreeTestCase::cleanup();
     delete _man;
-    DaemonTestCase::cleanup();
 }
 
 void
@@ -50,7 +50,6 @@ TestManager::testAllowMobileDataDownload() {
 
 void
 TestManager::testAllowMobileDataDownloadError() {
-    qDebug() << "THREAD ID =>>>" << QThread::currentThreadId();
     returnDBusErrors(true);
     _man->allowMobileDataDownload(true);
     QVERIFY(_man->isError());
