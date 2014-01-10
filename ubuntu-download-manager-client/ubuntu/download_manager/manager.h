@@ -84,7 +84,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     void groupCreated(GroupDownload* down);
 
  protected:
-    Manager(QDBusConnection conn, cosnt QString& path = "", QObject* parent= 0);
+    Manager(QDBusConnection conn, const QString& path = "", QObject* parent= 0);
     // used for testing purposes
     Manager(ManagerInterface* interface, QObject* parent);
 
