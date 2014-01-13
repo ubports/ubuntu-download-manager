@@ -29,13 +29,14 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-
 DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
+                                                  const QDBusConnection& conn,
+                                                  const QString& servicePath,
                                                   const QDBusPendingCall& call,
                                                   DownloadCb cb,
                                                   DownloadCb errCb,
                                                   QObject* parent)
-    : QDBusPendingCallWatcher(call, parent),
+    : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,
@@ -56,7 +57,7 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
     } else {
         qDebug() << "Success!";
         auto path = reply.value();
-        auto down = new Download(path);
+        auto down = new Download(_conn, _servicePath, path);
         emit man->downloadCreated(down);
         _cb(down);
     }
@@ -66,11 +67,13 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
 
 
 GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
+                                            const QDBusConnection& conn,
+                                            const QString& servicePath,
                                             const QDBusPendingCall& call,
                                             GroupCb cb,
                                             GroupCb errCb,
                                             QObject* parent)
-    : QDBusPendingCallWatcher(call, parent),
+    : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,

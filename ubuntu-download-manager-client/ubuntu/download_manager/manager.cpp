@@ -17,6 +17,7 @@
  */
 
 #include <QDebug>
+#include <QDBusConnection>
 #include <QDBusObjectPath>
 #include <ubuntu/download_manager/system/dbus_connection.h>
 #include "download.h"
@@ -43,16 +44,24 @@ class ManagerPrivate {
     Q_DECLARE_PUBLIC(Manager)
 
  public:
-    ManagerPrivate(QDBusConnection conn, const QString& path, Manager* parent)
-        : q_ptr(parent) {
+    ManagerPrivate(const QDBusConnection& conn,
+                   const QString& path,
+                   Manager* parent)
+        : _conn(conn),
+          _servicePath(path),
+          q_ptr(parent) {
+        _dbusInterface = new ManagerInterface(path, MANAGER_PATH, conn);
         init();
-        _dbusInterface = new ManagerInterface(path, MANAGER_PATH,
-            conn);
     }
 
     // used for testing purposes
-    ManagerPrivate(ManagerInterface* interface, Manager* parent)
-        : _dbusInterface(interface),
+    ManagerPrivate(const QDBusConnection& conn,
+                   const QString& path,
+                   ManagerInterface* interface,
+                   Manager* parent)
+        : _conn(conn),
+          _servicePath(path),
+          _dbusInterface(interface),
           q_ptr(parent) {
         init();
     }
@@ -82,7 +91,7 @@ class ManagerPrivate {
             return new Download(err);
         } else {
             auto path = reply.value();
-            auto down = new Download(path, q);
+            auto down = new Download(_conn, _servicePath, path, q);
             emit q->downloadCreated(down);
             return down;
         }
@@ -94,7 +103,8 @@ class ManagerPrivate {
         Q_Q(Manager);
         QDBusPendingCall call =
             _dbusInterface->createDownload(downStruct);
-        auto watcher = new DownloadManagerPendingCallWatcher(call, cb, errCb,
+        auto watcher = new DownloadManagerPendingCallWatcher(_conn,
+                _servicePath, call, cb, errCb,
                 static_cast<QObject*>(q));
         q->connect(watcher, SIGNAL(callbackExecuted()),
             q, SLOT(onWatcherDone()));
@@ -133,8 +143,8 @@ class ManagerPrivate {
         QDBusPendingCall call =
             _dbusInterface->createDownloadGroup(downs,
                 algorithm, allowed3G, metadata, headers);
-        auto watcher = new GroupManagerPendingCallWatcher(call, cb, errCb,
-                static_cast<QObject*>(q));
+        auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
+                call, cb, errCb, static_cast<QObject*>(q));
         q->connect(watcher, SIGNAL(callbackExecuted()),
             q, SLOT(onWatcherDone()));
     }
@@ -150,7 +160,7 @@ class ManagerPrivate {
     void setLastError(const QDBusError& err) {
         Q_Q(Manager);
         // delete the last if error if present to keep mem to a minimum
-        if (_lastError != NULL) {
+        if (_lastError != nullptr) {
             delete _lastError;
         }
         _lastError = new Error(err, q);
@@ -232,8 +242,10 @@ class ManagerPrivate {
 
  private:
     bool _isError = false;
-    Error* _lastError = NULL;
-    ManagerInterface* _dbusInterface;
+    QDBusConnection _conn;
+    QString _servicePath;
+    Error* _lastError = nullptr;
+    ManagerInterface* _dbusInterface = nullptr;
     Manager* q_ptr;
 };
 
@@ -241,14 +253,19 @@ class ManagerPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Manager::Manager(QDBusConnection conn, const QString& path, QObject* parent)
+Manager::Manager(const QDBusConnection& conn,
+                 const QString& path,
+                 QObject* parent)
     : QObject(parent),
       d_ptr(new ManagerPrivate(conn, path, this)){
 }
 
-Manager::Manager(ManagerInterface* interface, QObject* parent)
+Manager::Manager(const QDBusConnection& conn,
+                 const QString& path,
+                 ManagerInterface* interface,
+                 QObject* parent)
     : QObject(parent),
-      d_ptr(new ManagerPrivate(interface, this)) {
+      d_ptr(new ManagerPrivate(conn, path, interface, this)) {
 }
 
 Manager::~Manager() {

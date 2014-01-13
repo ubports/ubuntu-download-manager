@@ -16,27 +16,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_DOWNLOAD_MANAGER_H
-#define TEST_DOWNLOAD_MANAGER_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_PENDING_CALL_WATCHER_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_PENDING_CALL_WATCHER_H
 
+#include <QDBusConnection>
+#include <QDBusPendingCallWatcher>
 #include <QObject>
-#include <ubuntu/download_manager/tests/test_runner.h>
-#include "local_tree_testcase.h"
 
-using namespace Ubuntu::DownloadManager;
+namespace Ubuntu {
 
-class TestDownloadManager : public LocalTreeTestCase {
+namespace DownloadManager {
+
+class PendingCallWatcher : public QDBusPendingCallWatcher {
     Q_OBJECT
 
  public:
-    explicit TestDownloadManager(QObject* parent = 0);
+    PendingCallWatcher(const QDBusConnection& conn,
+                       const QString& servicePath,
+                       const QDBusPendingCall& call,
+                       QObject* parent = 0);
 
- private slots:  // NOLINT(whitespace/indent)
+ signals:
+    void callbackExecuted();
 
-    void init() override;
-    void cleanup() override;
+ protected:
+    QDBusConnection _conn;
+    QString _servicePath;
 };
 
-DECLARE_TEST(TestDownloadManager)
+}  // DownloadManager
 
-#endif // TEST_DOWNLOAD_MANAGER_H
+}  // Ubuntu
+
+#endif // PENDING_CALL_WATCHER_H

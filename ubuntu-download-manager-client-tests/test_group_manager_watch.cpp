@@ -17,26 +17,26 @@
  */
 
 #include <QSignalSpy>
-#include "test_group_watch.h"
+#include "test_group_manager_watch.h"
 
-TestGroupWatch::TestGroupWatch(QObject* parent)
-    : LocalTreeTestCase("TestGroupWatch", parent) {
+TestGroupManagerWatch::TestGroupManagerWatch(QObject* parent)
+    : LocalTreeTestCase("TestGroupManagerWatch", parent) {
 }
 
 void
-TestGroupWatch::onSuccessCb(GroupDownload* down) {
+TestGroupManagerWatch::onSuccessCb(GroupDownload* down) {
     delete down;
     _calledSuccess = true;
 }
 
 void
-TestGroupWatch::onErrorCb(GroupDownload* err) {
+TestGroupManagerWatch::onErrorCb(GroupDownload* err) {
     delete err;
     _calledError = true;
 }
 
 void
-TestGroupWatch::init() {
+TestGroupManagerWatch::init() {
     LocalTreeTestCase::init();
     _calledSuccess = false;
     _calledError = false;
@@ -45,13 +45,13 @@ TestGroupWatch::init() {
 }
 
 void
-TestGroupWatch::cleanup() {
+TestGroupManagerWatch::cleanup() {
     delete _manager;
     LocalTreeTestCase::cleanup();
 }
 
 void
-TestGroupWatch::testCallbackIsExecuted() {
+TestGroupManagerWatch::testCallbackIsExecuted() {
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
         "local_file", ""));
@@ -60,9 +60,9 @@ TestGroupWatch::testCallbackIsExecuted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+    GroupCb cb = std::bind(&TestGroupManagerWatch::onSuccessCb, this,
         std::placeholders::_1);
-    GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+    GroupCb errCb = std::bind(&TestGroupManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
@@ -75,7 +75,7 @@ TestGroupWatch::testCallbackIsExecuted() {
 }
 
 void
-TestGroupWatch::testErrCallbackIsExecuted() {
+TestGroupManagerWatch::testErrCallbackIsExecuted() {
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
         "local_file", ""));
@@ -84,9 +84,9 @@ TestGroupWatch::testErrCallbackIsExecuted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    GroupCb cb = std::bind(&TestGroupWatch::onSuccessCb, this,
+    GroupCb cb = std::bind(&TestGroupManagerWatch::onSuccessCb, this,
         std::placeholders::_1);
-    GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
+    GroupCb errCb = std::bind(&TestGroupManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));

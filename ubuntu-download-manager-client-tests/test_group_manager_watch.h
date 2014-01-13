@@ -29,11 +29,11 @@
 
 using namespace Ubuntu::DownloadManager;
 
-class TestGroupWatch : public LocalTreeTestCase {
+class TestGroupManagerWatch : public LocalTreeTestCase {
     Q_OBJECT
 
  public:
-    explicit TestGroupWatch(QObject* parent = 0);
+    explicit TestGroupManagerWatch(QObject* parent = 0);
 
  private:
     void onSuccessCb(GroupDownload* down);
@@ -55,6 +55,6 @@ class TestGroupWatch : public LocalTreeTestCase {
     Manager* _manager;
 };
 
-DECLARE_TEST(TestGroupWatch)
+DECLARE_TEST(TestGroupManagerWatch)
 
 #endif // TEST_GROUP_WATCH_H

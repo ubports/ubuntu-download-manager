@@ -16,18 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "test_download_watch.h"
+#include "pending_call_watcher.h"
 
-TestDownloadManager::TestDownloadManager(QObject *parent)
-    : LocalTreeTestCase("TestDownloadManager", parent) { 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+PendingCallWatcher::PendingCallWatcher(const QDBusConnection& conn,
+                                       const QString& servicePath,
+                                       const QDBusPendingCall& call,
+                                       QObject* parent)
+    : QDBusPendingCallWatcher(call, parent),
+      _conn(conn),
+      _servicePath(servicePath) {
 }
 
-void
-TestDownloadManager::init() {
-    LocalTreeTestCase::init();
-}
+}  // DownloadManager
 
-void
-TestDownloadManager::cleanup() {
-    LocalTreeTestCase::cleanup();
-}
+}  // Ubuntu

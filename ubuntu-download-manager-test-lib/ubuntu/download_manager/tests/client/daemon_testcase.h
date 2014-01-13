@@ -39,6 +39,13 @@ class DaemonTestCase : public BaseTestCase {
 
     QString daemonPath();
 
+ private:
+    void startUDMDaemon();
+    void stopUDMDaemon();
+    QString httpServerDir();
+    void startHttpServer();
+    void stopHttpServer();
+
  private slots:
     void onProcessError(QProcess::ProcessError error);
 
@@ -47,11 +54,17 @@ class DaemonTestCase : public BaseTestCase {
     void init() override;
     void cleanup() override;
     void returnDBusErrors(bool errors);
+    void addFileToHttpServer(const QString& absolutePath);
 
  private:
-    QString _daemonPath;
-    QString _daemonProcess;
-    QProcess* _process = nullptr;
+    int _httpServerRetry = 0;
+    int _httpServerRetryMax = 10;
+    int _port = 8080;
+    QString _daemonPath = "";
+    QString _daemonExec = "";
+    QString _httpServerDir = "";
+    QProcess* _daemonProcess = nullptr;
+    QProcess* _httpServer = nullptr;
 
 };
 
