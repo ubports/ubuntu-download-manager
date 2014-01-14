@@ -83,6 +83,10 @@ class Manager : public QObject, public QDBusContext {
     void sizeChanged(int count);
 
  protected:
+    Queue* queue() {
+        return _downloadsQueue;
+    }
+
     virtual QDBusObjectPath registerDownload(Download* download);
 
  private:

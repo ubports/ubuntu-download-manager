@@ -21,7 +21,9 @@
 
 #include <QDBusContext>
 #include <QObject>
-#include <ubuntu/download_manager/downloads/file_download.h>
+#include <downloads/file_download.h>
+
+using namespace Ubuntu::DownloadManager::Daemon;
 
 class TestingFileDownload : public FileDownload, public QDBusContext {
     Q_OBJECT
@@ -29,6 +31,7 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
  public:
     TestingFileDownload(FileDownload* down,
                         QObject* parent = 0);
+    virtual ~TestingFileDownload();
     void returnDBusErrors(bool errors);
 
  public slots:  // NOLINT(whitespace/indent)
@@ -37,7 +40,8 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
     void setThrottle(qulonglong speed) override;
 
  private:
-
+    bool _returnErrors;
+    FileDownload* _down = nullptr;
 };
 
 #endif // TESTING_FILE_DOWNLOAD_H

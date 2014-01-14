@@ -18,6 +18,7 @@
 
 #include <QScopedPointer>
 #include <QSignalSpy>
+#include <ubuntu/download_manager/download.h>
 #include "test_download_watch.h"
 
 TestDownloadWatch::TestDownloadWatch(QObject *parent)
@@ -40,13 +41,17 @@ void
 TestDownloadWatch::testErrorRaised() {
     // create a download with a missing url in the local host to ensure
     // that the error signal is raised
-/*    QVariantMap metadata;
+    QVariantMap metadata;
     QMap<QString, QString> headers;
-    QString notPresentFile = serverUrl().setPath("not/present.zip");
-    DownloadStruct downStruct(notPresentFile, metadata, headers);
+    QUrl notPresentFile = serverUrl();
+    notPresentFile.setPath("not/present.zip");
+    DownloadStruct downStruct(notPresentFile.toString(), metadata, headers);
 
     // use the blocking call so that we get a download
-    auto down = QScopedPointer<Download>(_manager->createDownload(downStruct));
+    QScopedPointer<Download> down(_manager->createDownload(downStruct));
     QSignalSpy spy(down.data(), SIGNAL(error(Error*)));
-*/
+    returnDBusErrors(true);
+
+    down->setThrottle(0);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 10000);
 }
