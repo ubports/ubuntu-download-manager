@@ -82,6 +82,9 @@ class Manager : public QObject, public QDBusContext {
     void downloadCreated(const QDBusObjectPath& path);
     void sizeChanged(int count);
 
+ protected:
+    virtual QDBusObjectPath registerDownload(Download* download);
+
  private:
 
     typedef std::function<Download*(QString)> DownloadCreationFunc;
@@ -90,7 +93,6 @@ class Manager : public QObject, public QDBusContext {
 
     void loadPreviewsDownloads(QString path);
     void addDownload(Download* download);
-    QDBusObjectPath registerDownload(Download* download);
     QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc);
     QDBusObjectPath createDownload(const QString& url,
                                    const QString& hash,
