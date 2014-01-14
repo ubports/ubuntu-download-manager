@@ -16,18 +16,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QScopedPointer>
+#include <QSignalSpy>
 #include "test_download_watch.h"
 
-TestDownloadManager::TestDownloadManager(QObject *parent)
-    : LocalTreeTestCase("TestDownloadManager", parent) { 
+TestDownloadWatch::TestDownloadWatch(QObject *parent)
+    : LocalTreeTestCase("TestDownloadWatch", parent) {
 }
 
 void
-TestDownloadManager::init() {
+TestDownloadWatch::init() {
     LocalTreeTestCase::init();
+    _manager = Manager::createSessionManager(daemonPath(), this);
 }
 
 void
-TestDownloadManager::cleanup() {
+TestDownloadWatch::cleanup() {
+    delete _manager;
     LocalTreeTestCase::cleanup();
+}
+
+void
+TestDownloadWatch::testErrorRaised() {
+    // create a download with a missing url in the local host to ensure
+    // that the error signal is raised
+/*    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    QString notPresentFile = serverUrl().setPath("not/present.zip");
+    DownloadStruct downStruct(notPresentFile, metadata, headers);
+
+    // use the blocking call so that we get a download
+    auto down = QScopedPointer<Download>(_manager->createDownload(downStruct));
+    QSignalSpy spy(down.data(), SIGNAL(error(Error*)));
+*/
 }

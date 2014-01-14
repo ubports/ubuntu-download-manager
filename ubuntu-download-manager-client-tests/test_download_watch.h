@@ -21,22 +21,27 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/download_manager/manager.h>
 #include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class TestDownloadManager : public LocalTreeTestCase {
+class TestDownloadWatch : public LocalTreeTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownloadManager(QObject* parent = 0);
+    explicit TestDownloadWatch(QObject* parent = 0);
 
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
     void cleanup() override;
+
+    void testErrorRaised();
+ private:
+    Manager* _manager = nullptr;
 };
 
-DECLARE_TEST(TestDownloadManager)
+DECLARE_TEST(TestDownloadWatch)
 
 #endif // TEST_DOWNLOAD_MANAGER_H

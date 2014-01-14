@@ -18,8 +18,36 @@
 
 #include "local_tree_testcase.h"
 #define TEST_DAEMON "../ubuntu-download-manager-test-daemon/ubuntu-download-manager-test-daemon"
+#define LARGE_FILE "otasigned.zip"
+#define SMALL_FILE "index.json"
 
 LocalTreeTestCase::LocalTreeTestCase(const QString& testName,
                                      QObject* parent)
     : DaemonTestCase(testName, TEST_DAEMON, parent) {
+}
+
+QUrl
+LocalTreeTestCase::largeFileUrl() {
+    auto url = serverUrl();
+    url.setPath(LARGE_FILE);
+    return url;
+}
+
+QUrl
+LocalTreeTestCase::smallFileUrl() {
+    auto url = serverUrl();
+    url.setPath(SMALL_FILE);
+    return url;
+}
+
+void
+LocalTreeTestCase::init() {
+    DaemonTestCase::init();
+
+    // add to testing files, one large and one smaller
+    QString largeFile = dataDirectory() + "/" + QString(LARGE_FILE);
+    addFileToHttpServer(largeFile);
+
+    QString smallFile = dataDirectory() + "/" + QString(SMALL_FILE);
+    addFileToHttpServer(smallFile);
 }

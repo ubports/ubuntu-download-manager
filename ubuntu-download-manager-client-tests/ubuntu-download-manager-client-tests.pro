@@ -24,6 +24,12 @@ SOURCES += main.cpp \
     local_tree_testcase.cpp \
     test_download_watch.cpp
 
+copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common

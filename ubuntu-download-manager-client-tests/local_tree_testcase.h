@@ -20,6 +20,7 @@
 #define LOCAL_TREE_TESTCASE_H
 
 #include <QObject>
+#include <QUrl>
 #include <ubuntu/download_manager/tests/client/daemon_testcase.h>
 
 class LocalTreeTestCase : public DaemonTestCase {
@@ -28,6 +29,12 @@ class LocalTreeTestCase : public DaemonTestCase {
  public:
     LocalTreeTestCase(const QString& testName,
                       QObject* parent);
+    QUrl largeFileUrl();
+    QUrl smallFileUrl();
+
+ protected slots:  // NOLINT(whitespace/indent)
+
+    void init() override;
 };
 
 #endif // LOCAL_TREE_TESTCASE_H

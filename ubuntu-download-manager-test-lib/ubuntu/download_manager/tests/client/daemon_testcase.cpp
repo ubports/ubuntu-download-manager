@@ -19,11 +19,14 @@
 #include <QDBusConnection>
 #include <QDBusPendingReply>
 #include <QDBusMessage>
+#include <QFile>
+#include <QFileInfo>
 #include <QScopedPointer>
 #include <QProcessEnvironment>
 #include "testing_interface.h"
 #include "daemon_testcase.h"
 #define TEST_DAEMON "ubuntu-download-manager-test-daemon"
+#define LOCAL_HOST "http://127.0.0.1:%1"
 
 DaemonTestCase::DaemonTestCase(const QString& testName,
                                QObject* parent)
@@ -39,9 +42,49 @@ DaemonTestCase::DaemonTestCase(const QString& testName,
 }
 
 
+void
+DaemonTestCase::addFileToHttpServer(const QString& absolutePath) {
+    // copy a file to the locatin of the http server so that is served
+    QFile serverFile(absolutePath);
+    if (serverFile.exists()) {
+        QFileInfo fileInfo(serverFile.fileName());
+        QString filename(fileInfo.fileName());
+        serverFile.copy(httpServerDir() + "/" + filename);
+    } else {
+        QFAIL(QString("File '%1' does not exist.").arg(absolutePath).toUtf8());
+    }
+}
+
 QString
 DaemonTestCase::daemonPath() {
     return _daemonPath;
+}
+
+void
+DaemonTestCase::returnDBusErrors(bool errors) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        auto testingInterface = new TestingInterface(
+            _daemonPath, "/", conn);
+        QDBusPendingReply<> reply =
+                testingInterface->returnDBusErrors(errors);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+            delete testingInterface;
+            QFAIL("Could not tell the daemon to return DBus errors.");
+        }
+
+        delete testingInterface;
+    } else {
+        QFAIL("returnDBusErrors must be used after init has been executed.");
+    }
+}
+
+QUrl
+DaemonTestCase::serverUrl() {
+    QUrl url(QString(LOCAL_HOST).arg(_port));
+    return url;
 }
 
 void
@@ -79,6 +122,7 @@ QString
 DaemonTestCase::httpServerDir() {
     if (_httpServerDir.isEmpty()) {
         _httpServerDir = testDirectory() + "/http_server";
+        qDebug() << "Server dir:" << _httpServerDir;
 
         if (!QDir().exists(_httpServerDir))
             QDir().mkpath(_httpServerDir);
@@ -94,7 +138,8 @@ DaemonTestCase::startHttpServer() {
     QStringList args;
     args << "-m" << "SimpleHTTPServer" << QString::number(_port);
     _httpServer->start("python", args);
-    _httpServer->waitForFinished(300);
+    _httpServer->waitForFinished(300);  // TODO: Find a better approach
+
     if (_httpServer->state() == QProcess::Running) {
         qDebug() << "Http server running on" << _port;
     } else {
@@ -135,8 +180,9 @@ DaemonTestCase::init() {
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
         + objectName();
-    startHttpServer();
+
     startUDMDaemon();
+    startHttpServer();
 }
 
 void
@@ -148,30 +194,4 @@ DaemonTestCase::cleanup() {
     delete _daemonProcess;
 
     BaseTestCase::cleanup();
-}
-
-void
-DaemonTestCase::returnDBusErrors(bool errors) {
-    if (_daemonProcess != nullptr) {
-        auto conn = QDBusConnection::sessionBus();
-        auto testingInterface = new TestingInterface(
-            _daemonPath, "/", conn);
-        QDBusPendingReply<> reply =
-                testingInterface->returnDBusErrors(errors);
-        reply.waitForFinished();
-
-        if (reply.isError()) {
-            delete testingInterface;
-            QFAIL("Could not tell the daemon to return DBus errors.");
-        }
-
-        delete testingInterface;
-    } else {
-        QFAIL("returnDBusErrors must be used after init has been executed.");
-    }
-}
-
-void
-DaemonTestCase::addFileToHttpServer(const QString& absolutePath) {
-    Q_UNUSED(absolutePath);
 }

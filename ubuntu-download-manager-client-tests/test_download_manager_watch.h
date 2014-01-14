@@ -50,7 +50,7 @@ class TestDownloadManagerWatch : public LocalTreeTestCase {
  private:
     bool _calledSuccess = false;
     bool _calledError = false;
-    Manager* _manager;
+    Manager* _manager = nullptr;
 };
 
 DECLARE_TEST(TestDownloadManagerWatch)

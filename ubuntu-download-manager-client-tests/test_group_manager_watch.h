@@ -52,7 +52,7 @@ class TestGroupManagerWatch : public LocalTreeTestCase {
     QString _algo;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    Manager* _manager;
+    Manager* _manager = nullptr;
 };
 
 DECLARE_TEST(TestGroupManagerWatch)

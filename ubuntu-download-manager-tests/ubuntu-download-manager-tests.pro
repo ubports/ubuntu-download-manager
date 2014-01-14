@@ -44,6 +44,13 @@ HEADERS += \
     downloads/state_machines/test_final_state.h \
     downloads/state_machines/test_file_download_sm.h
 
+
+copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
