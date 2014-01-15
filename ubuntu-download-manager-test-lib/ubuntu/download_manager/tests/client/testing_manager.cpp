@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <downloads/queue.h>
 #include <downloads/download.h>
+#include <downloads/download_adaptor.h>
 #include <downloads/file_download.h>
 #include "testing_file_download.h"
 #include "testing_manager.h"
@@ -39,13 +40,21 @@ TestingManager::returnDBusErrors(bool errors) {
 
 QDBusObjectPath
 TestingManager::registerDownload(Download* download) {
+    QDBusObjectPath path;
     auto fileDown = qobject_cast<FileDownload*>(download);
     if (fileDown != nullptr) {
+	qDebug() << "Register testing file";
+	auto testDown = new TestingFileDownload(fileDown);
+        auto downAdaptor = new DownloadAdaptor(testDown);
+	Q_UNUSED(downAdaptor);
         // create wrapper and call parent class
-        return Manager::registerDownload(new TestingFileDownload(fileDown));
+        path = Manager::registerDownload(testDown);
     } else {
-        return Manager::registerDownload(download);
+        path = Manager::registerDownload(download);
     }
+    // create an adaptor so that we can be exposed to Dbus
+    qDebug() << "Path" << path.path();
+    return path;
 }
 
 QDBusObjectPath

@@ -44,8 +44,8 @@ TestDownloadWatch::testErrorRaised() {
     QVariantMap metadata;
     QMap<QString, QString> headers;
     QUrl notPresentFile = serverUrl();
-    notPresentFile.setPath("not/present.zip");
-    DownloadStruct downStruct(notPresentFile.toString(), metadata, headers);
+    DownloadStruct downStruct(notPresentFile.toString() + "/not_present.zip",
+        metadata, headers);
 
     // use the blocking call so that we get a download
     QScopedPointer<Download> down(_manager->createDownload(downStruct));

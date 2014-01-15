@@ -65,7 +65,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
     Error* error();
 
  protected:
-    Download(Error* err, QObject* parent = 0);
+    Download(const QDBusConnection& conn, Error* err, QObject* parent = 0);
     Download(const QDBusConnection& conn,
              const QString& servicePath,
              const QDBusObjectPath& objectPath,

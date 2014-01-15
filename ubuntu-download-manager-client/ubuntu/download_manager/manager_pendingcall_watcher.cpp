@@ -51,7 +51,7 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
         auto err = new Error(reply.error());
-        auto down = new Download(err);
+        auto down = new Download(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
     } else {

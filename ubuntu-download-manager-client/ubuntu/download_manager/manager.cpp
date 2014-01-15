@@ -73,7 +73,7 @@ class ManagerPrivate {
     void init() {
         qRegisterMetaType<Download*>("Download*");
         qRegisterMetaType<GroupDownload*>("GroupDownload*");
-        qRegisterMetaType<Error*>();
+        qRegisterMetaType<Error*>("Error*");
         qDBusRegisterMetaType<StringMap>();
         qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
@@ -87,8 +87,9 @@ class ManagerPrivate {
         // blocking other method should be used
         reply.waitForFinished();
         if (reply.isError()) {
+	    qDebug() << reply.error();
             auto err = new Error(reply.error());
-            return new Download(err);
+            return new Download(_conn, err);
         } else {
             auto path = reply.value();
             auto down = new Download(_conn, _servicePath, path, q);

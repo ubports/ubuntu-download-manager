@@ -16,8 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QDBusConnection>
 #include <QDBusObjectPath>
+#include "download_pendingcall_watcher.h"
 #include "download_interface.h"
 #include "error.h"
 #include "download.h"
@@ -38,14 +40,17 @@ class DownloadPrivate {
                     const QString& servicePath,
                     const QDBusObjectPath& objectPath,
                     Download* parent)
-        : q_ptr(parent) {
+        : _conn(conn),
+	  _servicePath(servicePath),
+          q_ptr(parent) {
         _dbusInterface = new DownloadInterface(servicePath,
             objectPath.path(), conn);
     }
 
-    DownloadPrivate(Error* err, Download* parent)
+    DownloadPrivate(const QDBusConnection& conn, Error* err, Download* parent)
         : _isError(true),
           _lastError(err),
+	  _conn(conn),
           q_ptr(parent) {
     }
 
@@ -95,7 +100,12 @@ class DownloadPrivate {
     }
 
     void setThrottle(qulonglong speed) {
-        Q_UNUSED(speed);
+        Q_Q(Download);
+        QDBusPendingCall call =
+            _dbusInterface->setThrottle(speed);
+        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+	    call, q);
+	Q_UNUSED(watcher);
     }
 
     qulonglong throttle() {
@@ -167,13 +177,14 @@ class DownloadPrivate {
     bool _isError = false;
     Error* _lastError = nullptr;
     DownloadInterface* _dbusInterface = nullptr;
+    QDBusConnection _conn;
+    QString _servicePath;
     Download* q_ptr;
-
 };
 
-Download::Download(Error* err, QObject* parent)
+Download::Download(const QDBusConnection& conn, Error* err, QObject* parent)
     : QObject(parent),
-      d_ptr(new DownloadPrivate(err, this)) {
+      d_ptr(new DownloadPrivate(conn, err, this)) {
 }
 
 Download::Download(const QDBusConnection& conn,

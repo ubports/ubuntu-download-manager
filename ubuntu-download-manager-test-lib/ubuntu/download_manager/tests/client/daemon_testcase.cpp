@@ -83,7 +83,8 @@ DaemonTestCase::returnDBusErrors(bool errors) {
 
 QUrl
 DaemonTestCase::serverUrl() {
-    QUrl url(QString(LOCAL_HOST).arg(_port));
+    QString urlStr = QString(LOCAL_HOST).arg(_port);
+    QUrl url(urlStr);
     return url;
 }
 
