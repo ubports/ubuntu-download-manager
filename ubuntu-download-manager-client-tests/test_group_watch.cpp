@@ -69,7 +69,7 @@ TestGroupWatch::testCallbackIsExecuted() {
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 90000);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -93,7 +93,7 @@ TestGroupWatch::testErrCallbackIsExecuted() {
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 90000);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
