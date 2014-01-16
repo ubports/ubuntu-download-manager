@@ -362,6 +362,7 @@ FileDownload::onProcessError(QProcess::ProcessError error) {
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
+    QProcess* p = qobject_cast<QProcess*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
@@ -371,6 +372,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     } else {
         emitError(COMMAND_ERROR);
     }
+    p->deleteLater();
 }
 
 void
