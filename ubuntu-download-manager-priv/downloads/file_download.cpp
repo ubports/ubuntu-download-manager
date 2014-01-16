@@ -479,8 +479,33 @@ FileDownload::getSaveFileName() {
 
         // check if the file exists, if it does lets append the uuid to it
         if (QFile::exists(finalPath)) {
-            finalPath += downloadId();
-        }
+            QFileInfo fileInfo(finalPath);
+
+            // Split the file into 2 parts - dot+extension, and everything else. For
+            // example, "path/file.tar.gz" becomes "path/file"+".tar.gz", while
+            // "path/file" (note lack of extension) becomes "path/file"+"".
+            auto secondPart = fileInfo.completeSuffix();
+            QString firstPart;
+
+            if (!secondPart.isEmpty()) {
+                secondPart = "." + secondPart;
+                firstPart = finalPath.left(finalPath.size() - secondPart.size());
+            } else {
+                firstPart = finalPath;
+            }
+
+            // Try with an ever-increasing number suffix, until we've reached a file
+            // that does not yet exist.
+            for (int ii = 1; ; ii++) {
+                // Construct the new file name by adding the unique number between the
+                // first and second part.
+                finalPath = QString("%1 (%2)%3").arg(firstPart).arg(ii).arg(secondPart);
+                // If no file exists with the new name, return it.
+                if (!QFile::exists(finalPath)) {
+                    break;
+                }
+            }  // for
+       }  // else
     }
 
     return finalPath;

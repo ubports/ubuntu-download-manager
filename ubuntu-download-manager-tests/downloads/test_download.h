@@ -137,6 +137,8 @@ class TestDownload: public BaseTestCase {
 
     // filename tests
     void testDownloadPresent();
+    void testDownloadPresentSeveralFiles_data();
+    void testDownloadPresentSeveralFiles();
 
     // processing signal tests
     void testProcessingJustOnce();
