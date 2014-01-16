@@ -67,6 +67,7 @@ class ManagerPrivate {
     }
 
     ~ManagerPrivate() {
+        delete _lastError;
         delete _dbusInterface;
     }
 
@@ -92,7 +93,7 @@ class ManagerPrivate {
             return new Download(_conn, err);
         } else {
             auto path = reply.value();
-            auto down = new Download(_conn, _servicePath, path, q);
+            auto down = new Download(_conn, _servicePath, path);
             emit q->downloadCreated(down);
             return down;
         }
@@ -159,12 +160,11 @@ class ManagerPrivate {
     }
 
     void setLastError(const QDBusError& err) {
-        Q_Q(Manager);
         // delete the last if error if present to keep mem to a minimum
         if (_lastError != nullptr) {
             delete _lastError;
         }
-        _lastError = new Error(err, q);
+        _lastError = new Error(err);
         _isError = true;
     }
 

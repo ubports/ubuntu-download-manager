@@ -15,14 +15,16 @@ HEADERS += \
     test_download_manager_watch.h \
     test_manager.h \
     local_tree_testcase.h \
-    test_download_watch.h
+    test_download_watch.h \
+    test_download.h
 
 SOURCES += main.cpp \
     test_group_manager_watch.cpp \
     test_download_manager_watch.cpp \
     test_manager.cpp \
     local_tree_testcase.cpp \
-    test_download_watch.cpp
+    test_download_watch.cpp \
+    test_download.cpp
 
 copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
 first.depends = $(first) copydata
