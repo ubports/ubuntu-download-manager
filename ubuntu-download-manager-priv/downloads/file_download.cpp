@@ -493,14 +493,12 @@ FileDownload::uniqueFilePath(QString path) {
     // example, "path/file.tar.gz" becomes "path/file"+".tar.gz", while
     // "path/file" (note lack of extension) becomes "path/file"+"".
     auto secondPart = fileInfo.completeSuffix();
-    QString firstPart;
+    auto firstPart = path;
 
     if (!secondPart.isEmpty()) {
         secondPart = "." + secondPart;
         firstPart = path.left(path.size() - secondPart.size());
-    } else {
-        firstPart = path;
-    }
+    } 
 
     // Try with an ever-increasing number suffix, until we've reached a file
     // that does not yet exist.
