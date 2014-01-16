@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_group_watch.h"
 
 TestGroupWatch::TestGroupWatch(QObject* parent)
@@ -67,7 +66,6 @@ TestGroupWatch::testCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     QEventLoop loop;
     QObject::connect(this, &TestGroupWatch::callbackExecuted,
         &loop, &QEventLoop::quit);
@@ -76,7 +74,6 @@ TestGroupWatch::testCallbackIsExecuted() {
         cb, errCb);
     loop.exec();
 
-    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -96,7 +93,6 @@ TestGroupWatch::testErrCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     QEventLoop loop;
     QObject::connect(this, &TestGroupWatch::errbackExecuted,
         &loop, &QEventLoop::quit);
@@ -105,7 +101,6 @@ TestGroupWatch::testErrCallbackIsExecuted() {
         cb, errCb);
     loop.exec();
 
-    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }

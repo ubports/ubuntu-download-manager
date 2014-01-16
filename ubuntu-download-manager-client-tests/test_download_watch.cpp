@@ -17,7 +17,6 @@
  */
 
 #include <QEventLoop>
-#include <QSignalSpy>
 #include "test_download_watch.h"
 
 TestDownloadWatch::TestDownloadWatch(QObject *parent)
@@ -64,7 +63,6 @@ TestDownloadWatch::testCallbackIsExecuted() {
     DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     QEventLoop loop;
     QObject::connect(this, &TestDownloadWatch::callbackExecuted,
         &loop, &QEventLoop::quit);
@@ -72,7 +70,6 @@ TestDownloadWatch::testCallbackIsExecuted() {
     _manager->createDownload(down, cb, errCb);
     loop.exec();
 
-    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -89,7 +86,6 @@ TestDownloadWatch::testErrCallbackIsExecuted() {
     DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     QEventLoop loop;
     QObject::connect(this, &TestDownloadWatch::errbackExecuted,
         &loop, &QEventLoop::quit);
@@ -97,7 +93,6 @@ TestDownloadWatch::testErrCallbackIsExecuted() {
     _manager->createDownload(down, cb, errCb);
     loop.exec();
 
-    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
