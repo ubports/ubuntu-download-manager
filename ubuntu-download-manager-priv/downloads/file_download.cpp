@@ -350,7 +350,12 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
-    TRACE << error;
+    QProcess* p = qobject_cast<QProcess*>(sender());
+    qCritical() << "Error " << error << "executing" << p->program()
+	<< "with args" << p->arguments() << "Stdout:"
+	<< p->readAllStandardOutput() << "Stderr:"
+	<< p->readAllStandardError();
+    p->deleteLater();
     emitError(COMMAND_ERROR);
 }
 
