@@ -25,14 +25,16 @@ TestGroupManagerWatch::TestGroupManagerWatch(QObject* parent)
 
 void
 TestGroupManagerWatch::onSuccessCb(GroupDownload* down) {
-    delete down;
     _calledSuccess = true;
+    delete down;
+    emit callbackExecuted();
 }
 
 void
 TestGroupManagerWatch::onErrorCb(GroupDownload* err) {
-    delete err;
     _calledError = true;
+    delete err;
+    emit errbackExecuted();
 }
 
 void
@@ -66,10 +68,15 @@ TestGroupManagerWatch::testCallbackIsExecuted() {
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    QEventLoop loop;
+    QObject::connect(this, &TestGroupWatch::callbackExecuted,
+        &loop, &QEventLoop::quit);
+
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
+    loop.exec();
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -90,10 +97,15 @@ TestGroupManagerWatch::testErrCallbackIsExecuted() {
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    QEventLoop loop;
+    QObject::connect(this, &TestGroupWatch::errbackExecuted,
+        &loop, &QEventLoop::quit);
+
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
+    loop.exec();
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
