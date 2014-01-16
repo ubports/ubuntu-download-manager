@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QEventLoop>
 #include <QSignalSpy>
 #include "test_download_watch.h"
 
@@ -27,12 +28,14 @@ void
 TestDownloadWatch::onSuccessCb(Download* down) {
     _calledSuccess = true;
     delete down;
+    emit callbackExecuted();
 }
 
 void
 TestDownloadWatch::onErrorCb(Download* err) {
     _calledError = true;
     delete err;
+    emit errbackExecuted();
 }
 
 void
@@ -62,9 +65,14 @@ TestDownloadWatch::testCallbackIsExecuted() {
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
-    _manager->createDownload(down, cb, errCb);
+    QEventLoop loop;
+    QObject::connect(this, &TestDownloadWatch::callbackExecuted,
+        &loop, &QEventLoop::quit);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
+    _manager->createDownload(down, cb, errCb);
+    loop.exec();
+
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -82,9 +90,14 @@ TestDownloadWatch::testErrCallbackIsExecuted() {
         std::placeholders::_1);
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
-    _manager->createDownload(down, cb, errCb);
+    QEventLoop loop;
+    QObject::connect(this, &TestDownloadWatch::errbackExecuted,
+        &loop, &QEventLoop::quit);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 100000);
+    _manager->createDownload(down, cb, errCb);
+    loop.exec();
+
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
