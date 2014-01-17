@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 9),
                qtsystems5-dev,
                libdbus-1-dev,
                libqt5sql5-sqlite,
-               libnih-dbus-dev
+               libnih-dbus-dev,
+               xvfb
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-system-image
