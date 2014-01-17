@@ -66,7 +66,7 @@ TestDownloadManagerWatch::testCallbackIsExecuted() {
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     QEventLoop loop;
-    QObject::connect(this, &TestDownloadWatch::callbackExecuted,
+    QObject::connect(this, &TestDownloadManagerWatch::callbackExecuted,
         &loop, &QEventLoop::quit);
 
     _manager->createDownload(down, cb, errCb);
@@ -91,7 +91,7 @@ TestDownloadManagerWatch::testErrCallbackIsExecuted() {
 
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     QEventLoop loop;
-    QObject::connect(this, &TestDownloadWatch::errbackExecuted,
+    QObject::connect(this, &TestDownloadManagerWatch::errbackExecuted,
         &loop, &QEventLoop::quit);
 
     _manager->createDownload(down, cb, errCb);

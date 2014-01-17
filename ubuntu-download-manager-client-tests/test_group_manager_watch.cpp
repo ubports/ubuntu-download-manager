@@ -69,7 +69,7 @@ TestGroupManagerWatch::testCallbackIsExecuted() {
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     QEventLoop loop;
-    QObject::connect(this, &TestGroupWatch::callbackExecuted,
+    QObject::connect(this, &TestGroupManagerWatch::callbackExecuted,
         &loop, &QEventLoop::quit);
 
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
@@ -98,7 +98,7 @@ TestGroupManagerWatch::testErrCallbackIsExecuted() {
 
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     QEventLoop loop;
-    QObject::connect(this, &TestGroupWatch::errbackExecuted,
+    QObject::connect(this, &TestGroupManagerWatch::errbackExecuted,
         &loop, &QEventLoop::quit);
 
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
