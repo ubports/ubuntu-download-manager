@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QFinalState>
 #include <QState>
 #include <QStateMachine>
@@ -61,7 +60,7 @@ NetworkErrorTransition::NetworkErrorTransition(const SMFileDownload* sender,
 
 void
 NetworkErrorTransition::onTransition(QEvent* event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
@@ -70,7 +69,7 @@ NetworkErrorTransition::onTransition(QEvent* event) {
         QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
         down->emitNetworkError(code);
     } else {
-        qCritical() << "Signal does not have events!";
+        LOG(ERROR) << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
@@ -88,7 +87,7 @@ SslErrorTransition::SslErrorTransition(const SMFileDownload* sender,
 
 void
 SslErrorTransition::onTransition(QEvent * event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     QStateMachine::SignalEvent* e =
         static_cast<QStateMachine::SignalEvent*>(event);
@@ -97,7 +96,7 @@ SslErrorTransition::onTransition(QEvent * event) {
         QList<QSslError> errors = v.value<QList<QSslError> > ();
         down->emitSslError(errors);
     } else {
-        qCritical() << "Signal does not have events!";
+        LOG(ERROR) << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
@@ -115,7 +114,7 @@ StartDownloadTransition::StartDownloadTransition(const SMFileDownload* sender,
 
 void
 StartDownloadTransition::onTransition(QEvent * event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     // tell the down to start and set the state
     down->requestDownload();
@@ -136,7 +135,7 @@ PauseRequestTransition::PauseRequestTransition(const SMFileDownload* sender,
 
 void
 PauseRequestTransition::onTransition(QEvent * event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     down->pauseRequestDownload();
     down->setState(Download::PAUSE);
@@ -155,7 +154,7 @@ CancelDownloadTransition::CancelDownloadTransition(const SMFileDownload* sender,
 
 void
 CancelDownloadTransition::onTransition(QEvent * event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     down->cancelRequestDownload();
     down->setState(Download::CANCEL);
@@ -174,7 +173,7 @@ ResumeDownloadTransition::ResumeDownloadTransition(const SMFileDownload* sender,
 
 void
 ResumeDownloadTransition::onTransition(QEvent * event) {
-    TRACE << event;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     SMFileDownload* down = download();
     down->requestDownload();
     down->setState(Download::RESUME);
@@ -373,7 +372,7 @@ class DownloadSMPrivate {
     }
 
     void setState(QString state) {
-        TRACE << state;
+        DLOG(INFO) << " " << __PRETTY_FUNCTION__ << state;
         Q_Q(DownloadSM);
         _state = state;
         emit q->stateChanged(_state);

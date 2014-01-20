@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
+#include "system/logger.h"
 #include "final_state.h"
 
 namespace Ubuntu {
@@ -42,7 +42,7 @@ FinalState::assignProperty(QObject *object,
                            const char* name,
                            const QVariant& value) {
     if (!object) {
-        qWarning() << "FinalState::assignProperty: cannot assign property"
+        LOG(WARNING) << "FinalState::assignProperty: cannot assign property"
             << name << "of null object";
         return;
     }

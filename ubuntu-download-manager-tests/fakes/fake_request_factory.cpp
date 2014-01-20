@@ -16,9 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
-#include "./fake_network_reply.h"
-#include "./fake_request_factory.h"
+#include "fake_network_reply.h"
+#include "fake_request_factory.h"
 
 RequestWrapper::RequestWrapper(const QNetworkRequest& request, QObject* parent)
     : QObject(parent),

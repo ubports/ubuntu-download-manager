@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include "request_factory.h"
+#include "logger.h"
 
 namespace Ubuntu {
 
@@ -109,7 +109,7 @@ RequestFactory::removeNetworkReply(NetworkReply* reply) {
         _replies.removeAll(reply);
         // stoppable is not really needed but is better check
         if (_stoppable && _replies.count() == 0) {
-            qDebug() << "Clearing the connections cache.";
+            LOG(INFO) << "Clearing the connections cache.";
             _nam->clearAccessCache();
         }
     }
@@ -139,12 +139,12 @@ RequestFactory::onSslErrors(const QList<QSslError>& errors) {
             type != QSslError::SelfSignedCertificate) {
             // we only support self signed certificates all errors
             // will not be ignored
-            qDebug() << "SSL error type not ignored clearing cache";
+            LOG(INFO) << "SSL error type not ignored clearing cache";
             removeNetworkReply(senderObj);
         } else if (type == QSslError::SelfSignedCertificate) {
             // just ignore those errors of the added errors
             if (!_certs.contains(error.certificate())) {
-                qDebug() << "SSL certificate not ignored clearing cache";
+                LOG(INFO) << "SSL certificate not ignored clearing cache";
                 removeNetworkReply(senderObj);
             }
         }

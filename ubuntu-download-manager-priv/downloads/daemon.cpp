@@ -17,7 +17,6 @@
  */
 
 #include <QtDBus/QDBusConnection>
-#include <QDebug>
 #include <QSharedPointer>
 #include <QSslCertificate>
 #include "downloads/daemon.h"
@@ -69,9 +68,6 @@ class DaemonPrivate {
         delete _conn;
         delete _downInterface;
         delete _shutDownTimer;
-
-        // stop logging
-        Logger::stopLogging();
     }
 
     bool isTimeoutEnabled() {
@@ -99,42 +95,41 @@ class DaemonPrivate {
     }
 
     void start(QString path) {
-        TRACE;
+        DLOG(INFO) << " " << __PRETTY_FUNCTION__;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
         bool ret = _conn->registerService(path);
         if (ret) {
-            qDebug() << "Service registered to"
+            LOG(INFO) << "Service registered to"
                 << "com.canonical.applications.Downloader";
             ret = _conn->registerObject("/", _downInterface);
-            qDebug() << ret;
             if (!ret) {
-                qCritical() << "Could not register interface"
+                LOG(INFO) << "Could not register interface. DBus Error =>"
                     << _conn->connection().lastError();
                 _app->exit(-1);
             }
             return;
         }
-        qCritical() << "Could not register service"
+        LOG(INFO) << "Could not register service. DBus Error =>"
             << _conn->connection().lastError();
         _app->exit(-1);
     }
 
     void onTimeout() {
-        qDebug() << "Timeout reached, shutdown service.";
+        LOG(INFO) << "Timeout reached, shutdown service.";
         _app->exit(0);
     }
 
     void onDownloadManagerSizeChanged(int size) {
-        TRACE << size;
+        DLOG(INFO) << " " << __PRETTY_FUNCTION__ << size;
         bool isActive = _shutDownTimer->isActive();
 
         if (isActive && size > 0) {
-            qDebug() << "Timer must be stopped because we have" << size
+            LOG(INFO) << "Timer must be stopped because we have " << size
                 << "downloads.";
             _shutDownTimer->stop();
         }
         if (!isActive && size == 0) {
-            qDebug() << "Timer must be started because we have 0 downloads.";
+            LOG(INFO) << "Timer must be started because we have 0 downloads.";
             _shutDownTimer->start(timeout);
         }
     }
@@ -149,15 +144,16 @@ class DaemonPrivate {
             if (args.count() > index + 1) {
                 QString certsRegex = args[index + 1];
                 _certs = QSslCertificate::fromPath(certsRegex);
-                qDebug() << "Accepting self signed certs" << _certs;
+                LOG(INFO) << "Accepting self signed certs at path"
+                    << certsRegex;
             } else {
-                qCritical() << "Missing certs path";
+                LOG(INFO) << "Missing certs path.";
             }
         }  // certs
         _isTimeoutEnabled = !args.contains(DISABLE_TIMEOUT);
-        qDebug() << "Timeout is enabled:" << _isTimeoutEnabled;
+        LOG(INFO) << "Timeout is enabled: " << _isTimeoutEnabled;
         _stoppable = args.contains(STOPPABLE);
-        qDebug() << "Daemon is stoppable" << _stoppable;
+        LOG(INFO) << "Daemon is stoppable: " << _stoppable;
     }
 
     void init() {

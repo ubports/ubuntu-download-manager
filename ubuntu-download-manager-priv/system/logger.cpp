@@ -16,14 +16,52 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <syslog.h>
+#include <QCoreApplication>
 #include <QDateTime>
-#include <QDebug>
 #include <QDir>
+#include <QDBusError>
 #include <QStandardPaths>
+#include <QStringList>
+#include <QUrl>
+#include <QSslError>
+#include <syslog.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include "logger.h"
+
+std::ostream& operator<<(std::ostream &out, const QString& var) {
+    out << " " << qPrintable(var);
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QByteArray& var) {
+    out << " " << qPrintable(var);
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QStringList& var) {
+    auto joined = var.join(" ");
+    out << qPrintable(joined);
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QUrl& var) {
+    out << " " << qPrintable(var.toString());
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors) {
+    foreach(QSslError err, errors) {
+        out << " " << err.errorString();
+    }
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
+    out << " " << qPrintable(error.name())
+        << ":" << qPrintable(error.message());
+    return out;
+}
 
 namespace Ubuntu {
 
@@ -31,183 +69,51 @@ namespace DownloadManager {
 
 namespace System {
 
-static void *_logger = NULL;
-
-static void
-_realMessageHandler(QtMsgType type,
-                    const QMessageLogContext &context,
-                    const QString &message) {
-    if (_logger == NULL)
-        return;
-
-    Logger* log = reinterpret_cast<Logger*>(_logger);
-    log->logMessage(type, context, message);
-}
-
-Logger::Logger(const QString filename) {
-    // decide if we are dealing with a system bus (that should use syslog)
-    // or a session bus
-    _isSystemBus = getuid() == 0;
-    if (_isSystemBus) {
-        openSyslogConnection();
-    } else {
-        openLogFile(filename);
-    }
-
-    qInstallMessageHandler(_realMessageHandler);
-
-    _initialized = true;
-}
-
-void
-Logger::openLogFile(const QString& filename) {
-    if (filename == "") {
-        _logFileName = getLogDir() + "/ubuntu-download-manager.log";
-    } else {
-        _logFileName = filename;
-    }
-
-    _logFile.setFileName(_logFileName);
-    if (_logFile.open(QFile::WriteOnly | QFile::Append)) {
-        _logStream.setDevice(&_logFile);
-        _logStream.flush();
-    }
-}
-
-void
-Logger::openSyslogConnection() {
-    openlog("ubuntu-download-manager",
-        LOG_CONS | LOG_PID | LOG_NDELAY, LOG_LOCAL1);
-}
+static bool _init = false;
 
 void
 Logger::setupLogging(const QString filename) {
-    if (_logger == NULL)
-        _logger = new Logger(filename);
-}
-
-void
-Logger::stopLogging() {
-    if (_logger != NULL) {
-        Logger* log = reinterpret_cast<Logger*>(_logger);
-        if (log->_isSystemBus) {
-            closelog();
-        } else {
-            log->_logFile.close();
-        }
-
-        delete log;
-        _logger = NULL;
+    auto path = filename;
+    if (filename == "" ){
+        path = getLogDir() + "/ubuntu-download-manager.log";
     }
+
+    auto appName = QCoreApplication::instance()->applicationName();
+    if (!_init) {
+        _init = true;
+        google::InitGoogleLogging(toStdString(appName).c_str());
+    }
+    google::SetLogDestination(google::INFO, toStdString(path).c_str());
 }
 
 bool
 Logger::setLogLevel(QtMsgType level) {
-    if (_logger != NULL) {
-        Logger* log = reinterpret_cast<Logger*>(_logger);
-        log->_logLevel = level;
-        return true;
-    }
-
+    Q_UNUSED(level);
     return false;
-}
-
-const QString
-Logger::getMessageTypeString(QtMsgType type) {
-    switch (type) {
-        case QtDebugMsg:
-            return QStringLiteral("DEBUG");
-            break;
-        case QtWarningMsg:
-            return QStringLiteral("WARNING");
-            break;
-        case QtCriticalMsg:
-            return QStringLiteral("CRITICAL");
-            break;
-        case QtFatalMsg:
-            return QStringLiteral("FATAL");
-            break;
-    }
-    return QStringLiteral("UNKNOWN");
 }
 
 QString
 Logger::getLogDir() {
-    QString path = QStandardPaths::writableLocation(
-        QStandardPaths::CacheLocation);
-    qDebug() << "Logging dir is" << path;
+    QString path = ""; 
+    if (getuid() == 0) {
+        path = "/var/log/";
+    } else {
+        path = QStandardPaths::writableLocation(
+            QStandardPaths::CacheLocation);
+    }
+    LOG(INFO) << "Logging dir is" << path;
 
     bool wasCreated = QDir().mkpath(path);
     if (!wasCreated) {
-        qCritical() << "Could not create the logging path" << path;
+        LOG(ERROR) << "Could not create the logging path" << path;
     }
     return path;
 }
 
-void
-Logger::logSessionMessage(const QString& message) {
-    _logStream << message;
-    _logStream.flush();
-}
-
-void
-Logger::logSystemMessage(QtMsgType type, const QString& message) {
-    const char* msg = message.toUtf8().data();
-    // we using %s to avoid getting a compiler error when using
-    // -Wall
-    switch (type) {
-        case QtDebugMsg:
-            syslog(LOG_DEBUG, "%s", msg);
-            break;
-        case QtWarningMsg:
-            syslog(LOG_WARNING, "%s", msg);
-            break;
-        case QtCriticalMsg:
-            syslog(LOG_CRIT, "%s", msg);
-            break;
-        case QtFatalMsg:
-            syslog(LOG_ALERT, "%s", msg);
-            break;
-        default:
-            break;
-    }
-}
-
-void
-Logger::logMessage(QtMsgType type,
-                   const QMessageLogContext &context,
-                   const QString &message) {
-    Q_UNUSED(context);
-    if (type < _logLevel)
-        return;
-
-    QString logMessage;
-    QTextStream _logMessage(&logMessage);
-    _logMessage << QDateTime::currentDateTime().toString(
-        _datetimeFormat).toUtf8().data()
-        << " - " << getMessageTypeString(type).toUtf8().data()
-        << " - " << message.toUtf8().data() << "\n";
-
-    QTextStream _stdErr(stderr, QIODevice::WriteOnly);
-    switch (type) {
-        case QtDebugMsg:
-        case QtCriticalMsg:
-        case QtFatalMsg:
-            _stdErr << logMessage;
-            break;
-        default:
-            break;
-    }
-    _stdErr.device()->close();
-
-    if (_isSystemBus) {
-        logSystemMessage(type, logMessage);
-    } else {
-        logSessionMessage(logMessage);
-    }
-
-    if (type == QtFatalMsg)
-        abort();
+std::string
+Logger::toStdString(const QString& str) {
+    std::string utf8_text = str.toUtf8().constData();
+    return utf8_text;
 }
 
 }  // System

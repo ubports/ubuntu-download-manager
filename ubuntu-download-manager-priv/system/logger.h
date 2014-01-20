@@ -24,14 +24,21 @@
 #include <QString>
 #include <QTextStream>
 #include <QtGlobal>
+#include <glog/logging.h>
+#include <iostream>
+#include <sstream>
 
+class QDBusError;
+class QStringList;
+class QSslError;
+class QUrl;
 
-#ifdef SHOW_TRACE
-    #define TRACE qDebug() << __FILE__ ":" << __LINE__ << __PRETTY_FUNCTION__
-#else
-    #define TRACE if (0) qDebug()
-#endif
-
+std::ostream& operator<<(std::ostream &out, const QString& var);
+std::ostream& operator<<(std::ostream &out, const QByteArray& var);
+std::ostream& operator<<(std::ostream &out, const QStringList& var);
+std::ostream& operator<<(std::ostream &out, const QUrl& var);
+std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors);
+std::ostream& operator<<(std::ostream &out, const QDBusError& error);
 
 namespace Ubuntu {
 
@@ -43,37 +50,14 @@ class Logger : public QObject {
     Q_OBJECT
 
  public:
-    QtMsgType _logLevel = QtWarningMsg;
-
-    explicit Logger(const QString filename = "");
-
-    void logMessage(QtMsgType type,
-                    const QMessageLogContext &context,
-                    const QString &message);
 
     static void setupLogging(const QString filename = "");
-    static void stopLogging();
     static bool setLogLevel(QtMsgType level);
-    static const QString getMessageTypeString(QtMsgType type);
     static QString getLogDir();
+    static std::string toStdString(const QString& str);
 
  private:
-    void openLogFile(const QString& filename);
-
-    void openSyslogConnection();
-
-    void logSessionMessage(const QString &message);
-
-    void logSystemMessage(QtMsgType type, const QString &message);
-
- private:
-    bool _isSystemBus = false;
     bool _initialized = false;
-    QString _logFileName;
-    QFile _logFile;
-    QTextStream _logStream;
-
-    const QString _datetimeFormat = "yyyy-MM-dd hh:mm:ss,zzz";
 };
 
 }  // System

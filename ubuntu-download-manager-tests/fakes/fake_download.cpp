@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include "fake_download.h"
 
 FakeDownload::FakeDownload(const QString& id,

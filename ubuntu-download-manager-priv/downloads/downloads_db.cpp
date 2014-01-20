@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
@@ -113,21 +112,21 @@ DownloadsDb::internalInit() {
 
     bool wasCreated = QDir().mkpath(path);
     if (!wasCreated) {
-        qCritical() << "Could not create the data path" << path;
+        LOG(ERROR) << "Could not create the data path" << path;
     }
     _dbName = path + QDir::separator() + "downloads.db";
     _db = QSqlDatabase::addDatabase("QSQLITE");
     _db.setDatabaseName(_dbName);
-    qDebug() << "Db file is" << _dbName;
+    LOG(INFO) << "Db file is " << _dbName;
 }
 
 bool
 DownloadsDb::init() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     // create the required tables
     bool opened = _db.open();
     if (!opened) {
-        qCritical() << _db.lastError();
+        LOG(ERROR) << _db.lastError().text();
         return false;
     }
 
@@ -215,7 +214,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
     bool opened = _db.open();
 
     if (!opened) {
-        qCritical() << _db.lastError();
+        LOG(ERROR) << _db.lastError().text();
         return false;
     }
 
@@ -229,10 +228,10 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
         rows = query.value(0).toInt();
 
     if (rows > 0) {
-        qDebug() << "Update download";
+        LOG(INFO) << "Update download";
         query.prepare(UPDATE_SINGLE_DOWNLOAD);
     } else {
-        qDebug() << "Insert download";
+        LOG(INFO) << "Insert download";
         query.prepare(INSERT_SINGLE_DOWNLOAD);
     }
 
@@ -255,7 +254,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
 
     bool success = query.exec();
     if (!success)
-        qDebug() << query.lastError();
+        LOG(ERROR) << query.lastError().text();
 
     _db.close();
 
