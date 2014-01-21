@@ -53,6 +53,9 @@ DaemonTestCase::onProcessError(QProcess::ProcessError error) {
 void
 DaemonTestCase::init() {
     BaseTestCase::init();
+    _service = new DBusService(this);
+    _service->start();
+
     // WARNING: create a path for this exact test.. we might have
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
@@ -83,7 +86,19 @@ DaemonTestCase::cleanup() {
     while(conn.interface()->isServiceRegistered(_daemonPath));
     _process->waitForFinished();
 
+    _daemon->stop();  // unregisters the service although the delete should do
+                      // the same.. but I like to be explicit
+    _service->stop();
+
     delete _process;
+    _process = nullptr;
+
+    delete _service;
+    _service = nullptr;
+
+    delete _daemon;
+    _daemon = nullptr;
+
     BaseTestCase::cleanup();
 }
 

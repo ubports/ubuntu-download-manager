@@ -22,6 +22,8 @@
 #include <QDebug>
 #include <QObject>
 #include <QProcess>
+#include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
+#include "ubuntu/download_manager/tests/dbus_service.h"
 #include "ubuntu/download_manager/tests/base_testcase.h"
 #include "testing_daemon.h"
 
@@ -52,7 +54,8 @@ class DaemonTestCase : public BaseTestCase {
     QString _daemonPath;
     QString _daemonProcess;
     QProcess* _process = nullptr;
-
+    DBusService* _service = nullptr;
+    Daemon::Daemon* _daemon = nullptr;
 };
 
 #endif // DAEMON_TESTCASE_H
