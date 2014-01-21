@@ -30,6 +30,8 @@ DaemonTestCase::daemonPath() {
 
 void
 DaemonTestCase::init() {
+    _dbusService = new DBusService(this);
+    _dbusService->start();
     // WARNING: create a path for this exact test.. we might have
     // issues if we have to two object with the same name
     _daemonPath = "com.canonical.applications.testing.Downloader."
@@ -45,6 +47,13 @@ void
 DaemonTestCase::cleanup() {
     _daemon->stop();  // unregisters the service although the delete should do
                       // the same.. but I like to be explicit
+    _dbusService->stop();
+
     delete _daemon;
+    _daemon = nullptr;
+
+    delete _dbusService;
+    _dbusService = nullptr;
+
     BaseTestCase::cleanup();
 }

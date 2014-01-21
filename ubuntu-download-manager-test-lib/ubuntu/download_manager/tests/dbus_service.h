@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,33 +16,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DAEMON_TESTCASE_H
-#define DAEMON_TESTCASE_H
+#ifndef DBUS_SERVICE_H
+#define DBUS_SERVICE_H
 
 #include <QObject>
-#include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
-#include "ubuntu/download_manager/tests/dbus_service.h"
-#include "ubuntu/download_manager/tests/base_testcase.h"
+#include <QProcess>
+#include "base_testcase.h"
 
-using namespace Ubuntu::DownloadManager;
 
-class DaemonTestCase : public BaseTestCase {
+class DBusService : public QObject {
     Q_OBJECT
 
  public:
-    DaemonTestCase(const QString& testName, QObject *parent = 0);
+    explicit DBusService(BaseTestCase* parent = 0);
+    ~DBusService();
 
-    QString daemonPath();
+    void start();
+    void stop();
 
- protected slots:  // NOLINT(whitespace/indent)
+ signals:
+    void started();
+    void stopped();
+    void error(QString msg);
 
-    void init() override;
-    void cleanup() override;
+ private slots:
+    void onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void onProcessError(QProcess::ProcessError error);
 
  private:
-    QString _daemonPath;
-    DBusService* _service = nullptr;
-    Daemon::Daemon* _daemon = nullptr;
+    bool generateConfigFile(QString& errorCode);
+
+ private:
+    QString _oldDBusAddress = "";
+    QString _dbusAddress = "";
+    QString _configPath = "";
+    QProcess* _daemonProcess = nullptr;
 };
 
-#endif // DAEMON_TESTCASE_H
+#endif // DBUS_SERVICE_H

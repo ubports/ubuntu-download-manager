@@ -40,5 +40,5 @@ DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv xvfb-run dbus-launch ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv xvfb-run ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check
