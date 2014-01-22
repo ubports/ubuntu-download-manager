@@ -40,10 +40,6 @@ class TestDownloadManagerWatch : public LocalTreeTestCase {
     void onErrorCb(Download* err);
     void onDownloadError(Download* down);
 
- signals:
-    void callbackExecuted();
-    void errbackExecuted();
-
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
