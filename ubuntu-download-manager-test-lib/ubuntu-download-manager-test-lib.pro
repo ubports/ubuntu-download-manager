@@ -31,9 +31,8 @@ SOURCES += ubuntu/download_manager/tests/base_testcase.cpp \
            ubuntu/download_manager/tests/server/uuid_factory.cpp \
            ubuntu/download_manager/tests/client/testing_daemon.cpp \
            ubuntu/download_manager/tests/client/testing_manager.cpp \
-           ubuntu/download_manager/tests/client/testing_manager_adaptor.cpp \
-           ubuntu/download_manager/tests/client/testing_interface.cpp \
-           ubuntu/download_manager/tests/dbus_service.cpp
+    ubuntu/download_manager/tests/client/testing_manager_adaptor.cpp \
+    ubuntu/download_manager/tests/client/testing_interface.cpp
 
 HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/fake.h\
@@ -58,9 +57,8 @@ HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/server/uuid_factory.h \
            ubuntu/download_manager/tests/client/testing_daemon.h \
            ubuntu/download_manager/tests/client/testing_manager.h \
-           ubuntu/download_manager/tests/client/testing_manager_adaptor.h \
-           ubuntu/download_manager/tests/client/testing_interface.h \
-           ubuntu/download_manager/tests/dbus_service.h
+    ubuntu/download_manager/tests/client/testing_manager_adaptor.h \
+    ubuntu/download_manager/tests/client/testing_interface.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 

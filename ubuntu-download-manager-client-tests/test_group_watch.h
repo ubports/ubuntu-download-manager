@@ -39,10 +39,6 @@ class TestGroupWatch : public LocalTreeTestCase {
     void onSuccessCb(GroupDownload* down);
     void onErrorCb(GroupDownload* err);
 
- signals:
-    void callbackExecuted();
-    void errbackExecuted();
-
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
