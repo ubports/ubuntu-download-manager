@@ -26,7 +26,7 @@ class BaseTestCase : public QObject {
 
  public:
     BaseTestCase(const QString& testName, QObject *parent = 0);
-
+    
     QString testDirectory();
     QString dataDirectory();
 

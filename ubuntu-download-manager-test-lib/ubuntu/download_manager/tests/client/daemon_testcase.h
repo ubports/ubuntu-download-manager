@@ -21,7 +21,6 @@
 
 #include <QObject>
 #include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
-#include "ubuntu/download_manager/tests/dbus_service.h"
 #include "ubuntu/download_manager/tests/base_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
@@ -41,8 +40,7 @@ class DaemonTestCase : public BaseTestCase {
 
  private:
     QString _daemonPath;
-    DBusService* _service = nullptr;
-    Daemon::Daemon* _daemon = nullptr;
+    Daemon::Daemon* _daemon;
 };
 
 #endif // DAEMON_TESTCASE_H

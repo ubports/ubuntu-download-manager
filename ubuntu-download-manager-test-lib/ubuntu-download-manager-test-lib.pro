@@ -28,8 +28,7 @@ SOURCES += ubuntu/download_manager/tests/base_testcase.cpp \
            ubuntu/download_manager/tests/server/sm_file_download.cpp \
            ubuntu/download_manager/tests/server/system_network_info.cpp \
            ubuntu/download_manager/tests/server/timer.cpp \
-           ubuntu/download_manager/tests/server/uuid_factory.cpp \
-    ubuntu/download_manager/tests/dbus_service.cpp
+           ubuntu/download_manager/tests/server/uuid_factory.cpp
 
 HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/fake.h\
@@ -51,8 +50,7 @@ HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/server/sm_file_download.h \
            ubuntu/download_manager/tests/server/system_network_info.h \
            ubuntu/download_manager/tests/server/timer.h \
-           ubuntu/download_manager/tests/server/uuid_factory.h \
-    ubuntu/download_manager/tests/dbus_service.h
+           ubuntu/download_manager/tests/server/uuid_factory.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 

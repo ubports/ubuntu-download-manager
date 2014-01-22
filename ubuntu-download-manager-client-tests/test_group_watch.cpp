@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QSignalSpy>
 #include "test_group_watch.h"
 
 TestGroupWatch::TestGroupWatch(QObject* parent)
@@ -24,16 +25,14 @@ TestGroupWatch::TestGroupWatch(QObject* parent)
 
 void
 TestGroupWatch::onSuccessCb(GroupDownload* down) {
-    _calledSuccess = true;
     delete down;
-    emit callbackExecuted();
+    _calledSuccess = true;
 }
 
 void
 TestGroupWatch::onErrorCb(GroupDownload* err) {
-    _calledError = true;
     delete err;
-    emit errbackExecuted();
+    _calledError = true;
 }
 
 void
@@ -66,14 +65,11 @@ TestGroupWatch::testCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QEventLoop loop;
-    QObject::connect(this, &TestGroupWatch::callbackExecuted,
-        &loop, &QEventLoop::quit);
-
+    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
-    loop.exec();
 
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -93,14 +89,11 @@ TestGroupWatch::testErrCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QEventLoop loop;
-    QObject::connect(this, &TestGroupWatch::errbackExecuted,
-        &loop, &QEventLoop::quit);
-
+    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);
-    loop.exec();
 
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
