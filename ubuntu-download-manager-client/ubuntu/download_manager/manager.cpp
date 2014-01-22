@@ -88,7 +88,6 @@ class ManagerPrivate {
         // blocking other method should be used
         reply.waitForFinished();
         if (reply.isError()) {
-	    qDebug() << reply.error();
             auto err = new Error(reply.error());
             return new Download(_conn, err);
         } else {

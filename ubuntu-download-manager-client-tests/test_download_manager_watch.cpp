@@ -61,11 +61,10 @@ TestDownloadManagerWatch::testCallbackIsExecuted() {
     DownloadCb errCb = std::bind(&TestDownloadManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
-
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
 
-    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -85,8 +84,7 @@ TestDownloadManagerWatch::testErrCallbackIsExecuted() {
     QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
 
-
-    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }

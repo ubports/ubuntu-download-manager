@@ -34,14 +34,10 @@ class DownloadPendingCallWatcher : public PendingCallWatcher {
     DownloadPendingCallWatcher(const QDBusConnection& conn,
                                const QString& servicePath,
                                const QDBusPendingCall& call,
-                               Download* down,
-                               QObject* parent = 0);
+                               Download* parent = 0);
 
  private slots:
     void onFinished(QDBusPendingCallWatcher* watcher);
-
- private:
-    Download* _down;
 };
 
 }  // DownloadManager

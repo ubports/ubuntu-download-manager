@@ -29,21 +29,20 @@ DownloadPendingCallWatcher::DownloadPendingCallWatcher(
                                                const QDBusConnection& conn,
                                                const QString& servicePath,
                                                const QDBusPendingCall& call,
-                                               Download* down,
-                                               QObject* parent)
-    : PendingCallWatcher(conn, servicePath, call, parent),
-      _down(down) {
+                                               Download* parent)
+    : PendingCallWatcher(conn, servicePath, call, parent) {
     connect(this, &DownloadPendingCallWatcher::finished,
         this, &DownloadPendingCallWatcher::onFinished);
 }
 
 void
 DownloadPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+    auto down = qobject_cast<Download*>(parent());
     QDBusPendingReply<> reply = *watcher;
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         auto err = new Error(reply.error());
-        _down->error(err);
+        down->error(err);
     }
     watcher->deleteLater();
 }

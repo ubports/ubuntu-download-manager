@@ -89,7 +89,6 @@ TestGroupManagerWatch::testErrCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
-
     QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
     _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
         cb, errCb);

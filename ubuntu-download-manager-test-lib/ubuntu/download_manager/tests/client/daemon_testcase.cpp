@@ -72,7 +72,10 @@ DaemonTestCase::returnDBusErrors(bool errors) {
 
         if (reply.isError()) {
             delete testingInterface;
-            QFAIL("Could not tell the daemon to return DBus errors.");
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return DBus errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
         }
 
         delete testingInterface;
