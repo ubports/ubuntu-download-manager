@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -30,10 +30,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-/*
- * PRIVATE IMPLEMENTATION
- */
-
+namespace Daemon {
 
 Factory::Factory(QObject* parent)
     : QObject(parent) {
@@ -178,6 +175,8 @@ void
 Factory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     RequestFactory::instance()->setAcceptedCertificates(certs);
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

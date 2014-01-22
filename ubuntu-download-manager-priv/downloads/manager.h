@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -25,15 +25,17 @@
 #include <QtDBus/QDBusContext>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "downloads/download.h"
 #include "downloads/queue.h"
 #include "downloads/factory.h"
 #include "system/application.h"
-#include "system/dbus_connection.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
@@ -102,6 +104,8 @@ class Manager : public QObject, public QDBusContext {
     DBusConnection* _conn;
     bool _stoppable;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

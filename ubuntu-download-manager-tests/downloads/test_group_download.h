@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -22,14 +22,17 @@
 #include <QObject>
 #include <system/uuid_factory.h>
 #include <downloads/group_download.h>
-#include "fakes/fake_apparmor.h"
-#include "fakes/fake_file_manager.h"
-#include "fakes/fake_system_network_info.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_process_factory.h"
-#include "fakes/fake_download_factory.h"
-#include "base_testcase.h"
-#include "test_runner.h"
+#include <ubuntu/download_manager/tests/server/apparmor.h>
+#include <ubuntu/download_manager/tests/server/file_manager.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server/process_factory.h>
+#include <ubuntu/download_manager/tests/server/factory.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+
+using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::DownloadManager::Daemon;
 
 class TestGroupDownload : public BaseTestCase {
     Q_OBJECT

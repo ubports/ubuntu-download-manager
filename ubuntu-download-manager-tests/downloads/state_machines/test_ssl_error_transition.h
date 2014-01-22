@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -24,11 +24,11 @@
 #include <QState>
 #include <QStateMachine>
 #include <downloads/state_machines/download_sm.h>
-#include "base_testcase.h"
-#include "test_runner.h"
-#include "fakes/fake_sm_file_download.h"
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/download_manager/tests/server/sm_file_download.h>
 
-using namespace Ubuntu::DownloadManager::StateMachines;
+using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
 
 class TestSslErrorTransition : public BaseTestCase {
     Q_OBJECT

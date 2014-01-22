@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -18,6 +18,8 @@
 
 #include <QDebug>
 #include "test_daemon.h"
+
+using namespace Ubuntu::DownloadManager;
 
 TestDaemon::TestDaemon(QObject *parent)
     : BaseTestCase("TestDaemon", parent) {
@@ -46,7 +48,7 @@ TestDaemon::testStart() {
     app->record();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -79,7 +81,7 @@ TestDaemon::testStartPath() {
     app->record();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->start(myPath);
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -110,7 +112,7 @@ TestDaemon::testStartFailServiceRegister() {
     app->record();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -135,7 +137,7 @@ TestDaemon::testStartFailObjectRegister() {
     app->record();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -158,7 +160,7 @@ TestDaemon::testTimerStop() {
     FakeDBusConnection* conn = new FakeDBusConnection();
     FakeApplication* app = new FakeApplication();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
 
     man->emitSizeChaged(1);
 
@@ -176,7 +178,7 @@ TestDaemon::testTimerStart() {
     FakeDBusConnection* conn = new FakeDBusConnection();
     FakeApplication* app = new FakeApplication();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
 
     man->emitSizeChaged(0);
 
@@ -192,7 +194,7 @@ TestDaemon::testTimeoutExit() {
     FakeDBusConnection* conn = new FakeDBusConnection();
     FakeApplication* app = new FakeApplication();
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     app->record();
 
     // emit the timeout signal and assert that exit was called
@@ -217,7 +219,7 @@ TestDaemon::testDisableTimeout() {
     app->setArguments(args);
 
     // assert that start is never called
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     QList<MethodData> calledMethods = timer->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
@@ -235,7 +237,7 @@ TestDaemon::testSelfSignedCerts() {
     app->setArguments(args);
 
     // assert that we set the certs
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     QList<MethodData> calledMethods = man->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
@@ -253,7 +255,7 @@ TestDaemon::testSelfSignedCertsMissingPath() {
     app->setArguments(args);
 
     // assert that we do not crash
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     QList<MethodData> calledMethods = man->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
@@ -274,7 +276,7 @@ TestDaemon::testStoppable() {
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
     QFETCH(bool, enabled);
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->setStoppable(enabled);
     QCOMPARE(daemon->isStoppable(), enabled);
 }
@@ -295,7 +297,7 @@ TestDaemon::testSetTimeout() {
     FakeDownloadManager* man = new FakeDownloadManager(app, conn);
 
     QFETCH(bool, enabled);
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->enableTimeout(enabled);
     QCOMPARE(enabled, daemon->isTimeoutEnabled());
 }
@@ -309,7 +311,7 @@ TestDaemon::testSetSelfSignedSslCerts() {
 
     QList<QSslCertificate> certs = QSslCertificate::fromPath(
         dataDirectory() + "/*.pem");
-    QScopedPointer<Daemon> daemon(new Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
     daemon->setSelfSignedCerts(certs);
     QList<QSslCertificate> daemonCerts = daemon->selfSignedCerts();
     QCOMPARE(certs.count(), daemonCerts.count());

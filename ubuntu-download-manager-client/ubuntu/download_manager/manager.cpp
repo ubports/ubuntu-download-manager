@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,7 +16,18 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDBusObjectPath>
+#include <ubuntu/download_manager/system/dbus_connection.h>
+#include "download.h"
+#include "error.h"
+#include "group_download.h"
+#include "manager_interface.h"
+#include "manager_pendingcall_watcher.h"
 #include "manager.h"
+
+
+#define DOWNLOAD_SERVICE "com.canonical.applications.Downloader"
+#define MANAGER_PATH "/"
 
 
 namespace Ubuntu {
@@ -31,31 +42,98 @@ class ManagerPrivate {
     Q_DECLARE_PUBLIC(Manager)
 
  public:
-    explicit ManagerPrivate(Manager* parent)
+    ManagerPrivate(QDBusConnection conn, const QString& path, Manager* parent)
         : q_ptr(parent) {
+        _dbusInterface = new ManagerInterface(path, MANAGER_PATH,
+            conn);
+    }
+
+    // used for testing purposes
+    ManagerPrivate(ManagerInterface* interface, Manager* parent)
+        : _dbusInterface(interface),
+          q_ptr(parent) {
+    }
+
+    ~ManagerPrivate() {
+        delete _dbusInterface;
     }
 
     Download* createDownload(DownloadStruct downStruct) {
-        Q_UNUSED(downStruct);
-        return NULL;
+        Q_Q(Manager);
+        QDBusPendingReply<QDBusObjectPath> reply =
+            _dbusInterface->createDownload(downStruct);
+        // blocking other method should be used
+        reply.waitForFinished();
+        if (reply.isError()) {
+            auto err = new Error(reply.error());
+            return new Download(err);
+        } else {
+            auto path = reply.value();
+            auto down = new Download(path, q);
+            emit q->downloadCreated(down);
+            return down;
+        }
     }
 
-    void createDownload(DownloadStruct downStruct, DownloadCreationCb cb) {
-        Q_UNUSED(downStruct);
-        Q_UNUSED(cb);
+    void createDownload(DownloadStruct downStruct,
+                        DownloadCb cb,
+                        DownloadCb errCb) {
+        Q_Q(Manager);
+        QDBusPendingCall call =
+            _dbusInterface->createDownload(downStruct);
+        auto watcher = new DownloadManagerPendingCallWatcher(call, cb, errCb,
+                static_cast<QObject*>(q));
+        q->connect(watcher, SIGNAL(callbackExecuted()),
+            q, SLOT(onWatcherDone()));
     }
 
-    GroupDownload* createDownload(GroupDownloadStruct groupStruct) {
-        Q_UNUSED(groupStruct);
-        return NULL;
+    GroupDownload* createDownload(StructList downs,
+                                  const QString& algorithm,
+                                  bool allowed3G,
+                                  const QVariantMap& metadata,
+                                  StringMap headers) {
+        Q_Q(Manager);
+        QDBusPendingReply<QDBusObjectPath> reply =
+            _dbusInterface->createDownloadGroup(downs,
+                algorithm, allowed3G, metadata, headers);
+        // blocking other method should be used
+        reply.waitForFinished();
+        if (reply.isError()) {
+            Error* err = new Error(reply.error());
+            return new GroupDownload(err);
+        } else {
+            auto path = reply.value();
+            auto down = new GroupDownload(path, q);
+            emit q->groupCreated(down);
+            return down;
+        }
     }
 
-    void createDownload(GroupDownloadStruct groupStruct, GroupCreationCb cb) {
-        Q_UNUSED(groupStruct);
-        Q_UNUSED(cb);
+    void createDownload(StructList downs,
+                        const QString& algorithm,
+                        bool allowed3G,
+                        const QVariantMap& metadata,
+                        StringMap headers,
+                        GroupCb cb,
+                        GroupCb errCb) {
+        Q_Q(Manager);
+        QDBusPendingCall call =
+            _dbusInterface->createDownloadGroup(downs,
+                algorithm, allowed3G, metadata, headers);
+        auto watcher = new GroupManagerPendingCallWatcher(call, cb, errCb,
+                static_cast<QObject*>(q));
+        q->connect(watcher, SIGNAL(callbackExecuted()),
+            q, SLOT(onWatcherDone()));
+    }
+
+    void onWatcherDone() {
+        Q_Q(Manager);
+        auto senderObj = q->sender();
+        senderObj->deleteLater();
     }
 
  private:
+    ManagerInterface* _dbusInterface;
     Manager* q_ptr;
 };
 
@@ -63,8 +141,36 @@ class ManagerPrivate {
  * PUBLIC IMPLEMENTATION
  */
 
-Manager::Manager(QObject* parent)
-    : QObject(parent){
+Manager::Manager(QDBusConnection conn, const QString& path, QObject* parent)
+    : QObject(parent),
+      d_ptr(new ManagerPrivate(conn, path, this)){
+}
+
+Manager::Manager(ManagerInterface* interface, QObject* parent)
+    : QObject(parent),
+      d_ptr(new ManagerPrivate(interface, this)) {
+}
+
+Manager::~Manager() {
+    delete d_ptr;
+}
+
+Manager*
+Manager::createSessionManager(const QString& path, QObject* parent) {
+    if (path.isEmpty()) {
+        return new Manager(QDBusConnection::sessionBus(), DOWNLOAD_SERVICE, parent);
+    } else {
+        return new Manager(QDBusConnection::sessionBus(), path, parent);
+    }
+}
+
+Manager*
+Manager::createSystemManager(const QString& path, QObject* parent) {
+    if (path.isEmpty()) {
+        return new Manager(QDBusConnection::systemBus(), DOWNLOAD_SERVICE, parent);
+    } else {
+        return new Manager(QDBusConnection::systemBus(), path, parent);
+    }
 }
 
 Download*
@@ -74,21 +180,34 @@ Manager::createDownload(DownloadStruct downStruct) {
 }
 
 void
-Manager::createDownload(DownloadStruct downStruct, DownloadCreationCb cb) {
+Manager::createDownload(DownloadStruct downStruct,
+                        DownloadCb cb,
+                        DownloadCb errCb) {
     Q_D(Manager);
-    d->createDownload(downStruct, cb);
+    d->createDownload(downStruct, cb, errCb);
 }
 
 GroupDownload*
-Manager::createDownload(GroupDownloadStruct  groupStruct) {
+Manager::createDownload(StructList downs,
+                        const QString &algorithm,
+                        bool allowed3G,
+                        const QVariantMap &metadata,
+                        StringMap headers) {
     Q_D(Manager);
-    return d->createDownload(groupStruct);
+    return d->createDownload(downs, algorithm, allowed3G, metadata, headers);
 }
 
 void
-Manager::createDownload(GroupDownloadStruct  groupStruct, GroupCreationCb cb) {
+Manager::createDownload(StructList downs,
+                        const QString& algorithm,
+                        bool allowed3G,
+                        const QVariantMap& metadata,
+                        StringMap headers,
+                        GroupCb cb,
+                        GroupCb errCb) {
     Q_D(Manager);
-    d->createDownload(groupStruct, cb);
+    d->createDownload(downs, algorithm, allowed3G, metadata, headers, cb,
+        errCb);
 }
 
 }  // DownloadManager

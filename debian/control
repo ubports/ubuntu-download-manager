@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 9),
                qtsystems5-dev,
                libdbus-1-dev,
                libqt5sql5-sqlite,
-               libnih-dbus-dev
+               libnih-dbus-dev,
+               dbus-test-runner
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-system-image
@@ -26,6 +27,16 @@ Description: Ubuntu Download Manager - shared common library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the common shared library between the client lib and and the service lib.
+
+Package: ubuntu-download-manager-common-dev
+Section: libdevel
+Architecture: any
+Depends: ubuntu-download-manager-common1(= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: QT library for Ubuntu Download Manager - development files
+ .
+ This package contains the common headers shared between the client library and the daemon library.
 
 Package: ubuntu-download-manager-priv1
 Section: libs
@@ -48,6 +59,17 @@ Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the public shared library.
+
+Package: ubuntu-download-manager-client-dev
+Section: libdevel
+Architecture: any
+Depends: ubuntu-download-manager-common1(= ${binary:Version}),
+         ubuntu-download-manager-client1(= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: QT library for Ubuntu Download Manager - development files
+ .
+ This package contains the header that can be used to allow an application use the Ubuntu Download Manager client library.
 
 Package: ubuntu-download-manager
 Section: net

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -32,6 +32,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 class GroupDownload : public Download {
     Q_OBJECT
@@ -81,6 +83,8 @@ class GroupDownload : public Download {
     Factory* _downFactory = NULL;
     FileManager* _fileManager = NULL;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -22,16 +22,24 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "app-downloader-lib_global.h"
-#include "downloads/manager.h"
-#include "system/application.h"
-#include "system/dbus_connection.h"
-#include "system/timer.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace System {
+
+class Application;
+class DBusConnection;
+class Timer;
+
+}
+
+namespace Daemon {
+
+class Manager;
 class DaemonPrivate;
 class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
@@ -39,9 +47,9 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
 
  public:
     explicit Daemon(QObject *parent = 0);
-    Daemon(Application* app,
-           DBusConnection* conn,
-           Timer* timer,
+    Daemon(System::Application* app,
+           System::DBusConnection* conn,
+           System::Timer* timer,
            Manager* man,
            QObject *parent = 0);
     virtual ~Daemon();
@@ -57,6 +65,7 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
 
  public slots:  // NOLINT (whitespace/indent)
     void start(QString path="com.canonical.applications.Downloader");
+    void stop();
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onTimeout())
@@ -66,6 +75,8 @@ class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
     // use pimpl so that we can mantains ABI compatibility
     DaemonPrivate* d_ptr;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

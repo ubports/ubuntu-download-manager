@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -21,6 +21,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 SMFileDownload::SMFileDownload(QObject *parent)
     : QObject(parent) {
@@ -64,6 +66,8 @@ void
 SMFileDownload::cancelRequestDownload() {
     // TODO: perform the cancel
 }
+
+}  // Daemon
 
 }  // Ubuntu
 

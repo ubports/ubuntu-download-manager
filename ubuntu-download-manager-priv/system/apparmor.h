@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -23,7 +23,7 @@
 #include <QPair>
 #include <QString>
 #include <QSharedPointer>
-#include "dbus_connection.h"
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "dbus_proxy.h"
 #include "uuid_factory.h"
 
