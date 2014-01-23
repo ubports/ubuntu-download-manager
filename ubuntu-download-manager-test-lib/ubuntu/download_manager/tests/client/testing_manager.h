@@ -1,0 +1,62 @@
+/*
+ * Copyright 2013 Canonical Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 3 of the GNU Lesser General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#ifndef TESTING_MANAGER_H
+#define TESTING_MANAGER_H
+
+#include <QObject>
+#include <downloads/manager.h>  // comes from the priv lib, just for testing!!!!
+
+using namespace Ubuntu::DownloadManager::Daemon;
+
+class TestingManager : public Manager {
+    Q_OBJECT
+
+ public:
+    TestingManager(Application* app,
+            DBusConnection* connection,
+            bool stoppable = false,
+            QObject *parent = 0)
+        : Manager(app, connection, stoppable, parent) {}
+
+ public slots:  // NOLINT(whitespace/indent)
+    QDBusObjectPath createDownload(DownloadStruct download) override;
+
+    QDBusObjectPath createDownloadGroup(StructList downloads,
+                                        const QString& algorithm,
+                                        bool allowed3G,
+                                        const QVariantMap& metadata,
+                                        StringMap headers) override;
+
+    qulonglong defaultThrottle() override;
+    void setDefaultThrottle(qulonglong speed) override;
+    void allowGSMDownload(bool allowed) override;
+    bool isGSMDownloadAllowed() override;
+    QList<QDBusObjectPath> getAllDownloads() override;
+    QList<QDBusObjectPath> getAllDownloadsWithMetadata(
+                                              const QString& name,
+                                              const QString& value) override;
+    void exit() override;
+
+    void returnDBusErrors(bool errors);
+
+ private:
+    bool _returnErrors = false;
+};
+
+#endif // TESTING_MANAGER_H

@@ -47,7 +47,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT GroupDownload : public QObject {
  protected:
     GroupDownload(Error* err, QObject* parent = 0);
     GroupDownload(QDBusObjectPath path, QObject* parent = 0);
-    
+
  private:
     // TODO(mandel): move this to pimpl, here to ensure no mem leaks atm
     Error* _error = NULL;
@@ -55,6 +55,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT GroupDownload : public QObject {
     GroupDownloadPrivate* d_ptr;
 
 };
+
 
 }  // DownloadManager
 

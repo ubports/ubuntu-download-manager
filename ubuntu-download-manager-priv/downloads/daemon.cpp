@@ -133,6 +133,10 @@ class DaemonPrivate {
         }
     }
 
+    Manager* manager() {
+        return _downInterface;
+    }
+
     void onTimeout() {
         qDebug() << "Timeout reached, shutdown service.";
         _app->exit(0);
@@ -238,6 +242,16 @@ Daemon::Daemon(Application* app,
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
 }
 
+Daemon::Daemon(ManagerConstructor manConstructor, QObject *parent)
+    : QObject(parent) {
+    auto app = new Application();
+    auto conn = new DBusConnection();
+    auto timer = new Timer();
+    auto man = manConstructor(app, conn);
+    qDebug() << man;
+    d_ptr = new DaemonPrivate(app, conn, timer, man, this);
+}
+
 Daemon::~Daemon() {
     delete d_ptr;
 }
@@ -288,6 +302,12 @@ void
 Daemon::stop() {
     Q_D(Daemon);
     d->stop();
+}
+
+Manager*
+Daemon::manager() {
+    Q_D(Daemon);
+    return d->manager();
 }
 
 }  // Daemon

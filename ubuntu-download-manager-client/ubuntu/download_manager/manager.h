@@ -68,6 +68,14 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
                                 GroupCb cb,
                                 GroupCb errCb);
 
+    bool isError();
+    Error* lastError();
+    void allowMobileDataDownload(bool allowed);
+    bool isMobileDataDownload();
+    qulonglong defaultThrottle();
+    void setDefaultThrottle(qulonglong speed);
+    void exit();
+
     static Manager* createSessionManager(const QString& path = "", QObject* parent=0);
     static Manager* createSystemManager(const QString& path = "", QObject* parent=0);
 

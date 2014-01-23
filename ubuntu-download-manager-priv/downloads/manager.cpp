@@ -114,6 +114,7 @@ Manager::onDownloadsChanged(QString path) {
 QDBusObjectPath
 Manager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
+    download->allowGSMDownload(_allowMobileData);
     _downloadsQueue->add(download);
     _conn->registerObject(download->path(), download);
     QDBusObjectPath objectPath = QDBusObjectPath(download->path());
@@ -201,6 +202,20 @@ Manager::setDefaultThrottle(qulonglong speed) {
     foreach(const QString& path, downloads.keys()) {
         downloads[path]->setThrottle(speed);
     }
+}
+
+void
+Manager::allowGSMDownload(bool allowed) {
+    _allowMobileData = allowed;
+    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    foreach(const QString& path, downloads.keys()) {
+        downloads[path]->allowGSMDownload(allowed);
+    }
+}
+
+bool
+Manager::isGSMDownloadAllowed() {
+    return _allowMobileData;
 }
 
 QList<QDBusObjectPath>

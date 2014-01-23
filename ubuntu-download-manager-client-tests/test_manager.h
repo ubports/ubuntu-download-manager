@@ -16,43 +16,40 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DAEMON_TESTCASE_H
-#define DAEMON_TESTCASE_H
+#ifndef TEST_MANAGER_H
+#define TEST_MANAGER_H
 
-#include <QDebug>
 #include <QObject>
-#include <QProcess>
-#include "ubuntu/download_manager/tests/base_testcase.h"
-#include "testing_daemon.h"
+#include <ubuntu/download_manager/manager.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class DaemonTestCase : public BaseTestCase {
+class TestManager : public LocalTreeTestCase {
     Q_OBJECT
 
  public:
-    DaemonTestCase(const QString& testName,
-                   QObject* parent = 0);
-    DaemonTestCase(const QString& testName,
-                   const QString& daemonProcess,
-                   QObject* parent = 0);
+    explicit TestManager(QObject* parent = 0);
 
-    QString daemonPath();
-
- private slots:
-    void onProcessError(QProcess::ProcessError error);
-
- protected slots:  // NOLINT(whitespace/indent)
+ private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
     void cleanup() override;
-    void returnDBusErrors(bool errors);
+    void testAllowMobileDataDownload_data();
+    void testAllowMobileDataDownload();
+    void testAllowMobileDataDownloadError();
+    void testIsMobileDataDownloadError();
+    void testDefaultThrottleError();
+    void testSetDefaultThrottle_data();
+    void testSetDefaultThrottle();
+    void testSetDefaultThrottleError();
+    void testExitError();
 
  private:
-    QString _daemonPath;
-    QString _daemonProcess;
-    QProcess* _process = nullptr;
-
+    Manager* _man;
 };
 
-#endif // DAEMON_TESTCASE_H
+DECLARE_TEST(TestManager)
+
+#endif // TEST_MANAGER_H
