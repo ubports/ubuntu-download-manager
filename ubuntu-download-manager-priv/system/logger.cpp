@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
@@ -79,11 +80,12 @@ Logger::setupLogging(const QString filename) {
     }
 
     auto appName = QCoreApplication::instance()->applicationName();
+
+    google::SetLogDestination(google::INFO, toStdString(path).c_str());
     if (!_init) {
         _init = true;
         google::InitGoogleLogging(toStdString(appName).c_str());
     }
-    google::SetLogDestination(google::INFO, toStdString(path).c_str());
 }
 
 bool
@@ -96,16 +98,16 @@ QString
 Logger::getLogDir() {
     QString path = ""; 
     if (getuid() == 0) {
-        path = "/var/log/";
+        path = "/var/log/ubuntu-download-manager";
     } else {
         path = QStandardPaths::writableLocation(
             QStandardPaths::CacheLocation);
     }
-    LOG(INFO) << "Logging dir is" << path;
+    qDebug() << "Logging dir is" << path;
 
     bool wasCreated = QDir().mkpath(path);
     if (!wasCreated) {
-        LOG(ERROR) << "Could not create the logging path" << path;
+        qCritical() << "Could not create the logging path" << path;
     }
     return path;
 }

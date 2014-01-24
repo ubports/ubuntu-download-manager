@@ -181,12 +181,6 @@ class DaemonPrivate {
 
         // set logging
         Logger::setupLogging();
-#ifdef DEBUG
-        Logger::setLogLevel(QtDebugMsg);
-#else
-        if (qgetenv("UBUNTU_DOWNLOADER_DEBUG") != "")
-            Logger::setLogLevel(QtDebugMsg);
-#endif
     }
 
  private:
