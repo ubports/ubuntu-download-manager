@@ -86,7 +86,7 @@ FileDownload::FileDownload(const QString& id,
 }
 
 FileDownload::~FileDownload() {
-    if (_currentData != NULL) {
+    if (_currentData != nullptr) {
         _currentData->close();
     }
     delete _currentData;
@@ -97,13 +97,13 @@ void
 FileDownload::cancelDownload() {
     TRACE << _url;
 
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         // disconnect so that we do not get useless signals
         // and remove the reply
         disconnectFromReplySignals();
         _reply->abort();
         _reply->deleteLater();
-        _reply = NULL;
+        _reply = nullptr;
     }
 
     // remove current data and metadata
@@ -116,7 +116,7 @@ void
 FileDownload::pauseDownload() {
     TRACE << _url;
 
-    if (_reply == NULL) {
+    if (_reply == nullptr) {
         // cannot pause because is not running
         qDebug() << "Cannot pause download because reply is NULL";
         qDebug() << "EMIT paused(false)";
@@ -137,7 +137,7 @@ FileDownload::pauseDownload() {
         emit paused(false);
     } else {
         _reply->deleteLater();
-        _reply = NULL;
+        _reply = nullptr;
         qDebug() << "EMIT paused(true)";
         _downloading = false;
         emit paused(true);
@@ -148,7 +148,7 @@ void
 FileDownload::resumeDownload() {
     qDebug() << __PRETTY_FUNCTION__ << _url;
 
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         // cannot resume because it is already running
         qDebug() << "Cannot resume download because reply != NULL";
         qDebug() << "EMIT resumed(false)";
@@ -179,7 +179,7 @@ void
 FileDownload::startDownload() {
     TRACE << _url;
 
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         // the download was already started, lets say that we did it
         qDebug() << "Cannot start download because reply != NULL";
         qDebug() << "EMIT started(false)";
@@ -210,7 +210,7 @@ FileDownload::startDownload() {
 
 qulonglong
 FileDownload::progress() {
-    return (_currentData == NULL) ? 0 : _currentData->size();
+    return (_currentData == nullptr) ? 0 : _currentData->size();
 }
 
 qulonglong
@@ -222,7 +222,7 @@ void
 FileDownload::setThrottle(qulonglong speed) {
     TRACE << _url;
     Download::setThrottle(speed);
-    if (_reply != NULL)
+    if (_reply != nullptr)
         _reply->setReadBufferSize(speed);
 }
 
@@ -338,7 +338,7 @@ FileDownload::onFinished() {
 
     // clean the reply
     _reply->deleteLater();
-    _reply = NULL;
+    _reply = nullptr;
 }
 
 void
@@ -352,24 +352,29 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
-    TRACE << error;
+    QProcess* p = qobject_cast<QProcess*>(sender());
+    qCritical() << "Error " << error << "executing" << p->program()
+	<< "with args" << p->arguments() << "Stdout:"
+	<< p->readAllStandardOutput() << "Stderr:"
+	<< p->readAllStandardError();
+    p->deleteLater();
     emitError(COMMAND_ERROR);
 }
 
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
+    QProcess* p = qobject_cast<QProcess*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
-        bool success = QFile::remove(_filePath);
-        if (!success)
-            qWarning() << "Error removing" << _filePath;
+        cleanUpCurrentData();
         setState(Download::FINISH);
         qDebug() << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
         emitError(COMMAND_ERROR);
     }
+    p->deleteLater();
 }
 
 void
@@ -387,7 +392,7 @@ FileDownload::onOnlineStateChanged(bool online) {
 
     // if no longer online yet we have a reply (that is, we are trying
     // to get data from the missing connection) we pause
-    if (!_connected && _reply != NULL) {
+    if (!_connected && _reply != nullptr) {
         pauseDownload();
         // set it to be downloading even when pause download sets it
         // to false
@@ -417,7 +422,7 @@ FileDownload::init() {
 
 void
 FileDownload::connectToReplySignals() {
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         connect(_reply, &NetworkReply::downloadProgress,
             this, &FileDownload::onDownloadProgress);
         connect(_reply, &NetworkReply::error,
@@ -431,7 +436,7 @@ FileDownload::connectToReplySignals() {
 
 void
 FileDownload::disconnectFromReplySignals() {
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         disconnect(_reply, &NetworkReply::downloadProgress,
             this, &FileDownload::onDownloadProgress);
         disconnect(_reply, &NetworkReply::error,
@@ -478,32 +483,66 @@ FileDownload::getSaveFileName() {
         }
     } else {
         finalPath = rootPath() + QDir::separator() + basename;
-
-        // check if the file exists, if it does lets append the uuid to it
         if (QFile::exists(finalPath)) {
-            finalPath += downloadId();
+            finalPath = uniqueFilePath(finalPath);
         }
+
     }
 
     return finalPath;
 }
 
+QString
+FileDownload::uniqueFilePath(QString path) {
+    QFileInfo fileInfo(path);
+
+    // Split the file into 2 parts - dot+extension, and everything else. For
+    // example, "path/file.tar.gz" becomes "path/file"+".tar.gz", while
+    // "path/file" (note lack of extension) becomes "path/file"+"".
+    auto secondPart = fileInfo.completeSuffix();
+    auto firstPart = path;
+
+    if (!secondPart.isEmpty()) {
+        secondPart = "." + secondPart;
+        firstPart = path.left(path.size() - secondPart.size());
+    } 
+
+    // Try with an ever-increasing number suffix, until we've reached a file
+    // that does not yet exist.
+    for (int ii = 1; ; ii++) {
+        // Construct the new file name by adding the unique number between the
+        // first and second part.
+        auto finalPath = QString("%1 (%2)%3").arg(firstPart).arg(ii).arg(secondPart);
+        // If no file exists with the new name, return it.
+        if (!QFile::exists(finalPath)) {
+            return finalPath;
+        }
+    }  // for
+    return path;
+}
+
 void
 FileDownload::cleanUpCurrentData() {
-    bool success;
-    QString fileName;
-    if (_currentData) {
-        // delete the current data, we did cancel.
-        fileName = _currentData->fileName();
+    bool success = true; 
+    QFile::FileError error = QFile::NoError;
+    if (_currentData != nullptr) {
         success = _currentData->remove();
-        _currentData->deleteLater();
-        _currentData = NULL;
+    
         if (!success)
-            qWarning() << "Error removing" << fileName;
+            error = _currentData->error();
+    
+        _currentData->deleteLater();
+        _currentData = nullptr;
+    } else {
+        QScopedPointer<QFile> tempFile(new QFile(_filePath));
+        success = tempFile->remove();
+        if (!success)
+            error = tempFile->error();
     }
-    success = QFile::remove(_filePath);
+    
     if (!success)
-        qWarning() << "Error removing" << _filePath;
+        qWarning() << "Error " << error <<
+            "removing file with path" << _filePath;
 }
 
 QNetworkRequest
@@ -529,7 +568,7 @@ FileDownload::emitError(const QString& error) {
     TRACE << error;
     disconnectFromReplySignals();
     _reply->deleteLater();
-    _reply = NULL;
+    _reply = nullptr;
     cleanUpCurrentData();
     Download::emitError(error);
 }

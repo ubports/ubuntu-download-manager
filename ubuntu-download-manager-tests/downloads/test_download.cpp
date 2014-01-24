@@ -1694,6 +1694,53 @@ TestDownload::testDownloadPresent() {
 }
 
 void
+TestDownload::testDownloadPresentSeveralFiles_data() {
+    QTest::addColumn<int>("count");
+
+    QTest::newRow("One") << 1;
+    QTest::newRow("Some") << 3;
+    QTest::newRow("Several") << 10; 
+    QTest::newRow("Plenti") << 100;
+}
+
+void
+TestDownload::testDownloadPresentSeveralFiles() {
+    QFETCH(int, count);
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
+        _rootPath, _url, _metadata, _headers));
+
+    QString filePath = download->filePath();
+
+    QScopedPointer<QFile> file(new QFile(filePath));
+    file->open(QIODevice::ReadWrite | QFile::Append);
+    file->write("data data data!");
+    file->close();
+
+    QFileInfo fileInfo(filePath);
+    auto suffix = "." + fileInfo.completeSuffix();
+    auto prefix = filePath.left(filePath.size() - suffix.size());
+
+    // write the rest of the files
+    for(int index=1; index < count; index++) {
+        auto otherPath = QString("%1 (%2)%3").arg(prefix).arg(index).arg(suffix);
+        QScopedPointer<QFile> otherFile(new QFile(otherPath));
+        otherFile->open(QIODevice::ReadWrite | QFile::Append);
+        otherFile->write("data data data!");
+        otherFile->close();
+    }
+
+    QScopedPointer<FileDownload> other(new FileDownload(_id, _path, true,
+        _rootPath, _url, _metadata, _headers));
+
+    QVERIFY(filePath != other->filePath());
+    if (count > 0) {
+        auto expectedPath = QString("%1 (%2)%3").arg(prefix).arg(count).arg(suffix);
+        QCOMPARE(expectedPath, other->filePath());
+    }
+}
+
+void
 TestDownload::testProcessingJustOnce() {
     QCryptographicHash::Algorithm algorithm = HashAlgorithm::getHashAlgo(_algo);
     QByteArray data(300, 't');
