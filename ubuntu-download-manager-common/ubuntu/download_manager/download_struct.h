@@ -38,6 +38,7 @@ class DownloadStruct {
 
  public:
     DownloadStruct();
+    DownloadStruct(const QString& url);
     DownloadStruct(const QString& url,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers);
