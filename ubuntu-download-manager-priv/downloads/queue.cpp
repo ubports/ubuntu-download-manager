@@ -89,11 +89,13 @@ Queue::size() {
 void
 Queue::onDownloadStateChanged() {
     TRACE;
+    qDebug() << "State changed.";
     // get the appdownload that emited the signal and
     // decide what to do with it
     Download* down = qobject_cast<Download*>(sender());
     switch (down->state()) {
         case Download::START:
+            qDebug() << "Start";
             // only start the download in the update method
             if (_current.isEmpty())
                 updateCurrentDownload();
@@ -140,6 +142,7 @@ Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
 void
 Queue::updateCurrentDownload() {
     TRACE;
+    qDebug() << "Update current";
     if (!_current.isEmpty()) {
         // check if it was canceled/finished
         Download* currentDownload = _downloads[_current];

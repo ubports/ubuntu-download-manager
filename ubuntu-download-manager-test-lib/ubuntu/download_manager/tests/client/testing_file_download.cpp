@@ -28,6 +28,27 @@ TestingFileDownload::TestingFileDownload(FileDownload* down,
                    down->metadata(),
                    down->headers(), parent),
       _down(down) {
+    // fwd all the diff signals
+    connect(_down, &FileDownload::finished,
+        this, &TestingFileDownload::finished);
+    connect(_down, &Download::canceled,
+        this, &TestingFileDownload::canceled);
+    connect(_down, &Download::error,
+        this, &TestingFileDownload::error);
+    connect(_down, &Download::paused,
+        this, &TestingFileDownload::paused);
+    connect(_down, &Download::processing,
+        this, &TestingFileDownload::processing);
+    connect(_down, &Download::resumed,
+        this, &TestingFileDownload::resumed);
+    connect(_down, &Download::started,
+        this, &TestingFileDownload::started);
+    connect(_down, &Download::stateChanged,
+        this, &TestingFileDownload::stateChanged);
+    connect(_down, static_cast<void(Download::*)
+        (qulonglong, qulonglong)>(&Download::progress),
+	this, static_cast<void(Download::*)
+	    (qulonglong, qulonglong)>(&Download::progress));
 }
 
 TestingFileDownload::~TestingFileDownload() {
@@ -64,4 +85,100 @@ TestingFileDownload::setThrottle(qulonglong speed) {
         "setThrottle");
     }
     _down->setThrottle(speed);
+}
+
+qulonglong
+TestingFileDownload::throttle() {
+    return _down->throttle();
+}
+
+void
+TestingFileDownload::allowGSMDownload(bool allowed) {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "allowGSMDownload");
+    }
+    _down->allowGSMDownload(allowed);
+}
+
+bool
+TestingFileDownload::isGSMDownloadAllowed() {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "isGSMDownloadAllowed");
+    }
+    return _down->isGSMDownloadAllowed();
+}
+
+
+QVariantMap
+TestingFileDownload::metadata() const {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "metadata");
+    }
+    return _down->metadata();
+}
+
+Ubuntu::DownloadManager::Daemon::Download::State
+TestingFileDownload::state() const {
+    return _down->state();
+}
+
+void
+TestingFileDownload::cancel() {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "cancel");
+    }
+    _down->cancel();
+}
+
+void
+TestingFileDownload::pause() {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "pause");
+    }
+    _down->pause();
+}
+
+void
+TestingFileDownload::resume() {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "resume");
+    }
+    _down->resume();
+}
+
+void
+TestingFileDownload::start() {
+    qDebug() << "STarting download";
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "start");
+    }
+    _down->start();
+}
+
+void
+TestingFileDownload::cancelDownload() {
+    _down->cancelDownload();
+}
+
+void
+TestingFileDownload::pauseDownload() {
+    _down->pauseDownload();
+}
+
+void
+TestingFileDownload::resumeDownload() {
+    _down->resumeDownload();
+}
+
+void
+TestingFileDownload::startDownload() {
+     qDebug() << "Start testing down";
+    _down->startDownload();
 }

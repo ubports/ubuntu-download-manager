@@ -41,16 +41,38 @@ class DownloadPrivate {
                     const QDBusObjectPath& objectPath,
                     Download* parent)
         : _conn(conn),
-	  _servicePath(servicePath),
+          _servicePath(servicePath),
           q_ptr(parent) {
+        Q_Q(Download);
         _dbusInterface = new DownloadInterface(servicePath,
             objectPath.path(), conn);
+
+        // fwd all the signals but the error one
+        q->connect(_dbusInterface, &DownloadInterface::canceled,
+            q, &Download::canceled);
+        q->connect(_dbusInterface, &DownloadInterface::finished,
+            q, &Download::finished);
+        q->connect(_dbusInterface, &DownloadInterface::paused,
+            q, &Download::paused);
+        q->connect(_dbusInterface, &DownloadInterface::processing,
+            q, &Download::processing);
+        q->connect(_dbusInterface, static_cast<void(DownloadInterface::*)
+            (qulonglong, qulonglong)>(&DownloadInterface::progress),
+            q, static_cast<void(Download::*)
+                (qulonglong, qulonglong)>(&Download::progress));
+        q->connect(_dbusInterface, &DownloadInterface::resumed,
+            q, &Download::resumed);
+        q->connect(_dbusInterface, &DownloadInterface::started,
+            q, &Download::started);
+
+        // TODO: Connect to the diff error signals
+        // void error(Error* error);
     }
 
     DownloadPrivate(const QDBusConnection& conn, Error* err, Download* parent)
         : _isError(true),
           _lastError(err),
-	  _conn(conn),
+          _conn(conn),
           q_ptr(parent) {
     }
 
@@ -70,19 +92,49 @@ class DownloadPrivate {
     }
 
     void start() {
+        Q_Q(Download);
+        QDBusPendingCall call =
+            _dbusInterface->start();
+        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+	        call, q);
+	    Q_UNUSED(watcher);
     }
 
     void pause() {
+        Q_Q(Download);
+        QDBusPendingCall call =
+            _dbusInterface->pause();
+        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+	        call, q);
+	    Q_UNUSED(watcher);
     }
 
     void resume() {
+        Q_Q(Download);
+        QDBusPendingCall call =
+            _dbusInterface->resume();
+        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+	        call, q);
+	    Q_UNUSED(watcher);
     }
 
     void cancel() {
+        Q_Q(Download);
+        QDBusPendingCall call =
+            _dbusInterface->cancel();
+        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+	        call, q);
+	    Q_UNUSED(watcher);
     }
 
     void allowMobileDownload(bool allowed) {
-        Q_UNUSED(allowed);
+        QDBusPendingReply<> reply =
+            _dbusInterface->allowGSMDownload(allowed);
+        // block, the call should be fast enough
+        reply.waitForFinished();
+        if (reply.isError()) {
+            setLastError(reply.error());
+        }
     }
 
     bool isMobileDownloadAllowed() {
@@ -100,12 +152,13 @@ class DownloadPrivate {
     }
 
     void setThrottle(qulonglong speed) {
-        Q_Q(Download);
-        QDBusPendingCall call =
+        QDBusPendingReply<> reply =
             _dbusInterface->setThrottle(speed);
-        auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
-	    call, q);
-	Q_UNUSED(watcher);
+        // block, the call should be fast enough
+        reply.waitForFinished();
+        if (reply.isError()) {
+            setLastError(reply.error());
+        }
     }
 
     qulonglong throttle() {

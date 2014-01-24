@@ -45,12 +45,11 @@ class TestDownload : public LocalTreeTestCase {
     void testSetThrottleError();
     void testMetadata();
     void testMetadataError();
-    void testProgress();
     void testProgressError();
-    void testTotalSize();
     void testTotalSizeError();
 
  private:
+    QVariantMap _metadata;
     Manager* _man = nullptr;
     Download* _down = nullptr;
 };

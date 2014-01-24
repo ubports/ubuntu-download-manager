@@ -37,10 +37,29 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
     qulonglong totalSize() override;
+
     void setThrottle(qulonglong speed) override;
+    qulonglong throttle();
+
+    void allowGSMDownload(bool allowed) override;
+    bool isGSMDownloadAllowed() override;
+
+    QVariantMap metadata() const override;
+
+    Ubuntu::DownloadManager::Daemon::Download::State state() const override;
+
+    void cancel() override;
+    void pause() override;
+    void resume() override;
+    void start() override;
+
+    void cancelDownload() override;
+    void pauseDownload() override;
+    void resumeDownload() override;
+    void startDownload() override;
 
  private:
-    bool _returnErrors;
+    bool _returnErrors = false;
     FileDownload* _down = nullptr;
 };
 

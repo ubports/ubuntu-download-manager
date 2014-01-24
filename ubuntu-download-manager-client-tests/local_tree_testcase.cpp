@@ -28,16 +28,14 @@ LocalTreeTestCase::LocalTreeTestCase(const QString& testName,
 
 QUrl
 LocalTreeTestCase::largeFileUrl() {
-    auto url = serverUrl();
-    url.setPath(LARGE_FILE);
-    return url;
+    auto url = serverUrl().toString() + "/" + LARGE_FILE;
+    return QUrl(url);
 }
 
 QUrl
 LocalTreeTestCase::smallFileUrl() {
-    auto url = serverUrl();
-    url.setPath(SMALL_FILE);
-    return url;
+    auto url = serverUrl().toString() + "/" + SMALL_FILE;
+    return QUrl(url);
 }
 
 void

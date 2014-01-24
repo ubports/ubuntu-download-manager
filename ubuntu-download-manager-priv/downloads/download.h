@@ -77,7 +77,7 @@ class Download : public QObject {
         return _rootPath;
     }
 
-    Download::State state() const {
+    virtual Download::State state() const {
         return _state;
     }
 
@@ -110,7 +110,7 @@ class Download : public QObject {
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
     // the downloader takes care of the actual download operations
-    QVariantMap metadata() const {
+    virtual QVariantMap metadata() const {
         return _metadata;
     }
 
@@ -120,22 +120,22 @@ class Download : public QObject {
         return _throttle;
     }
 
-    void allowGSMDownload(bool allowed);
-    bool isGSMDownloadAllowed();
+    virtual void allowGSMDownload(bool allowed);
+    virtual bool isGSMDownloadAllowed();
 
-    inline void cancel() {
+    virtual inline void cancel() {
         setState(Download::CANCEL);
     }
 
-    inline void pause() {
+    virtual inline void pause() {
         setState(Download::PAUSE);
     }
 
-    inline void resume() {
+    virtual inline void resume() {
         setState(Download::RESUME);
     }
 
-    inline void start() {
+    virtual inline void start() {
         setState(Download::START);
     }
 

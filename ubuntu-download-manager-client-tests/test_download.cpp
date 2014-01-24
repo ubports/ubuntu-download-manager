@@ -1,3 +1,22 @@
+/*
+ * Copyright 2014 Canonical Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 3 of the GNU Lesser General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
+#include <QSignalSpy>
 #include "test_download.h"
 
 TestDownload::TestDownload(QObject *parent)
@@ -9,11 +28,13 @@ TestDownload::init() {
     LocalTreeTestCase::init();
     _man = Manager::createSessionManager(daemonPath(), this);
 
-    QVariantMap metadata;
+    _metadata["my-string"] = "canonical";
+    _metadata["your-string"] = "developer";
     QMap<QString, QString> headers;
-    QUrl notPresentFile = serverUrl();
+    QUrl notPresentFile = largeFileUrl();
+    qDebug() << "URL is" << notPresentFile;
     DownloadStruct downStruct(notPresentFile.toString(),
-        metadata, headers);
+        _metadata, headers);
 
     _down = _man->createDownload(downStruct);
 }
@@ -35,7 +56,10 @@ TestDownload::testAllowMobileDownload_data() {
 
 void
 TestDownload::testAllowMobileDownload() {
-    QFAIL("Not implemented.");
+    QFETCH(bool, enabled);
+    _down->allowMobileDownload(enabled);
+    auto isEnabled = _down->isMobileDownloadAllowed();
+    QCOMPARE(enabled, isEnabled);
 }
 
 void
@@ -48,17 +72,20 @@ TestDownload::testAllowMobileDownloadError() {
 
 void
 TestDownload::testSetThrottle_data() {
-    QTest::addColumn<uint>("speed");
+    QTest::addColumn<qulonglong>("speed");
 
-    QTest::newRow("First row") << 200u;
-    QTest::newRow("Second row") << 1212u;
-    QTest::newRow("Third row") << 998u;
-    QTest::newRow("Last row") << 60u;
+    QTest::newRow("First row") << 200ULL;
+    QTest::newRow("Second row") << 1212ULL;
+    QTest::newRow("Third row") << 998ULL;
+    QTest::newRow("Last row") << 60ULL;
 }
 
 void
 TestDownload::testSetThrottle() {
-    QFAIL("Not implemented.");
+    QFETCH(qulonglong, speed);
+    _down->setThrottle(speed);
+    auto currentSpeed = _down->throttle();
+    QCOMPARE(speed, currentSpeed);
 }
 
 void
@@ -71,7 +98,10 @@ TestDownload::testSetThrottleError() {
 
 void
 TestDownload::testMetadata() {
-    QFAIL("Not implemented.");
+    auto currentMetadata = _down->metadata();
+    foreach(auto key, _metadata.keys()) {
+        QCOMPARE(currentMetadata[key], _metadata[key]);
+    }
 }
 
 void
@@ -83,21 +113,11 @@ TestDownload::testMetadataError() {
 }
 
 void
-TestDownload::testProgress() {
-    QFAIL("Not implemented.");
-}
-
-void
 TestDownload::testProgressError() {
     returnDBusErrors(true);
     _down->progress();
     QVERIFY(_down->isError());
     QVERIFY(_down->error() != nullptr);
-}
-
-void
-TestDownload::testTotalSize() {
-    QFAIL("Not implemented.");
 }
 
 void
