@@ -11,7 +11,6 @@ Build-Depends: debhelper (>= 9),
                libnih-dbus-dev,
                libgoogle-glog-dev,
                dbus-test-runner
-
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-system-image
