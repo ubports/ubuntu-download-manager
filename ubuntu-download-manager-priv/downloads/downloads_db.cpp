@@ -83,6 +83,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 DownloadsDb::DownloadsDb(QObject* parent)
     : QObject(parent) {
     _fileManager = FileManager::instance();
@@ -261,6 +263,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
     return success;
 }
 
+}  // Daemon
 
 }  // DownloadManager
 

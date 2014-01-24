@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -29,6 +29,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 class Factory : public QObject {
     Q_OBJECT
@@ -92,6 +94,8 @@ class Factory : public QObject {
  private:
     AppArmor* _apparmor;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

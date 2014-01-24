@@ -28,6 +28,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 /*
  * Adaptor class for interface com.canonical.applications.Download
  */
@@ -120,6 +122,8 @@ Q_SIGNALS: // SIGNALS
     void resumed(bool success);
     void started(bool success);
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

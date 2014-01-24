@@ -1,5 +1,5 @@
 /*
- * copyright 2013 2013 canonical ltd.
+ * copyright 2013-2014 canonical ltd.
  *
  * this library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the gnu lesser general public
@@ -26,6 +26,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 GroupDownload::GroupDownload(const QString& id,
                   const QString& path,
@@ -296,6 +298,8 @@ GroupDownload::onFinished(const QString& file) {
         emit finished(_finishedDownloads);
     }
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

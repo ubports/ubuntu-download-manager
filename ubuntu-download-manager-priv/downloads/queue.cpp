@@ -25,6 +25,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 Queue::Queue(QObject* parent)
     : QObject(parent),
       _current("") {
@@ -175,6 +177,7 @@ Queue::updateCurrentDownload() {
     emit currentChanged(_current);
 }
 
+}  // Daemon
 
 }  // DownloadManager
 

@@ -24,10 +24,10 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/uuid_utils.h>
-#include "fakes/fake_download.h"
-#include "fakes/fake_system_network_info.h"
-#include "fakes/fake_request_factory.h"
-#include "fakes/fake_process_factory.h"
+#include <ubuntu/download_manager/tests/server/download.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
+#include <ubuntu/download_manager/tests/server/request_factory.h>
+#include <ubuntu/download_manager/tests/server/process_factory.h>
 #include "test_downloads_db.h"
 
 #define TABLE_EXISTS "SELECT count(name) FROM sqlite_master "\

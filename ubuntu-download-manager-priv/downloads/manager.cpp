@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -27,6 +27,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 Manager::Manager(Application* app,
                  DBusConnection* connection,
@@ -113,6 +115,7 @@ Manager::onDownloadsChanged(QString path) {
 QDBusObjectPath
 Manager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
+    download->allowGSMDownload(_allowMobileData);
     _downloadsQueue->add(download);
     _conn->registerObject(download->path(), download);
     QDBusObjectPath objectPath = QDBusObjectPath(download->path());
@@ -202,6 +205,20 @@ Manager::setDefaultThrottle(qulonglong speed) {
     }
 }
 
+void
+Manager::allowGSMDownload(bool allowed) {
+    _allowMobileData = allowed;
+    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    foreach(const QString& path, downloads.keys()) {
+        downloads[path]->allowGSMDownload(allowed);
+    }
+}
+
+bool
+Manager::isGSMDownloadAllowed() {
+    return _allowMobileData;
+}
+
 QList<QDBusObjectPath>
 Manager::getAllDownloads() {
     QList<QDBusObjectPath> paths;
@@ -240,6 +257,7 @@ Manager::exit() {
     }
 }
 
+}  // Daemon
 
 }  // DownloadManager
 

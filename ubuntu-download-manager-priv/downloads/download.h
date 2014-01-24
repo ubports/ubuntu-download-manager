@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -34,6 +34,8 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 using namespace System;
+
+namespace Daemon {
 
 class Download : public QObject {
     Q_OBJECT
@@ -174,6 +176,8 @@ class Download : public QObject {
     SystemNetworkInfo* _networkInfo;
     QObject* _adaptor = NULL;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

@@ -21,6 +21,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+
 /*
  * Implementation of adaptor class DownloadManagerAdaptor
  */
@@ -102,6 +104,8 @@ void DownloadManagerAdaptor::setDefaultThrottle(qulonglong speed)
     // handle method call com.canonical.applications.DownloadManager.setDefaultThrottle
     QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(qulonglong, speed));
 }
+
+}  // Daemon
 
 }  // DownloadManager
 

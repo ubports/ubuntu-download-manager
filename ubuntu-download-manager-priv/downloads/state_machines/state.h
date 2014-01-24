@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -22,11 +22,27 @@
 #include <QState>
 #include <QVariant>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace Daemon {
+
+namespace StateMachines {
+
 class State : public QState {
     Q_OBJECT
  public:
     State(QObject* obj, const char* property, QVariant value, QState* parent = 0);
     
 };
+
+}  // StateMachines
+
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubuntu
 
 #endif  // DOWNLOADER_LIB_STATE_H

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -20,8 +20,8 @@
 #include <downloads/factory.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <system/uuid_utils.h>
-#include "fakes/fake_process_factory.h"
-#include "fakes/fake_system_network_info.h"
+#include <ubuntu/download_manager/tests/server/process_factory.h>
+#include <ubuntu/download_manager/tests/server/system_network_info.h>
 #include "test_download_manager.h"
 
 TestDownloadManager::TestDownloadManager(QObject *parent)

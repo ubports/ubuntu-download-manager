@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -25,15 +25,17 @@
 #include <QtDBus/QDBusContext>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/download_manager/system/dbus_connection.h>
 #include "downloads/download.h"
 #include "downloads/queue.h"
 #include "downloads/factory.h"
 #include "system/application.h"
-#include "system/dbus_connection.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 class Manager : public QObject, public QDBusContext {
     Q_OBJECT
@@ -58,20 +60,23 @@ class Manager : public QObject, public QDBusContext {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
 
  public slots:  // NOLINT(whitespace/indent)
-    QDBusObjectPath createDownload(DownloadStruct download);
+    virtual QDBusObjectPath createDownload(DownloadStruct download);
 
-    QDBusObjectPath createDownloadGroup(StructList downloads,
-                                        const QString& algorithm,
-                                        bool allowed3G,
-                                        const QVariantMap& metadata,
-                                        StringMap headers);
+    virtual QDBusObjectPath createDownloadGroup(StructList downloads,
+                                                const QString& algorithm,
+                                                bool allowed3G,
+                                                const QVariantMap& metadata,
+                                                StringMap headers);
 
-    qulonglong defaultThrottle();
-    void setDefaultThrottle(qulonglong speed);
-    QList<QDBusObjectPath> getAllDownloads();
-    QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString& name,
-                                                       const QString& value);
-    void exit();
+    virtual qulonglong defaultThrottle();
+    virtual void setDefaultThrottle(qulonglong speed);
+    virtual void allowGSMDownload(bool allowed);
+    virtual bool isGSMDownloadAllowed();
+    virtual QList<QDBusObjectPath> getAllDownloads();
+    virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
+                                                      const QString& name,
+                                                      const QString& value);
+    virtual void exit();
 
  signals:
     void downloadCreated(const QDBusObjectPath& path);
@@ -95,13 +100,16 @@ class Manager : public QObject, public QDBusContext {
     void onDownloadsChanged(QString);
 
  private:
-    Application* _app;
+    Application* _app = NULL;
     qulonglong _throttle;
-    Factory* _downloadFactory;
-    Queue* _downloadsQueue;
-    DBusConnection* _conn;
-    bool _stoppable;
+    Factory* _downloadFactory = NULL;
+    Queue* _downloadsQueue = NULL;
+    DBusConnection* _conn = NULL;
+    bool _stoppable = false;
+    bool _allowMobileData = true;
 };
+
+}  // Daemon
 
 }  // DownloadManager
 

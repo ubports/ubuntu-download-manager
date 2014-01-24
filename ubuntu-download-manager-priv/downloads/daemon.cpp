@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -24,6 +24,7 @@
 #include "downloads/download_manager_adaptor.h"
 #include "system/application.h"
 #include "system/logger.h"
+#include "system/timer.h"
 
 #define DISABLE_TIMEOUT "-disable-timeout"
 #define SELFSIGNED_CERT "-self-signed-certs"
@@ -32,6 +33,8 @@
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+namespace Daemon {
 
 /**
  * PRIVATE IMPLEMENATION
@@ -76,6 +79,9 @@ class DaemonPrivate {
 
     void enableTimeout(bool enabled) {
         _isTimeoutEnabled = enabled;
+        if (!_isTimeoutEnabled) {
+            _shutDownTimer->stop();
+        }
     }
 
     bool isStoppable() {
@@ -96,11 +102,12 @@ class DaemonPrivate {
 
     void start(QString path) {
         DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+        _path = path;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
-        bool ret = _conn->registerService(path);
+        bool ret = _conn->registerService(_path);
         if (ret) {
             LOG(INFO) << "Service registered to"
-                << "com.canonical.applications.Downloader";
+                << _path;
             ret = _conn->registerObject("/", _downInterface);
             if (!ret) {
                 LOG(INFO) << "Could not register interface. DBus Error =>"
@@ -112,6 +119,18 @@ class DaemonPrivate {
         LOG(INFO) << "Could not register service. DBus Error =>"
             << _conn->connection().lastError();
         _app->exit(-1);
+    }
+
+    void stop() {
+        // stop listening in the service
+        bool ret = _conn->unregisterService(_path);
+        if (!ret) {
+            qCritical() << "Could not unregister service at" << _path;
+        }
+    }
+
+    Manager* manager() {
+        return _downInterface;
     }
 
     void onTimeout() {
@@ -184,14 +203,15 @@ class DaemonPrivate {
     }
 
  private:
+    QString _path = "";
     bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
-    Application* _app;
-    Timer* _shutDownTimer;
-    DBusConnection* _conn;
-    Manager* _downInterface;
-    DownloadManagerAdaptor* _downAdaptor;
+    Application* _app = nullptr;
+    Timer* _shutDownTimer = nullptr;
+    DBusConnection* _conn = nullptr;
+    Manager* _downInterface = nullptr;
+    DownloadManagerAdaptor* _downAdaptor = nullptr;
     Daemon* q_ptr;
 };
 
@@ -211,6 +231,16 @@ Daemon::Daemon(Application* app,
                QObject *parent)
     : QObject(parent),
       d_ptr(new DaemonPrivate(app, conn, timer, man, this)) {
+}
+
+Daemon::Daemon(ManagerConstructor manConstructor, QObject *parent)
+    : QObject(parent) {
+    auto app = new Application();
+    auto conn = new DBusConnection();
+    auto timer = new Timer();
+    auto man = manConstructor(app, conn);
+    qDebug() << man;
+    d_ptr = new DaemonPrivate(app, conn, timer, man, this);
 }
 
 Daemon::~Daemon() {
@@ -258,6 +288,20 @@ Daemon::start(QString path) {
     Q_D(Daemon);
     d->start(path);
 }
+
+void
+Daemon::stop() {
+    Q_D(Daemon);
+    d->stop();
+}
+
+Manager*
+Daemon::manager() {
+    Q_D(Daemon);
+    return d->manager();
+}
+
+}  // Daemon
 
 }  // DownloadManager
 
