@@ -272,11 +272,11 @@ FileDownload::onFinished() {
     if (!_hash.isEmpty()) {
         emit processing(filePath());
         _currentData->reset();
-        QByteArray data = _currentData->readAll();
-        // do calculate the hash of the file so far and ensure that
-        // they are the same
-        QString fileSig = QString(
-            QCryptographicHash::hash(data, _algo).toHex());
+	QCryptographicHash hash(_algo);
+	// addData is smart enough to not load the entire file in memory
+	hash.addData(_currentData->device());
+        QString fileSig = QString(hash.result().toHex());
+
         if (fileSig != _hash) {
             qCritical() << HASH_ERROR << fileSig << "!=" << _hash;
             emitError(HASH_ERROR);
