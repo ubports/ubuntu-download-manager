@@ -26,11 +26,14 @@ SOURCES += main.cpp \
     test_download_watch.cpp \
     test_download.cpp
 
-copydata.commands = $(COPY_DIR) -f $$PWD/data $$OUT_PWD
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+equals ($$PWD, $$OUT_PWD){
+} else {
+    copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+    first.depends = $(first) copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+}
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
