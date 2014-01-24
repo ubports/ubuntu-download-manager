@@ -26,7 +26,7 @@ SOURCES += main.cpp \
     test_download_watch.cpp \
     test_download.cpp
 
-copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+copydata.commands = $(COPY_DIR) -u $$PWD/data $$OUT_PWD
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)

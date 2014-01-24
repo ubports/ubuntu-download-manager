@@ -45,7 +45,7 @@ HEADERS += \
     downloads/state_machines/test_file_download_sm.h
 
 
-copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+copydata.commands = $(COPY_DIR) -u $$PWD/data $$OUT_PWD
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
