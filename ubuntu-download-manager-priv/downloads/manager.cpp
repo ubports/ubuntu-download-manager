@@ -21,6 +21,7 @@
 #include "downloads/queue.h"
 #include "downloads/manager.h"
 #include "system/apparmor.h"
+#include "system/logger.h"
 #include "system/request_factory.h"
 
 namespace Ubuntu {
@@ -104,13 +105,13 @@ Manager::acceptedCertificates() {
 
 void
 Manager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    qDebug() << __PRETTY_FUNCTION__ << certs;
+    LOG(INFO) << " " << __PRETTY_FUNCTION__;
     _downloadFactory->setAcceptedCertificates(certs);
 }
 
 void
 Manager::onDownloadsChanged(QString path) {
-    qDebug() << __PRETTY_FUNCTION__ << path;
+    LOG(INFO) << " " << __PRETTY_FUNCTION__ << path;
     emit sizeChanged(_downloadsQueue->size());
 }
 
@@ -136,7 +137,7 @@ Manager::createDownload(DownloadCreationFunc createDownloadFunc) {
     if (wasCalledFromDBus) {
         owner = connection().interface()->serviceOwner(
             message().service());
-        qDebug() << "Owner is: " << owner;
+        LOG(INFO) << "Owner is: " << owner;
     }
 
     Download* download = createDownloadFunc(owner);

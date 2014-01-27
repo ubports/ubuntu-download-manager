@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include "test_daemon.h"
 
 using namespace Ubuntu::DownloadManager;

@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QSignalMapper>
 #include "downloads/queue.h"
 #include "system/logger.h"
@@ -40,7 +39,7 @@ void
 Queue::add(Download* download) {
     // connect to the signals and append to the list
     QString path = download->path();
-    TRACE << path;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << path;
 
     _sortedPaths.append(path);
     _downloads[path] = download;
@@ -52,7 +51,7 @@ Queue::add(Download* download) {
 
 void
 Queue::remove(const QString& path) {
-    TRACE << path;
+    DLOG(INFO) << __PRETTY_FUNCTION__ << path;
 
     Download* down = _downloads[path];
     _sortedPaths.removeOne(path);
@@ -88,7 +87,7 @@ Queue::size() {
 
 void
 Queue::onDownloadStateChanged() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     // get the appdownload that emited the signal and
     // decide what to do with it
     Download* down = qobject_cast<Download*>(sender());
@@ -131,7 +130,7 @@ Queue::onDownloadStateChanged() {
 
 void
 Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-    TRACE << mode;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode;
     if (mode != QNetworkInfo::UnknownMode) {
         updateCurrentDownload();
     }
@@ -139,19 +138,19 @@ Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
 
 void
 Queue::updateCurrentDownload() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     if (!_current.isEmpty()) {
         // check if it was canceled/finished
         Download* currentDownload = _downloads[_current];
         Download::State state = currentDownload->state();
         if (state == Download::CANCEL || state == Download::FINISH
             || state == Download::ERROR) {
-            qDebug() << "State is CANCEL || FINISH || ERROR";
+            LOG(INFO) << "State is CANCEL || FINISH || ERROR";
             remove(_current);
             _current = "";
         } else if (!currentDownload->canDownload()
                 || state == Download::PAUSE) {
-            qDebug() << "States is Cannot Download || PAUSE";
+            LOG(INFO) << "States is Cannot Download || PAUSE";
             _current = "";
         } else {
             return;

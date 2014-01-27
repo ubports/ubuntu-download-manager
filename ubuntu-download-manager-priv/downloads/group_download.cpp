@@ -16,7 +16,6 @@
  * boston, ma 02110-1301, usa.
  */
 
-#include <QDebug>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/file_download.h"
@@ -133,7 +132,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
 
 void
 GroupDownload::cancelAllDownloads() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH && state != Download::ERROR
@@ -145,14 +144,14 @@ GroupDownload::cancelAllDownloads() {
 
     // loop over the finished downloads and remove the files
     foreach(const QString& path, _finishedDownloads) {
-        qDebug() << "Removing file" << path;
+        LOG(INFO) << "Removing file:" << path;
         _fileManager->remove(path);
     }
 }
 
 void
 GroupDownload::cancelDownload() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     cancelAllDownloads();
     emit canceled(true);
 }
@@ -162,7 +161,8 @@ GroupDownload::pauseDownload() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
-            qDebug() << "Pausing download of " << download->url();
+            LOG(INFO) << "Pausing download of "
+                << download->url();
             download->pause();
             download->pauseDownload();
         }
@@ -237,7 +237,7 @@ GroupDownload::totalSize() {
 
 void
 GroupDownload::onError(const QString& error) {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     FileDownload* down = qobject_cast<FileDownload*>(sender());
     // we got an error, cancel all downloads and later remove all the
     // files that we managed to download
@@ -249,7 +249,7 @@ GroupDownload::onError(const QString& error) {
 void
 GroupDownload::onProgress(qulonglong received, qulonglong total) {
     FileDownload* down = qobject_cast<FileDownload*>(sender());
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     // TODO(mandel): the result is not real, we need to be smarter make
     // a head request get size and name and the do all this, but atm is
     // 'good enough' get the sender and check if we received
@@ -284,12 +284,13 @@ GroupDownload::onProgress(qulonglong received, qulonglong total) {
 
 void
 GroupDownload::onFinished(const QString& file) {
-    TRACE << file;
+    DLOG(INFO) << " " <<__PRETTY_FUNCTION__ << file;
     FileDownload* down = qobject_cast<FileDownload*>(sender());
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());
     _finishedDownloads.append(file);
-    qDebug() << "Finished downloads" << _finishedDownloads;
+    LOG(INFO) << "Finished downloads"
+        << _finishedDownloads;
     // if we have the same number of downloads finished
     // that downloads we are done :)
     if (_downloads.count() == _finishedDownloads.count()) {

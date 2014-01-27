@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QStringList>
 #include "system/logger.h"
 #include "downloads/download.h"
@@ -68,7 +67,7 @@ Download::setAdaptor(QObject* adaptor) {
 
 bool
 Download::canDownload() {
-    TRACE;
+    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
     QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
     switch (mode) {
         case QNetworkInfo::UnknownMode:
@@ -122,7 +121,7 @@ Download::isGSMDownloadAllowed() {
 
 void
 Download::emitError(const QString& errorStr) {
-    qDebug() << __PRETTY_FUNCTION__ << errorStr;
+    LOG(INFO) << " " << __PRETTY_FUNCTION__ << errorStr;
     setState(Download::ERROR);
     emit error(errorStr);
 }
