@@ -59,6 +59,18 @@
         <arg name="error" type="s" direction="out"/>
     </signal>
 
+    <signal name="httpError">
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="networkError">
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="processError">
+        <arg name="error" type="(isiss)" direction="out"/>
+    </signal>
+
     <signal name="progress">
         <arg name="received" type="t" direction="out"/>
         <arg name="total" type="t" direction="out"/>
