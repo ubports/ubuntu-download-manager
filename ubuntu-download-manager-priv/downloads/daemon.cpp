@@ -106,17 +106,17 @@ class DaemonPrivate {
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
         bool ret = _conn->registerService(_path);
         if (ret) {
-            LOG(INFO) << "Service registered to"
+            LOG(ERROR) << "Service registered to"
                 << _path;
             ret = _conn->registerObject("/", _downInterface);
             if (!ret) {
-                LOG(INFO) << "Could not register interface. DBus Error =>"
+                LOG(ERROR) << "Could not register interface. DBus Error =>"
                     << _conn->connection().lastError();
                 _app->exit(-1);
             }
             return;
         }
-        LOG(INFO) << "Could not register service. DBus Error =>"
+        LOG(ERROR) << "Could not register service. DBus Error =>"
             << _conn->connection().lastError();
         _app->exit(-1);
     }
@@ -166,7 +166,7 @@ class DaemonPrivate {
                 LOG(INFO) << "Accepting self signed certs at path"
                     << certsRegex;
             } else {
-                LOG(INFO) << "Missing certs path.";
+                LOG(ERROR) << "Missing certs path.";
             }
         }  // certs
         _isTimeoutEnabled = !args.contains(DISABLE_TIMEOUT);
