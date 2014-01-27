@@ -22,6 +22,7 @@
 #include <QByteArray>
 #include <QObject>
 #include <QNetworkReply>
+#include <QVariant>
 #include <QSslError>
 
 namespace Ubuntu {
@@ -42,6 +43,7 @@ class NetworkReply : public QObject {
     virtual void setReadBufferSize(uint size);
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
     virtual bool canIgnoreSslErrors(const QList<QSslError>& errors);
+    virtual QVariant attribute(QNetworkRequest::Attribute code) const;
 
  signals:
     // signals fowarded from the real reply object

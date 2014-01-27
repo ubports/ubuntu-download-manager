@@ -60,14 +60,17 @@
     </signal>
 
     <signal name="httpError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="HttpErrorStruct"/>
         <arg name="error" type="(is)" direction="out"/>
     </signal>
 
     <signal name="networkError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="NetworkErrorStruct"/>
         <arg name="error" type="(is)" direction="out"/>
     </signal>
 
     <signal name="processError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="ProcessErrorStruct"/>
         <arg name="error" type="(isiss)" direction="out"/>
     </signal>
 

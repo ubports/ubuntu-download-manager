@@ -1,7 +1,7 @@
 include( ../common-project-config.pri )
 include( ../common-vars.pri )
 
-QT       += dbus
+QT       += dbus network
 QT       -= gui
 
 TARGET = ubuntu-download-manager-common

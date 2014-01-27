@@ -864,7 +864,48 @@ TestDownload::testOnSuccessHash() {
 }
 
 void
+TestDownload::testOnHttpError_data() {
+    QTest::addColumn<int>("code");
+    QTest::addColumn<QString>("message");
+
+    QTest::newRow("Not Found") << 404 << "Not Found";
+    QTest::newRow("Method Not Allowed") << 405 << "Method Not Allowed";
+    QTest::newRow("Not Acceptable") << 406 << "Not Acceptable";
+    QTest::newRow("Request Timeout") << 408 << "Request Timeout";
+}
+
+void
 TestDownload::testOnHttpError() {
+    QFETCH(int, code);
+    QFETCH(QString, message);
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
+    reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, message);
+    
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ContentAccessDenied);
+    QCOMPARE(httpErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnSslError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
@@ -882,6 +923,46 @@ TestDownload::testOnHttpError() {
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
     QCOMPARE(spy.count(), 1);
+}
+
+void
+TestDownload::testOnNetworkError_data() {
+    QTest::addColumn<int>("code");
+
+    QTest::newRow("Connection Refused Error") << 1;
+    QTest::newRow("RemoteHost Closed Error") << 2;
+    QTest::newRow("Host Not Found Error") << 3;
+    QTest::newRow("Timeout Error") << 4;
+    QTest::newRow("Operation Canceled Error") << 4;
+}
+
+void
+TestDownload::testOnNetworkError() {
+    QFETCH(int, code);
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->clearAttribute(QNetworkRequest::HttpStatusCodeAttribute);
+    
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError((QNetworkReply::NetworkError)code);
+    QCOMPARE(networkErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
 }
 
 void
@@ -1388,6 +1469,14 @@ TestDownload::testProcessFinishedWithError() {
     process->emitFinished(1, QProcess::NormalExit);
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
+}
+
+void
+TestDownload::testProcessError_data() {
+}
+
+void
+TestDownload::testProcessError() {
 }
 
 void

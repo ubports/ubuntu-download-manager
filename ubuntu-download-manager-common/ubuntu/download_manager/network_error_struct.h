@@ -32,6 +32,7 @@ class NetworkErrorStruct {
 
  public:
     NetworkErrorStruct();
+    NetworkErrorStruct(int error);
     NetworkErrorStruct(int code, QString phrase);
     NetworkErrorStruct(const NetworkErrorStruct& other);
     NetworkErrorStruct& operator=(const NetworkErrorStruct& other);

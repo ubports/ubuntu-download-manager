@@ -101,6 +101,11 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
     return false;
 }
 
+QVariant
+NetworkReply::attribute(QNetworkRequest::Attribute code) const {
+    return _reply->attribute(code);
+}
+
 }  // System
 
 }  // DownloadManager

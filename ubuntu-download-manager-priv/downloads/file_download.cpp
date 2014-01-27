@@ -261,6 +261,29 @@ void
 FileDownload::onError(QNetworkReply::NetworkError code) {
     qCritical() << _url << "ERROR:" << ":" << code;
     _downloading = false;
+    QString msg;
+
+    // decide if we are talking about an http error or no
+    auto statusCode = _reply->attribute(
+        QNetworkRequest::HttpStatusCodeAttribute);
+    if (statusCode.isValid()) {
+        auto status = statusCode.toInt();
+        if (status >= 300) {
+            auto reasonVar = _reply->attribute(
+                QNetworkRequest::HttpReasonPhraseAttribute);
+            if (reasonVar.isValid()) {
+                msg = reasonVar.toString();
+            } else {
+                msg = "";
+            }
+            HttpErrorStruct err(status, msg);
+            emit httpError(err);
+        }
+    } else {
+        NetworkErrorStruct err(code);
+        emit networkError(err);
+    }
+
     emitError(NETWORK_ERROR);
 }
 
@@ -322,7 +345,7 @@ FileDownload::onFinished() {
             // the operation succeed
 
             connect(postDownloadProcess, &Process::finished,
-                this, &FileDownload::onProcessFinished);
+                this, &FileDownload::onProcessFinished)r
             connect(postDownloadProcess, &Process::error,
                 this, &FileDownload::onProcessError);
 

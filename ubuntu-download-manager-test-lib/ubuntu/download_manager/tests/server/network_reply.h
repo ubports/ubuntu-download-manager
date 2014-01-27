@@ -19,6 +19,7 @@
 #ifndef FAKE_NETWORK_REPLY_H
 #define FAKE_NETWORK_REPLY_H
 
+#include <QMap>
 #include <QObject>
 #include <system/network_reply.h>
 #include "ubuntu/download_manager/tests/fake.h"
@@ -58,10 +59,19 @@ class FakeNetworkReply : public NetworkReply, public Fake {
     bool canIgnoreSslErrors(const QList<QSslError>& errors) override;
     void setCanIgnoreSslErrors(bool canIgnore);
     void emitSslErrors(const QList<QSslError>& errors);
+    void emitHttpError(QNetworkReply::NetworkError code);
+    QVariant attribute(QNetworkRequest::Attribute code) const override;
+    void setAttribute(QNetworkRequest::Attribute code,
+                      int value);
+    void setAttribute(QNetworkRequest::Attribute code,
+                      QString message);
+    void clearAttribute(QNetworkRequest::Attribute code);
 
  private:
     bool _canIgnoreSsl = false;
     QByteArray _data;
+    QMap<QNetworkRequest::Attribute, QVariant> _attrs;
+
 };
 
 #endif  // FAKE_NETWORK_REPLY_H
