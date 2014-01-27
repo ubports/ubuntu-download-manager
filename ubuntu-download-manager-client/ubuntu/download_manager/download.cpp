@@ -40,12 +40,13 @@ class DownloadPrivate {
                     const QString& servicePath,
                     const QDBusObjectPath& objectPath,
                     Download* parent)
-        : _conn(conn),
+        : _id(objectPath.path()),
+          _conn(conn),
           _servicePath(servicePath),
           q_ptr(parent) {
         Q_Q(Download);
         _dbusInterface = new DownloadInterface(servicePath,
-            objectPath.path(), conn);
+            _id, conn);
 
         // fwd all the signals but the error one
         q->connect(_dbusInterface, &DownloadInterface::canceled,
@@ -175,6 +176,10 @@ class DownloadPrivate {
         }
     }
 
+    QString id() {
+        return _id;
+    }
+
     QVariantMap metadata() {
         QDBusPendingReply<QVariantMap> reply =
             _dbusInterface->metadata();
@@ -227,6 +232,7 @@ class DownloadPrivate {
     }
 
  private:
+    QString _id;
     bool _isError = false;
     Error* _lastError = nullptr;
     DownloadInterface* _dbusInterface = nullptr;
@@ -298,6 +304,12 @@ qulonglong
 Download::throttle(){
     Q_D(Download);
     return d->throttle();
+}
+
+QString
+Download::id() {
+    Q_D(Download);
+    return d->id();
 }
 
 QVariantMap

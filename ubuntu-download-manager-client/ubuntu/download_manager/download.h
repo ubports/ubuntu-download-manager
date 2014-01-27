@@ -57,6 +57,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 
+    QString id();
     QVariantMap metadata();
     qulonglong progress();
     qulonglong totalSize();
