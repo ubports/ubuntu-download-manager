@@ -106,7 +106,7 @@ class DaemonPrivate {
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
         bool ret = _conn->registerService(_path);
         if (ret) {
-            LOG(ERROR) << "Service registered to"
+            LOG(INFO) << "Service registered to"
                 << _path;
             ret = _conn->registerObject("/", _downInterface);
             if (!ret) {
