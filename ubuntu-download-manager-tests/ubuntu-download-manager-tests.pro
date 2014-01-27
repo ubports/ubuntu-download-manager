@@ -45,7 +45,7 @@ HEADERS += \
     downloads/state_machines/test_file_download_sm.h
 
 
-equals ($$PWD, $$OUT_PWD){
+exists ($$OUT_PWD/data){
 } else {
     copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
     first.depends = $(first) copydata

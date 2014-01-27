@@ -26,7 +26,7 @@ SOURCES += main.cpp \
     test_download_watch.cpp \
     test_download.cpp
 
-equals ($$PWD, $$OUT_PWD){
+exists ($$OUT_PWD/data){
 } else {
     copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
     first.depends = $(first) copydata
