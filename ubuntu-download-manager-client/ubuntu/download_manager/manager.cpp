@@ -69,6 +69,7 @@ class ManagerPrivate {
         qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
         qDBusRegisterMetaType<StructList>();
+        qDBusRegisterMetaType<HttpErrorStruct>();
     }
 
     Download* createDownload(DownloadStruct downStruct) {

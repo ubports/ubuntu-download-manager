@@ -74,6 +74,7 @@ Manager::init() {
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
+    qDBusRegisterMetaType<HttpErrorStruct>();
 
     connect(_downloadsQueue, &Queue::downloadRemoved,
         this, &Manager::onDownloadsChanged);
