@@ -16,9 +16,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QProcess>
 #include "process.h"
+#include "logger.h"
 
 namespace Ubuntu {
 
@@ -51,20 +51,18 @@ void
 Process::start(const QString& program,
                const QStringList& arguments,
                QProcess::OpenMode mode) {
-    qDebug() << __FUNCTION__ << program << arguments << mode;
+    LOG(INFO) << __FUNCTION__ << program << arguments << mode;
     _process->start(program, arguments, mode);
 }
 
 void
 Process::onReadyReadStandardError() {
-    // use qCritical this is important stuff
-    qCritical() << QString(_process->readAllStandardError());
+    LOG(ERROR) << _process->readAllStandardError();
 }
 
 void
 Process::onReadyReadStandardOutput() {
-    // use qDebug
-    qDebug() << QString(_process->readAllStandardOutput());
+    LOG(INFO) << _process->readAllStandardOutput();
 }
 
 }  // System
