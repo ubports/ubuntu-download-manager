@@ -72,7 +72,6 @@ Manager::init() {
     // register the required types
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
-    qDBusRegisterMetaType<MmsDownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
 
@@ -175,16 +174,10 @@ Manager::createDownload(DownloadStruct download) {
 }
 
 QDBusObjectPath
-Manager::createMmsDownload(MmsDownloadStruct mmsDownload) {
-    auto url = mmsDownload.getUrl();
-    auto hostName = mmsDownload.getHostName();
-    auto port = mmsDownload.getPort();
-    auto user = mmsDownload.getUser();
-    auto password = mmsDownload.getPassword();
+Manager::createMmsDownload(const QString& url) {
     DownloadCreationFunc createDownloadFunc =
-        [this, url, hostName, port, user, password](QString owner) {
-        auto download = _downloadFactory->createDownload(owner, url,
-            hostName, port, user, password);
+        [this, url](QString owner) {
+        auto download = _downloadFactory->createMmsDownload(owner, url);
         return download;
     };
     return createDownload(createDownloadFunc);

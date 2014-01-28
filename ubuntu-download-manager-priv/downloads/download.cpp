@@ -97,6 +97,11 @@ Download::setIsValid(bool isValid) {
 }
 
 void
+Download::setAddToQueue(bool addToQueue) {
+    _addToQueue = addToQueue;
+}
+
+void
 Download::setLastError(const QString& lastError) {
     _lastError = lastError;
 }

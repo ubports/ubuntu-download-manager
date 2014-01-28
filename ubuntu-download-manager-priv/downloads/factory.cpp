@@ -21,6 +21,7 @@
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
 #include "downloads/file_download.h"
+#include "downloads/mms_file_download.h"
 #include "downloads/factory.h"
 #include "system/logger.h"
 
@@ -133,12 +134,8 @@ Factory::createDownload(const QString& dbusOwner,
 }
 
 Download*
-Factory::createDownload(const QString& dbusOwner,
-                        const QUrl& url,
-                        const QString& hostName,
-                        int port,
-                        const QString& user,
-                        const QString& password) {
+Factory::createMmsDownload(const QString& dbusOwner,
+                           const QUrl& url) {
     QString id;
     QString dbusPath;
     QString rootPath;
@@ -147,9 +144,8 @@ Factory::createDownload(const QString& dbusOwner,
     QMap<QString, QString> headers;
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
-    RequestFactory* nam = new RequestFactory(hostName, port, user, password);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, metadata, headers, nam);
+    Download* down = new MmsFileDownload(id, dbusPath, isConfined,
+        rootPath, url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;

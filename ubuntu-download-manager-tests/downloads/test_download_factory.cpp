@@ -93,6 +93,11 @@ TestDownloadFactory::testCreateDownloadWithHash() {
 }
 
 void
+TestDownloadFactory::testCreateMmsDownload() {
+    QFAIL("NOT IMPLEMENTED");
+}
+
+void
 TestDownloadFactory::testCreateGroupDownload() {
     _apparmor->record();
 

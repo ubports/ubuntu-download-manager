@@ -53,15 +53,6 @@ class FileDownload : public Download {
                  bool isConfined,
                  const QString& rootPath,
                  const QUrl& url,
-                 const QVariantMap& metadata,
-                 const QMap<QString, QString>& headers,
-                 RequestFactory* requestFactory,
-                 QObject* parent = 0);
-    FileDownload(const QString& id,
-                 const QString& path,
-                 bool isConfined,
-                 const QString& rootPath,
-                 const QUrl& url,
                  const QString& hash,
                  const QString& algo,
                  const QVariantMap& metadata,
@@ -103,6 +94,9 @@ class FileDownload : public Download {
  protected:
     void emitError(const QString& error) override;
 
+ protected:
+    RequestFactory* _requestFactory;
+
  private:
     QNetworkRequest buildRequest();
     void cleanUpCurrentData();
@@ -131,7 +125,6 @@ class FileDownload : public Download {
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = NULL;
     File* _currentData = NULL;
-    RequestFactory* _requestFactory;
 };
 
 }  // Daemon

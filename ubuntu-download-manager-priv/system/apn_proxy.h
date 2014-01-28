@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,22 +16,31 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_METATYPES_H
-#define DOWNLOADER_LIB_APP_METATYPES_H
+#ifndef DOWNLOADER_LIB_APN_PROXY_H
+#define DOWNLOADER_LIB_APN_PROXY_H
 
-#include <QMap>
-#include <QList>
-#include "group_download_struct.h"
-#include "download_struct.h"
+#include <QNetworkProxy>
+#include <QObject>
 
-using namespace Ubuntu::DownloadManager;
+namespace Ubuntu {
 
-typedef QMap<QString, QString> StringMap;
-typedef QList<GroupDownloadStruct> StructList;
+namespace DownloadManager {
 
+namespace System {
 
-Q_DECLARE_METATYPE(DownloadStruct)
-Q_DECLARE_METATYPE(StringMap)
-Q_DECLARE_METATYPE(StructList)
+class ApnProxy : public QObject {
+    Q_OBJECT
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H
+ public:
+    explicit ApnProxy(QObject *parent = 0);
+
+    virtual QNetworkProxy getProxy();
+
+};
+
+} //  System
+
+}  // DownloadManager
+
+}  // Ubuntu
+#endif // APN_PROXY_H

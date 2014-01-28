@@ -16,22 +16,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_METATYPES_H
-#define DOWNLOADER_LIB_APP_METATYPES_H
+#ifndef MMS_FILE_DOWNLOAD_H
+#define MMS_FILE_DOWNLOAD_H
 
-#include <QMap>
-#include <QList>
-#include "group_download_struct.h"
-#include "download_struct.h"
+#include <QObject>
+#include "file_download.h"
 
-using namespace Ubuntu::DownloadManager;
+namespace Ubuntu {
 
-typedef QMap<QString, QString> StringMap;
-typedef QList<GroupDownloadStruct> StructList;
+namespace DownloadManager {
 
+namespace Daemon {
 
-Q_DECLARE_METATYPE(DownloadStruct)
-Q_DECLARE_METATYPE(StringMap)
-Q_DECLARE_METATYPE(StructList)
+class MmsFileDownload : public FileDownload {
+    Q_OBJECT
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H
+ public:
+    MmsFileDownload(const QString& id,
+                    const QString& path,
+                    bool isConfined,
+                    const QString& rootPath,
+                    const QUrl& url,
+                    const QVariantMap& metadata,
+                    const QMap<QString, QString>& headers,
+                    QObject* parent = 0);
+
+};
+
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubunut
+
+#endif // MMS_FILE_DOWNLOAD_H

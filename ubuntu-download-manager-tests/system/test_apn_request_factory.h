@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,22 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_METATYPES_H
-#define DOWNLOADER_LIB_APP_METATYPES_H
+#ifndef TEST_APN_REQUEST_FACTORY_H
+#define TEST_APN_REQUEST_FACTORY_H
 
-#include <QMap>
-#include <QList>
-#include "group_download_struct.h"
-#include "download_struct.h"
+#include <QObject>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
 
-using namespace Ubuntu::DownloadManager;
+class TestApnRequestFactory : public BaseTestCase {
+    Q_OBJECT
 
-typedef QMap<QString, QString> StringMap;
-typedef QList<GroupDownloadStruct> StructList;
+public:
+    explicit TestApnRequestFactory(QObject *parent = 0);
 
+ private slots:  // NOLINT(whitespace/indent)
 
-Q_DECLARE_METATYPE(DownloadStruct)
-Q_DECLARE_METATYPE(StringMap)
-Q_DECLARE_METATYPE(StructList)
+    void testProxySet_data();
+    void testProxySet();
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H
+};
+
+DECLARE_TEST(TestApnRequestFactory)
+
+#endif // TEST_APN_REQUEST_FACTORY_H

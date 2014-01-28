@@ -59,25 +59,6 @@ FileDownload::FileDownload(const QString& id,
       _url(url),
       _hash(""),
       _algo(QCryptographicHash::Md5) {
-    _requestFactory = RequestFactory::instance();
-    init();
-}
-
-FileDownload::FileDownload(const QString& id,
-                           const QString& path,
-                           bool isConfined,
-                           const QString& rootPath,
-                           const QUrl& url,
-                           const QVariantMap& metadata,
-                           const QMap<QString, QString>& headers,
-                           RequestFactory* requestFactory,
-                           QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
-      _totalSize(0),
-      _url(url),
-      _hash(""),
-      _algo(QCryptographicHash::Md5),
-      _requestFactory(requestFactory) {
     init();
 }
 
@@ -95,7 +76,6 @@ FileDownload::FileDownload(const QString& id,
       _totalSize(0),
       _url(url),
       _hash(hash) {
-    _requestFactory = RequestFactory::instance();
     init();
     _algo = HashAlgorithm::getHashAlgo(algo);
     // check that the algorithm is correct if the hash is not emtpy
@@ -422,6 +402,7 @@ FileDownload::onOnlineStateChanged(bool online) {
 
 void
 FileDownload::init() {
+    _requestFactory = RequestFactory::instance();
     SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
     _connected = networkInfo->isOnline();
     _downloading = false;
@@ -546,10 +527,10 @@ FileDownload::cleanUpCurrentData() {
     QFile::FileError error = QFile::NoError;
     if (_currentData != nullptr) {
         success = _currentData->remove();
-    
+
         if (!success)
             error = _currentData->error();
-    
+
         _currentData->deleteLater();
         _currentData = nullptr;
     } else {
@@ -558,7 +539,7 @@ FileDownload::cleanUpCurrentData() {
         if (!success)
             error = tempFile->error();
     }
-    
+
     if (!success)
         qWarning() << "Error " << error <<
             "removing file with path" << _filePath;

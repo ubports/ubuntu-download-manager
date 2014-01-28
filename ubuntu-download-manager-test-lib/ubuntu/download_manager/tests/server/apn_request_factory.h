@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,22 +16,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_METATYPES_H
-#define DOWNLOADER_LIB_APP_METATYPES_H
+#ifndef FAKE_APN_REQUEST_FACTORY_H
+#define FAKE_APN_REQUEST_FACTORY_H
 
-#include <QMap>
-#include <QList>
-#include "group_download_struct.h"
-#include "download_struct.h"
+#include <QObject>
+#include <system/apn_request_factory.h>
+#include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager;
+using namespace  Ubuntu::DownloadManager::System;
 
-typedef QMap<QString, QString> StringMap;
-typedef QList<GroupDownloadStruct> StructList;
+class FakeApnRequestFactory : public ApnRequestFactory {
+    Q_OBJECT
 
+ public:
+    FakeApnRequestFactory(const QNetworkProxy& proxy,
+                          bool stoppable = false,
+                          QObject* parent=0);
 
-Q_DECLARE_METATYPE(DownloadStruct)
-Q_DECLARE_METATYPE(StringMap)
-Q_DECLARE_METATYPE(StructList)
+    QString proxyHost();
+    int proxyPort();
+    QString proxyUsername();
+    QString proxyPassword();
+    QNetworkProxy::ProxyType proxyType();
+};
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H
+#endif // FAKE_APN_REQUEST_FACTORY_H

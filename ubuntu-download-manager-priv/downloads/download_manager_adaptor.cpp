@@ -61,11 +61,11 @@ QDBusObjectPath DownloadManagerAdaptor::createDownloadGroup(StructList downloads
     return download;
 }
 
-QDBusObjectPath DownloadManagerAdaptor::createMmsDownload(MmsDownloadStruct download)
+QDBusObjectPath DownloadManagerAdaptor::createMmsDownload(const QString& url)
 {
     // handle method call com.canonical.applications.DownloadManager.createMmsDownload
     QDBusObjectPath downloadPath;
-    QMetaObject::invokeMethod(parent(), "createMmsDownload", Q_RETURN_ARG(QDBusObjectPath, downloadPath), Q_ARG(MmsDownloadStruct, download));
+    QMetaObject::invokeMethod(parent(), "createMmsDownload", Q_RETURN_ARG(QDBusObjectPath, downloadPath), Q_ARG(QString, url));
     return downloadPath;
 }
 

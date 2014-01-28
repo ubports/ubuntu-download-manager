@@ -62,12 +62,8 @@ class Factory : public QObject {
                                      const QVariantMap& metadata,
                                      StringMap headers);
 
-    virtual Download* createDownload(const QString& dbusOwner,
-                                     const QUrl& url,
-                                     const QString& hostName,
-                                     int port,
-                                     const QString& user,
-                                     const QString& password);
+    virtual Download* createMmsDownload(const QString& dbusOwner,
+                                        const QUrl& url);
 
     // create downloads from a group download
 

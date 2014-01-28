@@ -18,6 +18,7 @@
 
 #ifndef FAKE_DOWNLOAD_H
 #define FAKE_DOWNLOAD_H
+
 #include <QSharedPointer>
 #include <downloads/file_download.h>
 #include <system/system_network_info.h>
@@ -61,6 +62,8 @@ class FakeDownload : public FileDownload, public Fake {
     // useful methods to emit signals
     void emitFinished(const QString& path);
     void emitError(const QString& error);
+
+    using Download::setAddToQueue;
 
  private:
     bool _canDownload;
