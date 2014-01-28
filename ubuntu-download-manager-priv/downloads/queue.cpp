@@ -39,7 +39,7 @@ void
 Queue::add(Download* download) {
     // connect to the signals and append to the list
     QString path = download->path();
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << path;
+    TRACE << path;
 
     _sortedPaths.append(path);
     _downloads[path] = download;
@@ -51,7 +51,7 @@ Queue::add(Download* download) {
 
 void
 Queue::remove(const QString& path) {
-    DLOG(INFO) << __PRETTY_FUNCTION__ << path;
+    TRACE << path;
 
     Download* down = _downloads[path];
     _sortedPaths.removeOne(path);
@@ -87,7 +87,7 @@ Queue::size() {
 
 void
 Queue::onDownloadStateChanged() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     // get the appdownload that emited the signal and
     // decide what to do with it
     Download* down = qobject_cast<Download*>(sender());
@@ -130,7 +130,7 @@ Queue::onDownloadStateChanged() {
 
 void
 Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode;
+    TRACE << mode;
     if (mode != QNetworkInfo::UnknownMode) {
         updateCurrentDownload();
     }
@@ -138,7 +138,7 @@ Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
 
 void
 Queue::updateCurrentDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     if (!_current.isEmpty()) {
         // check if it was canceled/finished
         Download* currentDownload = _downloads[_current];

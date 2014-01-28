@@ -101,7 +101,7 @@ class DaemonPrivate {
     }
 
     void start(QString path) {
-        DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+        TRACE;
         _path = path;
         _downAdaptor = new DownloadManagerAdaptor(_downInterface);
         bool ret = _conn->registerService(_path);
@@ -139,7 +139,7 @@ class DaemonPrivate {
     }
 
     void onDownloadManagerSizeChanged(int size) {
-        DLOG(INFO) << " " << __PRETTY_FUNCTION__ << size;
+        TRACE << size;
         bool isActive = _shutDownTimer->isActive();
 
         if (isActive && size > 0) {

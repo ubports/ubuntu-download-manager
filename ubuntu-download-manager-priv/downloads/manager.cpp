@@ -102,13 +102,13 @@ Manager::acceptedCertificates() {
 
 void
 Manager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    LOG(INFO) << " " << __PRETTY_FUNCTION__;
+    LOG(INFO) << __PRETTY_FUNCTION__;
     _downloadFactory->setAcceptedCertificates(certs);
 }
 
 void
 Manager::onDownloadsChanged(QString path) {
-    LOG(INFO) << " " << __PRETTY_FUNCTION__ << path;
+    LOG(INFO) << __PRETTY_FUNCTION__ << path;
     emit sizeChanged(_downloadsQueue->size());
 }
 

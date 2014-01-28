@@ -132,7 +132,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
 
 void
 GroupDownload::cancelAllDownloads() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state != Download::FINISH && state != Download::ERROR
@@ -151,7 +151,7 @@ GroupDownload::cancelAllDownloads() {
 
 void
 GroupDownload::cancelDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     cancelAllDownloads();
     emit canceled(true);
 }
@@ -237,7 +237,7 @@ GroupDownload::totalSize() {
 
 void
 GroupDownload::onError(const QString& error) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     FileDownload* down = qobject_cast<FileDownload*>(sender());
     // we got an error, cancel all downloads and later remove all the
     // files that we managed to download
@@ -249,7 +249,7 @@ GroupDownload::onError(const QString& error) {
 void
 GroupDownload::onProgress(qulonglong received, qulonglong total) {
     FileDownload* down = qobject_cast<FileDownload*>(sender());
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     // TODO(mandel): the result is not real, we need to be smarter make
     // a head request get size and name and the do all this, but atm is
     // 'good enough' get the sender and check if we received
@@ -284,7 +284,7 @@ GroupDownload::onProgress(qulonglong received, qulonglong total) {
 
 void
 GroupDownload::onFinished(const QString& file) {
-    DLOG(INFO) << " " <<__PRETTY_FUNCTION__ << file;
+    TRACE << file;
     FileDownload* down = qobject_cast<FileDownload*>(sender());
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());

@@ -94,7 +94,7 @@ FileDownload::~FileDownload() {
 
 void
 FileDownload::cancelDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << _url;
+    TRACE << _url;
 
     if (_reply != nullptr) {
         // disconnect so that we do not get useless signals
@@ -113,7 +113,7 @@ FileDownload::cancelDownload() {
 
 void
 FileDownload::pauseDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << _url;
+    TRACE << _url;
 
     if (_reply == nullptr) {
         // cannot pause because is not running
@@ -145,7 +145,7 @@ FileDownload::pauseDownload() {
 
 void
 FileDownload::resumeDownload() {
-    LOG(INFO) << " " << __PRETTY_FUNCTION__ << _url;
+    LOG(INFO) << __PRETTY_FUNCTION__ << _url;
 
     if (_reply != nullptr) {
         // cannot resume because it is already running
@@ -176,7 +176,7 @@ FileDownload::resumeDownload() {
 
 void
 FileDownload::startDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << _url;
+    DLOG(INFO) << __PRETTY_FUNCTION__ << _url;
 
     if (_reply != nullptr) {
         // the download was already started, lets say that we did it
@@ -219,7 +219,7 @@ FileDownload::totalSize() {
 
 void
 FileDownload::setThrottle(qulonglong speed) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << _url;
+    TRACE << _url;
     Download::setThrottle(speed);
     if (_reply != nullptr)
         _reply->setReadBufferSize(speed);
@@ -227,7 +227,7 @@ FileDownload::setThrottle(qulonglong speed) {
 
 void
 FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << _url << currentProgress << bytesTotal;
+    TRACE << _url << currentProgress << bytesTotal;
 
     // write the current info we have, just in case we are killed in the
     // middle of the download
@@ -265,7 +265,7 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
 
 void
 FileDownload::onFinished() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << _url;
+    TRACE << _url;
 
     // if the hash is present we check it
     if (!_hash.isEmpty()) {
@@ -342,7 +342,7 @@ FileDownload::onFinished() {
 
 void
 FileDownload::onSslErrors(const QList<QSslError>& errors) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << errors;
+    TRACE << errors;
     if (!_reply->canIgnoreSslErrors(errors)) {
         _downloading = false;
         emitError(SSL_ERROR);
@@ -362,7 +362,7 @@ FileDownload::onProcessError(QProcess::ProcessError error) {
 
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << exitCode << " " << exitStatus;
+    TRACE << exitCode << exitStatus;
     QProcess* p = qobject_cast<QProcess*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
@@ -378,7 +378,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
 
 void
 FileDownload::onOnlineStateChanged(bool online) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << online;
+    TRACE << online;
     _connected = online;
     // if we are downloading and the status is correct let's call
     // the method again, else do nothing
@@ -564,7 +564,7 @@ FileDownload::buildRequest() {
 
 void
 FileDownload::emitError(const QString& error) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << error;
+    TRACE << error;
     disconnectFromReplySignals();
     _reply->deleteLater();
     _reply = nullptr;

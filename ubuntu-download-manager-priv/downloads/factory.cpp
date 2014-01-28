@@ -54,7 +54,7 @@ Factory::getDownloadPath(const QString& dbusOwner,
                          QString& dbusPath,
                          QString& rootPath,
                          bool& isConfined) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << dbusOwner;
+    TRACE << dbusOwner;
     if (metadata.contains(OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
         id = metadata[OBJECT_PATH_KEY].toString();

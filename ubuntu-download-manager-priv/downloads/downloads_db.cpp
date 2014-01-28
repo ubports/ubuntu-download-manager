@@ -124,7 +124,7 @@ DownloadsDb::internalInit() {
 
 bool
 DownloadsDb::init() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     // create the required tables
     bool opened = _db.open();
     if (!opened) {
