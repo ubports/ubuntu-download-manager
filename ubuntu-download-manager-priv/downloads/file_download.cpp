@@ -176,7 +176,7 @@ FileDownload::resumeDownload() {
 
 void
 FileDownload::startDownload() {
-    DLOG(INFO) << __PRETTY_FUNCTION__ << _url;
+    TRACE << _url;
 
     if (_reply != nullptr) {
         // the download was already started, lets say that we did it
