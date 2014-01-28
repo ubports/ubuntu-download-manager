@@ -6,6 +6,12 @@
         <arg name="downloadPath" type="o" direction="out" />
     </method>
 
+    <method name="createMmsDownload">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="MmsDownloadStruct"/>
+        <arg name="download" type="(ssiss)" direction="in" />
+        <arg name="downloadPath" type="o" direction="out" />
+    </method>
+
     <method name="createDownloadGroup">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="StructList"/>
         <annotation name="org.qtproject.QtDBus.QtTypeName.In3" value="QVariantMap"/>

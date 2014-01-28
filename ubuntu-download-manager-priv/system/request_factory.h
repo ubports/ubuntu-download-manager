@@ -38,6 +38,12 @@ class RequestFactory : public QObject {
     Q_OBJECT
 
  public:
+    RequestFactory(const QString& hostName,
+                   int port,
+                   const QString& user,
+                   const QString& password,
+                   QObject* parent=0);
+
     virtual NetworkReply* get(const QNetworkRequest& request);
 
     // mainly for testing purposes

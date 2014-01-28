@@ -72,6 +72,7 @@ Manager::init() {
     // register the required types
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
+    qDBusRegisterMetaType<MmsDownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
 
@@ -171,6 +172,22 @@ QDBusObjectPath
 Manager::createDownload(DownloadStruct download) {
     return createDownload(download.getUrl(), download.getHash(),
         download.getAlgorithm(), download.getMetadata(), download.getHeaders());
+}
+
+QDBusObjectPath
+Manager::createMmsDownload(MmsDownloadStruct mmsDownload) {
+    auto url = mmsDownload.getUrl();
+    auto hostName = mmsDownload.getHostName();
+    auto port = mmsDownload.getPort();
+    auto user = mmsDownload.getUser();
+    auto password = mmsDownload.getPassword();
+    DownloadCreationFunc createDownloadFunc =
+        [this, url, hostName, port, user, password](QString owner) {
+        auto download = _downloadFactory->createDownload(owner, url,
+            hostName, port, user, password);
+        return download;
+    };
+    return createDownload(createDownloadFunc);
 }
 
 QDBusObjectPath

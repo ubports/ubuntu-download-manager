@@ -133,6 +133,29 @@ Factory::createDownload(const QString& dbusOwner,
 }
 
 Download*
+Factory::createDownload(const QString& dbusOwner,
+                        const QUrl& url,
+                        const QString& hostName,
+                        int port,
+                        const QString& user,
+                        const QString& password) {
+    QString id;
+    QString dbusPath;
+    QString rootPath;
+    bool isConfined = false;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
+        isConfined);
+    RequestFactory* nam = new RequestFactory(hostName, port, user, password);
+    Download* down = new FileDownload(id, dbusPath, isConfined,
+        rootPath, url, metadata, headers, nam);
+    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
+    down->setAdaptor(adaptor);
+    return down;
+}
+
+Download*
 Factory::createDownloadForGroup(bool isConfined,
                                 const QString& rootPath,
                                 const QUrl& url,

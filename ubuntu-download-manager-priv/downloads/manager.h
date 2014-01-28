@@ -61,6 +61,7 @@ class Manager : public QObject, public QDBusContext {
 
  public slots:  // NOLINT(whitespace/indent)
     virtual QDBusObjectPath createDownload(DownloadStruct download);
+    virtual QDBusObjectPath createMmsDownload(MmsDownloadStruct download);
 
     virtual QDBusObjectPath createDownloadGroup(StructList downloads,
                                                 const QString& algorithm,

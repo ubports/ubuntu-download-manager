@@ -13,7 +13,8 @@ SOURCES += \
     ubuntu/download_manager/download_struct.cpp \
     ubuntu/download_manager/group_download_struct.cpp \
     ubuntu/download_manager/system/dbus_connection.cpp \
-    ubuntu/download_manager/system/hash_algorithm.cpp
+    ubuntu/download_manager/system/hash_algorithm.cpp \
+    ubuntu/download_manager/mms_download_struct.cpp
 
 public_headers = \
     ubuntu/download_manager/metatypes.h \
@@ -23,7 +24,8 @@ public_headers = \
 private_headers = \
     ubuntu_download_manager_common_global.h \
     ubuntu/download_manager/system/dbus_connection.h \
-    ubuntu/download_manager/system/hash_algorithm.h
+    ubuntu/download_manager/system/hash_algorithm.h \
+    ubuntu/download_manager/mms_download_struct.h
 
 HEADERS +=\
     $$public_headers \

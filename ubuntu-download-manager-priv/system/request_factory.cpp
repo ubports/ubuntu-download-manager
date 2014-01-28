@@ -17,6 +17,7 @@
  */
 
 #include <QDebug>
+#include <QNetworkProxy>
 #include "request_factory.h"
 
 namespace Ubuntu {
@@ -28,6 +29,19 @@ namespace System {
 RequestFactory* RequestFactory::_instance = NULL;
 bool RequestFactory::_isStoppable = false;
 QMutex RequestFactory::_mutex;
+
+RequestFactory::RequestFactory(const QString& hostName,
+                               int port,
+                               const QString& user,
+                               const QString& password,
+                               QObject* parent)
+    : QObject(parent),
+      _stoppable(false) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostName,
+        port, user, password);
+    _nam = new QNetworkAccessManager(this);
+    _nam->setProxy(proxy);
+}
 
 RequestFactory::RequestFactory(bool stoppable, QObject* parent)
     : QObject(parent),

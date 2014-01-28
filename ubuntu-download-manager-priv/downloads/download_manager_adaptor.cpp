@@ -61,6 +61,14 @@ QDBusObjectPath DownloadManagerAdaptor::createDownloadGroup(StructList downloads
     return download;
 }
 
+QDBusObjectPath DownloadManagerAdaptor::createMmsDownload(MmsDownloadStruct download)
+{
+    // handle method call com.canonical.applications.DownloadManager.createMmsDownload
+    QDBusObjectPath downloadPath;
+    QMetaObject::invokeMethod(parent(), "createMmsDownload", Q_RETURN_ARG(QDBusObjectPath, downloadPath), Q_ARG(MmsDownloadStruct, download));
+    return downloadPath;
+}
+
 qulonglong DownloadManagerAdaptor::defaultThrottle()
 {
     // handle method call com.canonical.applications.DownloadManager.defaultThrottle
