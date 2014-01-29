@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QStringList>
 #include "system/logger.h"
 #include "downloads/download.h"

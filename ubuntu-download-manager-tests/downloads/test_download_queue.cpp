@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QSignalSpy>
 #include <system/uuid_utils.h>
 #include "test_download_queue.h"

@@ -19,7 +19,6 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QDir>
-#include <QDebug>
 #include <QStringList>
 #include <QFile>
 #include <QFileInfo>
@@ -118,13 +117,13 @@ FileDownload::pauseDownload() {
 
     if (_reply == nullptr) {
         // cannot pause because is not running
-        qDebug() << "Cannot pause download because reply is NULL";
-        qDebug() << "EMIT paused(false)";
+        LOG(INFO) << "Cannot pause download because reply is NULL";
+        LOG(INFO) << "EMIT paused(false)";
         emit paused(false);
         return;
     }
 
-    qDebug() << "Pausing download" << _url;;
+    LOG(INFO) << "Pausing download" << _url;
     // we need to disconnect the signals to ensure that they are not
     // emitted due to the operation we are going to perform. We read
     // the data in the reply and store it in a file
@@ -138,7 +137,7 @@ FileDownload::pauseDownload() {
     } else {
         _reply->deleteLater();
         _reply = nullptr;
-        qDebug() << "EMIT paused(true)";
+        LOG(INFO) << "EMIT paused(true)";
         _downloading = false;
         emit paused(true);
     }
@@ -146,17 +145,17 @@ FileDownload::pauseDownload() {
 
 void
 FileDownload::resumeDownload() {
-    qDebug() << __PRETTY_FUNCTION__ << _url;
+    LOG(INFO) << __PRETTY_FUNCTION__ << _url;
 
     if (_reply != nullptr) {
         // cannot resume because it is already running
-        qDebug() << "Cannot resume download because reply != NULL";
-        qDebug() << "EMIT resumed(false)";
+        LOG(INFO) << "Cannot resume download because reply != NULL";
+        LOG(INFO) << "EMIT resumed(false)";
         emit resumed(false);
         return;
     }
 
-    qDebug() << "Resuming download.";
+    LOG(INFO) << "Resuming download.";
     QNetworkRequest request = buildRequest();
 
     // overrides the range header, we do not let clients set the range!!!
@@ -170,7 +169,7 @@ FileDownload::resumeDownload() {
 
     connectToReplySignals();
 
-    qDebug() << "EMIT resumed(true)";
+    LOG(INFO) << "EMIT resumed(true)";
     _downloading = true;
     emit resumed(true);
 }
@@ -181,8 +180,8 @@ FileDownload::startDownload() {
 
     if (_reply != nullptr) {
         // the download was already started, lets say that we did it
-        qDebug() << "Cannot start download because reply != NULL";
-        qDebug() << "EMIT started(false)";
+        LOG(INFO) << "Cannot start download because reply != NULL";
+        LOG(INFO) << "EMIT started(false)";
         emit started(true);
         return;
     }
@@ -196,14 +195,14 @@ FileDownload::startDownload() {
         emit started(false);
     }
 
-    qDebug() << "Network is accessible, performing download request";
+    LOG(INFO) << "Network is accessible, performing download request";
     // signals should take care of calling deleteLater on the
     // NetworkReply object
     _reply = _requestFactory->get(buildRequest());
     _reply->setReadBufferSize(throttle());
 
     connectToReplySignals();
-    qDebug() << "EMIT started(true)";
+    LOG(INFO) << "EMIT started(true)";
     _downloading = true;
     emit started(true);
 }
@@ -259,7 +258,7 @@ FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
 
 void
 FileDownload::onError(QNetworkReply::NetworkError code) {
-    qCritical() << _url << "ERROR:" << ":" << code;
+    LOG(ERROR) << _url << " ERROR:" << ":" << code;
     _downloading = false;
     emitError(NETWORK_ERROR);
 }
@@ -278,7 +277,7 @@ FileDownload::onFinished() {
         QString fileSig = QString(hash.result().toHex());
 
         if (fileSig != _hash) {
-            qCritical() << HASH_ERROR << fileSig << "!=" << _hash;
+            LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
             emitError(HASH_ERROR);
             return;
         }
@@ -298,7 +297,7 @@ FileDownload::onFinished() {
         QStringList commandData =
             metadata()[METADATA_COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
-            qCritical() << "COMMAND DATA MISSING";
+            LOG(ERROR) << "COMMAND DATA MISSING";
             emitError(COMMAND_ERROR);
             return;
         } else {
@@ -326,13 +325,13 @@ FileDownload::onFinished() {
             connect(postDownloadProcess, &Process::error,
                 this, &FileDownload::onProcessError);
 
-            qDebug() << "Executing" << command << args;
+            LOG(INFO) << "Executing" << command << args;
             postDownloadProcess->start(command, args);
             return;
         }
     } else {
         setState(Download::FINISH);
-        qDebug() << "EMIT finished" << filePath();
+        LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     }
 
@@ -352,11 +351,11 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
-    QProcess* p = qobject_cast<QProcess*>(sender());
-    qCritical() << "Error " << error << "executing" << p->program()
-	<< "with args" << p->arguments() << "Stdout:"
-	<< p->readAllStandardOutput() << "Stderr:"
-	<< p->readAllStandardError();
+    auto p = qobject_cast<Process*>(sender());
+    LOG(ERROR) << "Error " << error << "executing"
+        << p->program() << "with args" << p->arguments()
+        << "Stdout:" << p->readAllStandardOutput()
+        << "Stderr:" << p->readAllStandardError();
     p->deleteLater();
     emitError(COMMAND_ERROR);
 }
@@ -364,12 +363,12 @@ FileDownload::onProcessError(QProcess::ProcessError error) {
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
-    QProcess* p = qobject_cast<QProcess*>(sender());
+    auto p = qobject_cast<Process*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
         setState(Download::FINISH);
-        qDebug() << "EMIT finished" << filePath();
+        LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
         emitError(COMMAND_ERROR);
@@ -453,7 +452,7 @@ FileDownload::flushFile() {
     auto flushed  = _currentData->flush();
     if (!flushed) {
         auto err = _currentData->error();
-        qCritical() << "Could not write that in the file system" << err;
+        LOG(ERROR) << "Could not write that in the file system" << err;
         emitError(QString(FILE_SYSTEM_ERROR).arg(err));
     }
     return flushed;

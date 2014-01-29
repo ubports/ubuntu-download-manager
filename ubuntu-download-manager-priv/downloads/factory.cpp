@@ -55,21 +55,21 @@ Factory::getDownloadPath(const QString& dbusOwner,
                          QString& dbusPath,
                          QString& rootPath,
                          bool& isConfined) {
-    TRACE << dbusOwner << metadata;
+    TRACE << dbusOwner;
     if (metadata.contains(OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
         id = metadata[OBJECT_PATH_KEY].toString();
         if (id.isEmpty()) {
-            qCritical() << "Id sent by client is ''";
+            LOG(ERROR) << "Id sent by client is ''";
             id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
                 isConfined);
         } else {
-            qDebug() << "Using the id from the client" << id;
+            LOG(INFO) << "Using the id from the client:" << id;
             _apparmor->getSecurePath(dbusOwner, id, dbusPath, rootPath,
                 isConfined);
         }
     } else {
-        qDebug() << "Factory assigns the Download Uuid.";
+        LOG(INFO) << "Factory assigns the Download Uuid.";
         id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
             isConfined);
     }

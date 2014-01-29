@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QFinalState>
 #include <QState>
 #include <QStateMachine>
@@ -72,7 +71,7 @@ NetworkErrorTransition::onTransition(QEvent* event) {
         QNetworkReply::NetworkError code = v.value<QNetworkReply::NetworkError>();
         down->emitNetworkError(code);
     } else {
-        qCritical() << "Signal does not have events!";
+        LOG(ERROR) << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
@@ -99,7 +98,7 @@ SslErrorTransition::onTransition(QEvent * event) {
         QList<QSslError> errors = v.value<QList<QSslError> > ();
         down->emitSslError(errors);
     } else {
-        qCritical() << "Signal does not have events!";
+        LOG(ERROR) << "Signal does not have events!";
     }
     DownloadSMTransition::onTransition(event);
 }
