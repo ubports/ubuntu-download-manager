@@ -351,7 +351,7 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
-    QProcess* p = qobject_cast<QProcess*>(sender());
+    auto p = qobject_cast<Process*>(sender());
     LOG(ERROR) << "Error " << error << "executing"
         << p->program() << "with args" << p->arguments()
         << "Stdout:" << p->readAllStandardOutput()
@@ -363,7 +363,7 @@ FileDownload::onProcessError(QProcess::ProcessError error) {
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
-    QProcess* p = qobject_cast<QProcess*>(sender());
+    auto p = qobject_cast<Process*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();

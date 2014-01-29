@@ -55,6 +55,26 @@ Process::start(const QString& program,
     _process->start(program, arguments, mode);
 }
 
+QString
+Process::program() const {
+    return _process->program();
+}
+
+QStringList
+Process::arguments() const {
+    return _process->arguments();
+}
+
+QByteArray
+Process::readAllStandardError() {
+    return _process->readAllStandardError();
+}
+
+QByteArray
+Process::readAllStandardOutput() {
+    return _process->readAllStandardOutput();
+}
+
 void
 Process::onReadyReadStandardError() {
     LOG(ERROR) << _process->readAllStandardError();
