@@ -134,7 +134,7 @@ SystemNetworkInfo::deleteInstance() {
 
 void
 SystemNetworkInfo::onOnlineStateChanged(bool online) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << online;
+    TRACE << online;
     emit onlineStateChanged(online);
 }
 
@@ -142,66 +142,66 @@ SystemNetworkInfo::onOnlineStateChanged(bool online) {
 
 void
 SystemNetworkInfo::onCellIdChanged(int interface, const QString& id) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << interface << id;
+    TRACE << interface << id;
     emit cellIdChanged(interface, id);
 }
 
 void
 SystemNetworkInfo::onCurrentCellDataTechnologyChanged(int interface,
                                 QNetworkInfo::CellDataTechnology tech) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << interface << tech;
+    TRACE << interface << tech;
     emit currentCellDataTechnologyChanged(interface, tech);
 }
 
 void
 SystemNetworkInfo::onCurrentMobileCountryCodeChanged(int interface, const QString& mcc) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << interface << mcc;
+    TRACE << interface << mcc;
     emit currentMobileCountryCodeChanged(interface, mcc);
 }
 
 void
 SystemNetworkInfo::onCurrentMobileNetworkCodeChanged(int interface, const QString& mnc) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << interface << mnc;
+    TRACE << interface << mnc;
     emit currentMobileNetworkCodeChanged(interface, mnc);
 }
 
 void
 SystemNetworkInfo::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode;
+    TRACE << mode;
     emit currentNetworkModeChanged(mode);
 }
 
 void
 SystemNetworkInfo::onLocationAreaCodeChanged(int interface, const QString& lac) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << interface << lac;
+    TRACE << interface << lac;
     emit locationAreaCodeChanged(interface, lac);
 }
 
 void
 SystemNetworkInfo::onNetworkInterfaceCountChanged(QNetworkInfo::NetworkMode mode,
                                                   int count) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode << count;
+    TRACE << mode << count;
     emit networkInterfaceCountChanged(mode, count);
 }
 
 void
 SystemNetworkInfo::onNetworkNameChanged(QNetworkInfo::NetworkMode mode, int interface,
                                         const QString& name) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode << interface << name;
+    TRACE << mode << interface << name;
     emit networkNameChanged(mode, interface, name);
 }
 
 void
 SystemNetworkInfo::onNetworkSignalStrengthChanged(QNetworkInfo::NetworkMode mode,
                                                   int interface, int strength) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode << interface << strength;
+    TRACE << mode << interface << strength;
     emit networkSignalStrengthChanged(mode, interface, strength);
 }
 
 void
 SystemNetworkInfo::onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int interface,
                                           QNetworkInfo::NetworkStatus status) {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__ << mode << interface << status;
+    TRACE << mode << interface << status;
     emit networkStatusChanged(mode, interface, status);
 }
 

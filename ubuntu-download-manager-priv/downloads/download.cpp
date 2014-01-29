@@ -67,7 +67,7 @@ Download::setAdaptor(QObject* adaptor) {
 
 bool
 Download::canDownload() {
-    DLOG(INFO) << " " << __PRETTY_FUNCTION__;
+    TRACE;
     QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
     switch (mode) {
         case QNetworkInfo::UnknownMode:
@@ -121,7 +121,7 @@ Download::isGSMDownloadAllowed() {
 
 void
 Download::emitError(const QString& errorStr) {
-    LOG(INFO) << " " << __PRETTY_FUNCTION__ << errorStr;
+    qDebug() << __PRETTY_FUNCTION__ << errorStr;
     setState(Download::ERROR);
     emit error(errorStr);
 }

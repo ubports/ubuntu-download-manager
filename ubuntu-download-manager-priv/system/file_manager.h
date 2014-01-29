@@ -49,6 +49,7 @@ class File : public QObject {
     bool reset();
     qint64 size() const;
     qint64 write(const QByteArray& byteArray);
+    QIODevice* device();
 
  protected:
     explicit File(const QString& name);
