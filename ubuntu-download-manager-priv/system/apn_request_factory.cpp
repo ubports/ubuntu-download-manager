@@ -25,39 +25,11 @@ namespace DownloadManager {
 
 namespace System {
 
-ApnRequestFactory* ApnRequestFactory::_instance = NULL;
-QMutex ApnRequestFactory::_mutex;
-
 ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
                                      bool stoppable,
                                      QObject* parent)
     : RequestFactory(stoppable, parent) {
     _nam->setProxy(proxy);
-}
-
-ApnRequestFactory*
-ApnRequestFactory::instance() {
-    if(_instance == nullptr) {
-        _mutex.lock();
-        if(_instance == nullptr) {
-            QScopedPointer<ApnProxy> apnProxy(new ApnProxy());
-            _instance = new ApnRequestFactory(apnProxy->getProxy());
-        }
-        _mutex.unlock();
-    }
-    return _instance;
-}
-
-void
-ApnRequestFactory::deleteInstance() {
-    if(_instance != NULL) {
-        _mutex.lock();
-        if(_instance != NULL) {
-            delete _instance;
-            _instance = NULL;
-        }
-        _mutex.unlock();
-    }
 }
 
 }  // System

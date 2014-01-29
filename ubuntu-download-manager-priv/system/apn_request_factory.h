@@ -33,21 +33,9 @@ class ApnRequestFactory : public RequestFactory {
     Q_OBJECT
 
  public:
-    static ApnRequestFactory* instance();
-    static void setStoppable(bool stoppable);
-
-    // only used for testing purposes
-    static void setInstance(ApnRequestFactory* instance);
-    static void deleteInstance();
-
- protected:
     ApnRequestFactory(const QNetworkProxy& proxy,
                       bool stoppable = false,
                       QObject* parent=0);
- private:
-    // used for the singleton
-    static ApnRequestFactory* _instance;
-    static QMutex _mutex;
 };
 
 }  // System

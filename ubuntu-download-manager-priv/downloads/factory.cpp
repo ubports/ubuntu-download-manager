@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QNetworkProxy>
 #include <QPair>
 #include "downloads/download_adaptor.h"
 #include "downloads/group_download.h"
@@ -135,7 +136,13 @@ Factory::createDownload(const QString& dbusOwner,
 
 Download*
 Factory::createMmsDownload(const QString& dbusOwner,
-                           const QUrl& url) {
+                           const QUrl& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
     QString id;
     QString dbusPath;
     QString rootPath;
@@ -145,7 +152,7 @@ Factory::createMmsDownload(const QString& dbusOwner,
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
     Download* down = new MmsFileDownload(id, dbusPath, isConfined,
-        rootPath, url, metadata, headers);
+        rootPath, url, metadata, headers, proxy);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;

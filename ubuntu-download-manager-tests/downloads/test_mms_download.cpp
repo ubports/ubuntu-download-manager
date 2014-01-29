@@ -22,10 +22,6 @@ TestMmsDownload::TestMmsDownload(QObject* parent)
     : BaseTestCase("TestMmsDownload", parent) {
 }
 
-void TestMmsDownload::cleanup() {
-    ApnRequestFactory::deleteInstance();
-}
-
 void
 TestMmsDownload::testNetworkAccessManager() {
     QString id = "id of the download";
@@ -35,10 +31,16 @@ TestMmsDownload::testNetworkAccessManager() {
     QUrl url("http://example.com");
     QVariantMap metadata;
     QMap<QString, QString> headers;
+    QString hostname = "http://example.com";
+    int port = 80;
+    QString username = "username";
+    QString password = "password";
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
 
     QScopedPointer<PublicMmsFileDownload> down(
         new PublicMmsFileDownload(id, path, isConfined, rootPath,
-            url, metadata, headers));
+            url, metadata, headers, proxy));
     ApnRequestFactory* nam = qobject_cast<ApnRequestFactory*>(down->nam());
     QVERIFY(nam != nullptr);
 }
@@ -52,9 +54,15 @@ TestMmsDownload::testAddToQueue() {
     QUrl url("http://example.com");
     QVariantMap metadata;
     QMap<QString, QString> headers;
+    QString hostname = "http://example.com";
+    int port = 80;
+    QString username = "username";
+    QString password = "password";
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
 
     QScopedPointer<PublicMmsFileDownload> down(
         new PublicMmsFileDownload(id, path, isConfined, rootPath,
-            url, metadata, headers));
+            url, metadata, headers, proxy));
     QVERIFY(!down->addToQueue());
 }

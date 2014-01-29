@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1390903997
-#define DOWNLOAD_MANAGER_ADAPTOR_H_1390903997
+#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1390996214
+#define DOWNLOAD_MANAGER_ADAPTOR_H_1390996214
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -47,6 +47,10 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "    </method>\n"
 "    <method name=\"createMmsDownload\">\n"
 "      <arg direction=\"in\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"hostname\"/>\n"
+"      <arg direction=\"in\" type=\"i\" name=\"port\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"username\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"password\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"downloadPath\"/>\n"
 "    </method>\n"
 "    <method name=\"createDownloadGroup\">\n"
@@ -95,7 +99,7 @@ public Q_SLOTS: // METHODS
     void allowGSMDownload(bool allowed);
     QDBusObjectPath createDownload(DownloadStruct download);
     QDBusObjectPath createDownloadGroup(StructList downloads, const QString &algorithm, bool allowed3G, const QVariantMap &metadata, StringMap headers);
-    QDBusObjectPath createMmsDownload(const QString& url);
+    QDBusObjectPath createMmsDownload(const QString &url, const QString &hostname, int port, const QString &username, const QString &password);
     qulonglong defaultThrottle();
     void exit();
     QList<QDBusObjectPath> getAllDownloads();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -19,6 +19,7 @@
 #ifndef MMS_FILE_DOWNLOAD_H
 #define MMS_FILE_DOWNLOAD_H
 
+#include <QNetworkProxy>
 #include <QObject>
 #include "file_download.h"
 
@@ -39,8 +40,9 @@ class MmsFileDownload : public FileDownload {
                     const QUrl& url,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
+                    const QNetworkProxy& proxy,
                     QObject* parent = 0);
-
+    ~MmsFileDownload();
 };
 
 }  // Daemon

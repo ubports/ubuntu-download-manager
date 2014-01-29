@@ -41,9 +41,10 @@ class PublicMmsFileDownload : public MmsFileDownload {
                           const QUrl& url,
                           const QVariantMap& metadata,
                           const QMap<QString, QString>& headers,
-                          QObject* parent = 0) 
+                          const QNetworkProxy& proxy,
+                          QObject* parent = 0)
         : MmsFileDownload(id, path, isConfined, rootPath, url, metadata,
-              headers, parent) {
+              headers, proxy, parent) {
     }
 
     RequestFactory* nam() {
@@ -58,8 +59,6 @@ class TestMmsDownload : public BaseTestCase {
     explicit TestMmsDownload(QObject *parent = 0);
 
  private slots:  // NOLINT(whitespace/indent)
-
-    void cleanup() override;
 
     void testNetworkAccessManager();
     void testAddToQueue();
