@@ -45,8 +45,14 @@ Queue::add(Download* download) {
     _sortedPaths.append(path);
     _downloads[path] = download;
 
-    connect(download, &Download::stateChanged,
-        this, &Queue::onDownloadStateChanged);
+    if (download->addToQueue()) {
+        connect(download, &Download::stateChanged,
+            this, &Queue::onManagedDownloadStateChanged);
+    } else {
+        connect(download, &Download::stateChanged,
+            this, &Queue::onUnmanagedDownloadStateChanged);
+    }
+
     emit downloadAdded(path);
 }
 
@@ -87,7 +93,7 @@ Queue::size() {
 }
 
 void
-Queue::onDownloadStateChanged() {
+Queue::onManagedDownloadStateChanged() {
     TRACE;
     // get the appdownload that emited the signal and
     // decide what to do with it
@@ -122,6 +128,25 @@ Queue::onDownloadStateChanged() {
             // and the adapter from the list
             if (!_current.isEmpty() && _current == down->path())
                 updateCurrentDownload();
+            break;
+        default:
+            // do nothing
+            break;
+    }
+}
+
+void
+Queue::onUnmanagedDownloadStateChanged() {
+    TRACE;
+    // grab the download and clean it when needed
+    Download* down = qobject_cast<Download*>(sender());
+    switch (down->state()) {
+        case Download::CANCEL:
+        case Download::ERROR:
+        case Download::FINISH:
+            // remove the registered object in dbus, remove the download
+            // and the adapter from the list
+            remove(down->path());
             break;
         default:
             // do nothing

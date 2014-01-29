@@ -506,3 +506,56 @@ TestDownloadQueue::testDownloadErrorWithOtherReady() {
     QCOMPARE(QString("canDownload"), calledMethods[0].methodName());
     QCOMPARE(QString("startDownload"), calledMethods[1].methodName());
 }
+
+void
+TestDownloadQueue::testNewUnmanagedIncreasesNumber() {
+    _q->add(_first);
+
+    QCOMPARE(1, _q->size());
+    _second->setAddToQueue(false);
+
+    _q->add(_second);
+    QCOMPARE(2, _q->size());
+}
+
+void
+TestDownloadQueue::testErrorUnmanagedDecreasesNumber() {
+    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    _first->setAddToQueue(false);
+
+    _q->add(_first);
+
+    QCOMPARE(1, _q->size());
+    _first->emitError("Error");
+
+    QTRY_COMPARE(spy.count(), 1);
+    QCOMPARE(0, _q->size());
+}
+
+void
+TestDownloadQueue::testFinishUnmanagedDecreasesNumber() {
+    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    _first->setAddToQueue(false);
+
+    _q->add(_first);
+
+    QCOMPARE(1, _q->size());
+    _first->emitFinished("path");
+
+    QTRY_COMPARE(spy.count(), 1);
+    QCOMPARE(0, _q->size());
+}
+
+void
+TestDownloadQueue::testCancelUnmanagedDecreasesNumber() {
+    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    _first->setAddToQueue(false);
+
+    _q->add(_first);
+
+    QCOMPARE(1, _q->size());
+    _first->cancel();
+
+    QTRY_COMPARE(spy.count(), 1);
+    QCOMPARE(0, _q->size());
+}

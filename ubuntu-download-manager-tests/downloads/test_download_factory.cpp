@@ -17,6 +17,7 @@
  */
 
 #include <downloads/file_download.h>
+#include <downloads/mms_file_download.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/file_manager.h>
 #include <system/uuid_utils.h>
@@ -94,7 +95,16 @@ TestDownloadFactory::testCreateDownloadWithHash() {
 
 void
 TestDownloadFactory::testCreateMmsDownload() {
-    QFAIL("NOT IMPLEMENTED");
+    _apparmor->record();
+
+    QString hash = "my-hash";
+    QString algo = "Md5";
+
+    // same as above but assert hash and hash algo
+    QScopedPointer<Download> download(_downFactory->createMmsDownload(
+        "", QUrl("http://example.com")));
+    auto mms = qobject_cast<MmsFileDownload*>(download.data());
+    QVERIFY(mms != nullptr);
 }
 
 void
