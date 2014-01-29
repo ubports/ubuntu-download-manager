@@ -344,7 +344,7 @@ FileDownload::onFinished() {
             // the operation succeed
 
             connect(postDownloadProcess, &Process::finished,
-                this, &FileDownload::onProcessFinished)r
+                this, &FileDownload::onProcessFinished);
             connect(postDownloadProcess, &Process::error,
                 this, &FileDownload::onProcessError);
 
@@ -374,19 +374,22 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
-    QProcess* p = qobject_cast<QProcess*>(sender());
+    Process* p = qobject_cast<Process*>(sender());
+    auto standardOut = p->readAllStandardOutput();
+    auto standardErr = p->readAllStandardError();
     LOG(ERROR) << "Error " << error << "executing"
         << p->program() << "with args" << p->arguments()
-        << "Stdout:" << p->readAllStandardOutput()
-        << "Stderr:" << p->readAllStandardError();
+        << "Stdout:" << standardOut << "Stderr:" << standardErr;
     p->deleteLater();
+    ProcessErrorStruct err(error, 0, standardOut, standardErr);
+    emit processError(err);
     emitError(COMMAND_ERROR);
 }
 
 void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     DLOG(INFO) << " " << __PRETTY_FUNCTION__ << " " << exitCode << " " << exitStatus;
-    QProcess* p = qobject_cast<QProcess*>(sender());
+    Process* p = qobject_cast<Process*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
@@ -394,6 +397,11 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
+        auto standardOut = p->readAllStandardOutput();
+        auto standardErr = p->readAllStandardError();
+        ProcessErrorStruct err(exitStatus, "ErrorInProcess", exitCode,
+            standardOut, standardErr);
+        emit processError(err);
         emitError(COMMAND_ERROR);
     }
     p->deleteLater();

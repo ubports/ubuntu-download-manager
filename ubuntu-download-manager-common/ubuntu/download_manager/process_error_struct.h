@@ -38,6 +38,10 @@ class ProcessErrorStruct {
     ProcessErrorStruct();
     ProcessErrorStruct(int code, QString phrase);
     ProcessErrorStruct(int code,
+                       int exitCode,
+                       QString standardOutput,
+                       QString standardError);
+    ProcessErrorStruct(int code,
                        QString phrase,
                        int exitCode,
                        QString standardOutput,

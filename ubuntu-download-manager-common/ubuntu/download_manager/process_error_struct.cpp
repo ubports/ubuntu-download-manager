@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QProcess>
 #include "process_error_struct.h"
 
 namespace Ubuntu {
@@ -36,6 +37,36 @@ ProcessErrorStruct::ProcessErrorStruct(int code, QString phrase)
       _phrase(phrase),
       _stdout(""),
       _stderr("") {
+}
+
+ProcessErrorStruct::ProcessErrorStruct(int code,
+                                       int exitCode,
+                                       QString standardOutput,
+                                       QString standardError)
+    : _code(code),
+      _exitCode(exitCode),
+      _stdout(standardOutput),
+      _stderr(standardError) {
+
+    switch(_code) {
+        case QProcess::FailedToStart:
+            _phrase = "FailedToStart";
+            break;
+        case QProcess::Crashed:
+            _phrase = "Crashed";
+            break;
+        case QProcess::Timedout:
+            _phrase = "Timedout";
+            break;
+        case QProcess::WriteError:
+            _phrase = "WriteError";
+            break;
+        case QProcess::ReadError:
+            _phrase = "ReadError";
+            break;
+        default:
+            _phrase = "UnknownError";
+    }
 }
 
 ProcessErrorStruct::ProcessErrorStruct(int code,

@@ -37,6 +37,10 @@ class Process : public QObject {
     virtual void start(const QString& program,
                        const QStringList& arguments,
                        QProcess::OpenMode mode = QProcess::ReadWrite);
+    virtual QStringList arguments() const;
+    virtual QString program() const;
+    virtual QByteArray readAllStandardOutput();
+    virtual QByteArray readAllStandardError();
 
  signals:
     void error(QProcess::ProcessError error);
