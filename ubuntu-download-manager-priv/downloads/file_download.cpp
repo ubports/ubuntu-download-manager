@@ -390,7 +390,6 @@ void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
     auto p = qobject_cast<Process*>(sender());
-    Process* p = qobject_cast<Process*>(sender());
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
