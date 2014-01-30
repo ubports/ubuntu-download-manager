@@ -19,6 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// Package udm provides a go interface to work with the ubuntu download manager
 package udm
 
 import (
@@ -32,11 +33,30 @@ const (
 	DOWNLOAD_MANAGER_INTERFACE = "com.canonical.applications.DownloadManager"
 )
 
+const (
+	MD5 = "md5"
+	SHA1 = "sha1"
+	SHA224 = "sha224"
+	SHA256 = "sha256"
+	SHA384 = "sha384"
+	SHA512 = "sha512"
+)
+
+const (
+	LOCAL_PATH = "local-path"
+	OBJECT_PATH = "objectpath"
+	POST_DOWNLOAD_COMMAND = "post-download-command"
+)
+
+// Progress provides how much progress has been performed in a download that was
+// already started.
 type Progress struct {
 	Received uint64
 	Total    uint64
 }
 
+// Download is the common interface of a download. It provides all the required 
+// methods to interact with a download created by udm.
 type Download interface {
 	TotalSize() (uint64, error)
 	Progress() (uint64, error)
@@ -58,11 +78,14 @@ type Download interface {
 	Error() chan string
 }
 
+// Manager is the single point of entry of the API. Allows to interact with the 
+// general setting of udm as well as to create downloads at will.
 type Manager interface {
 	CreateDownload(string, string, string, map[string]interface{}, map[string]string) (Download, error)
 	CreateMmsDownload(string, string, int, string, string) (Download, error)
 }
 
+// FileDownload represents a single file being downloaded by udm.
 type FileDownload struct {
 	conn     *dbus.Connection
 	proxy    *dbus.ObjectProxy
@@ -74,6 +97,16 @@ type FileDownload struct {
 	finished chan string
 	errors   chan string
 	progress chan Progress
+}
+
+func (down *FileDownload) connectToSignal(signal string) (*dbus.SignalWatch, error) {
+	w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    signal,
+		Path:      down.path})
+	return w, err
 }
 
 func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload {
@@ -98,6 +131,7 @@ func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload 
 	return &d
 }
 
+// TotalSize returns the total size of the file being downloaded.
 func (down *FileDownload) TotalSize() (size uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "totalSize")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -111,6 +145,7 @@ func (down *FileDownload) TotalSize() (size uint64, err error) {
 	return size, nil
 }
 
+// Process returns the process so far in downloading the file.
 func (down *FileDownload) Progress() (progress uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "progress")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -124,6 +159,7 @@ func (down *FileDownload) Progress() (progress uint64, err error) {
 	return progress, nil
 }
 
+// Metadata returns the metadata that was provided at creating time to the download.
 func (down *FileDownload) Metadata() (metadata map[string]string, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "metadata")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -137,6 +173,7 @@ func (down *FileDownload) Metadata() (metadata map[string]string, err error) {
 	return metadata, nil
 }
 
+// SetThrottle sets the network throttle to be used in the download.
 func (down *FileDownload) SetThrottle(throttle uint64) (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "setThrottle", throttle)
 	if err != nil || reply.Type == dbus.TypeError {
@@ -146,6 +183,7 @@ func (down *FileDownload) SetThrottle(throttle uint64) (err error) {
 	return nil
 }
 
+// Throttle returns the network throttle that is currently used in the download.
 func (down *FileDownload) Throttle() (throttle uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "throttle")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -159,6 +197,8 @@ func (down *FileDownload) Throttle() (throttle uint64, err error) {
 	return throttle, nil
 }
 
+// AllowMobileDownload returns if the download is allow to use the mobile connect
+// connection.
 func (down *FileDownload) AllowMobileDownload(allowed bool) (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "allowGSMDownload", allowed)
 	if err != nil || reply.Type == dbus.TypeError {
@@ -168,10 +208,11 @@ func (down *FileDownload) AllowMobileDownload(allowed bool) (err error) {
 	return nil
 }
 
+// IsMobileDownload returns if the download will be performed over the mobile data.
 func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "isGSMDownloadAllowed", allowed)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Println("FAILED: IsMobileDownload ")
+		log.Println("FAILED: IsMobileDownload")
 		return false, err
 	}
 	if err = reply.Args(&allowed); err != nil {
@@ -181,6 +222,48 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 	return allowed, nil
 }
 
+// Start tells udm that the download is ready to be peformed and that the client is
+// ready to recieve signals. The following is a commong pattern to be used when
+// creating downloads in udm.
+//
+//     man, err := udm.NewDownloadManager() 
+//     if err != nil {
+//     }
+//     
+//     // variables used to create the download
+//
+//     url := "http://www.python.org/ftp/python/3.3.3/Python-3.3.3.tar.xz"
+//     hash := "8af44d33ea3a1528fc56b3a362924500"
+//     hashAlgo := MD5
+//     var metadata map[string]interface{}
+//     var headers map[string]string
+//    
+//     // create the download BUT do not start downloading just yet
+//     down, err := man.CreateDownload(url, hash, hashAlgo, metadata, headers)
+//
+//     // connect routines to the download channels so that we can get the 
+//     // information of the download the channel will not get any data until the
+//     // Start is called.
+//    
+//     started_signal := down.Started()
+//     go func() {
+//         <-started_signal
+//         fmt.Println("Download started")
+//     }()
+//     progress_signal := down.DownloadProgress()
+//     go func() {
+//         for progress := range p {
+//             fmt.Printf("Recieved %d out of %d\n", progress.Received, progress.Total)
+//         }
+//     }()
+//
+//     finished_signal := down.Finished()
+//
+//     // start download
+//     down.Start()
+//    
+//     // block until we are finished downloading
+//     <- finished_signal
 func (down *FileDownload) Start() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "start")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -190,6 +273,7 @@ func (down *FileDownload) Start() (err error) {
 	return nil
 }
 
+// Pause pauses a download that was started and if not nothing is done.
 func (down *FileDownload) Pause() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "pause")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -199,6 +283,7 @@ func (down *FileDownload) Pause() (err error) {
 	return nil
 }
 
+// Resumes a download that was paused or does nothing otherwise.
 func (down *FileDownload) Resume() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "resume")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -208,6 +293,8 @@ func (down *FileDownload) Resume() (err error) {
 	return nil
 }
 
+// Cancel cancels a download that was in process and deletes any local files
+// that were created.
 func (down *FileDownload) Cancel() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "cancel")
 	if err != nil || reply.Type == dbus.TypeError {
@@ -218,13 +305,7 @@ func (down *FileDownload) Cancel() (err error) {
 }
 
 func (down *FileDownload) connectToStarted() {
-	started_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "started",
-		Path:      down.path})
-
+	started_w, err := down.connectToSignal("started")
 	if err != nil {
 		log.Println("Could not connect to Started signal")
 	}
@@ -236,21 +317,15 @@ func (down *FileDownload) connectToStarted() {
 			down.started <- started
 		}
 	}()
-
 }
 
+// Started returns a channel that will be used to communicate the started signals.
 func (down *FileDownload) Started() chan bool {
 	return down.started
 }
 
 func (down *FileDownload) connectToPaused() {
-	paused_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "paused",
-		Path:      down.path})
-
+	paused_w, err := down.connectToSignal("paused")
 	if err != nil {
 		log.Println("Could not connect to Paused signal")
 	}
@@ -262,23 +337,17 @@ func (down *FileDownload) connectToPaused() {
 			down.paused <- paused
 		}
 	}()
-
 }
 
+// Paused returns a channel that will be used to communicate the paused signals.
 func (down *FileDownload) Paused() chan bool {
 	return down.paused
 }
 
 func (down *FileDownload) connectToProgress() {
-	paused_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "progress",
-		Path:      down.path})
-
+	paused_w, err := down.connectToSignal("progress")
 	if err != nil {
-		log.Println("Could not connect to Paused signal")
+		log.Println("Could not connect to Progress signal")
 	}
 
 	go func() {
@@ -291,18 +360,14 @@ func (down *FileDownload) connectToProgress() {
 	}()
 }
 
+// DownloadProgress returns a channel that will be used to communicate the progress
+// signals.
 func (down *FileDownload) DownloadProgress() chan Progress {
 	return down.progress
 }
 
 func (down *FileDownload) connectToResumed() {
-	resumed_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "resumed",
-		Path:      down.path})
-
+	resumed_w, err := down.connectToSignal("resumed")
 	if err != nil {
 		log.Println("Could not connect to Resumed signal")
 	}
@@ -314,21 +379,15 @@ func (down *FileDownload) connectToResumed() {
 			down.resumed <- resumed
 		}
 	}()
-
 }
 
+// Resumed returns a channel that will be used to communicate the paused signals.
 func (down *FileDownload) Resumed() chan bool {
 	return down.resumed
 }
 
 func (down *FileDownload) connectToCanceled() {
-	canceled_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "canceled",
-		Path:      down.path})
-
+	canceled_w, err := down.connectToSignal("canceled")
 	if err != nil {
 		log.Println("Could not connect to Canceled signal")
 	}
@@ -342,18 +401,13 @@ func (down *FileDownload) connectToCanceled() {
 	}()
 }
 
+// Canceled returns a channel that will be used to communicate the canceled signals.
 func (down *FileDownload) Canceled() chan bool {
 	return down.canceled
 }
 
 func (down *FileDownload) connectToFinished() {
-	finished_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "finished",
-		Path:      down.path})
-
+	finished_w, err := down.connectToSignal("finished")
 	if err != nil {
 		log.Println("Could not connect to Finished signal")
 	}
@@ -367,18 +421,13 @@ func (down *FileDownload) connectToFinished() {
 	}()
 }
 
+// Finished returns a channel that will ne used to communicate the finished signals.
 func (down *FileDownload) Finished() chan string {
 	return down.finished
 }
 
 func (down *FileDownload) connectToError() {
-	error_w, err := down.conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    "error",
-		Path:      down.path})
-
+	error_w, err := down.connectToSignal("error")
 	if err != nil {
 		log.Println("Could not connect to Error signal")
 	}
@@ -392,6 +441,7 @@ func (down *FileDownload) connectToError() {
 	}()
 }
 
+// Error returns the channel that will be used to communicate the error signals.
 func (down *FileDownload) Error() chan string {
 	return down.errors
 }
@@ -401,6 +451,8 @@ type DownloadManager struct {
 	proxy *dbus.ObjectProxy
 }
 
+// NewDownloadManager creates a new manager that can be used to create download in the
+// udm daemon.
 func NewDownloadManager() (*DownloadManager, error) {
 	conn, err := dbus.Connect(dbus.SessionBus)
 	if err != nil {
@@ -416,6 +468,29 @@ func NewDownloadManager() (*DownloadManager, error) {
 	return &d, nil
 }
 
+// CreateDownload creates a new download in the udm daemon that can be used to get
+// a remote resource. Udm allows to pass a hash signature and method that will be
+// check once the download has been complited.
+// 
+// The download hash can be one of the the following constants:
+//
+//   MD5 
+//   SHA1
+//   SHA224
+//   SHA256
+//   SHA384
+//   SHA512
+//
+// The metadata attribute can be used to pass extra information to the udm daemon
+// that will just be considered if the caller is not a apparmor confined application.
+//
+//     LOCAL_PATH => allows to provide the local path for the download.
+//     OBJECT_PATH => allows to provide the object path to be used in the dbus daemon.
+//     POST_DOWNLOAD_COMMAND => allows to provide a command that will be executed on the
+//         download 
+// 
+// The headers attribute allows to provide extra headers to be used in the request used
+// to perform the download.
 func (man *DownloadManager) CreateDownload(url string, hash string, algo string, metadata map[string]interface{}, headers map[string]string) (down Download, err error) {
 	var t map[string]*dbus.Variant
 	for key, value := range metadata {
@@ -443,6 +518,9 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo string,
 	return down, nil
 }
 
+// CreateMmsDownload creates an mms download that will be performed right away. An
+// mms download only uses mobile that and an apn proxy to download a multime media
+// message.
 func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port int, username string, password string) (down Download, err error) {
 	var path dbus.ObjectPath
 	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createMmsDownload", url, hostname, port, username, password)
