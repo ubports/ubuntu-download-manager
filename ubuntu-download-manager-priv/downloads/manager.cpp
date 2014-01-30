@@ -175,6 +175,21 @@ Manager::createDownload(DownloadStruct download) {
 }
 
 QDBusObjectPath
+Manager::createMmsDownload(const QString& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    DownloadCreationFunc createDownloadFunc =
+        [this, url, hostname, port, username, password](QString owner) {
+        auto download = _downloadFactory->createMmsDownload(owner, url,
+            hostname, port, username, password);
+        return download;
+    };
+    return createDownload(createDownloadFunc);
+}
+
+QDBusObjectPath
 Manager::createDownloadGroup(StructList downloads,
                              const QString& algo,
                              bool allowed3G,

@@ -526,10 +526,10 @@ FileDownload::cleanUpCurrentData() {
     QFile::FileError error = QFile::NoError;
     if (_currentData != nullptr) {
         success = _currentData->remove();
-    
+
         if (!success)
             error = _currentData->error();
-    
+
         _currentData->deleteLater();
         _currentData = nullptr;
     } else {
@@ -538,7 +538,7 @@ FileDownload::cleanUpCurrentData() {
         if (!success)
             error = tempFile->error();
     }
-    
+
     if (!success)
         qWarning() << "Error " << error <<
             "removing file with path" << _filePath;

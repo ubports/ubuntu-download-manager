@@ -57,6 +57,12 @@ class TestDownloadQueue : public BaseTestCase {
     void testDownloadFinishedOtherReady();
     void testDownloadErrorWithOtherReady();
 
+    // unmanaged downloads tests
+    void testNewUnmanagedIncreasesNumber();
+    void testErrorUnmanagedDecreasesNumber();
+    void testFinishUnmanagedDecreasesNumber();
+    void testCancelUnmanagedDecreasesNumber();
+
  private:
     bool _isConfined;
     QString _rootPath;

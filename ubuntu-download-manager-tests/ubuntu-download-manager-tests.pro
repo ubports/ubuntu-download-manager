@@ -25,7 +25,10 @@ SOURCES += \
     downloads/state_machines/test_cancel_download_transition.cpp \
     downloads/state_machines/test_resume_download_transition.cpp \
     downloads/state_machines/test_final_state.cpp \
-    downloads/state_machines/test_file_download_sm.cpp
+    downloads/state_machines/test_file_download_sm.cpp \
+    system/test_apn_request_factory.cpp \
+    downloads/test_mms_download.cpp \
+    downloads/test_base_download.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -42,7 +45,10 @@ HEADERS += \
     downloads/state_machines/test_cancel_download_transition.h \
     downloads/state_machines/test_resume_download_transition.h \
     downloads/state_machines/test_final_state.h \
-    downloads/state_machines/test_file_download_sm.h
+    downloads/state_machines/test_file_download_sm.h \
+    system/test_apn_request_factory.h \
+    downloads/test_mms_download.h \
+    downloads/test_base_download.h
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 

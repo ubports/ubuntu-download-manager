@@ -97,6 +97,11 @@ class Download : public QObject {
     virtual bool isValid() const {
         return _isValid;
     }
+
+    bool addToQueue() const {
+        return _addToQueue;
+    }
+
     virtual QString lastError() const {
         return _lastError;
     }
@@ -125,18 +130,26 @@ class Download : public QObject {
 
     inline void cancel() {
         setState(Download::CANCEL);
+        if(!_addToQueue)
+            cancelDownload();
     }
 
     inline void pause() {
         setState(Download::PAUSE);
+        if(!_addToQueue)
+            pauseDownload();
     }
 
     inline void resume() {
         setState(Download::RESUME);
+        if(!_addToQueue)
+            resumeDownload();
     }
 
     inline void start() {
         setState(Download::START);
+        if(!_addToQueue)
+            startDownload();
     }
 
     // slots to be implemented by the children
@@ -158,11 +171,13 @@ class Download : public QObject {
 
  protected:
     void setIsValid(bool isValid);
+    void setAddToQueue(bool addToQueue);
     void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);
 
  private:
     bool _isValid = true;
+    bool _addToQueue = true;
     QString _lastError = "";
     QString _id;
     qulonglong _throttle;
@@ -174,7 +189,7 @@ class Download : public QObject {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     SystemNetworkInfo* _networkInfo;
-    QObject* _adaptor = NULL;
+    QObject* _adaptor = nullptr;
 };
 
 }  // Daemon

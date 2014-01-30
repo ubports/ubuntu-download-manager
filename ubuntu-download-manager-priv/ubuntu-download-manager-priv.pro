@@ -38,7 +38,10 @@ SOURCES += \
     system/network_reply.cpp \
     system/dbus_proxy.cpp \
     downloads/state_machines/state.cpp \
-    downloads/state_machines/final_state.cpp
+    downloads/state_machines/final_state.cpp \
+    system/apn_request_factory.cpp \
+    downloads/mms_file_download.cpp \
+    system/apn_proxy.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -69,7 +72,10 @@ HEADERS +=\
     system/network_reply.h \
     system/dbus_proxy.h \
     downloads/state_machines/state.h \
-    downloads/state_machines/final_state.h
+    downloads/state_machines/final_state.h \
+    system/apn_request_factory.h \
+    downloads/mms_file_download.h \
+    system/apn_proxy.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
