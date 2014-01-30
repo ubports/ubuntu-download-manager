@@ -32,6 +32,11 @@ const (
 	DOWNLOAD_MANAGER_INTERFACE = "com.canonical.applications.DownloadManager"
 )
 
+type Progress struct {
+	Received uint64
+	Total    uint64
+}
+
 type Download interface {
 	TotalSize() (uint64, error)
 	Progress() (uint64, error)
@@ -44,6 +49,13 @@ type Download interface {
 	Pause() error
 	Resume() error
 	Cancel() error
+	Started() chan bool
+	Paused() chan bool
+	DownloadProgress() chan Progress
+	Resumed() chan bool
+	Canceled() chan bool
+	Finished() chan string
+	Error() chan string
 }
 
 type Manager interface {
@@ -52,12 +64,37 @@ type Manager interface {
 }
 
 type FileDownload struct {
-	proxy *dbus.ObjectProxy
+	conn     *dbus.Connection
+	proxy    *dbus.ObjectProxy
+	path     dbus.ObjectPath
+	started  chan bool
+	paused   chan bool
+	resumed  chan bool
+	canceled chan bool
+	finished chan string
+	errors   chan string
+	progress chan Progress
 }
 
 func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload {
 	proxy := conn.Object(DOWNLOAD_SERVICE, path)
-	d := FileDownload{proxy}
+	started_ch := make(chan bool)
+	paused_ch := make(chan bool)
+	resumed_ch := make(chan bool)
+	canceled_ch := make(chan bool)
+	finished_ch := make(chan string)
+	errors_ch := make(chan string)
+	progress_ch := make(chan Progress)
+	d := FileDownload{conn, proxy, path, started_ch, paused_ch, resumed_ch, canceled_ch, finished_ch, errors_ch, progress_ch}
+	// connect to the diff signals so that we have nice channels that do
+	// not expose dbus watchers
+	d.connectToStarted()
+	d.connectToPaused()
+	d.connectToResumed()
+	d.connectToCanceled()
+	d.connectToFinished()
+	d.connectToError()
+	d.connectToProgress()
 	return &d
 }
 
@@ -180,6 +217,185 @@ func (down *FileDownload) Cancel() (err error) {
 	return nil
 }
 
+func (down *FileDownload) connectToStarted() {
+	started_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "started",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Started signal")
+	}
+
+	go func() {
+		for msg := range started_w.C {
+			var started bool
+			msg.Args(&started)
+			down.started <- started
+		}
+	}()
+
+}
+
+func (down *FileDownload) Started() chan bool {
+	return down.started
+}
+
+func (down *FileDownload) connectToPaused() {
+	paused_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "paused",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Paused signal")
+	}
+
+	go func() {
+		for msg := range paused_w.C {
+			var paused bool
+			msg.Args(&paused)
+			down.paused <- paused
+		}
+	}()
+
+}
+
+func (down *FileDownload) Paused() chan bool {
+	return down.paused
+}
+
+func (down *FileDownload) connectToProgress() {
+	paused_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "progress",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Paused signal")
+	}
+
+	go func() {
+		for msg := range paused_w.C {
+			var received uint64
+			var total uint64
+			msg.Args(&received, &total)
+			down.progress <- Progress{received, total}
+		}
+	}()
+}
+
+func (down *FileDownload) DownloadProgress() chan Progress {
+	return down.progress
+}
+
+func (down *FileDownload) connectToResumed() {
+	resumed_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "resumed",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Resumed signal")
+	}
+
+	go func() {
+		for msg := range resumed_w.C {
+			var resumed bool
+			msg.Args(&resumed)
+			down.resumed <- resumed
+		}
+	}()
+
+}
+
+func (down *FileDownload) Resumed() chan bool {
+	return down.resumed
+}
+
+func (down *FileDownload) connectToCanceled() {
+	canceled_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "canceled",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Canceled signal")
+	}
+
+	go func() {
+		for msg := range canceled_w.C {
+			var canceled bool
+			msg.Args(&canceled)
+			down.canceled <- canceled
+		}
+	}()
+}
+
+func (down *FileDownload) Canceled() chan bool {
+	return down.canceled
+}
+
+func (down *FileDownload) connectToFinished() {
+	finished_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "finished",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Finished signal")
+	}
+
+	go func() {
+		for msg := range finished_w.C {
+			var path string
+			msg.Args(&path)
+			down.finished <- path
+		}
+	}()
+}
+
+func (down *FileDownload) Finished() chan string {
+	return down.finished
+}
+
+func (down *FileDownload) connectToError() {
+	error_w, err := down.conn.WatchSignal(&dbus.MatchRule{
+		Type:      dbus.TypeSignal,
+		Sender:    DOWNLOAD_SERVICE,
+		Interface: DOWNLOAD_INTERFACE,
+		Member:    "error",
+		Path:      down.path})
+
+	if err != nil {
+		log.Println("Could not connect to Error signal")
+	}
+
+	go func() {
+		for msg := range error_w.C {
+			var reason string
+			msg.Args(&reason)
+			down.errors <- reason
+		}
+	}()
+}
+
+func (down *FileDownload) Error() chan string {
+	return down.errors
+}
+
 type DownloadManager struct {
 	conn  *dbus.Connection
 	proxy *dbus.ObjectProxy
@@ -188,11 +404,11 @@ type DownloadManager struct {
 func NewDownloadManager() (*DownloadManager, error) {
 	conn, err := dbus.Connect(dbus.SessionBus)
 	if err != nil {
-		log.Fatal("Connection error:", err)
+		log.Printf("Connection error:")
 	}
 
 	if err != nil {
-		log.Fatal("Error: %s\n", err)
+		log.Printf("Error: %s\n")
 	}
 
 	proxy := conn.Object(DOWNLOAD_SERVICE, "/")
@@ -201,13 +417,18 @@ func NewDownloadManager() (*DownloadManager, error) {
 }
 
 func (man *DownloadManager) CreateDownload(url string, hash string, algo string, metadata map[string]interface{}, headers map[string]string) (down Download, err error) {
+	var t map[string]*dbus.Variant
+	for key, value := range metadata {
+		log.Println("Key:", key, "Value:", value)
+		t[key] = &dbus.Variant{Value: value}
+	}
 	s := struct {
-		u  string
-		h  string
-		a  string
-		m  map[string]interface{}
-		hd map[string]string
-	}{url, hash, algo, metadata, headers}
+		U  string
+		H  string
+		A  string
+		M  map[string]*dbus.Variant
+		HD map[string]string
+	}{url, hash, algo, t, headers}
 	var path dbus.ObjectPath
 	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createDownload", s)
 	if err != nil || reply.Type == dbus.TypeError {
