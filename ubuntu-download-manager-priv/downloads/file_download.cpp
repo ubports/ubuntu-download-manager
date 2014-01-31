@@ -260,6 +260,29 @@ void
 FileDownload::onError(QNetworkReply::NetworkError code) {
     LOG(ERROR) << _url << " ERROR:" << ":" << code;
     _downloading = false;
+    QString msg;
+
+    // decide if we are talking about an http error or no
+    auto statusCode = _reply->attribute(
+        QNetworkRequest::HttpStatusCodeAttribute);
+    if (statusCode.isValid()) {
+        auto status = statusCode.toInt();
+        if (status >= 300) {
+            auto reasonVar = _reply->attribute(
+                QNetworkRequest::HttpReasonPhraseAttribute);
+            if (reasonVar.isValid()) {
+                msg = reasonVar.toString();
+            } else {
+                msg = "";
+            }
+            HttpErrorStruct err(status, msg);
+            emit httpError(err);
+        }
+    } else {
+        NetworkErrorStruct err(code);
+        emit networkError(err);
+    }
+
     emitError(NETWORK_ERROR);
 }
 
@@ -352,11 +375,14 @@ FileDownload::onSslErrors(const QList<QSslError>& errors) {
 void
 FileDownload::onProcessError(QProcess::ProcessError error) {
     auto p = qobject_cast<Process*>(sender());
+    auto standardOut = p->readAllStandardOutput();
+    auto standardErr = p->readAllStandardError();
     LOG(ERROR) << "Error " << error << "executing"
         << p->program() << "with args" << p->arguments()
-        << "Stdout:" << p->readAllStandardOutput()
-        << "Stderr:" << p->readAllStandardError();
+        << "Stdout:" << standardOut << "Stderr:" << standardErr;
     p->deleteLater();
+    ProcessErrorStruct err(error, 0, standardOut, standardErr);
+    emit processError(err);
     emitError(COMMAND_ERROR);
 }
 
@@ -371,6 +397,11 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
+        auto standardOut = p->readAllStandardOutput();
+        auto standardErr = p->readAllStandardError();
+        ProcessErrorStruct err(exitStatus, "ErrorInProcess", exitCode,
+            standardOut, standardErr);
+        emit processError(err);
         emitError(COMMAND_ERROR);
     }
     p->deleteLater();

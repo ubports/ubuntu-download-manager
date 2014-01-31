@@ -863,7 +863,48 @@ TestDownload::testOnSuccessHash() {
 }
 
 void
+TestDownload::testOnHttpError_data() {
+    QTest::addColumn<int>("code");
+    QTest::addColumn<QString>("message");
+
+    QTest::newRow("Not Found") << 404 << "Not Found";
+    QTest::newRow("Method Not Allowed") << 405 << "Method Not Allowed";
+    QTest::newRow("Not Acceptable") << 406 << "Not Acceptable";
+    QTest::newRow("Request Timeout") << 408 << "Request Timeout";
+}
+
+void
 TestDownload::testOnHttpError() {
+    QFETCH(int, code);
+    QFETCH(QString, message);
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
+    reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, message);
+    
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ContentAccessDenied);
+    QCOMPARE(httpErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnSslError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
@@ -881,6 +922,46 @@ TestDownload::testOnHttpError() {
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
     QCOMPARE(spy.count(), 1);
+}
+
+void
+TestDownload::testOnNetworkError_data() {
+    QTest::addColumn<int>("code");
+
+    QTest::newRow("Connection Refused Error") << 1;
+    QTest::newRow("RemoteHost Closed Error") << 2;
+    QTest::newRow("Host Not Found Error") << 3;
+    QTest::newRow("Timeout Error") << 4;
+    QTest::newRow("Operation Canceled Error") << 4;
+}
+
+void
+TestDownload::testOnNetworkError() {
+    QFETCH(int, code);
+
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->clearAttribute(QNetworkRequest::HttpStatusCodeAttribute);
+    
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError((QNetworkReply::NetworkError)code);
+    QCOMPARE(networkErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
 }
 
 void
@@ -1363,7 +1444,9 @@ TestDownload::testProcessFinishedWithError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy processErrorSpy(download.data(),
+        SIGNAL(processError(ProcessErrorStruct)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
@@ -1385,8 +1468,69 @@ TestDownload::testProcessFinishedWithError() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(1, QProcess::NormalExit);
-    QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
+    QCOMPARE(processErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testProcessError_data() {
+    QTest::addColumn<int>("code");
+    QTest::addColumn<QString>("stdOut");
+    QTest::addColumn<QString>("stdErr");
+
+    QTest::newRow("First row") << 1 << "Things hapened" <<
+        "Errorooror";
+    QTest::newRow("Second row") << 2 << "Time error" <<
+        "Oh lords!";
+    QTest::newRow("Second row") << 3 << "Read" <<
+        "Error!";
+}
+
+void
+TestDownload::testProcessError() {
+    QFETCH(int, code);
+    QFETCH(QString, stdOut);
+    QFETCH(QString, stdErr);
+
+    QVariantMap metadata;
+    QStringList command;
+    command << "grep" << "$file" << "-Rn";
+    metadata["post-download-command"] = command;
+
+    _processFactory->record();
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy processErrorSpy(download.data(),
+        SIGNAL(processError(ProcessErrorStruct)));
+    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+    process->setStandardOutput(stdOut.toUtf8());
+    process->setStandardError(stdErr.toUtf8());
+
+    // emit error signal
+    process->emitError((QProcess::ProcessError)code);
+    QCOMPARE(processingSpy.count(), 1);
+    QCOMPARE(processErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
 }
 
 void
