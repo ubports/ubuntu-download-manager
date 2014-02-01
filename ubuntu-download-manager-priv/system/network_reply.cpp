@@ -29,7 +29,7 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
     : QObject(parent),
       _reply(reply) {
     // connect to all the signals so that we foward them
-    if (_reply != NULL) {
+    if (_reply != nullptr) {
         connect(_reply, &QNetworkReply::downloadProgress,
             this, &NetworkReply::downloadProgress);
         connect(_reply, &QNetworkReply::finished,
@@ -92,7 +92,7 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
             }
         }
 
-        if (_reply != NULL) {
+        if (_reply != nullptr) {
             _reply->ignoreSslErrors(_sslErrors);
         }
 

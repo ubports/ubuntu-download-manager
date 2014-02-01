@@ -24,7 +24,7 @@ namespace DownloadManager {
 
 namespace System {
 
-ProcessFactory* ProcessFactory::_instance = NULL;
+ProcessFactory* ProcessFactory::_instance = nullptr;
 QMutex ProcessFactory::_mutex;
 
 ProcessFactory::ProcessFactory(QObject* parent)
@@ -38,9 +38,9 @@ ProcessFactory::createProcess() {
 
 ProcessFactory*
 ProcessFactory::instance() {
-    if(_instance == NULL) {
+    if(_instance == nullptr) {
         _mutex.lock();
-        if(_instance == NULL)
+        if(_instance == nullptr)
             _instance = new ProcessFactory();
         _mutex.unlock();
     }
@@ -49,11 +49,11 @@ ProcessFactory::instance() {
 
 void
 ProcessFactory::deleteInstance() {
-    if(_instance != NULL) {
+    if(_instance != nullptr) {
         _mutex.lock();
-        if(_instance != NULL) {
+        if(_instance != nullptr) {
             delete _instance;
-            _instance = NULL;
+            _instance = nullptr;
         }
         _mutex.unlock();
     }

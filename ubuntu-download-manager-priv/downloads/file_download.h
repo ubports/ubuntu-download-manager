@@ -123,8 +123,8 @@ class FileDownload : public Download {
     QString _filePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
-    NetworkReply* _reply = NULL;
-    File* _currentData = NULL;
+    NetworkReply* _reply = nullptr;
+    File* _currentData = nullptr;
 };
 
 }  // Daemon

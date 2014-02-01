@@ -1804,7 +1804,7 @@ TestDownload::testFileSystemErrorProgress() {
     // assert that the size is not the received but the file size
     QCOMPARE(arguments.at(0).toString(),
         QString("FILE SYSTEM ERROR: %1").arg(QFile::WriteError));
-    _fileManager->setFile(NULL);
+    _fileManager->setFile(nullptr);
 }
 
 void
@@ -1840,5 +1840,5 @@ TestDownload::testFileSystemErrorPause() {
     // assert that the size is not the received but the file size
     QCOMPARE(arguments.at(0).toString(),
         QString("FILE SYSTEM ERROR: %1").arg(QFile::WriteError));
-    _fileManager->setFile(NULL);
+    _fileManager->setFile(nullptr);
 }

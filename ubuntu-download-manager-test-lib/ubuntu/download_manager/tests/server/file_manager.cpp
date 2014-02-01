@@ -53,7 +53,7 @@ FakeFileManager::FakeFileManager(QObject *parent)
 
 File*
 FakeFileManager::createFile(const QString& name) {
-    if (_file == NULL) {
+    if (_file == nullptr) {
         return FileManager::createFile(name);
     } else {
         return _file;
