@@ -28,56 +28,59 @@
 #include "downloads/downloads_db.h"
 #include "system/logger.h"
 
-#define SINGLE_DOWNLOAD_TABLE "CREATE TABLE SingleDownload("\
-    "uuid VARCHAR(40) PRIMARY KEY, "\
-    "url TEXT NOT NULL, "\
-    "dbus_path TEXT NOT NULL UNIQUE, "\
-    "local_path TEXT, "\
-    "hash TEXT, "\
-    "hash_algo TEXT, "\
-    "state VARCHAR(6) NOT NULL, "\
-    "total_size TEXT, "\
-    "throttle TEXT, "\
-    "metadata TEXT, "\
-    "headers TEXT)"
+namespace {
+    const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE SingleDownload("\
+        "uuid VARCHAR(40) PRIMARY KEY, "\
+        "url TEXT NOT NULL, "\
+        "dbus_path TEXT NOT NULL UNIQUE, "\
+        "local_path TEXT, "\
+        "hash TEXT, "\
+        "hash_algo TEXT, "\
+        "state VARCHAR(6) NOT NULL, "\
+        "total_size TEXT, "\
+        "throttle TEXT, "\
+        "metadata TEXT, "\
+        "headers TEXT)";
 
-#define GROUP_DOWNLOAD_TABLE "CREATE TABLE GroupDownload("\
-    "uuid VARCHAR(40) PRIMARY KEY, "\
-    "dbus_path TEXT NOT NULL UNIQUE, "\
-    "state INTEGER NOT NULL, "\
-    "total_size TEXT, "\
-    "throttle TEXT, "\
-    "metadata TEXT, "\
-    "headers TEXT)"
+    const QString GROUP_DOWNLOAD_TABLE = "CREATE TABLE GroupDownload("\
+        "uuid VARCHAR(40) PRIMARY KEY, "\
+        "dbus_path TEXT NOT NULL UNIQUE, "\
+        "state INTEGER NOT NULL, "\
+        "total_size TEXT, "\
+        "throttle TEXT, "\
+        "metadata TEXT, "\
+        "headers TEXT)";
 
-#define GROUP_DOWNLOAD_RELATION "CREATE TABLE GroupDownloadDownloads("\
-    "group_id VARCHAR(36), "\
-    "download_id VARCHAR(36), "\
-    "FOREIGN KEY(group_id) REFERENCES GroupDownload(uuid), "\
-    "FOREIGN KEY(download_id) REFERENCES SingleDownload(uuid))"
+    const QString GROUP_DOWNLOAD_RELATION = "CREATE TABLE GroupDownloadDownloads("\
+        "group_id VARCHAR(36), "\
+        "download_id VARCHAR(36), "\
+        "FOREIGN KEY(group_id) REFERENCES GroupDownload(uuid), "\
+        "FOREIGN KEY(download_id) REFERENCES SingleDownload(uuid))";
 
-#define PRESENT_SINGLE_DOWNLOAD "SELECT count(uuid) FROM SingleDownload "\
-    "WHERE uuid=:uuid;"
+    const QString PRESENT_SINGLE_DOWNLOAD = "SELECT count(uuid) FROM SingleDownload "\
+        "WHERE uuid=:uuid;";
 
-#define INSERT_SINGLE_DOWNLOAD "INSERT INTO SingleDownload("\
-    "uuid, url, dbus_path, local_path, hash, hash_algo, state, total_size, "\
-    "throttle, metadata, headers) VALUES (:uuid, :url, :dbus_path, "\
-    ":local_path, :hash, :hash_algo, :state, :total_size, :throttle, "\
-    ":metadata, :headers)"
+    const QString INSERT_SINGLE_DOWNLOAD = "INSERT INTO SingleDownload("\
+        "uuid, url, dbus_path, local_path, hash, hash_algo, state, total_size, "\
+        "throttle, metadata, headers) VALUES (:uuid, :url, :dbus_path, "\
+        ":local_path, :hash, :hash_algo, :state, :total_size, :throttle, "\
+        ":metadata, :headers)";
 
-#define UPDATE_SINGLE_DOWNLOAD "UPDATE SingleDownload SET "\
-    "url=:url, dbus_path=:dbus_path, local_path=:local_path, "\
-    "hash=:hash, hash_algo=:hash_algo, state=:state, total_size=:total_size, "\
-    "throttle=:throttle, metadata=:metadata, headers=:headers "\
-    "WHERE uuid=:uuid"
+    const QString UPDATE_SINGLE_DOWNLOAD = "UPDATE SingleDownload SET "\
+        "url=:url, dbus_path=:dbus_path, local_path=:local_path, "\
+        "hash=:hash, hash_algo=:hash_algo, state=:state, total_size=:total_size, "\
+        "throttle=:throttle, metadata=:metadata, headers=:headers "\
+        "WHERE uuid=:uuid";
 
-#define IDLE_STRING "idle"
-#define START_STRING "start"
-#define PAUSE_STRING "pause"
-#define RESUME_STRING "resume"
-#define CANCEL_STRING "cancel"
-#define FINISH_STRING "finish"
-#define ERROR_STRING "error"
+    const QString IDLE_STRING = "idle";
+    const QString START_STRING = "start";
+    const QString PAUSE_STRING = "pause";
+    const QString RESUME_STRING = "resume";
+    const QString CANCEL_STRING = "cancel";
+    const QString FINISH_STRING = "finish";
+    const QString ERROR_STRING = "error";
+
+}
 
 namespace Ubuntu {
 
