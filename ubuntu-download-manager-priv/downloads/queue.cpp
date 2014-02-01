@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QSignalMapper>
 #include "downloads/queue.h"
 #include "system/logger.h"
@@ -146,12 +145,12 @@ Queue::updateCurrentDownload() {
         Download::State state = currentDownload->state();
         if (state == Download::CANCEL || state == Download::FINISH
             || state == Download::ERROR) {
-            qDebug() << "State is CANCEL || FINISH || ERROR";
+            LOG(INFO) << "State is CANCEL || FINISH || ERROR";
             remove(_current);
             _current = "";
         } else if (!currentDownload->canDownload()
                 || state == Download::PAUSE) {
-            qDebug() << "States is Cannot Download || PAUSE";
+            LOG(INFO) << "States is Cannot Download || PAUSE";
             _current = "";
         } else {
             return;

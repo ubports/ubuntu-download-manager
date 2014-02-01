@@ -3,13 +3,12 @@ include(../common-vars.pri)
 
 QT       += network dbus systeminfo sql
 QT       -= gui
+DEFINES += NDEBUG
 
 TARGET = ubuntu-download-manager-priv
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
-# DEFINES += SHOW_TRACE use if you want more debug messages
-DEFINES += DEBUG
 
 SOURCES += \
     downloads/daemon.cpp \
@@ -88,6 +87,7 @@ include(../common-installs-config.pri)
 LIBS += -lnih-dbus
 
 PKGCONFIG += dbus-1
+PKGCONFIG += libglog
 
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common

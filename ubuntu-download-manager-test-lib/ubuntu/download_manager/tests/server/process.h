@@ -48,7 +48,26 @@ class FakeProcess : public Process, public Fake {
                const QStringList& arguments,
                QProcess::OpenMode mode = QProcess::ReadWrite) override;
 
+    QStringList arguments() const override;
+    void setArguments(const QStringList& args);
+
+    QString program() const override;
+    void setProgram(const QString& program);
+
+    QByteArray readAllStandardOutput() override;
+    void setStandardOutput(const QByteArray& output);
+
+    QByteArray readAllStandardError() override;
+    void setStandardError(const QByteArray& err);
+
     void emitFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void emitError(QProcess::ProcessError error);
+
+ private:
+    QString _program;
+    QStringList _args;
+    QByteArray _stdOut;
+    QByteArray _stdErr;
 };
 
 #endif  // FAKE_PROCESS_H

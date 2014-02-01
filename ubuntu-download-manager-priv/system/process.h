@@ -38,6 +38,11 @@ class Process : public QObject {
                        const QStringList& arguments,
                        QProcess::OpenMode mode = QProcess::ReadWrite);
 
+    virtual QStringList arguments() const;
+    virtual QString program() const;
+    virtual QByteArray readAllStandardOutput();
+    virtual QByteArray readAllStandardError();
+
  signals:
     void error(QProcess::ProcessError error);
     void finished(int exitCode, QProcess::ExitStatus exitStatus);

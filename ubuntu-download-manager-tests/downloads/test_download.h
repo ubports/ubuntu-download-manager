@@ -99,7 +99,11 @@ class TestDownload: public BaseTestCase {
     void testOnSuccessNoHash();
     void testOnSuccessHashError();
     void testOnSuccessHash();
+    void testOnHttpError_data();
     void testOnHttpError();
+    void testOnSslError();
+    void testOnNetworkError_data();
+    void testOnNetworkError();
     void testSetRawHeadersStart();
     void testSetRawHeadersWithRangeStart();
     void testSetRawHeadersResume();
@@ -111,6 +115,8 @@ class TestDownload: public BaseTestCase {
     void testProcessExecutedWithParamsFile();
     void testProcessFinishedNoError();
     void testProcessFinishedWithError();
+    void testProcessError_data();
+    void testProcessError();
     void testProcessFinishedCrash();
     void testFileRemoveAfterSuccessfulProcess();
 

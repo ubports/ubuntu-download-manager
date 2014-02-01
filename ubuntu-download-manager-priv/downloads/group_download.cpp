@@ -16,7 +16,6 @@
  * boston, ma 02110-1301, usa.
  */
 
-#include <QDebug>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/file_download.h"
@@ -145,7 +144,7 @@ GroupDownload::cancelAllDownloads() {
 
     // loop over the finished downloads and remove the files
     foreach(const QString& path, _finishedDownloads) {
-        qDebug() << "Removing file" << path;
+        LOG(INFO) << "Removing file:" << path;
         _fileManager->remove(path);
     }
 }
@@ -162,7 +161,8 @@ GroupDownload::pauseDownload() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
-            qDebug() << "Pausing download of " << download->url();
+            LOG(INFO) << "Pausing download of "
+                << download->url();
             download->pause();
             download->pauseDownload();
         }
@@ -289,7 +289,8 @@ GroupDownload::onFinished(const QString& file) {
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());
     _finishedDownloads.append(file);
-    qDebug() << "Finished downloads" << _finishedDownloads;
+    LOG(INFO) << "Finished downloads"
+        << _finishedDownloads;
     // if we have the same number of downloads finished
     // that downloads we are done :)
     if (_downloads.count() == _finishedDownloads.count()) {

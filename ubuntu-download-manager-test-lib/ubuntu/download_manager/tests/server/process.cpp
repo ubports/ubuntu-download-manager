@@ -55,7 +55,52 @@ FakeProcess::start(const QString& program,
     }
 }
 
+QStringList
+FakeProcess::arguments() const {
+    return _args;
+}
+
+void
+FakeProcess::setArguments(const QStringList& args) {
+    _args = args;
+}
+
+QString
+FakeProcess::program() const {
+    return _program;
+}
+
+void
+FakeProcess::setProgram(const QString& program) {
+    _program = program;
+}
+
+QByteArray
+FakeProcess::readAllStandardOutput() {
+    return _stdOut;
+}
+
+void
+FakeProcess::setStandardOutput(const QByteArray& output) {
+    _stdOut = output;
+}
+
+QByteArray
+FakeProcess::readAllStandardError() {
+    return _stdErr;
+}
+
+void
+FakeProcess::setStandardError(const QByteArray& err) {
+    _stdErr = err;
+}
+
 void
 FakeProcess::emitFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     emit finished(exitCode, exitStatus);
+}
+
+void
+FakeProcess::emitError(QProcess::ProcessError err) {
+    emit error(err);
 }

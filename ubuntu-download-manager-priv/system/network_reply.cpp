@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include "network_reply.h"
+#include "logger.h"
 
 namespace Ubuntu {
 
@@ -81,12 +81,12 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
                 type != QSslError::SelfSignedCertificate) {
                 // we only support self signed certificates all errors
                 // will not be ignored
-                qDebug() << "SSL error type not ignored";
+                LOG(INFO) << "SSL error type not ignored";
                 return false;
             } else if (type == QSslError::SelfSignedCertificate) {
                 // just ignore those errors of the added errors
                 if (!_certs.contains(error.certificate())) {
-                    qDebug() << "SSL certificate not ignored";
+                    LOG(INFO) << "SSL certificate not ignored";
                     return false;
                 }
             }
@@ -99,6 +99,11 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
         return true;
     }
     return false;
+}
+
+QVariant
+NetworkReply::attribute(QNetworkRequest::Attribute code) const {
+    return _reply->attribute(code);
 }
 
 }  // System

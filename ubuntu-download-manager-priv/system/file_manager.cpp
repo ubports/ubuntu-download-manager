@@ -83,6 +83,12 @@ File::write(const QByteArray& byteArray) {
     return _file->write(byteArray);
 }
 
+
+QIODevice*
+File::device() {
+    return _file;
+}
+
 FileManager* FileManager::_instance = NULL;
 QMutex FileManager::_mutex;
 
