@@ -105,11 +105,11 @@ class Manager : public QObject, public QDBusContext {
     void onDownloadsChanged(QString);
 
  private:
-    Application* _app = NULL;
+    Application* _app = nullptr;
     qulonglong _throttle;
-    Factory* _downloadFactory = NULL;
-    Queue* _downloadsQueue = NULL;
-    DBusConnection* _conn = NULL;
+    Factory* _downloadFactory = nullptr;
+    Queue* _downloadsQueue = nullptr;
+    DBusConnection* _conn = nullptr;
     bool _stoppable = false;
     bool _allowMobileData = true;
 };

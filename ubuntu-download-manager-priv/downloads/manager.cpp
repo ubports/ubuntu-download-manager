@@ -159,7 +159,7 @@ Manager::createDownload(const QString& url,
                         StringMap headers) {
     DownloadCreationFunc createDownloadFunc =
         [this, url, hash, algo, metadata, headers](QString owner) {
-        Download* download = NULL;
+        Download* download = nullptr;
         if (hash.isEmpty())
             download = _downloadFactory->createDownload(owner, url,
                 metadata, headers);

@@ -187,7 +187,7 @@ class DaemonPrivate {
             _shutDownTimer->start(timeout);
         }
 
-        if (_downInterface == NULL) {
+        if (_downInterface == nullptr) {
             _downInterface = new Manager(_app, _conn, _stoppable,
                 q_ptr);
         }

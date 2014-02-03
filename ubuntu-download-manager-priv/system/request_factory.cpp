@@ -25,7 +25,7 @@ namespace DownloadManager {
 
 namespace System {
 
-RequestFactory* RequestFactory::_instance = NULL;
+RequestFactory* RequestFactory::_instance = nullptr;
 bool RequestFactory::_isStoppable = false;
 QMutex RequestFactory::_mutex;
 
@@ -72,9 +72,9 @@ RequestFactory::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
 
 RequestFactory*
 RequestFactory::instance() {
-    if(_instance == NULL) {
+    if(_instance == nullptr) {
         _mutex.lock();
-        if(_instance == NULL)
+        if(_instance == nullptr)
             _instance = new RequestFactory(_isStoppable);
         _mutex.unlock();
     }
@@ -93,11 +93,11 @@ RequestFactory::setInstance(RequestFactory* instance) {
 
 void
 RequestFactory::deleteInstance() {
-    if(_instance != NULL) {
+    if(_instance != nullptr) {
         _mutex.lock();
-        if(_instance != NULL) {
+        if(_instance != nullptr) {
             delete _instance;
-            _instance = NULL;
+            _instance = nullptr;
         }
         _mutex.unlock();
     }

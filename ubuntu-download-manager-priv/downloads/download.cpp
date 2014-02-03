@@ -47,7 +47,7 @@ Download::Download(const QString& id,
 }
 
 Download::~Download() {
-    if (_adaptor != NULL) {
+    if (_adaptor != nullptr) {
         _adaptor->deleteLater();
     }
 }
