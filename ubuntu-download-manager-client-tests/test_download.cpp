@@ -127,3 +127,19 @@ TestDownload::testTotalSizeError() {
     QVERIFY(_down->isError());
     QVERIFY(_down->error() != nullptr);
 }
+
+void
+TestDownload::testNetworkErroRaised_data() {
+}
+
+void
+TestDownload::testNetworkErroRaised() {
+}
+
+void
+TestDownload::testProcessErrorRaised_data() {
+}
+
+void
+TestDownload::testProcessErrorRaised() {
+}

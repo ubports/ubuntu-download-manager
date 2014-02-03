@@ -41,7 +41,7 @@ DownloadPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<> reply = *watcher;
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
-        auto err = new Error(reply.error());
+        auto err = new DBusError(reply.error());
         down->error(err);
     }
     watcher->deleteLater();

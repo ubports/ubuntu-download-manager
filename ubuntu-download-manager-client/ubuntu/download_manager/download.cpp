@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QDBusConnection>
 #include <QDBusObjectPath>
+#include <ubuntu/download_manager/metatypes.h>
 #include "download_pendingcall_watcher.h"
 #include "download_interface.h"
 #include "error.h"
@@ -66,8 +67,15 @@ class DownloadPrivate {
         q->connect(_dbusInterface, &DownloadInterface::started,
             q, &Download::started);
 
-        // TODO: Connect to the diff error signals
-        // void error(Error* error);
+        // connect to the different type of errors that will later be converted to
+        // the error type to be used by the client. With a pimpl implementation we
+        // cannot use the new stype connections :(
+        q->connect(_dbusInterface, SIGNAL(httpError(HttpErrorStruct error)),
+            q, SLOT(onHttpError(HttpErrorStruct)));
+        q->connect(_dbusInterface, SIGNAL(networkError(NetworkErrorStruct error)),
+            q, SLOT(onNetworkError(NetworkErrorStruct)));
+        q->connect(_dbusInterface, SIGNAL(processError(ProcessErrorStruct error)),
+            q, SLOT(onProcessError(ProcessErrorStruct)));
     }
 
     DownloadPrivate(const QDBusConnection& conn, Error* err, Download* parent)
@@ -82,14 +90,19 @@ class DownloadPrivate {
         delete _dbusInterface;
     }
 
-    void setLastError(const QDBusError& err) {
+    void setLastError(Error* err) {
         Q_Q(Download);
-        // delete the last if error if present to keep mem to a minimum
         if (_lastError != nullptr) {
             delete _lastError;
         }
-        _lastError = new Error(err, q);
+        _lastError = err;
         _isError = true;
+        emit q->error(err);
+    }
+
+    void setLastError(const QDBusError& err) {
+        Q_Q(Download);
+        setLastError(new DBusError(err, q));
     }
 
     void start() {
@@ -97,8 +110,8 @@ class DownloadPrivate {
         QDBusPendingCall call =
             _dbusInterface->start();
         auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
-	        call, q);
-	    Q_UNUSED(watcher);
+            call, q);
+        Q_UNUSED(watcher);
     }
 
     void pause() {
@@ -106,8 +119,8 @@ class DownloadPrivate {
         QDBusPendingCall call =
             _dbusInterface->pause();
         auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
-	        call, q);
-	    Q_UNUSED(watcher);
+            call, q);
+        Q_UNUSED(watcher);
     }
 
     void resume() {
@@ -115,8 +128,8 @@ class DownloadPrivate {
         QDBusPendingCall call =
             _dbusInterface->resume();
         auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
-	        call, q);
-	    Q_UNUSED(watcher);
+            call, q);
+        Q_UNUSED(watcher);
     }
 
     void cancel() {
@@ -124,8 +137,8 @@ class DownloadPrivate {
         QDBusPendingCall call =
             _dbusInterface->cancel();
         auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
-	        call, q);
-	    Q_UNUSED(watcher);
+            call, q);
+        Q_UNUSED(watcher);
     }
 
     void allowMobileDownload(bool allowed) {
@@ -229,6 +242,24 @@ class DownloadPrivate {
 
     Error* error() {
         return _lastError;
+    }
+
+    void onHttpError(HttpErrorStruct errStruct) {
+        Q_Q(Download);
+        auto err = new HttpError(errStruct, q);
+        setLastError(err);
+    }
+
+    void onNetworkError(NetworkErrorStruct errStruct) {
+        Q_Q(Download);
+        auto err = new NetworkError(errStruct, q);
+        setLastError(err);
+    }
+
+    void onProcessError(ProcessErrorStruct errStruct) {
+        Q_Q(Download);
+        auto err = new ProcessError(errStruct, q);
+        setLastError(err);
     }
 
  private:
@@ -345,3 +376,5 @@ Download::error() {
 }  // DownloadManager
 
 }  // Ubuntu
+
+#include "moc_download.cpp"

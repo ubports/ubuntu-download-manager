@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef DOWNLOAD_INTERFACE_H_1389377233
-#define DOWNLOAD_INTERFACE_H_1389377233
+#ifndef DOWNLOAD_INTERFACE_H_1391245617
+#define DOWNLOAD_INTERFACE_H_1391245617
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -109,7 +109,10 @@ Q_SIGNALS: // SIGNALS
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QString &path);
+    void httpError(HttpErrorStruct error);
+    void networkError(NetworkErrorStruct error);
     void paused(bool success);
+    void processError(ProcessErrorStruct error);
     void processing(const QString &path);
     void progress(qulonglong received, qulonglong total);
     void resumed(bool success);

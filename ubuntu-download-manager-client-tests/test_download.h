@@ -47,6 +47,12 @@ class TestDownload : public LocalTreeTestCase {
     void testMetadataError();
     void testProgressError();
     void testTotalSizeError();
+    void testHttpErrorRaised_data();
+    void testHttpErrorRaised();
+    void testNetworkErroRaised_data();
+    void testNetworkErroRaised();
+    void testProcessErrorRaised_data();
+    void testProcessErrorRaised();
 
  private:
     QVariantMap _metadata;

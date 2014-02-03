@@ -75,6 +75,10 @@ class ManagerPrivate {
         qRegisterMetaType<Download*>("Download*");
         qRegisterMetaType<GroupDownload*>("GroupDownload*");
         qRegisterMetaType<Error*>("Error*");
+        qRegisterMetaType<DBusError*>("DBusError*");
+        qRegisterMetaType<HttpError*>("HttpError*");
+        qRegisterMetaType<NetworkError*>("NetworkError*");
+        qRegisterMetaType<ProcessError*>("ProcessError*");
         qDBusRegisterMetaType<StringMap>();
         qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
@@ -91,7 +95,7 @@ class ManagerPrivate {
         // blocking other method should be used
         reply.waitForFinished();
         if (reply.isError()) {
-            auto err = new Error(reply.error());
+            auto err = new DBusError(reply.error());
             return new Download(_conn, err);
         } else {
             auto path = reply.value();
@@ -126,7 +130,7 @@ class ManagerPrivate {
         // blocking other method should be used
         reply.waitForFinished();
         if (reply.isError()) {
-            Error* err = new Error(reply.error());
+            Error* err = new DBusError(reply.error());
             return new GroupDownload(err);
         } else {
             auto path = reply.value();
@@ -166,7 +170,7 @@ class ManagerPrivate {
         if (_lastError != nullptr) {
             delete _lastError;
         }
-        _lastError = new Error(err);
+        _lastError = new DBusError(err);
         _isError = true;
     }
 

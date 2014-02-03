@@ -5,5 +5,23 @@
         <arg name="returnErrors" type="b" direction="in"/>
     </method>
 
+    <method name="returnHttpError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="HttpErrorStruct"/>
+        <arg name="download" type="s" direction="in"/>
+        <arg name="error" type="(is)" direction="in"/>
+    </method>
+
+    <method name="returnNetworkError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="NetworkErrorStruct"/>
+        <arg name="download" type="s" direction="in"/>
+        <arg name="error" type="(is)" direction="in"/>
+    </method>
+
+    <method name="returnProcessError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="ProcessErrorStruct"/>
+        <arg name="download" type="s" direction="in"/>
+        <arg name="error" type="(isiss)" direction="in"/>
+    </method>
+
  </interface>
 </node>

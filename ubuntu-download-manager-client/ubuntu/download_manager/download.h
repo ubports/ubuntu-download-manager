@@ -32,6 +32,9 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Error;
+class HttpErrorStruct;
+class NetworkErrorStruct;
+class ProcessErrorStruct;
 class ManagerPrivate;
 class DownloadPrivate;
 class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
@@ -71,6 +74,11 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
              const QString& servicePath,
              const QDBusObjectPath& objectPath,
              QObject* parent = 0);
+
+ private:
+    Q_PRIVATE_SLOT(d_func(), void onHttpError(HttpErrorStruct))
+    Q_PRIVATE_SLOT(d_func(), void onNetworkError(NetworkErrorStruct))
+    Q_PRIVATE_SLOT(d_func(), void onProcessError(ProcessErrorStruct))
 
  signals:
     void canceled(bool success);
