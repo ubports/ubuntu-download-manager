@@ -80,8 +80,8 @@ class GroupDownload : public Download {
     QList<FileDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
-    Factory* _downFactory = NULL;
-    FileManager* _fileManager = NULL;
+    Factory* _downFactory = nullptr;
+    FileManager* _fileManager = nullptr;
 };
 
 }  // Daemon

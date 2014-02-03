@@ -27,7 +27,7 @@ namespace DownloadManager {
 
 namespace System {
 
-SystemNetworkInfo* SystemNetworkInfo::_instance = NULL;
+SystemNetworkInfo* SystemNetworkInfo::_instance = nullptr;
 QMutex SystemNetworkInfo::_mutex;
 
 SystemNetworkInfo::SystemNetworkInfo(QObject* parent)
@@ -103,10 +103,10 @@ SystemNetworkInfo::isOnline() {
 
 SystemNetworkInfo*
 SystemNetworkInfo::instance() {
-    if(_instance == NULL) {
+    if(_instance == nullptr) {
         LOG(INFO) << "Instance is null";
         _mutex.lock();
-        if(_instance == NULL){
+        if(_instance == nullptr){
             LOG(INFO) << "Create new instance";
             _instance = new SystemNetworkInfo();
         }
@@ -122,11 +122,11 @@ SystemNetworkInfo::setInstance(SystemNetworkInfo* instance) {
 
 void
 SystemNetworkInfo::deleteInstance() {
-    if(_instance != NULL) {
+    if(_instance != nullptr) {
         _mutex.lock();
-        if(_instance != NULL) {
+        if(_instance != nullptr) {
             delete _instance;
-            _instance = NULL;
+            _instance = nullptr;
         }
         _mutex.unlock();
     }

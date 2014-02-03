@@ -159,7 +159,7 @@ Manager::createDownload(const QString& url,
                         StringMap headers) {
     DownloadCreationFunc createDownloadFunc =
         [this, url, hash, algo, metadata, headers](QString owner) {
-        Download* download = NULL;
+        Download* download = nullptr;
         if (hash.isEmpty())
             download = _downloadFactory->createDownload(owner, url,
                 metadata, headers);
@@ -175,6 +175,21 @@ QDBusObjectPath
 Manager::createDownload(DownloadStruct download) {
     return createDownload(download.getUrl(), download.getHash(),
         download.getAlgorithm(), download.getMetadata(), download.getHeaders());
+}
+
+QDBusObjectPath
+Manager::createMmsDownload(const QString& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    DownloadCreationFunc createDownloadFunc =
+        [this, url, hostname, port, username, password](QString owner) {
+        auto download = _downloadFactory->createMmsDownload(owner, url,
+            hostname, port, username, password);
+        return download;
+    };
+    return createDownload(createDownloadFunc);
 }
 
 QDBusObjectPath

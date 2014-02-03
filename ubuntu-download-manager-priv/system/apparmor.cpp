@@ -146,10 +146,10 @@ AppArmor::getSecurePath(const QString& connName,
             QByteArray appIdBa = appId.toUtf8();
 
             char * appIdPath;
-            appIdPath = nih_dbus_path(NULL, BASE_ACCOUNT_URL,
-                appIdBa.data(), NULL);
+            appIdPath = nih_dbus_path(nullptr, BASE_ACCOUNT_URL,
+                appIdBa.data(), nullptr);
 
-            if (appIdPath == NULL) {
+            if (appIdPath == nullptr) {
                 LOG(ERROR) << "Unable to allocate memory for "
                     << "nih_dbus_path()";
                 dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;

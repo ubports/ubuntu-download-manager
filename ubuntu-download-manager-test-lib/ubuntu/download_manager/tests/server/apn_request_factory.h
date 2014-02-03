@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,42 +16,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_FILE_MANAGER_H
-#define FAKE_FILE_MANAGER_H
+#ifndef FAKE_APN_REQUEST_FACTORY_H
+#define FAKE_APN_REQUEST_FACTORY_H
 
 #include <QObject>
-#include <system/file_manager.h>
+#include <system/apn_request_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace  Ubuntu::DownloadManager::System;
 
-class FakeFile : public File {
+class FakeApnRequestFactory : public ApnRequestFactory {
     Q_OBJECT
 
  public:
-    explicit FakeFile(const QString& name);
-    QFile::FileError error() const override;
-    bool flush() override;
+    FakeApnRequestFactory(const QNetworkProxy& proxy,
+                          bool stoppable = false,
+                          QObject* parent=0);
 
-    void setError(QFile::FileError err);
-
- private:
-    bool _errWasSet = false;
-    QFile::FileError _err;
+    QString proxyHost();
+    int proxyPort();
+    QString proxyUsername();
+    QString proxyPassword();
+    QNetworkProxy::ProxyType proxyType();
 };
 
-class FakeFileManager : public FileManager, public Fake {
-    Q_OBJECT
-
- public:
-    explicit FakeFileManager(QObject *parent = 0);
-
-    File* createFile(const QString& name) override;
-    void setFile(File* file);
-    bool remove(const QString& path) override;
-
- private:
-    File* _file = nullptr;
-};
-
-#endif  // FAKE_FILE_MANAGER_H
+#endif // FAKE_APN_REQUEST_FACTORY_H

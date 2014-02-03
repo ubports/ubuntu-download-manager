@@ -100,6 +100,9 @@ class FileDownload : public Download {
  protected:
     void emitError(const QString& error) override;
 
+ protected:
+    RequestFactory* _requestFactory;
+
  private:
     QNetworkRequest buildRequest();
     void cleanUpCurrentData();
@@ -126,9 +129,8 @@ class FileDownload : public Download {
     QString _filePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
-    NetworkReply* _reply = NULL;
-    File* _currentData = NULL;
-    RequestFactory* _requestFactory;
+    NetworkReply* _reply = nullptr;
+    File* _currentData = nullptr;
 };
 
 }  // Daemon

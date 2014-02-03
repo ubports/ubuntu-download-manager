@@ -48,7 +48,7 @@ class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
          Ubuntu::DownloadManager::System::DBusConnection* conn);
 
     QString _path;
-    TestingManagerAdaptor* _testsAdaptor = NULL;
+    TestingManagerAdaptor* _testsAdaptor = nullptr;
 
 };
 

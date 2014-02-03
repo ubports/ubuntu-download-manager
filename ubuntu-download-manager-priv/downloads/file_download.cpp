@@ -29,15 +29,19 @@
 #include "system/network_reply.h"
 
 
-#define DATA_FILE_NAME "data.download"
-#define METADATA_FILE_NAME "metadata"
-#define METADATA_COMMAND_KEY "post-download-command"
-#define METADATA_COMMAND_FILE_KEY "$file"
-#define NETWORK_ERROR "NETWORK ERROR"
-#define HASH_ERROR "HASH ERROR"
-#define COMMAND_ERROR "COMMAND ERROR"
-#define SSL_ERROR "SSL ERROR"
-#define FILE_SYSTEM_ERROR "FILE SYSTEM ERROR: %1"
+namespace {
+
+    const QString DATA_FILE_NAME = "data.download";
+    const QString METADATA_FILE_NAME = "metadata";
+    const QString METADATA_COMMAND_KEY = "post-download-command";
+    const QString METADATA_COMMAND_FILE_KEY = "$file";
+    const QString NETWORK_ERROR = "NETWORK ERROR";
+    const QString HASH_ERROR = "HASH ERROR";
+    const QString COMMAND_ERROR = "COMMAND ERROR";
+    const QString SSL_ERROR = "SSL ERROR";
+    const QString FILE_SYSTEM_ERROR = "FILE SYSTEM ERROR: %1";
+
+}
 
 namespace Ubuntu {
 
@@ -557,10 +561,10 @@ FileDownload::cleanUpCurrentData() {
     QFile::FileError error = QFile::NoError;
     if (_currentData != nullptr) {
         success = _currentData->remove();
-    
+
         if (!success)
             error = _currentData->error();
-    
+
         _currentData->deleteLater();
         _currentData = nullptr;
     } else {
@@ -569,7 +573,7 @@ FileDownload::cleanUpCurrentData() {
         if (!success)
             error = tempFile->error();
     }
-    
+
     if (!success)
         qWarning() << "Error " << error <<
             "removing file with path" << _filePath;

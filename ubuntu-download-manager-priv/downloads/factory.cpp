@@ -16,15 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QNetworkProxy>
 #include <QPair>
 #include "downloads/download_adaptor.h"
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
 #include "downloads/file_download.h"
+#include "downloads/mms_file_download.h"
 #include "downloads/factory.h"
 #include "system/logger.h"
 
-#define OBJECT_PATH_KEY "objectpath"
+namespace {
+
+    const QString OBJECT_PATH_KEY = "objectpath";
+
+}
 
 namespace Ubuntu {
 
@@ -128,6 +134,30 @@ Factory::createDownload(const QString& dbusOwner,
     Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
         downloads, algo, allowed3G, metadata, headers, this);
     GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
+    down->setAdaptor(adaptor);
+    return down;
+}
+
+Download*
+Factory::createMmsDownload(const QString& dbusOwner,
+                           const QUrl& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
+    QString id;
+    QString dbusPath;
+    QString rootPath;
+    bool isConfined = false;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
+        isConfined);
+    Download* down = new MmsFileDownload(id, dbusPath, isConfined,
+        rootPath, url, metadata, headers, proxy);
+    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }

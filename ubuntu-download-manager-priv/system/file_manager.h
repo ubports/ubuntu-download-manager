@@ -55,7 +55,7 @@ class File : public QObject {
     explicit File(const QString& name);
 
  private:
-    QFile* _file = NULL;
+    QFile* _file = nullptr;
 
 };
 

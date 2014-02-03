@@ -47,7 +47,7 @@ Download::Download(const QString& id,
 }
 
 Download::~Download() {
-    if (_adaptor != NULL) {
+    if (_adaptor != nullptr) {
         _adaptor->deleteLater();
     }
 }
@@ -93,6 +93,11 @@ Download::canDownload() {
 void
 Download::setIsValid(bool isValid) {
     _isValid = isValid;
+}
+
+void
+Download::setAddToQueue(bool addToQueue) {
+    _addToQueue = addToQueue;
 }
 
 void

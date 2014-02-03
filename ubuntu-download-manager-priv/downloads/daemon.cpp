@@ -26,9 +26,12 @@
 #include "system/logger.h"
 #include "system/timer.h"
 
-#define DISABLE_TIMEOUT "-disable-timeout"
-#define SELFSIGNED_CERT "-self-signed-certs"
-#define STOPPABLE "-stoppable"
+
+namespace {
+    const QString DISABLE_TIMEOUT = "-disable-timeout";
+    const QString SELFSIGNED_CERT = "-self-signed-certs";
+    const QString STOPPABLE =  "-stoppable";
+}
 
 namespace Ubuntu {
 
@@ -187,7 +190,7 @@ class DaemonPrivate {
             _shutDownTimer->start(timeout);
         }
 
-        if (_downInterface == NULL) {
+        if (_downInterface == nullptr) {
             _downInterface = new Manager(_app, _conn, _stoppable,
                 q_ptr);
         }

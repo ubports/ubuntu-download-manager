@@ -45,6 +45,7 @@ class TestDownloadFactory : public BaseTestCase {
 
     void testCreateDownload();
     void testCreateDownloadWithHash();
+    void testCreateMmsDownload();
     void testCreateGroupDownload();
     void testCreateDownloadWithValidUuid();
     void testCreateDownloadWithNullUuid();
