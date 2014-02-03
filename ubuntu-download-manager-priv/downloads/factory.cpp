@@ -26,7 +26,11 @@
 #include "downloads/factory.h"
 #include "system/logger.h"
 
-#define OBJECT_PATH_KEY "objectpath"
+namespace {
+
+    const QString OBJECT_PATH_KEY = "objectpath";
+
+}
 
 namespace Ubuntu {
 

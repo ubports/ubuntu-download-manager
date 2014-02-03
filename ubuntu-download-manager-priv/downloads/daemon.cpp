@@ -26,9 +26,12 @@
 #include "system/logger.h"
 #include "system/timer.h"
 
-#define DISABLE_TIMEOUT "-disable-timeout"
-#define SELFSIGNED_CERT "-self-signed-certs"
-#define STOPPABLE "-stoppable"
+
+namespace {
+    const QString DISABLE_TIMEOUT = "-disable-timeout";
+    const QString SELFSIGNED_CERT = "-self-signed-certs";
+    const QString STOPPABLE =  "-stoppable";
+}
 
 namespace Ubuntu {
 
