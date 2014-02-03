@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QStringList>
 #include "system/logger.h"
 #include "downloads/download.h"
@@ -48,7 +47,7 @@ Download::Download(const QString& id,
 }
 
 Download::~Download() {
-    if (_adaptor != NULL) {
+    if (_adaptor != nullptr) {
         _adaptor->deleteLater();
     }
 }
@@ -94,6 +93,11 @@ Download::canDownload() {
 void
 Download::setIsValid(bool isValid) {
     _isValid = isValid;
+}
+
+void
+Download::setAddToQueue(bool addToQueue) {
+    _addToQueue = addToQueue;
 }
 
 void

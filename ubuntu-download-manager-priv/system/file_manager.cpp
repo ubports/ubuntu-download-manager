@@ -83,7 +83,13 @@ File::write(const QByteArray& byteArray) {
     return _file->write(byteArray);
 }
 
-FileManager* FileManager::_instance = NULL;
+
+QIODevice*
+File::device() {
+    return _file;
+}
+
+FileManager* FileManager::_instance = nullptr;
 QMutex FileManager::_mutex;
 
 File*
@@ -102,9 +108,9 @@ FileManager::exists(const QString& path) {
 }
 
 FileManager* FileManager::instance() {
-    if(_instance == NULL) {
+    if(_instance == nullptr) {
         _mutex.lock();
-        if(_instance == NULL)
+        if(_instance == nullptr)
             _instance = new FileManager();
         _mutex.unlock();
     }
@@ -116,11 +122,11 @@ void FileManager::setInstance(FileManager* instance) {
 }
 
 void FileManager::deleteInstance() {
-    if(_instance != NULL) {
+    if(_instance != nullptr) {
         _mutex.lock();
-        if(_instance != NULL) {
+        if(_instance != nullptr) {
             delete _instance;
-            _instance = NULL;
+            _instance = nullptr;
         }
         _mutex.unlock();
     }

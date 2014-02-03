@@ -6,6 +6,15 @@
         <arg name="downloadPath" type="o" direction="out" />
     </method>
 
+    <method name="createMmsDownload">
+        <arg name="url" type="s" direction="in" />
+        <arg name="hostname" type="s" direction="in" />
+        <arg name="port" type="i" direction="in" />
+        <arg name="username" type="s" direction="in" />
+        <arg name="password" type="s" direction="in" />
+        <arg name="downloadPath" type="o" direction="out" />
+    </method>
+
     <method name="createDownloadGroup">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="StructList"/>
         <annotation name="org.qtproject.QtDBus.QtTypeName.In3" value="QVariantMap"/>

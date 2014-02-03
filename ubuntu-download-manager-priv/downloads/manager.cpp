@@ -21,6 +21,7 @@
 #include "downloads/queue.h"
 #include "downloads/manager.h"
 #include "system/apparmor.h"
+#include "system/logger.h"
 #include "system/request_factory.h"
 
 namespace Ubuntu {
@@ -74,6 +75,9 @@ Manager::init() {
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
+    qDBusRegisterMetaType<HttpErrorStruct>();
+    qDBusRegisterMetaType<NetworkErrorStruct>();
+    qDBusRegisterMetaType<ProcessErrorStruct>();
 
     connect(_downloadsQueue, &Queue::downloadRemoved,
         this, &Manager::onDownloadsChanged);
@@ -101,13 +105,13 @@ Manager::acceptedCertificates() {
 
 void
 Manager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
-    qDebug() << __PRETTY_FUNCTION__ << certs;
+    LOG(INFO) << __PRETTY_FUNCTION__;
     _downloadFactory->setAcceptedCertificates(certs);
 }
 
 void
 Manager::onDownloadsChanged(QString path) {
-    qDebug() << __PRETTY_FUNCTION__ << path;
+    LOG(INFO) << __PRETTY_FUNCTION__ << path;
     emit sizeChanged(_downloadsQueue->size());
 }
 
@@ -133,7 +137,7 @@ Manager::createDownload(DownloadCreationFunc createDownloadFunc) {
     if (wasCalledFromDBus) {
         owner = connection().interface()->serviceOwner(
             message().service());
-        qDebug() << "Owner is: " << owner;
+        LOG(INFO) << "Owner is: " << owner;
     }
 
     Download* download = createDownloadFunc(owner);
@@ -155,7 +159,7 @@ Manager::createDownload(const QString& url,
                         StringMap headers) {
     DownloadCreationFunc createDownloadFunc =
         [this, url, hash, algo, metadata, headers](QString owner) {
-        Download* download = NULL;
+        Download* download = nullptr;
         if (hash.isEmpty())
             download = _downloadFactory->createDownload(owner, url,
                 metadata, headers);
@@ -171,6 +175,21 @@ QDBusObjectPath
 Manager::createDownload(DownloadStruct download) {
     return createDownload(download.getUrl(), download.getHash(),
         download.getAlgorithm(), download.getMetadata(), download.getHeaders());
+}
+
+QDBusObjectPath
+Manager::createMmsDownload(const QString& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    DownloadCreationFunc createDownloadFunc =
+        [this, url, hostname, port, username, password](QString owner) {
+        auto download = _downloadFactory->createMmsDownload(owner, url,
+            hostname, port, username, password);
+        return download;
+    };
+    return createDownload(createDownloadFunc);
 }
 
 QDBusObjectPath

@@ -61,6 +61,11 @@ class Manager : public QObject, public QDBusContext {
 
  public slots:  // NOLINT(whitespace/indent)
     virtual QDBusObjectPath createDownload(DownloadStruct download);
+    virtual QDBusObjectPath createMmsDownload(const QString& url,
+                                              const QString& hostname,
+                                              int port,
+                                              const QString& username,
+                                              const QString& password);
 
     virtual QDBusObjectPath createDownloadGroup(StructList downloads,
                                                 const QString& algorithm,
@@ -106,11 +111,11 @@ class Manager : public QObject, public QDBusContext {
     void onDownloadsChanged(QString);
 
  private:
-    Application* _app = NULL;
+    Application* _app = nullptr;
     qulonglong _throttle;
-    Factory* _downloadFactory = NULL;
-    Queue* _downloadsQueue = NULL;
-    DBusConnection* _conn = NULL;
+    Factory* _downloadFactory = nullptr;
+    Queue* _downloadsQueue = nullptr;
+    DBusConnection* _conn = nullptr;
     bool _stoppable = false;
     bool _allowMobileData = true;
 };

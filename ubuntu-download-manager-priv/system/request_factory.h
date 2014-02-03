@@ -62,6 +62,9 @@ class RequestFactory : public QObject {
     void onFinished();
     void onSslErrors(const QList<QSslError>&);
 
+ protected:
+    QNetworkAccessManager* _nam;
+
  private:
     // used for the singleton
     static RequestFactory* _instance;
@@ -72,7 +75,6 @@ class RequestFactory : public QObject {
     bool _stoppable = false;
     QList<NetworkReply*> _replies;
     QList<QSslCertificate> _certs;
-    QNetworkAccessManager* _nam;
 };
 
 }  // System

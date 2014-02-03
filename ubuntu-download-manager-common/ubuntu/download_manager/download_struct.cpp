@@ -30,6 +30,14 @@ DownloadStruct::DownloadStruct()
       _headers() {
 }
 
+DownloadStruct::DownloadStruct(const QString& url)
+    : _url(url),
+      _hash(""),
+      _algorithm(""),
+      _metadata(),
+      _headers() {
+}
+
 DownloadStruct::DownloadStruct(const QString& url,
                const QVariantMap& metadata,
                const QMap<QString, QString>& headers)

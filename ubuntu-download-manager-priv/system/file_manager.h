@@ -49,12 +49,13 @@ class File : public QObject {
     bool reset();
     qint64 size() const;
     qint64 write(const QByteArray& byteArray);
+    QIODevice* device();
 
  protected:
     explicit File(const QString& name);
 
  private:
-    QFile* _file = NULL;
+    QFile* _file = nullptr;
 
 };
 

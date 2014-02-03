@@ -3,13 +3,12 @@ include(../common-vars.pri)
 
 QT       += network dbus systeminfo sql
 QT       -= gui
+DEFINES += NDEBUG
 
 TARGET = ubuntu-download-manager-priv
 TEMPLATE = lib
 
 DEFINES += APPDOWNLOADERLIB_LIBRARY
-# DEFINES += SHOW_TRACE use if you want more debug messages
-DEFINES += DEBUG
 
 SOURCES += \
     downloads/daemon.cpp \
@@ -39,7 +38,10 @@ SOURCES += \
     system/network_reply.cpp \
     system/dbus_proxy.cpp \
     downloads/state_machines/state.cpp \
-    downloads/state_machines/final_state.cpp
+    downloads/state_machines/final_state.cpp \
+    system/apn_request_factory.cpp \
+    downloads/mms_file_download.cpp \
+    system/apn_proxy.cpp
 
 HEADERS +=\
     app-downloader-lib_global.h \
@@ -70,7 +72,10 @@ HEADERS +=\
     system/network_reply.h \
     system/dbus_proxy.h \
     downloads/state_machines/state.h \
-    downloads/state_machines/final_state.h
+    downloads/state_machines/final_state.h \
+    system/apn_request_factory.h \
+    downloads/mms_file_download.h \
+    system/apn_proxy.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
@@ -88,6 +93,7 @@ include(../common-installs-config.pri)
 LIBS += -lnih-dbus
 
 PKGCONFIG += dbus-1
+PKGCONFIG += libglog
 
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common

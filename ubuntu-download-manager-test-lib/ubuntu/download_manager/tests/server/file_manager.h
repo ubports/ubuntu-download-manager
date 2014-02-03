@@ -51,7 +51,7 @@ class FakeFileManager : public FileManager, public Fake {
     bool remove(const QString& path) override;
 
  private:
-    File* _file = NULL;
+    File* _file = nullptr;
 };
 
 #endif  // FAKE_FILE_MANAGER_H

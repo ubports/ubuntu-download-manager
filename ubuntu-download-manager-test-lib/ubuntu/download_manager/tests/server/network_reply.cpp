@@ -124,3 +124,37 @@ void
 FakeNetworkReply::emitSslErrors(const QList<QSslError>& errors) {
     emit sslErrors(errors);
 }
+
+void
+FakeNetworkReply::emitHttpError(QNetworkReply::NetworkError code) {
+    emit error(code); 
+}
+
+QVariant
+FakeNetworkReply::attribute(QNetworkRequest::Attribute code) const {
+    if (_attrs.contains(code)) {
+        return _attrs[code];
+    } else {
+        QVariant var(QVariant::Invalid);
+        return var;
+    }
+}
+
+void
+FakeNetworkReply::setAttribute(QNetworkRequest::Attribute code,
+                               int value) {
+    _attrs[code] = value;
+}
+
+void
+FakeNetworkReply::setAttribute(QNetworkRequest::Attribute code,
+                               QString message) {
+    _attrs[code] = message;
+}
+
+void
+FakeNetworkReply::clearAttribute(QNetworkRequest::Attribute code) {
+    if (_attrs.contains(code)) {
+        _attrs.remove(code);
+    }
+}

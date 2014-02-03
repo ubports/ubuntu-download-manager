@@ -22,7 +22,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <QDBusConnection>
-#include <QDebug>
 #include <QDir>
 #include <QRegExp>
 #include <QStandardPaths>
@@ -80,7 +79,7 @@ AppArmor::getLocalPath(const QString& appId) {
     // if the service is running as root we will always return /tmp
     // as the local path root
     if (getuid() == 0){
-        qDebug() << "Running as system bus using /tmp for downloads";
+        LOG(INFO) << "Running as system bus using /tmp for downloads";
         return QStandardPaths::writableLocation(
             QStandardPaths::TempLocation);
     } else {
@@ -101,9 +100,10 @@ AppArmor::getLocalPath(const QString& appId) {
 
         bool wasCreated = QDir().mkpath(path);
         if (!wasCreated) {
-            qCritical() << "Could not create the data path" << path;
+            LOG(ERROR) << "Could not create the data path"
+                << path;
         }
-        qDebug() << "Local path is" << path;
+        LOG(INFO) << "Local path is" << path;
         return path;
     }  // not root
 }
@@ -126,7 +126,7 @@ AppArmor::getSecurePath(const QString& connName,
     // blocking but should be ok for now
     reply.waitForFinished();
     if (reply.isError()) {
-        qCritical() << reply.error();
+        LOG(ERROR) << reply.error(); 
         dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
         localPath = getLocalPath("");
         isConfined = false;
@@ -136,7 +136,7 @@ AppArmor::getSecurePath(const QString& connName,
         QString appId = reply.value();
 
         if (appId.isEmpty() || appId == UNCONFINED_ID) {
-            qDebug() << "UNCONFINED APP";
+            LOG(INFO) << "UNCONFINED APP";
             dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
             localPath = getLocalPath("");
             isConfined = false;
@@ -146,18 +146,18 @@ AppArmor::getSecurePath(const QString& connName,
             QByteArray appIdBa = appId.toUtf8();
 
             char * appIdPath;
-            appIdPath = nih_dbus_path(NULL, BASE_ACCOUNT_URL,
-                appIdBa.data(), NULL);
+            appIdPath = nih_dbus_path(nullptr, BASE_ACCOUNT_URL,
+                appIdBa.data(), nullptr);
 
-            if (appIdPath == NULL) {
-                qCritical() << "Unable to allocate memory for "
+            if (appIdPath == nullptr) {
+                LOG(ERROR) << "Unable to allocate memory for "
                     << "nih_dbus_path()";
                 dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
                 localPath = getLocalPath(appId);
                 return;
             }
             QString path = QString(appIdPath);
-            qDebug() << "AppId path is " << appIdPath;
+            LOG(INFO) << "AppId path is " << appIdPath;
 
             // free nih data
             nih_free(appIdPath);

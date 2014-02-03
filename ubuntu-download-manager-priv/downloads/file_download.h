@@ -24,6 +24,9 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
+#include <ubuntu/download_manager/http_error_struct.h>
+#include <ubuntu/download_manager/network_error_struct.h>
+#include <ubuntu/download_manager/process_error_struct.h>
 #include "app-downloader-lib_global.h"
 #include "downloads/download.h"
 #include "system/file_manager.h"
@@ -90,9 +93,15 @@ class FileDownload : public Download {
 
  signals:
     void finished(const QString& path);
+    void httpError(HttpErrorStruct error);
+    void networkError(NetworkErrorStruct error);
+    void processError(ProcessErrorStruct error);
 
  protected:
     void emitError(const QString& error) override;
+
+ protected:
+    RequestFactory* _requestFactory;
 
  private:
     QNetworkRequest buildRequest();
@@ -120,9 +129,8 @@ class FileDownload : public Download {
     QString _filePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
-    NetworkReply* _reply = NULL;
-    File* _currentData = NULL;
-    RequestFactory* _requestFactory;
+    NetworkReply* _reply = nullptr;
+    File* _currentData = nullptr;
 };
 
 }  // Daemon

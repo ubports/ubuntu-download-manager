@@ -16,15 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QNetworkProxy>
 #include <QPair>
 #include "downloads/download_adaptor.h"
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
 #include "downloads/file_download.h"
+#include "downloads/mms_file_download.h"
 #include "downloads/factory.h"
 #include "system/logger.h"
 
-#define OBJECT_PATH_KEY "objectpath"
+namespace {
+
+    const QString OBJECT_PATH_KEY = "objectpath";
+
+}
 
 namespace Ubuntu {
 
@@ -54,21 +60,21 @@ Factory::getDownloadPath(const QString& dbusOwner,
                          QString& dbusPath,
                          QString& rootPath,
                          bool& isConfined) {
-    TRACE << dbusOwner << metadata;
+    TRACE << dbusOwner;
     if (metadata.contains(OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
         id = metadata[OBJECT_PATH_KEY].toString();
         if (id.isEmpty()) {
-            qCritical() << "Id sent by client is ''";
+            LOG(ERROR) << "Id sent by client is ''";
             id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
                 isConfined);
         } else {
-            qDebug() << "Using the id from the client" << id;
+            LOG(INFO) << "Using the id from the client:" << id;
             _apparmor->getSecurePath(dbusOwner, id, dbusPath, rootPath,
                 isConfined);
         }
     } else {
-        qDebug() << "Factory assigns the Download Uuid.";
+        LOG(INFO) << "Factory assigns the Download Uuid.";
         id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
             isConfined);
     }
@@ -128,6 +134,30 @@ Factory::createDownload(const QString& dbusOwner,
     Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
         downloads, algo, allowed3G, metadata, headers, this);
     GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
+    down->setAdaptor(adaptor);
+    return down;
+}
+
+Download*
+Factory::createMmsDownload(const QString& dbusOwner,
+                           const QUrl& url,
+                           const QString& hostname,
+                           int port,
+                           const QString& username,
+                           const QString& password) {
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
+    QString id;
+    QString dbusPath;
+    QString rootPath;
+    bool isConfined = false;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
+        isConfined);
+    Download* down = new MmsFileDownload(id, dbusPath, isConfined,
+        rootPath, url, metadata, headers, proxy);
+    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }

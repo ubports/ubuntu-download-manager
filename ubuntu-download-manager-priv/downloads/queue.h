@@ -54,7 +54,8 @@ class Queue : public QObject {
     void downloadRemoved(QString path);
 
  private:
-    void onDownloadStateChanged();
+    void onManagedDownloadStateChanged();
+    void onUnmanagedDownloadStateChanged();
     void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
     void remove(const QString& path);
     void updateCurrentDownload();

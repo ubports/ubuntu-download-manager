@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QSignalMapper>
 #include "downloads/queue.h"
 #include "system/logger.h"
@@ -45,8 +44,14 @@ Queue::add(Download* download) {
     _sortedPaths.append(path);
     _downloads[path] = download;
 
-    connect(download, &Download::stateChanged,
-        this, &Queue::onDownloadStateChanged);
+    if (download->addToQueue()) {
+        connect(download, &Download::stateChanged,
+            this, &Queue::onManagedDownloadStateChanged);
+    } else {
+        connect(download, &Download::stateChanged,
+            this, &Queue::onUnmanagedDownloadStateChanged);
+    }
+
     emit downloadAdded(path);
 }
 
@@ -87,7 +92,7 @@ Queue::size() {
 }
 
 void
-Queue::onDownloadStateChanged() {
+Queue::onManagedDownloadStateChanged() {
     TRACE;
     // get the appdownload that emited the signal and
     // decide what to do with it
@@ -130,6 +135,25 @@ Queue::onDownloadStateChanged() {
 }
 
 void
+Queue::onUnmanagedDownloadStateChanged() {
+    TRACE;
+    // grab the download and clean it when needed
+    Download* down = qobject_cast<Download*>(sender());
+    switch (down->state()) {
+        case Download::CANCEL:
+        case Download::ERROR:
+        case Download::FINISH:
+            // remove the registered object in dbus, remove the download
+            // and the adapter from the list
+            remove(down->path());
+            break;
+        default:
+            // do nothing
+            break;
+    }
+}
+
+void
 Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
     TRACE << mode;
     if (mode != QNetworkInfo::UnknownMode) {
@@ -146,12 +170,12 @@ Queue::updateCurrentDownload() {
         Download::State state = currentDownload->state();
         if (state == Download::CANCEL || state == Download::FINISH
             || state == Download::ERROR) {
-            qDebug() << "State is CANCEL || FINISH || ERROR";
+            LOG(INFO) << "State is CANCEL || FINISH || ERROR";
             remove(_current);
             _current = "";
         } else if (!currentDownload->canDownload()
                 || state == Download::PAUSE) {
-            qDebug() << "States is Cannot Download || PAUSE";
+            LOG(INFO) << "States is Cannot Download || PAUSE";
             _current = "";
         } else {
             return;
