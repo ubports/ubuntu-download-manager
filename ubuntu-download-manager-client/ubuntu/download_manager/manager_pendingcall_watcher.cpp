@@ -29,13 +29,14 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-
 DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
+                                                  const QDBusConnection& conn,
+                                                  const QString& servicePath,
                                                   const QDBusPendingCall& call,
                                                   DownloadCb cb,
                                                   DownloadCb errCb,
                                                   QObject* parent)
-    : QDBusPendingCallWatcher(call, parent),
+    : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,
@@ -50,13 +51,13 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
         auto err = new Error(reply.error());
-        auto down = new Download(err);
+        auto down = new Download(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
     } else {
         qDebug() << "Success!";
         auto path = reply.value();
-        auto down = new Download(path);
+        auto down = new Download(_conn, _servicePath, path);
         emit man->downloadCreated(down);
         _cb(down);
     }
@@ -66,11 +67,13 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
 
 
 GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
+                                            const QDBusConnection& conn,
+                                            const QString& servicePath,
                                             const QDBusPendingCall& call,
                                             GroupCb cb,
                                             GroupCb errCb,
                                             QObject* parent)
-    : QDBusPendingCallWatcher(call, parent),
+    : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,

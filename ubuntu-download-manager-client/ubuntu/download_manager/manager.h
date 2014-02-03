@@ -21,12 +21,14 @@
 
 #include <functional>
 #include <QList>
-#include <QDBusConnection>
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
 #include "ubuntu-download-manager-client_global.h"
+
+
+class QDBusConnection;
 
 namespace Ubuntu {
 
@@ -84,9 +86,14 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
     void groupCreated(GroupDownload* down);
 
  protected:
-    Manager(QDBusConnection conn, const QString& path = "", QObject* parent= 0);
+    Manager(const QDBusConnection& conn,
+            const QString& path = "",
+            QObject* parent= 0);
     // used for testing purposes
-    Manager(ManagerInterface* interface, QObject* parent);
+    Manager(const QDBusConnection& conn,
+            const QString& path,
+            ManagerInterface* interface,
+            QObject* parent);
 
  private:
     Q_PRIVATE_SLOT(d_func(), void onWatcherDone())

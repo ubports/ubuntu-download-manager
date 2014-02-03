@@ -11,16 +11,29 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 HEADERS += \
-    test_group_watch.h \
-    test_download_watch.h \
+    test_group_manager_watch.h \
+    test_download_manager_watch.h \
     test_manager.h \
-    local_tree_testcase.h
+    local_tree_testcase.h \
+    test_download_watch.h \
+    test_download.h
 
 SOURCES += main.cpp \
-    test_group_watch.cpp \
-    test_download_watch.cpp \
+    test_group_manager_watch.cpp \
+    test_download_manager_watch.cpp \
     test_manager.cpp \
-    local_tree_testcase.cpp
+    local_tree_testcase.cpp \
+    test_download_watch.cpp \
+    test_download.cpp
+
+exists ($$OUT_PWD/data){
+} else {
+    copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+    first.depends = $(first) copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+}
 
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
