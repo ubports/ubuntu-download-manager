@@ -296,10 +296,10 @@ FileDownload::onRedirect(QUrl redirect) {
     // update the _url value and perform a second request to try and get the data
     if (_visitedUrls.contains(redirect)) {
         // we are in a loop!!! we have to raise an error about this.
-	LOG(WARNING) << "Redirect loop found";
+        LOG(WARNING) << "Redirect loop found";
         NetworkErrorStruct err(QNetworkReply::ContentNotFoundError);
         emit networkError(err);
-    	emitError(NETWORK_ERROR);
+        emitError(NETWORK_ERROR);
         return;
     }
     _visitedUrls.append(_url);
@@ -318,7 +318,8 @@ FileDownload::onRedirect(QUrl redirect) {
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
-        emit started(false);
+        emitError(FILE_SYSTEM_ERROR);
+        return;
     }
 
     _reply = _requestFactory->get(buildRequest());
