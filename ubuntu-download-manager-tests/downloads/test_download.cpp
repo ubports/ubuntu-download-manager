@@ -1986,3 +1986,178 @@ TestDownload::testFileSystemErrorPause() {
         QString("FILE SYSTEM ERROR: %1").arg(QFile::WriteError));
     _fileManager->setFile(nullptr);
 }
+
+void
+TestDownload::testRedirectCycle() {
+    // the test works as follows, create a request, pause and set the redirect
+    // header, wait until the second request is created via the signal from the
+    // request factory and set the redirect to a first url
+    QUrl redirectUrl("http://redirect.example.com");
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = qobject_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attr for a redirect to a new url
+    // makes the process to be executed
+    reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
+        redirectUrl);
+    QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
+    
+    // use a spy to wait for the second reply
+    reply->emitFinished();
+
+    QTRY_COMPARE(1, replySpy.count());
+
+    reply = qobject_cast<FakeNetworkReply*>(
+        replySpy.takeFirst().at(0).value<NetworkReply*>());
+
+    download->pause();
+    
+    // set the attr to be a loop
+    reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
+        _url);
+
+    // emit finished and an errors should be emitted
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    reply->emitFinished();
+
+    QTRY_COMPARE(networkErrorSpy.count(), 1);
+    QTRY_COMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testSingleRedirect() {
+    // ensure that a single redirect is followed
+    QUrl redirectUrl("http://redirect.example.com");
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = qobject_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attr for a redirect to a new url
+    // makes the process to be executed
+    reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
+        redirectUrl);
+    QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
+    
+    // use a spy to wait for the second reply
+    reply->emitFinished();
+
+    // ensure that a second request is performed
+    QTRY_COMPARE(1, replySpy.count());
+
+    reply = qobject_cast<FakeNetworkReply*>(
+        replySpy.takeFirst().at(0).value<NetworkReply*>());
+
+    download->pause();
+    
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
+
+    reply->emitFinished();
+
+    QTRY_COMPARE(networkErrorSpy.count(), 0);
+    QTRY_COMPARE(errorSpy.count(), 0);
+    QTRY_COMPARE(finishedSpy.count(), 1);
+}
+
+void
+TestDownload::testSeveralRedirects_data() {
+    QTest::addColumn<QStringList>("urls");
+
+    QStringList first;
+    first.append("http://first.com/resource");
+    first.append("http://first.com/moved_resource");
+    first.append("http://first.com/last");
+    QTest::newRow("Three redirects") << first;
+
+    QStringList second;
+    second.append("http://second.com/resource");
+    second.append("http://second.com/moved1");
+    second.append("http://second.com/moved2");
+    second.append("http://second.com/moved3");
+    second.append("http://second.com/moved4");
+    QTest::newRow("Five redirects") << second;
+
+    QStringList third;
+    third.append("http://third.com/resource");
+    third.append("http://third.com/moved1");
+    third.append("http://third.com/moved2");
+    third.append("http://third.com/moved3");
+    third.append("http://third.com/moved4");
+    third.append("http://third.com/moved5");
+    third.append("http://third.com/moved6");
+    QTest::newRow("Seven redirects") << third;
+
+}
+
+void
+TestDownload::testSeveralRedirects() {
+    QFETCH(QStringList, urls);
+    auto redirectCount = 0;
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = qobject_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // redirect all the required times
+    foreach(const QString& url, urls) {
+        reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
+            url);
+        QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
+        
+        // use a spy to wait for the second reply
+        reply->emitFinished();
+
+        // ensure that a second request is performed
+        QTRY_COMPARE(1, replySpy.count());
+
+        reply = qobject_cast<FakeNetworkReply*>(
+            replySpy.takeFirst().at(0).value<NetworkReply*>());
+        redirectCount++;
+    }
+    
+    download->pause();
+    
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
+
+    reply->emitFinished();
+
+    QTRY_COMPARE(networkErrorSpy.count(), 0);
+    QTRY_COMPARE(errorSpy.count(), 0);
+    QTRY_COMPARE(finishedSpy.count(), 1);
+    QCOMPARE(redirectCount, urls.count());
+}

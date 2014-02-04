@@ -32,6 +32,7 @@ RequestWrapper::request() {
 FakeRequestFactory::FakeRequestFactory(QObject *parent)
     : RequestFactory(parent),
       Fake() {
+    qRegisterMetaType<NetworkReply*>("NetworkReply*");
 }
 
 NetworkReply*
@@ -53,6 +54,7 @@ FakeRequestFactory::get(const QNetworkRequest& request) {
         // if we are recording we do set the recording of the returned reply
         reply->record();
     }
+    emit requestCreated(reply);
     return reply;
 }
 

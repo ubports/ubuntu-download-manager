@@ -291,16 +291,54 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
 }
 
 void
-FileDownload::onFinished() {
+FileDownload::onRedirect(QUrl redirect) {
+    LOG(INFO) << "Following redirect to" << redirect;
+    // update the _url value and perform a second request to try and get the data
+    if (_visitedUrls.contains(redirect)) {
+        // we are in a loop!!! we have to raise an error about this.
+        LOG(WARNING) << "Redirect loop found";
+        NetworkErrorStruct err(QNetworkReply::ContentNotFoundError);
+        emit networkError(err);
+        emitError(NETWORK_ERROR);
+        return;
+    }
+    _visitedUrls.append(_url);
+    _url = redirect;
+
+    // clean the reply
+    disconnectFromReplySignals();
+    _reply->deleteLater();
+    _reply = nullptr;
+
+    // clean the local file
+    cleanUpCurrentData();
+
+    // perform again the request but do not emit started signal
+    _currentData = FileManager::instance()->createFile(_filePath);
+    bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
+
+    if (!canWrite) {
+        emitError(FILE_SYSTEM_ERROR);
+        return;
+    }
+
+    _reply = _requestFactory->get(buildRequest());
+    _reply->setReadBufferSize(throttle());
+
+    connectToReplySignals();
+}
+
+void
+FileDownload::onDownloadCompleted() {
     TRACE << _url;
 
     // if the hash is present we check it
     if (!_hash.isEmpty()) {
         emit processing(filePath());
         _currentData->reset();
-	QCryptographicHash hash(_algo);
-	// addData is smart enough to not load the entire file in memory
-	hash.addData(_currentData->device());
+        QCryptographicHash hash(_algo);
+        // addData is smart enough to not load the entire file in memory
+        hash.addData(_currentData->device());
         QString fileSig = QString(hash.result().toHex());
 
         if (fileSig != _hash) {
@@ -316,7 +354,8 @@ FileDownload::onFinished() {
     // finish signals once the command was done (or an error ocurred in
     // the command execution.
     if (metadata().contains(METADATA_COMMAND_KEY)) {
-        // just emit processing if we DO NOT have a hash because else we already emitted it.
+        // just emit processing if we DO NOT have a hash because else we
+        // already emitted it.
         if (_hash.isEmpty()) {
             emit processing(filePath());
         }
@@ -365,6 +404,21 @@ FileDownload::onFinished() {
     // clean the reply
     _reply->deleteLater();
     _reply = nullptr;
+}
+
+void
+FileDownload::onFinished() {
+    TRACE << _url;
+    // the reply has finished but the resource might have been moved
+    // and we must do a new request
+    auto redirect = _reply->attribute(
+        QNetworkRequest::RedirectionTargetAttribute).toUrl();
+
+    if(!redirect.isEmpty() && redirect != _url) {
+        onRedirect(redirect);
+    } else {
+        onDownloadCompleted();
+    }
 }
 
 void
@@ -539,7 +593,7 @@ FileDownload::uniqueFilePath(QString path) {
     if (!secondPart.isEmpty()) {
         secondPart = "." + secondPart;
         firstPart = path.left(path.size() - secondPart.size());
-    } 
+    }
 
     // Try with an ever-increasing number suffix, until we've reached a file
     // that does not yet exist.
@@ -557,7 +611,7 @@ FileDownload::uniqueFilePath(QString path) {
 
 void
 FileDownload::cleanUpCurrentData() {
-    bool success = true; 
+    bool success = true;
     QFile::FileError error = QFile::NoError;
     if (_currentData != nullptr) {
         success = _currentData->remove();
