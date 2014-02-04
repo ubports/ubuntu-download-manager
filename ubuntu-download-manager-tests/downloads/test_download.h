@@ -154,6 +154,12 @@ class TestDownload: public BaseTestCase {
     void testFileSystemErrorProgress();
     void testFileSystemErrorPause();
 
+    // test different redirects
+    void testRedirectCycle();
+    void testSingleRedirect();
+    void testSeveralRedirects_data();
+    void testSeveralRedirects();
+
  private:
     QString _id;
     bool _isConfined;

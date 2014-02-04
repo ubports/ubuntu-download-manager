@@ -112,6 +112,8 @@ class FileDownload : public Download {
     void init();
     void onDownloadProgress(qint64 currentProgress, qint64);
     void onError(QNetworkReply::NetworkError);
+    void onRedirect(QUrl redirect);
+    void onDownloadCompleted();
     void onFinished();
     void onSslErrors(const QList<QSslError>&);
     void onProcessError(QProcess::ProcessError error);
@@ -131,6 +133,7 @@ class FileDownload : public Download {
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
+    QList<QUrl> _visitedUrls;
 };
 
 }  // Daemon

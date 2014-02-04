@@ -65,6 +65,8 @@ class FakeNetworkReply : public NetworkReply, public Fake {
                       int value);
     void setAttribute(QNetworkRequest::Attribute code,
                       QString message);
+    void setAttribute(QNetworkRequest::Attribute code,
+                      QUrl url);
     void clearAttribute(QNetworkRequest::Attribute code);
 
  private:

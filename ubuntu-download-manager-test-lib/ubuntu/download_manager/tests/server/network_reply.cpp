@@ -153,6 +153,12 @@ FakeNetworkReply::setAttribute(QNetworkRequest::Attribute code,
 }
 
 void
+FakeNetworkReply::setAttribute(QNetworkRequest::Attribute code,
+                               QUrl url) {
+    _attrs[code] = url;
+}
+
+void
 FakeNetworkReply::clearAttribute(QNetworkRequest::Attribute code) {
     if (_attrs.contains(code)) {
         _attrs.remove(code);
