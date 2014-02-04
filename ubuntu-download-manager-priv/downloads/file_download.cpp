@@ -336,9 +336,9 @@ FileDownload::onDownloadCompleted() {
     if (!_hash.isEmpty()) {
         emit processing(filePath());
         _currentData->reset();
-    QCryptographicHash hash(_algo);
-    // addData is smart enough to not load the entire file in memory
-    hash.addData(_currentData->device());
+        QCryptographicHash hash(_algo);
+        // addData is smart enough to not load the entire file in memory
+        hash.addData(_currentData->device());
         QString fileSig = QString(hash.result().toHex());
 
         if (fileSig != _hash) {
