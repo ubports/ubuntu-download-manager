@@ -55,6 +55,8 @@ class TestingManager : public Manager {
 
     void returnDBusErrors(bool errors);
 
+ protected:
+    QDBusObjectPath registerDownload(Download* download) override;
  private:
     bool _returnErrors = false;
 };

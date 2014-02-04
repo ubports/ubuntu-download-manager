@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -19,9 +19,13 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
 
-#include <QDBusObjectPath>
 #include <QObject>
+#include <QVariantMap>
+#include <QString>
 #include "ubuntu-download-manager-client_global.h"
+
+class QDBusConnection;
+class QDBusObjectPath;
 
 namespace Ubuntu {
 
@@ -36,20 +40,49 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
 
     // allow the manager to create downloads
     friend class ManagerPrivate;
+    friend class DownloadPendingCallWatcher;
     friend class DownloadManagerPendingCallWatcher;
 
  public:
     virtual ~Download();
+
+    void start();
+    void pause();
+    void resume();
+    void cancel();
+
+    void allowMobileDownload(bool allowed);
+    bool isMobileDownloadAllowed();
+
+    void setThrottle(qulonglong speed);
+    qulonglong throttle();
+
+    QString id();
+    QVariantMap metadata();
+    qulonglong progress();
+    qulonglong totalSize();
+
     bool isError();
     Error* error();
 
  protected:
-    Download(Error* err, QObject* parent = 0);
-    Download(QDBusObjectPath path, QObject* parent = 0);
+    Download(const QDBusConnection& conn, Error* err, QObject* parent = 0);
+    Download(const QDBusConnection& conn,
+             const QString& servicePath,
+             const QDBusObjectPath& objectPath,
+             QObject* parent = 0);
+
+ signals:
+    void canceled(bool success);
+    void error(Error* error);
+    void finished(const QString& path);
+    void paused(bool success);
+    void processing(const QString &path);
+    void progress(qulonglong received, qulonglong total);
+    void resumed(bool success);
+    void started(bool success);
 
  private:
-    // TODO(mandel): move this to pimpl, here to ensure no mem leaks atm
-    Error* _error = NULL;
     // use pimpl pattern so that users do not have to be recompiled
     DownloadPrivate* d_ptr;
 

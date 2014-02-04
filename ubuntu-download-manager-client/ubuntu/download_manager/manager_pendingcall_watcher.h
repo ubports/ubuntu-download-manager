@@ -20,7 +20,7 @@
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 
 #include <functional>
-#include <QDBusPendingCallWatcher>
+#include "pending_call_watcher.h"
 
 namespace Ubuntu {
 
@@ -33,18 +33,18 @@ class GroupDownload;
 typedef std::function<void(Download*)> DownloadCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
-class DownloadManagerPendingCallWatcher : public QDBusPendingCallWatcher {
+
+class DownloadManagerPendingCallWatcher : public PendingCallWatcher {
     Q_OBJECT
 
  public:
-    DownloadManagerPendingCallWatcher(const QDBusPendingCall& call,
+    DownloadManagerPendingCallWatcher(const QDBusConnection& conn,
+                                      const QString& servicePath,
+                                      const QDBusPendingCall& call,
                                       DownloadCb cb,
                                       DownloadCb errCb,
                                       QObject* parent = 0);
-    
- signals:
-    void callbackExecuted();
-    
+
  private slots:
     void onFinished(QDBusPendingCallWatcher* watcher);
 
@@ -54,17 +54,16 @@ class DownloadManagerPendingCallWatcher : public QDBusPendingCallWatcher {
 };
 
 
-class GroupManagerPendingCallWatcher : public QDBusPendingCallWatcher {
+class GroupManagerPendingCallWatcher : public PendingCallWatcher {
     Q_OBJECT
 
  public:
-    GroupManagerPendingCallWatcher(const QDBusPendingCall& call,
+    GroupManagerPendingCallWatcher(const QDBusConnection& conn,
+                                   const QString& servicePath,
+                                   const QDBusPendingCall& call,
                                    GroupCb cb,
                                    GroupCb errCb,
                                    QObject* parent = 0);
-
- signals:
-    void callbackExecuted();
 
  private slots:
     void onFinished(QDBusPendingCallWatcher* watcher);

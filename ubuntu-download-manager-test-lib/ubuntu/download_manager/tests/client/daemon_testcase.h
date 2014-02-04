@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QObject>
 #include <QProcess>
+#include <QUrl>
 #include "ubuntu/download_manager/tests/base_testcase.h"
 #include "testing_daemon.h"
 
@@ -37,7 +38,17 @@ class DaemonTestCase : public BaseTestCase {
                    const QString& daemonProcess,
                    QObject* parent = 0);
 
+    void addFileToHttpServer(const QString& absolutePath);
     QString daemonPath();
+    void returnDBusErrors(bool errors);
+    QUrl serverUrl();
+
+ private:
+    void startUDMDaemon();
+    void stopUDMDaemon();
+    QString httpServerDir();
+    void startHttpServer();
+    void stopHttpServer();
 
  private slots:
     void onProcessError(QProcess::ProcessError error);
@@ -46,12 +57,16 @@ class DaemonTestCase : public BaseTestCase {
 
     void init() override;
     void cleanup() override;
-    void returnDBusErrors(bool errors);
 
  private:
-    QString _daemonPath;
-    QString _daemonProcess;
-    QProcess* _process = nullptr;
+    int _httpServerRetry = 0;
+    int _httpServerRetryMax = 10;
+    int _port = 8080;
+    QString _daemonPath = "";
+    QString _daemonExec = "";
+    QString _httpServerDir = "";
+    QProcess* _daemonProcess = nullptr;
+    QProcess* _httpServer = nullptr;
 
 };
 

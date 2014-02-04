@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,7 +16,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QScopedPointer>
 #include <QSignalSpy>
+#include <ubuntu/download_manager/download.h>
 #include "test_download_watch.h"
 
 TestDownloadWatch::TestDownloadWatch(QObject *parent)
@@ -24,22 +26,8 @@ TestDownloadWatch::TestDownloadWatch(QObject *parent)
 }
 
 void
-TestDownloadWatch::onSuccessCb(Download* down) {
-    _calledSuccess = true;
-    delete down;
-}
-
-void
-TestDownloadWatch::onErrorCb(Download* err) {
-    _calledError = true;
-    delete err;
-}
-
-void
 TestDownloadWatch::init() {
     LocalTreeTestCase::init();
-    _calledSuccess = false;
-    _calledError = false;
     _manager = Manager::createSessionManager(daemonPath(), this);
 }
 
@@ -50,41 +38,20 @@ TestDownloadWatch::cleanup() {
 }
 
 void
-TestDownloadWatch::testCallbackIsExecuted() {
-    QString url = "http://www.python.org/ftp/python/3.3.3/Python-3.3.3.tar.xz";
+TestDownloadWatch::testErrorRaised() {
+    // create a download with a missing url in the local host to ensure
+    // that the error signal is raised
     QVariantMap metadata;
     QMap<QString, QString> headers;
-    DownloadStruct down(url, metadata, headers);
+    QUrl notPresentFile = serverUrl();
+    DownloadStruct downStruct(notPresentFile.toString() + "/not_present.zip",
+        metadata, headers);
 
-    DownloadCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
-        std::placeholders::_1);
-    DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
-        std::placeholders::_1);
+    // use the blocking call so that we get a download
+    QScopedPointer<Download> down(_manager->createDownload(downStruct));
+    QSignalSpy spy(down.data(), SIGNAL(error(Error*)));
+    returnDBusErrors(true);
 
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
-    _manager->createDownload(down, cb, errCb);
-
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
-    QVERIFY(_calledSuccess);
-    QVERIFY(!_calledError);
-}
-
-void
-TestDownloadWatch::testErrCallbackIsExecuted() {
-    QString url = "";  // we should get an error with an empty string
-    QVariantMap metadata;
-    QMap<QString, QString> headers;
-    DownloadStruct down(url, metadata, headers);
-
-    DownloadCb cb = std::bind(&TestDownloadWatch::onSuccessCb, this,
-        std::placeholders::_1);
-    DownloadCb errCb = std::bind(&TestDownloadWatch::onErrorCb, this,
-        std::placeholders::_1);
-
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
-    _manager->createDownload(down, cb, errCb);
-
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
-    QVERIFY(!_calledSuccess);
-    QVERIFY(_calledError);
+    down->start();
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 10000);
 }

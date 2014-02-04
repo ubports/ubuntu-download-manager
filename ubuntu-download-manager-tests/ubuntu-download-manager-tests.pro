@@ -50,6 +50,16 @@ HEADERS += \
     downloads/test_mms_download.h \
     downloads/test_base_download.h
 
+
+exists ($$OUT_PWD/data){
+} else {
+    copydata.commands = $(COPY_DIR) $$PWD/data $$OUT_PWD
+    first.depends = $(first) copydata
+    export(first.depends)
+    export(copydata.commands)
+    QMAKE_EXTRA_TARGETS += first copydata
+}
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
