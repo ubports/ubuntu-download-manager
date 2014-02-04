@@ -25,6 +25,7 @@ package udm
 import (
 	"launchpad.net/go-dbus/v1"
 	"log"
+	"runtime"
 )
 
 const (
@@ -33,18 +34,20 @@ const (
 	DOWNLOAD_MANAGER_INTERFACE = "com.canonical.applications.DownloadManager"
 )
 
+type hashType string
+
 const (
-	MD5 = "md5"
-	SHA1 = "sha1"
-	SHA224 = "sha224"
-	SHA256 = "sha256"
-	SHA384 = "sha384"
-	SHA512 = "sha512"
+	MD5    hashType = "md5"
+	SHA1   hashType = "sha1"
+	SHA224 hashType = "sha224"
+	SHA256 hashType = "sha256"
+	SHA384 hashType = "sha384"
+	SHA512 hashType = "sha512"
 )
 
 const (
-	LOCAL_PATH = "local-path"
-	OBJECT_PATH = "objectpath"
+	LOCAL_PATH            = "local-path"
+	OBJECT_PATH           = "objectpath"
 	POST_DOWNLOAD_COMMAND = "post-download-command"
 )
 
@@ -55,7 +58,7 @@ type Progress struct {
 	Total    uint64
 }
 
-// Download is the common interface of a download. It provides all the required 
+// Download is the common interface of a download. It provides all the required
 // methods to interact with a download created by udm.
 type Download interface {
 	TotalSize() (uint64, error)
@@ -78,7 +81,7 @@ type Download interface {
 	Error() chan string
 }
 
-// Manager is the single point of entry of the API. Allows to interact with the 
+// Manager is the single point of entry of the API. Allows to interact with the
 // general setting of udm as well as to create downloads at will.
 type Manager interface {
 	CreateDownload(string, string, string, map[string]interface{}, map[string]string) (Download, error)
@@ -109,6 +112,20 @@ func (down *FileDownload) connectToSignal(signal string) (*dbus.SignalWatch, err
 	return w, err
 }
 
+func (down *FileDownload) free() {
+	close(down.started)
+	close(down.paused)
+	close(down.resumed)
+	close(down.canceled)
+	close(down.finished)
+	close(down.errors)
+	close(down.progress)
+}
+
+func cleanDownloadData(down *FileDownload) {
+	down.free()
+}
+
 func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload {
 	proxy := conn.Object(DOWNLOAD_SERVICE, path)
 	started_ch := make(chan bool)
@@ -128,6 +145,7 @@ func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload 
 	d.connectToFinished()
 	d.connectToError()
 	d.connectToProgress()
+	runtime.SetFinalizer(&d, cleanDownloadData)
 	return &d
 }
 
@@ -226,10 +244,10 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 // ready to recieve signals. The following is a commong pattern to be used when
 // creating downloads in udm.
 //
-//     man, err := udm.NewDownloadManager() 
+//     man, err := udm.NewDownloadManager()
 //     if err != nil {
 //     }
-//     
+//
 //     // variables used to create the download
 //
 //     url := "http://www.python.org/ftp/python/3.3.3/Python-3.3.3.tar.xz"
@@ -237,14 +255,14 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 //     hashAlgo := MD5
 //     var metadata map[string]interface{}
 //     var headers map[string]string
-//    
+//
 //     // create the download BUT do not start downloading just yet
 //     down, err := man.CreateDownload(url, hash, hashAlgo, metadata, headers)
 //
-//     // connect routines to the download channels so that we can get the 
+//     // connect routines to the download channels so that we can get the
 //     // information of the download the channel will not get any data until the
 //     // Start is called.
-//    
+//
 //     started_signal := down.Started()
 //     go func() {
 //         <-started_signal
@@ -261,7 +279,7 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 //
 //     // start download
 //     down.Start()
-//    
+//
 //     // block until we are finished downloading
 //     <- finished_signal
 func (down *FileDownload) Start() (err error) {
@@ -316,6 +334,7 @@ func (down *FileDownload) connectToStarted() {
 			msg.Args(&started)
 			down.started <- started
 		}
+		started_w.Cancel()
 	}()
 }
 
@@ -336,6 +355,7 @@ func (down *FileDownload) connectToPaused() {
 			msg.Args(&paused)
 			down.paused <- paused
 		}
+		paused_w.Cancel()
 	}()
 }
 
@@ -357,6 +377,7 @@ func (down *FileDownload) connectToProgress() {
 			msg.Args(&received, &total)
 			down.progress <- Progress{received, total}
 		}
+		paused_w.Cancel()
 	}()
 }
 
@@ -378,6 +399,7 @@ func (down *FileDownload) connectToResumed() {
 			msg.Args(&resumed)
 			down.resumed <- resumed
 		}
+		resumed_w.Cancel()
 	}()
 }
 
@@ -398,6 +420,7 @@ func (down *FileDownload) connectToCanceled() {
 			msg.Args(&canceled)
 			down.canceled <- canceled
 		}
+		canceled_w.Cancel()
 	}()
 }
 
@@ -418,6 +441,7 @@ func (down *FileDownload) connectToFinished() {
 			msg.Args(&path)
 			down.finished <- path
 		}
+		finished_w.Cancel()
 	}()
 }
 
@@ -438,6 +462,7 @@ func (down *FileDownload) connectToError() {
 			msg.Args(&reason)
 			down.errors <- reason
 		}
+		error_w.Cancel()
 	}()
 }
 
@@ -471,10 +496,10 @@ func NewDownloadManager() (*DownloadManager, error) {
 // CreateDownload creates a new download in the udm daemon that can be used to get
 // a remote resource. Udm allows to pass a hash signature and method that will be
 // check once the download has been complited.
-// 
+//
 // The download hash can be one of the the following constants:
 //
-//   MD5 
+//   MD5
 //   SHA1
 //   SHA224
 //   SHA256
@@ -487,11 +512,11 @@ func NewDownloadManager() (*DownloadManager, error) {
 //     LOCAL_PATH => allows to provide the local path for the download.
 //     OBJECT_PATH => allows to provide the object path to be used in the dbus daemon.
 //     POST_DOWNLOAD_COMMAND => allows to provide a command that will be executed on the
-//         download 
-// 
+//         download
+//
 // The headers attribute allows to provide extra headers to be used in the request used
 // to perform the download.
-func (man *DownloadManager) CreateDownload(url string, hash string, algo string, metadata map[string]interface{}, headers map[string]string) (down Download, err error) {
+func (man *DownloadManager) CreateDownload(url string, hash string, algo hashType, metadata map[string]interface{}, headers map[string]string) (down Download, err error) {
 	var t map[string]*dbus.Variant
 	for key, value := range metadata {
 		log.Print("Key:", key, "Value:", value)
@@ -503,7 +528,7 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo string,
 		A  string
 		M  map[string]*dbus.Variant
 		HD map[string]string
-	}{url, hash, algo, t, headers}
+	}{url, hash, string(algo), t, headers}
 	var path dbus.ObjectPath
 	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createDownload", s)
 	if err != nil || reply.Type == dbus.TypeError {
