@@ -90,52 +90,97 @@ type Manager interface {
 
 // FileDownload represents a single file being downloaded by udm.
 type FileDownload struct {
-	conn     *dbus.Connection
-	proxy    *dbus.ObjectProxy
-	path     dbus.ObjectPath
-	started  chan bool
-	paused   chan bool
-	resumed  chan bool
-	canceled chan bool
-	finished chan string
-	errors   chan string
-	progress chan Progress
+	conn       *dbus.Connection
+	proxy      *dbus.ObjectProxy
+	path       dbus.ObjectPath
+	started    chan bool
+	started_w  *dbus.SignalWatch
+	paused     chan bool
+	paused_w   *dbus.SignalWatch
+	resumed    chan bool
+	resumed_w  *dbus.SignalWatch
+	canceled   chan bool
+	canceled_w *dbus.SignalWatch
+	finished   chan string
+	finished_w *dbus.SignalWatch
+	errors     chan string
+	error_w    *dbus.SignalWatch
+	progress   chan Progress
+	progress_w *dbus.SignalWatch
 }
 
-func (down *FileDownload) connectToSignal(signal string) (*dbus.SignalWatch, error) {
-	w, err := down.conn.WatchSignal(&dbus.MatchRule{
+func connectToSignal(conn *dbus.Connection, path dbus.ObjectPath, signal string) (*dbus.SignalWatch, error) {
+	w, err := conn.WatchSignal(&dbus.MatchRule{
 		Type:      dbus.TypeSignal,
 		Sender:    DOWNLOAD_SERVICE,
 		Interface: DOWNLOAD_INTERFACE,
 		Member:    signal,
-		Path:      down.path})
+		Path:      path})
 	return w, err
 }
 
 func (down *FileDownload) free() {
-	close(down.started)
-	close(down.paused)
-	close(down.resumed)
-	close(down.canceled)
-	close(down.finished)
-	close(down.errors)
-	close(down.progress)
+	// cancel all watches so that goroutines are done and close the
+	// channels
+	down.started_w.Cancel()
+	down.paused_w.Cancel()
+	down.resumed_w.Cancel()
+	down.canceled_w.Cancel()
+	down.finished_w.Cancel()
+	down.error_w.Cancel()
+	down.progress_w.Cancel()
 }
 
 func cleanDownloadData(down *FileDownload) {
 	down.free()
 }
 
-func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload {
+func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) (*FileDownload, error) {
 	proxy := conn.Object(DOWNLOAD_SERVICE, path)
 	started_ch := make(chan bool)
+	started_w, err := connectToSignal(conn, path, "started")
+	if err != nil {
+		return nil, err
+	}
+
 	paused_ch := make(chan bool)
+	paused_w, err := connectToSignal(conn, path, "paused")
+	if err != nil {
+		return nil, err
+	}
+
 	resumed_ch := make(chan bool)
+	resumed_w, err := connectToSignal(conn, path, "resumed")
+	if err != nil {
+		return nil, err
+	}
+
 	canceled_ch := make(chan bool)
+	canceled_w, err := connectToSignal(conn, path, "canceled")
+	if err != nil {
+		return nil, err
+	}
+
 	finished_ch := make(chan string)
+	finished_w, err := connectToSignal(conn, path, "finished")
+	if err != nil {
+		return nil, err
+	}
+
 	errors_ch := make(chan string)
+	errors_w, err := connectToSignal(conn, path, "error")
+	if err != nil {
+		return nil, err
+	}
+
 	progress_ch := make(chan Progress)
-	d := FileDownload{conn, proxy, path, started_ch, paused_ch, resumed_ch, canceled_ch, finished_ch, errors_ch, progress_ch}
+	progress_w, err := connectToSignal(conn, path, "progress")
+	if err != nil {
+		return nil, err
+	}
+
+	d := FileDownload{conn, proxy, path, started_ch, started_w, paused_ch, paused_w, resumed_ch, resumed_w, canceled_ch, canceled_w, finished_ch, finished_w, errors_ch, errors_w, progress_ch, progress_w}
+
 	// connect to the diff signals so that we have nice channels that do
 	// not expose dbus watchers
 	d.connectToStarted()
@@ -146,7 +191,7 @@ func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) *FileDownload 
 	d.connectToError()
 	d.connectToProgress()
 	runtime.SetFinalizer(&d, cleanDownloadData)
-	return &d
+	return &d, nil
 }
 
 // TotalSize returns the total size of the file being downloaded.
@@ -323,18 +368,13 @@ func (down *FileDownload) Cancel() (err error) {
 }
 
 func (down *FileDownload) connectToStarted() {
-	started_w, err := down.connectToSignal("started")
-	if err != nil {
-		log.Fatal("Could not connect to Started signal")
-	}
-
 	go func() {
-		for msg := range started_w.C {
+		for msg := range down.started_w.C {
 			var started bool
 			msg.Args(&started)
 			down.started <- started
 		}
-		started_w.Cancel()
+		close(down.started)
 	}()
 }
 
@@ -344,18 +384,13 @@ func (down *FileDownload) Started() chan bool {
 }
 
 func (down *FileDownload) connectToPaused() {
-	paused_w, err := down.connectToSignal("paused")
-	if err != nil {
-		log.Fatal("Could not connect to Paused signal")
-	}
-
 	go func() {
-		for msg := range paused_w.C {
+		for msg := range down.paused_w.C {
 			var paused bool
 			msg.Args(&paused)
 			down.paused <- paused
 		}
-		paused_w.Cancel()
+		close(down.paused)
 	}()
 }
 
@@ -365,19 +400,14 @@ func (down *FileDownload) Paused() chan bool {
 }
 
 func (down *FileDownload) connectToProgress() {
-	paused_w, err := down.connectToSignal("progress")
-	if err != nil {
-		log.Fatal("Could not connect to Progress signal")
-	}
-
 	go func() {
-		for msg := range paused_w.C {
+		for msg := range down.progress_w.C {
 			var received uint64
 			var total uint64
 			msg.Args(&received, &total)
 			down.progress <- Progress{received, total}
 		}
-		paused_w.Cancel()
+		close(down.progress)
 	}()
 }
 
@@ -388,18 +418,13 @@ func (down *FileDownload) DownloadProgress() chan Progress {
 }
 
 func (down *FileDownload) connectToResumed() {
-	resumed_w, err := down.connectToSignal("resumed")
-	if err != nil {
-		log.Fatal("Could not connect to Resumed signal")
-	}
-
 	go func() {
-		for msg := range resumed_w.C {
+		for msg := range down.resumed_w.C {
 			var resumed bool
 			msg.Args(&resumed)
 			down.resumed <- resumed
 		}
-		resumed_w.Cancel()
+		close(down.resumed)
 	}()
 }
 
@@ -409,18 +434,13 @@ func (down *FileDownload) Resumed() chan bool {
 }
 
 func (down *FileDownload) connectToCanceled() {
-	canceled_w, err := down.connectToSignal("canceled")
-	if err != nil {
-		log.Fatal("Could not connect to Canceled signal")
-	}
-
 	go func() {
-		for msg := range canceled_w.C {
+		for msg := range down.canceled_w.C {
 			var canceled bool
 			msg.Args(&canceled)
 			down.canceled <- canceled
 		}
-		canceled_w.Cancel()
+		close(down.canceled)
 	}()
 }
 
@@ -430,18 +450,13 @@ func (down *FileDownload) Canceled() chan bool {
 }
 
 func (down *FileDownload) connectToFinished() {
-	finished_w, err := down.connectToSignal("finished")
-	if err != nil {
-		log.Fatal("Could not connect to Finished signal")
-	}
-
 	go func() {
-		for msg := range finished_w.C {
+		for msg := range down.finished_w.C {
 			var path string
 			msg.Args(&path)
 			down.finished <- path
 		}
-		finished_w.Cancel()
+		close(down.finished)
 	}()
 }
 
@@ -451,18 +466,13 @@ func (down *FileDownload) Finished() chan string {
 }
 
 func (down *FileDownload) connectToError() {
-	error_w, err := down.connectToSignal("error")
-	if err != nil {
-		log.Fatal("Could not connect to Error signal")
-	}
-
 	go func() {
-		for msg := range error_w.C {
+		for msg := range down.error_w.C {
 			var reason string
 			msg.Args(&reason)
 			down.errors <- reason
 		}
-		error_w.Cancel()
+		close(down.errors)
 	}()
 }
 
@@ -539,8 +549,8 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo hashTyp
 		log.Fatal("FAILED: Casting path")
 		return nil, err
 	}
-	down = newFileDownload(man.conn, path)
-	return down, nil
+	down, err = newFileDownload(man.conn, path)
+	return down, err
 }
 
 // CreateMmsDownload creates an mms download that will be performed right away. An
@@ -557,6 +567,6 @@ func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port 
 		log.Fatal("FAILED: Casting path")
 		return nil, err
 	}
-	down = newFileDownload(man.conn, path)
-	return down, nil
+	down, err = newFileDownload(man.conn, path)
+	return down, err
 }
