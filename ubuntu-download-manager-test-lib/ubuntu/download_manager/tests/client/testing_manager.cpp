@@ -44,6 +44,9 @@ TestingManager::returnHttpError(const QString &download,
     auto q = queue();
     foreach(Download* down, q->downloads().values()) {
         auto testDown = qobject_cast<TestingFileDownload*>(down);
+        if (testDown != nullptr && testDown->url() == download) {
+            testDown->returnHttpError(error);
+        }
     }
 }
 
@@ -53,6 +56,9 @@ TestingManager::returnNetworkError(const QString &download,
     auto q = queue();
     foreach(Download* down, q->downloads().values()) {
         auto testDown = qobject_cast<TestingFileDownload*>(down);
+        if (testDown != nullptr && testDown->url() == download) {
+            testDown->returnNetworkError(error);
+        }
     }
 }
 
@@ -62,6 +68,9 @@ TestingManager::returnProcessError(const QString &download,
     auto q = queue();
     foreach(Download* down, q->downloads().values()) {
         auto testDown = qobject_cast<TestingFileDownload*>(down);
+        if (testDown != nullptr && testDown->url() == download) {
+            testDown->returnProcessError(error);
+        }
     }
 }
 
@@ -70,10 +79,10 @@ TestingManager::registerDownload(Download* download) {
     QDBusObjectPath path;
     auto fileDown = qobject_cast<FileDownload*>(download);
     if (fileDown != nullptr) {
-	qDebug() << "Register testing file";
-	auto testDown = new TestingFileDownload(fileDown);
+    qDebug() << "Register testing file";
+    auto testDown = new TestingFileDownload(fileDown);
         auto downAdaptor = new DownloadAdaptor(testDown);
-	Q_UNUSED(downAdaptor);
+    Q_UNUSED(downAdaptor);
         // create wrapper and call parent class
         path = Manager::registerDownload(testDown);
     } else {

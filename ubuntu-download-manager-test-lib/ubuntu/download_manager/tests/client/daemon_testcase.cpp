@@ -60,35 +60,97 @@ DaemonTestCase::daemonPath() {
     return _daemonPath;
 }
 
-void
-DaemonTestCase::returnDBusErrors(bool errors) {
-    if (_daemonProcess != nullptr) {
-        auto conn = QDBusConnection::sessionBus();
-        auto testingInterface = new TestingInterface(
-            _daemonPath, "/", conn);
-        QDBusPendingReply<> reply =
-                testingInterface->returnDBusErrors(errors);
-        reply.waitForFinished();
-
-        if (reply.isError()) {
-            delete testingInterface;
-	    auto error = reply.error();
-	    QString msg = "Could not tell the daemon to return DBus errors: "
-                + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
-        }
-
-        delete testingInterface;
-    } else {
-        QFAIL("returnDBusErrors must be used after init has been executed.");
-    }
-}
-
 QUrl
 DaemonTestCase::serverUrl() {
     QString urlStr = QString(LOCAL_HOST).arg(_port);
     QUrl url(urlStr);
     return url;
+}
+
+void
+DaemonTestCase::returnDBusErrors(bool errors) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+            _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+            testingInterface->returnDBusErrors(errors);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return DBus errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
+        }
+    } else {
+        QFAIL("returnDBusErrors must be used after init has been executed.");
+    }
+}
+
+void
+DaemonTestCase::returnHttpError(const QString &download, HttpErrorStruct error) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+            _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+            testingInterface->returnHttpError(download, error);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return Http errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
+        }
+    } else {
+        QFAIL("returnHttpError must be used after init has been executed.");
+    }
+}
+
+void
+DaemonTestCase::returnNetworkError(const QString &download,
+                                   NetworkErrorStruct error) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+            _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+            testingInterface->returnNetworkError(download, error);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return Network errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
+        }
+    } else {
+        QFAIL("returnNetworkError must be used after init has been executed.");
+    }
+}
+
+void
+DaemonTestCase::returnProcessError(const QString &download,
+                                   ProcessErrorStruct error) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+            _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+             testingInterface->returnProcessError(download, error);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return Process errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
+        }
+    } else {
+        QFAIL("returnProcessError must be used after init has been executed.");
+    }
 }
 
 void
