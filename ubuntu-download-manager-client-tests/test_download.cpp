@@ -35,7 +35,11 @@ TestDownload::init() {
     _url = largeFileUrl().toString();
     DownloadStruct downStruct(_url, _metadata, headers);
 
-    _down = _man->createDownload(downStruct);
+    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    _man->createDownload(downStruct);
+
+    QTRY_COMPARE(1, managerSpy.count());
+    _down = managerSpy.takeFirst().at(0).value<Download*>();
 }
 
 void

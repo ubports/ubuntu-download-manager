@@ -45,6 +45,8 @@ class TestManager : public LocalTreeTestCase {
     void testSetDefaultThrottle();
     void testSetDefaultThrottleError();
     void testExitError();
+    void testCreateDownloadSignalsEmitted();
+    void testCreateDownloadSignalsEmittedCallbacks();
 
  private:
     Manager* _man;

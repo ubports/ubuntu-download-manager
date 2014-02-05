@@ -48,7 +48,12 @@ TestDownloadWatch::testErrorRaised() {
         metadata, headers);
 
     // use the blocking call so that we get a download
-    QScopedPointer<Download> down(_manager->createDownload(downStruct));
+    QSignalSpy managerSpy(_manager, SIGNAL(downloadCreated(Download*)));
+    _manager->createDownload(downStruct);
+
+    QTRY_COMPARE(1, managerSpy.count());
+    QScopedPointer<Download> down(managerSpy.takeFirst().at(0).value<Download*>());
+
     QSignalSpy spy(down.data(), SIGNAL(error(Error*)));
     returnDBusErrors(true);
 
