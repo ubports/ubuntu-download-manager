@@ -70,6 +70,8 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT DBusError : public Error {
     friend class GroupManagerPendingCallWatcher;
 
     virtual ~DBusError();
+    QString message();
+    QString name();
 
  protected:
     DBusError(QDBusError err, QObject* parent = 0);

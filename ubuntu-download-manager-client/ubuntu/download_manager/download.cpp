@@ -70,11 +70,11 @@ class DownloadPrivate {
         // connect to the different type of errors that will later be converted to
         // the error type to be used by the client. With a pimpl implementation we
         // cannot use the new stype connections :(
-        q->connect(_dbusInterface, SIGNAL(httpError(HttpErrorStruct error)),
+        q->connect(_dbusInterface, SIGNAL(httpError(HttpErrorStruct)),
             q, SLOT(onHttpError(HttpErrorStruct)));
-        q->connect(_dbusInterface, SIGNAL(networkError(NetworkErrorStruct error)),
+        q->connect(_dbusInterface, SIGNAL(networkError(NetworkErrorStruct)),
             q, SLOT(onNetworkError(NetworkErrorStruct)));
-        q->connect(_dbusInterface, SIGNAL(processError(ProcessErrorStruct error)),
+        q->connect(_dbusInterface, SIGNAL(processError(ProcessErrorStruct)),
             q, SLOT(onProcessError(ProcessErrorStruct)));
     }
 

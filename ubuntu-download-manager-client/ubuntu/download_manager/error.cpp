@@ -55,6 +55,14 @@ class DBusErrorPrivate {
           q_ptr(parent) {
     }
 
+    QString message() {
+        return _err.message();
+    }
+
+    QString name() {
+        return _err.name();
+    }
+
  private:
     QDBusError _err;
     DBusError* q_ptr;
@@ -167,6 +175,18 @@ DBusError::DBusError(QDBusError err, QObject* parent)
 
 DBusError::~DBusError() {
     delete d_ptr;
+}
+
+QString
+DBusError::message() {
+    Q_D(DBusError);
+    return d->message();
+}
+
+QString
+DBusError::name() {
+    Q_D(DBusError);
+    return d->name();
 }
 
 HttpError::HttpError(HttpErrorStruct err, QObject* parent)

@@ -55,6 +55,7 @@ class TestDownload : public LocalTreeTestCase {
     void testProcessErrorRaised();
 
  private:
+    QString _url;
     QVariantMap _metadata;
     Manager* _man = nullptr;
     Download* _down = nullptr;
