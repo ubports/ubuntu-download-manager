@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -19,11 +19,11 @@
 #ifndef TESTING_DAEMON_H
 #define TESTING_DAEMON_H
 
-#include <QDBusError>
 #include <QObject>
+#include <ubuntu/download_manager/metatypes.h>
 #include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
-#include "testing_manager_adaptor.h"
 
+class TestingManagerAdaptor;
 class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
     Q_OBJECT
  public:
@@ -32,6 +32,9 @@ class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
 
     // let the client test to tell the manager to return dbus errors
     void returnDBusErrors(bool errors);
+    void returnHttpError(const QString &download, HttpErrorStruct error);
+    void returnNetworkError(const QString &download, NetworkErrorStruct error);
+    void returnProcessError(const QString &download, ProcessErrorStruct error);
 
     QString daemonPath();
     void setDaemonPath(QString path);

@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef TESTING_INTERFACE_H_1389359012
-#define TESTING_INTERFACE_H_1389359012
+#ifndef TESTING_INTERFACE_H_1391440734
+#define TESTING_INTERFACE_H_1391440734
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -19,6 +19,7 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtDBus/QtDBus>
+#include <ubuntu/download_manager/metatypes.h>
 
 /*
  * Proxy class for interface com.canonical.applications.testing.DownloadManager
@@ -41,6 +42,27 @@ public Q_SLOTS: // METHODS
         QList<QVariant> argumentList;
         argumentList << QVariant::fromValue(returnErrors);
         return asyncCallWithArgumentList(QLatin1String("returnDBusErrors"), argumentList);
+    }
+
+    inline QDBusPendingReply<> returnHttpError(const QString &download, HttpErrorStruct error)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(download) << QVariant::fromValue(error);
+        return asyncCallWithArgumentList(QLatin1String("returnHttpError"), argumentList);
+    }
+
+    inline QDBusPendingReply<> returnNetworkError(const QString &download, NetworkErrorStruct error)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(download) << QVariant::fromValue(error);
+        return asyncCallWithArgumentList(QLatin1String("returnNetworkError"), argumentList);
+    }
+
+    inline QDBusPendingReply<> returnProcessError(const QString &download, ProcessErrorStruct error)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(download) << QVariant::fromValue(error);
+        return asyncCallWithArgumentList(QLatin1String("returnProcessError"), argumentList);
     }
 
 Q_SIGNALS: // SIGNALS

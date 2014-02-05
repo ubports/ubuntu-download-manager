@@ -20,6 +20,7 @@
 #define TESTING_MANAGER_H
 
 #include <QObject>
+#include <ubuntu/download_manager/metatypes.h>
 #include <downloads/manager.h>  // comes from the priv lib, just for testing!!!!
 
 using namespace Ubuntu::DownloadManager::Daemon;
@@ -54,6 +55,9 @@ class TestingManager : public Manager {
     void exit() override;
 
     void returnDBusErrors(bool errors);
+    void returnHttpError(const QString &download, HttpErrorStruct error);
+    void returnNetworkError(const QString &download, NetworkErrorStruct error);
+    void returnProcessError(const QString &download, ProcessErrorStruct error);
 
  protected:
     QDBusObjectPath registerDownload(Download* download) override;

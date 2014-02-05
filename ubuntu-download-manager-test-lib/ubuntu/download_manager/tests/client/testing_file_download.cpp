@@ -60,6 +60,30 @@ TestingFileDownload::returnDBusErrors(bool errors) {
     _returnErrors = errors;
 }
 
+void
+TestingFileDownload::returnHttpError(HttpErrorStruct error) {
+    _returnHttpError = true;
+    _returnNetworkError = false;
+     _returnProcessError = false;
+    _httpErr = error;
+}
+
+void
+TestingFileDownload::returnNetworkError(NetworkErrorStruct error) {
+    _returnHttpError = false;
+    _returnNetworkError = true;
+     _returnProcessError = false;
+    _networkErr = error;
+}
+
+void
+TestingFileDownload::returnProcessError(ProcessErrorStruct error) {
+    _returnHttpError = false;
+    _returnNetworkError = false;
+     _returnProcessError = true;
+     _processErr = error;
+}
+
 qulonglong
 TestingFileDownload::progress() {
     if (calledFromDBus() && _returnErrors) {
@@ -154,12 +178,29 @@ TestingFileDownload::resume() {
 
 void
 TestingFileDownload::start() {
-    qDebug() << "STarting download";
+    qDebug() << "Starting download";
     if (calledFromDBus() && _returnErrors) {
         sendErrorReply(QDBusError::InvalidMember,
         "start");
     }
+
     _down->start();
+
+    if (_returnHttpError) {
+        emit httpError(_httpErr);
+        emitError("Forced http error");
+    }
+
+    if (_returnNetworkError) {
+        emit networkError(_networkErr);
+        emitError("Forced network error");
+    }
+
+    if (_returnProcessError) {
+        emit processError(_processErr);
+        emitError("Forced processerror");
+    }
+
 }
 
 void
