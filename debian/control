@@ -64,7 +64,7 @@ Description: Ubuntu Download Manager - shared library
 Package: ubuntu-download-manager-client-dev
 Section: libdevel
 Architecture: any
-Depends: ubuntu-download-manager-common1(= ${binary:Version}),
+Depends: ubuntu-download-manager-common-dev(= ${binary:Version}),
          ubuntu-download-manager-client1(= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}

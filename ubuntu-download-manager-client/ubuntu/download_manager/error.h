@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QProcess>
-#include "ubuntu-download-manager-client_global.h"
+#include <ubuntu/download_manager/common.h>
 
 class QDBusError;
 
@@ -33,7 +33,7 @@ class HttpErrorStruct;
 class NetworkErrorStruct;
 class ProcessErrorStruct;
 class ErrorPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Error : public QObject {
+class DOWNLOAD_MANAGER_EXPORT Error : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Error)
 
@@ -59,7 +59,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Error : public QObject {
 
 
 class DBusErrorPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT DBusError : public Error {
+class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DBusError)
 
@@ -82,7 +82,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT DBusError : public Error {
 };
 
 class HttpErrorPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT HttpError : public Error {
+class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(HttpError)
 
@@ -102,7 +102,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT HttpError : public Error {
 };
 
 class NetworkErrorPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT NetworkError : public Error {
+class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(NetworkError)
 
@@ -150,7 +150,7 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT NetworkError : public Error {
 };
 
 class ProcessErrorPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT ProcessError : public Error {
+class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(ProcessError)
 

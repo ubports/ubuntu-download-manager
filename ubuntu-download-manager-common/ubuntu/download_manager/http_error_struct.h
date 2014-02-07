@@ -21,12 +21,13 @@
 
 #include <QDBusArgument>
 #include <QString>
+#include "common.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class HttpErrorStruct {
+class DOWNLOAD_MANAGER_EXPORT HttpErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(QString phrase READ getPhrase)
  public:

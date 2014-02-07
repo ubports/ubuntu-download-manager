@@ -20,12 +20,13 @@
 #define DOWNLOADER_LIB_GROUP_DOWNLOAD_STRUCT_H
 
 #include <QDBusArgument>
+#include "common.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class GroupDownloadStruct {
+class DOWNLOAD_MANAGER_EXPORT GroupDownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString hash READ getHash)
     Q_PROPERTY(QString localFile READ getLocalFile)

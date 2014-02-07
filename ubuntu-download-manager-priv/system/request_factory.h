@@ -25,7 +25,6 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSslError>
-#include "app-downloader-lib_global.h"
 #include "network_reply.h"
 
 namespace Ubuntu {

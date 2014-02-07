@@ -26,7 +26,6 @@ public_headers = \
     ubuntu/download_manager/error.h
 
 private_headers = \
-    ubuntu-download-manager-client_global.h \
     ubuntu/download_manager/download_interface.h \
     ubuntu/download_manager/manager_interface.h \
     ubuntu/download_manager/manager_pendingcall_watcher.h \

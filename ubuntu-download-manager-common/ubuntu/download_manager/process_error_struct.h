@@ -21,13 +21,13 @@
 
 #include <QDBusArgument>
 #include <QString>
+#include "common.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-
-class ProcessErrorStruct {
+class DOWNLOAD_MANAGER_EXPORT ProcessErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(int exitCode READ getExitCode)
     Q_PROPERTY(QString phrase READ getPhrase)
