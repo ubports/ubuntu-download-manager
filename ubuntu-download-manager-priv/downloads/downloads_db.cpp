@@ -25,6 +25,7 @@
 #include <QSqlQuery>
 #include <QSqlError>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
+#include <unistd.h>
 #include "downloads/downloads_db.h"
 #include "system/logger.h"
 
@@ -114,10 +115,17 @@ DownloadsDb::dbExists() {
 
 void
 DownloadsDb::internalInit() {
-    QString dataPath = QStandardPaths::writableLocation(
-        QStandardPaths::DataLocation);
-    QString path = dataPath + QDir::separator() + "ubuntu-download-manager";
+    QString path; 
 
+    if (getuid() == 0) {
+        path = "/var/cache";
+    } else {
+        QString dataPath = QStandardPaths::writableLocation(
+            QStandardPaths::DataLocation);
+        path = dataPath; 
+    }
+
+    path += QDir::separator() + QString("ubuntu-download-manager");
     bool wasCreated = QDir().mkpath(path);
     if (!wasCreated) {
         LOG(ERROR) << "Could not create the data path" << path;
