@@ -19,12 +19,12 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_STRUCT_H
 #define DOWNLOADER_LIB_DOWNLOAD_STRUCT_H
 
-#include <QDBusArgument>
 #include <QMap>
 #include <QString>
 #include <QVariantMap>
 #include "common.h"
 
+class QDBusArgument;
 namespace Ubuntu {
 
 namespace DownloadManager {

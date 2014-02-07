@@ -19,8 +19,10 @@
 #ifndef DOWNLOADER_LIB_GROUP_DOWNLOAD_STRUCT_H
 #define DOWNLOADER_LIB_GROUP_DOWNLOAD_STRUCT_H
 
-#include <QDBusArgument>
+#include <QString>
 #include "common.h"
+
+class QDBusArgument;
 
 namespace Ubuntu {
 
