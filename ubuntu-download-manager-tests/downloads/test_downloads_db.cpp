@@ -338,7 +338,7 @@ TestDownloadsDb::testConnectedToDownload() {
         db.close();
     } else {
         db.close();
-        QFAIL("Download fooo!");
+        QFAIL("Failed to get download from db!");
     }
 
     // update the throttle and test that it is update
@@ -357,7 +357,7 @@ TestDownloadsDb::testConnectedToDownload() {
         db.close();
     } else {
         db.close();
-        QFAIL("Download baaaar!");
+        QFAIL("Failed to get download from db!");
     }
 
     // update the state and assert that it was stored
@@ -375,7 +375,7 @@ TestDownloadsDb::testConnectedToDownload() {
 
     } else {
         db.close();
-        QFAIL("Download baaaaz!");
+        QFAIL("Failed to get download from db!");
     }
 }
 
