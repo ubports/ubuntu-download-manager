@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDBusArgument>
 #include <QProcess>
 #include "process_error_struct.h"
 

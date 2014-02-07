@@ -17,6 +17,7 @@
  */
 
 #include <QDBusMetaType>
+#include <QDBusArgument>
 #include "group_download_struct.h"
 #include "system/hash_algorithm.h"
 
