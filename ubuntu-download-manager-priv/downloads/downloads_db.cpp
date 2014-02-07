@@ -29,7 +29,7 @@
 #include "system/logger.h"
 
 namespace {
-    const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE SingleDownload("\
+    const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE IF NOT EXISTS SingleDownload("\
         "uuid VARCHAR(40) PRIMARY KEY, "\
         "url TEXT NOT NULL, "\
         "dbus_path TEXT NOT NULL UNIQUE, "\
@@ -42,7 +42,7 @@ namespace {
         "metadata TEXT, "\
         "headers TEXT)";
 
-    const QString GROUP_DOWNLOAD_TABLE = "CREATE TABLE GroupDownload("\
+    const QString GROUP_DOWNLOAD_TABLE = "CREATE TABLE IF NOT EXISTS GroupDownload("\
         "uuid VARCHAR(40) PRIMARY KEY, "\
         "dbus_path TEXT NOT NULL UNIQUE, "\
         "state INTEGER NOT NULL, "\
@@ -51,7 +51,7 @@ namespace {
         "metadata TEXT, "\
         "headers TEXT)";
 
-    const QString GROUP_DOWNLOAD_RELATION = "CREATE TABLE GroupDownloadDownloads("\
+    const QString GROUP_DOWNLOAD_RELATION = "CREATE TABLE IF NOT EXISTS GroupDownloadDownloads("\
         "group_id VARCHAR(36), "\
         "download_id VARCHAR(36), "\
         "FOREIGN KEY(group_id) REFERENCES GroupDownload(uuid), "\
@@ -87,6 +87,9 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 namespace Daemon {
+
+DownloadsDb* DownloadsDb::_instance = nullptr;
+QMutex DownloadsDb::_mutex;
 
 DownloadsDb::DownloadsDb(QObject* parent)
     : QObject(parent) {
@@ -214,6 +217,15 @@ DownloadsDb::headersToString(const QMap<QString, QString>& headers) {
 }
 
 bool
+DownloadsDb::store(Download* down) {
+    auto fileDown = qobject_cast<FileDownload*>(down);
+    if (fileDown != nullptr) {
+        return storeSingleDownload(fileDown);
+    }
+    return false;
+}
+
+bool
 DownloadsDb::storeSingleDownload(FileDownload* download) {
     // decide if we store it as a new download or update an existing one
     bool opened = _db.open();
@@ -265,6 +277,67 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
 
     return success;
 }
+
+void
+DownloadsDb::connetToDownload(Download* download) {
+    connect(download, &Download::stateChanged,
+        this, &DownloadsDb::onDownloadChanged);
+    connect(download, &Download::throttleChanged,
+        this, &DownloadsDb::onDownloadChanged);
+}
+
+void
+DownloadsDb::disconnectFromDownload(Download* download) {
+    disconnect(download, &Download::stateChanged,
+        this, &DownloadsDb::onDownloadChanged);
+    disconnect(download, &Download::throttleChanged,
+        this, &DownloadsDb::onDownloadChanged);
+}
+
+void
+DownloadsDb::onDownloadChanged() {
+    auto down = qobject_cast<Download*>(sender());
+    if (down != nullptr) {
+        store(down);
+        auto state = down->state();
+        if (state == Download::FINISH
+                || state == Download::CANCEL
+                || state == Download::ERROR) {
+            LOG(INFO) << "Disconnecting from" << down->downloadId();
+            disconnectFromDownload(down);
+        }
+    }
+}
+
+DownloadsDb*
+DownloadsDb::instance() {
+    if(_instance == nullptr) {
+        _mutex.lock();
+        if(_instance == nullptr)
+            _instance = new DownloadsDb();
+            _instance->init();
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+DownloadsDb::setInstance(DownloadsDb* instance) {
+    _instance = instance;
+}
+
+void
+DownloadsDb::deleteInstance() {
+    if(_instance != nullptr) {
+        _mutex.lock();
+        if(_instance != nullptr) {
+            delete _instance;
+            _instance = nullptr;
+        }
+        _mutex.unlock();
+    }
+}
+
 
 }  // Daemon
 

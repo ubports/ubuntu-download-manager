@@ -27,6 +27,7 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/system/dbus_connection.h>
 #include "downloads/download.h"
+#include "downloads/downloads_db.h"
 #include "downloads/queue.h"
 #include "downloads/factory.h"
 #include "system/application.h"
@@ -115,6 +116,7 @@ class Manager : public QObject, public QDBusContext {
     qulonglong _throttle;
     Factory* _downloadFactory = nullptr;
     Queue* _downloadsQueue = nullptr;
+    DownloadsDb* _db = nullptr;
     DBusConnection* _conn = nullptr;
     bool _stoppable = false;
     bool _allowMobileData = true;

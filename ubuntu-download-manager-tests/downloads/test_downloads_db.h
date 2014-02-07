@@ -44,6 +44,8 @@ class TestDownloadsDb : public BaseTestCase {
     void testStoreSingleDownload();
     void testStoreSingleDownloadPresent_data();
     void testStoreSingleDownloadPresent();
+    void testConnectedToDownload();
+    void testDisconnectedFromDownload();
 
  private:
     DownloadsDb* _db;

@@ -107,7 +107,10 @@ Download::setLastError(const QString& lastError) {
 
 void
 Download::setThrottle(qulonglong speed) {
-    _throttle = speed;
+    if (speed != _throttle) {
+        _throttle = speed;
+        emit throttleChanged();
+    }
 }
 
 void

@@ -336,7 +336,10 @@ TestDownload::testSetThrottle() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(throttleChanged()));
     download->setThrottle(speed);
+
+    QTRY_COMPARE(1, spy.count());
 
     download->start();  // change state
     download->startDownload();
