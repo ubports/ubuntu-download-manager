@@ -12,62 +12,72 @@ Build-Depends: debhelper (>= 9),
                libgoogle-glog-dev,
                dbus-test-runner
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
 # if you don't have have commit access to this branch but would like to upload
 # directly to Ubuntu, don't worry: your changes will be merged back into the
 # upstream branch
 Vcs-Bzr: lp:ubuntu-download-manager
 
-Package: ubuntu-download-manager-common1
+Package: libubuntu-download-manager-common0
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+Breaks: ubuntu-download-manager-common1
+Replaces ubuntu-download-manager-common1
 Description: Ubuntu Download Manager - shared common library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the common shared library between the client lib and and the service lib.
 
-Package: ubuntu-download-manager-common-dev
+Package: libubuntu-download-manager-common-dev
 Section: libdevel
 Architecture: any
-Depends: ubuntu-download-manager-common1(= ${binary:Version}),
+Depends: libubuntu-download-manager-common0 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
+Breaks: ubuntu-download-manager-common-dev
+Replaces ubuntu-download-manager-common-dev
 Description: QT library for Ubuntu Download Manager - development files
  .
  This package contains the common headers shared between the client library and the daemon library.
 
-Package: ubuntu-download-manager-priv1
+Package: libubuntu-download-manager-priv0
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ubuntu-download-manager-common1 (= ${binary:Version}),
+         libubuntu-download-manager-common0 (= ${binary:Version}),
+Breaks: ubuntu-download-manager-priv1
+Replaces: ubuntu-download-manager-priv1
 Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the private shared library.
 
-Package: ubuntu-download-manager-client1
+Package: libubuntu-download-manager-client0
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ubuntu-download-manager-common1 (= ${binary:Version}),
+         libubuntu-download-manager-common0 (= ${binary:Version}),
+Braeks: ubuntu-download-manager-client1
+Replaces: ubuntu-download-manager-client1
 Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the public shared library.
 
-Package: ubuntu-download-manager-client-dev
+Package: libubuntu-download-manager-client-dev
 Section: libdevel
 Architecture: any
-Depends: ubuntu-download-manager-common-dev(= ${binary:Version}),
-         ubuntu-download-manager-client1(= ${binary:Version}),
+Depends: libubuntu-download-manager-common-dev (= ${binary:Version}),
+         libubuntu-download-manager-client0 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
+Breaks: ubuntu-download-manager-client-dev
+Replaces: ubuntu-download-manager-client-dev
 Description: QT library for Ubuntu Download Manager - development files
  .
  This package contains the header that can be used to allow an application use the Ubuntu Download Manager client library.
@@ -77,7 +87,7 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ubuntu-download-manager-priv1 (= ${binary:Version}),
+         libubuntu-download-manager-priv0 (= ${binary:Version}),
 Description: Ubuntu Download Manager - daemon
  Ubuntu Download Manager performs downloads from a centralized location.
  .
