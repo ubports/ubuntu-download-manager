@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -17,10 +17,12 @@
  */
 
 #include <QDebug>
+#include <QDBusError>
 #include <ubuntu/download_manager/system/dbus_connection.h>
 #include <system/application.h>
 #include <system/timer.h>
 #include "testing_manager.h"
+#include "testing_manager_adaptor.h"
 #include "testing_daemon.h"
 
 TestingDaemon::TestingDaemon(QObject *parent)
@@ -33,8 +35,29 @@ TestingDaemon::~TestingDaemon() {
 
 void
 TestingDaemon::returnDBusErrors(bool errors) {
-    TestingManager* man = qobject_cast<TestingManager*>(manager());
+    auto man = qobject_cast<TestingManager*>(manager());
     man->returnDBusErrors(errors);
+}
+
+void
+TestingDaemon::returnHttpError(const QString &download,
+                               HttpErrorStruct error) {
+    auto man = qobject_cast<TestingManager*>(manager());
+    man->returnHttpError(download, error);
+}
+
+void
+TestingDaemon::returnNetworkError(const QString &download,
+                                  NetworkErrorStruct error) {
+     auto man = qobject_cast<TestingManager*>(manager());
+     man->returnNetworkError(download, error);
+}
+
+void
+TestingDaemon::returnProcessError(const QString &download,
+                                  ProcessErrorStruct error) {
+    auto man = qobject_cast<TestingManager*>(manager());
+    man->returnProcessError(download, error);
 }
 
 QString

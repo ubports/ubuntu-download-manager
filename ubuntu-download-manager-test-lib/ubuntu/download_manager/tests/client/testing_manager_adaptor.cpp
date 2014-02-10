@@ -39,3 +39,21 @@ void TestingManagerAdaptor::returnDBusErrors(bool returnErrors)
     QMetaObject::invokeMethod(parent(), "returnDBusErrors", Q_ARG(bool, returnErrors));
 }
 
+void TestingManagerAdaptor::returnHttpError(const QString &download, HttpErrorStruct error)
+{
+    // handle method call com.canonical.applications.testing.DownloadManager.returnHttpError
+    QMetaObject::invokeMethod(parent(), "returnHttpError", Q_ARG(QString, download), Q_ARG(HttpErrorStruct, error));
+}
+
+void TestingManagerAdaptor::returnNetworkError(const QString &download, NetworkErrorStruct error)
+{
+    // handle method call com.canonical.applications.testing.DownloadManager.returnNetworkError
+    QMetaObject::invokeMethod(parent(), "returnNetworkError", Q_ARG(QString, download), Q_ARG(NetworkErrorStruct, error));
+}
+
+void TestingManagerAdaptor::returnProcessError(const QString &download, ProcessErrorStruct error)
+{
+    // handle method call com.canonical.applications.testing.DownloadManager.returnProcessError
+    QMetaObject::invokeMethod(parent(), "returnProcessError", Q_ARG(QString, download), Q_ARG(ProcessErrorStruct, error));
+}
+

@@ -19,8 +19,9 @@
 #ifndef DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
 #define DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
 
-#include <QDBusArgument>
 #include <QString>
+
+class QDBusArgument;
 
 namespace Ubuntu {
 

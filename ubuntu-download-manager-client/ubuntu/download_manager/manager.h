@@ -53,15 +53,15 @@ class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
 
  public:
     virtual ~Manager();
-    virtual Download* createDownload(DownloadStruct downStruct);
+    virtual void createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
                                 DownloadCb cb,
                                 DownloadCb errCb);
-    virtual GroupDownload* createDownload(StructList downs,
-                                          const QString &algorithm,
-                                          bool allowed3G,
-                                          const QVariantMap &metadata,
-                                          StringMap headers);
+    virtual void createDownload(StructList downs,
+                                const QString &algorithm,
+                                bool allowed3G,
+                                const QVariantMap &metadata,
+                                StringMap headers);
     virtual void createDownload(StructList downs,
                                 const QString &algorithm,
                                 bool allowed3G,

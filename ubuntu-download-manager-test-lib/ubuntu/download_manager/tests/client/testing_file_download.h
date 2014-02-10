@@ -22,6 +22,7 @@
 #include <QDBusContext>
 #include <QObject>
 #include <downloads/file_download.h>
+#include <ubuntu/download_manager/metatypes.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
@@ -33,6 +34,9 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
                         QObject* parent = 0);
     virtual ~TestingFileDownload();
     void returnDBusErrors(bool errors);
+    void returnHttpError(HttpErrorStruct error);
+    void returnNetworkError(NetworkErrorStruct error);
+    void returnProcessError(ProcessErrorStruct error);
 
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
@@ -60,6 +64,12 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
 
  private:
     bool _returnErrors = false;
+    bool _returnHttpError = false;
+    bool _returnNetworkError = false;
+    bool _returnProcessError = false;
+    HttpErrorStruct _httpErr;
+    NetworkErrorStruct _networkErr;
+    ProcessErrorStruct _processErr;
     FileDownload* _down = nullptr;
 };
 

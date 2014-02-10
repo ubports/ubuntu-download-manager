@@ -17,6 +17,8 @@
  */
 
 #include <QDebug>
+#include <QSignalSpy>
+#include <ubuntu/download_manager/download.h>
 #include "test_manager.h"
 
 TestManager::TestManager(QObject *parent)
@@ -100,4 +102,35 @@ TestManager::testExitError() {
     returnDBusErrors(true);
     _man->exit();
     QVERIFY(_man->isError());
+}
+
+void
+TestManager::testCreateDownloadSignalsEmitted() {
+    QString url = "http://example.com";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    DownloadStruct downStruct(url, metadata, headers);
+
+    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    _man->createDownload(downStruct);
+    QTRY_COMPARE(1, managerSpy.count());
+    auto down = managerSpy.takeFirst().at(0).value<Download*>();
+    delete down;
+}
+
+void
+TestManager::testCreateDownloadSignalsEmittedCallbacks() {
+    QString url = "http://example.com";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    DownloadCb cb = [](Download*){};
+    DownloadStruct downStruct(url, metadata, headers);
+
+    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    _man->createDownload(downStruct, cb, cb);
+    QTRY_COMPARE(1, managerSpy.count());
+    auto down = managerSpy.takeFirst().at(0).value<Download*>();
+    delete down;
 }

@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QUrl>
+#include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/download_manager/tests/base_testcase.h"
 #include "testing_daemon.h"
 
@@ -38,10 +39,13 @@ class DaemonTestCase : public BaseTestCase {
                    const QString& daemonProcess,
                    QObject* parent = 0);
 
-    void addFileToHttpServer(const QString& absolutePath);
     QString daemonPath();
-    void returnDBusErrors(bool errors);
     QUrl serverUrl();
+    void addFileToHttpServer(const QString& absolutePath);
+    void returnDBusErrors(bool errors);
+    void returnHttpError(const QString &download, HttpErrorStruct error);
+    void returnNetworkError(const QString &download, NetworkErrorStruct error);
+    void returnProcessError(const QString &download, ProcessErrorStruct error);
 
  private:
     void startUDMDaemon();

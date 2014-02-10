@@ -75,6 +75,10 @@ class ManagerPrivate {
         qRegisterMetaType<Download*>("Download*");
         qRegisterMetaType<GroupDownload*>("GroupDownload*");
         qRegisterMetaType<Error*>("Error*");
+        qRegisterMetaType<DBusError*>("DBusError*");
+        qRegisterMetaType<HttpError*>("HttpError*");
+        qRegisterMetaType<NetworkError*>("NetworkError*");
+        qRegisterMetaType<ProcessError*>("ProcessError*");
         qDBusRegisterMetaType<StringMap>();
         qDBusRegisterMetaType<DownloadStruct>();
         qDBusRegisterMetaType<GroupDownloadStruct>();
@@ -84,21 +88,17 @@ class ManagerPrivate {
         qDBusRegisterMetaType<ProcessErrorStruct>();
     }
 
-    Download* createDownload(DownloadStruct downStruct) {
+    void createDownload(DownloadStruct downStruct) {
         Q_Q(Manager);
-        QDBusPendingReply<QDBusObjectPath> reply =
+        QDBusPendingCall call =
             _dbusInterface->createDownload(downStruct);
-        // blocking other method should be used
-        reply.waitForFinished();
-        if (reply.isError()) {
-            auto err = new Error(reply.error());
-            return new Download(_conn, err);
-        } else {
-            auto path = reply.value();
-            auto down = new Download(_conn, _servicePath, path);
-            emit q->downloadCreated(down);
-            return down;
-        }
+        DownloadCb cb = [](Download*) {};
+
+        auto watcher = new DownloadManagerPendingCallWatcher(_conn,
+                _servicePath, call, cb, cb,
+                static_cast<QObject*>(q));
+        q->connect(watcher, SIGNAL(callbackExecuted()),
+            q, SLOT(onWatcherDone()));
     }
 
     void createDownload(DownloadStruct downStruct,
@@ -114,26 +114,22 @@ class ManagerPrivate {
             q, SLOT(onWatcherDone()));
     }
 
-    GroupDownload* createDownload(StructList downs,
-                                  const QString& algorithm,
-                                  bool allowed3G,
-                                  const QVariantMap& metadata,
-                                  StringMap headers) {
+    void createDownload(StructList downs,
+                        const QString& algorithm,
+                        bool allowed3G,
+                        const QVariantMap& metadata,
+                        StringMap headers) {
         Q_Q(Manager);
-        QDBusPendingReply<QDBusObjectPath> reply =
+        QDBusPendingCall call =
             _dbusInterface->createDownloadGroup(downs,
                 algorithm, allowed3G, metadata, headers);
-        // blocking other method should be used
-        reply.waitForFinished();
-        if (reply.isError()) {
-            Error* err = new Error(reply.error());
-            return new GroupDownload(err);
-        } else {
-            auto path = reply.value();
-            auto down = new GroupDownload(path, q);
-            emit q->groupCreated(down);
-            return down;
-        }
+
+        GroupCb cb = [](GroupDownload*) {};
+
+        auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
+                call, cb, cb, static_cast<QObject*>(q));
+        q->connect(watcher, SIGNAL(callbackExecuted()),
+            q, SLOT(onWatcherDone()));
     }
 
     void createDownload(StructList downs,
@@ -166,7 +162,7 @@ class ManagerPrivate {
         if (_lastError != nullptr) {
             delete _lastError;
         }
-        _lastError = new Error(err);
+        _lastError = new DBusError(err);
         _isError = true;
     }
 
@@ -293,10 +289,10 @@ Manager::createSystemManager(const QString& path, QObject* parent) {
     }
 }
 
-Download*
+void
 Manager::createDownload(DownloadStruct downStruct) {
     Q_D(Manager);
-    return d->createDownload(downStruct);
+    d->createDownload(downStruct);
 }
 
 void
@@ -307,14 +303,14 @@ Manager::createDownload(DownloadStruct downStruct,
     d->createDownload(downStruct, cb, errCb);
 }
 
-GroupDownload*
+void
 Manager::createDownload(StructList downs,
                         const QString &algorithm,
                         bool allowed3G,
                         const QVariantMap &metadata,
                         StringMap headers) {
     Q_D(Manager);
-    return d->createDownload(downs, algorithm, allowed3G, metadata, headers);
+    d->createDownload(downs, algorithm, allowed3G, metadata, headers);
 }
 
 void

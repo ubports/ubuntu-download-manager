@@ -50,7 +50,7 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
-        auto err = new Error(reply.error());
+        auto err = new DBusError(reply.error());
         auto down = new Download(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
@@ -86,7 +86,7 @@ GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         // creater error and deal with it
-        auto err = new Error(reply.error());
+        auto err = new DBusError(reply.error());
         auto down = new GroupDownload(err);
         _errCb(down);
         emit man->groupCreated(down);
