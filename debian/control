@@ -25,7 +25,7 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: ubuntu-download-manager-common1
-Replaces ubuntu-download-manager-common1
+Replaces: ubuntu-download-manager-common1
 Description: Ubuntu Download Manager - shared common library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
@@ -38,7 +38,7 @@ Depends: libubuntu-download-manager-common0 (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Breaks: ubuntu-download-manager-common-dev
-Replaces ubuntu-download-manager-common-dev
+Replaces: ubuntu-download-manager-common-dev
 Description: QT library for Ubuntu Download Manager - development files
  .
  This package contains the common headers shared between the client library and the daemon library.
@@ -62,7 +62,7 @@ Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libubuntu-download-manager-common0 (= ${binary:Version}),
-Braeks: ubuntu-download-manager-client1
+Breaks: ubuntu-download-manager-client1
 Replaces: ubuntu-download-manager-client1
 Description: Ubuntu Download Manager - shared library
  Ubuntu Download Manager performs downloads from a centralized location.
