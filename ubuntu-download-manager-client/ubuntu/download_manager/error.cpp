@@ -24,7 +24,7 @@ namespace {
     const QString DBUS_ERROR_STRING = "DBusError: %1 - %2";
     const QString HTTP_ERROR_STRING = "HttpError: %1 - %2";
     const QString NETWORK_ERROR_STRING = "NetworkError: %1 - %2";
-    const QString PROCESS_ERROR_STRING = "PRocessError: %1 - %2\nExit code: %3\nStdout: %4\nStderr:%5";
+    const QString PROCESS_ERROR_STRING = "ProcessError: %1 - %2\nExit code: %3\nStdout: %4\nStderr:%5";
 }
 
 namespace Ubuntu {
