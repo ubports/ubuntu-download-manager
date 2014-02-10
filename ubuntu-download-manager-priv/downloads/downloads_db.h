@@ -45,9 +45,9 @@ class DownloadsDb : public QObject {
     QString filename();
     bool dbExists();  // return if the db is present and valid
     bool init();  // init or update the db
-    bool store(Download* down);
+    virtual bool store(Download* down);
     bool storeSingleDownload(FileDownload* download);
-    void connetToDownload(Download* download);
+    void connectToDownload(Download* download);
     void disconnectFromDownload(Download* download);
 
  public slots:

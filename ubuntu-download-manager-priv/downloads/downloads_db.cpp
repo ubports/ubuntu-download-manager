@@ -287,7 +287,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
 }
 
 void
-DownloadsDb::connetToDownload(Download* download) {
+DownloadsDb::connectToDownload(Download* download) {
     connect(download, &Download::stateChanged,
         this, &DownloadsDb::onDownloadChanged);
     connect(download, &Download::throttleChanged,

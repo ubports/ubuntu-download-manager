@@ -21,6 +21,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSignalSpy>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/uuid_utils.h>
@@ -30,12 +31,14 @@
 #include <ubuntu/download_manager/tests/server/process_factory.h>
 #include "test_downloads_db.h"
 
-#define TABLE_EXISTS "SELECT count(name) FROM sqlite_master "\
-    "WHERE type='table' AND name=:table_name;"
+namespace {
+    const QString TABLE_EXISTS = "SELECT count(name) FROM sqlite_master "\
+        "WHERE type='table' AND name=:table_name;";
 
-#define SELECT_SINGLE_DOWNLOAD "SELECT url, dbus_path, local_path, "\
-    "hash, hash_algo, state, total_size, throttle, metadata, headers "\
-    "FROM SingleDownload WHERE uuid=:uuid;"
+    const QString SELECT_SINGLE_DOWNLOAD = "SELECT url, dbus_path, local_path, "\
+        "hash, hash_algo, state, total_size, throttle, metadata, headers "\
+        "FROM SingleDownload WHERE uuid=:uuid;";
+}
 
 TestDownloadsDb::TestDownloadsDb(QObject *parent)
     : BaseTestCase("TestDownloadsDb", parent) {
@@ -287,6 +290,9 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
 void
 TestDownloadsDb::testConnectedToDownload() {
+    QScopedPointer<TestingDb> testingDb(new TestingDb);
+    QSignalSpy spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
+
     auto id = UuidUtils::getDBusString(QUuid::createUuid());
     QString path = "first path";
     auto url =  QUrl("http://ubuntu.com");
@@ -298,89 +304,18 @@ TestDownloadsDb::testConnectedToDownload() {
     QScopedPointer<FakeDownload> download(new FakeDownload(id, path, true, "",
         url, hash, hashAlgoString, metadata, headers));
 
-    // store the object, check the values and raise a change in the throttle
-    // and the state to test if we trigger an update
-    _db->storeSingleDownload(download.data());
-    _db->connetToDownload(download.data());
-
-    // query that the download is there and that the data is correct
-    QSqlDatabase db = _db->db();
-    db.open();
-    QSqlQuery query(db);
-    query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id);
-    query.exec();
-    if (query.next()) {
-        auto dbUrl = query.value(0).toString();
-        QCOMPARE(url.toString(), dbUrl);
-
-        auto dbDbusPath = query.value(1).toString();
-        QCOMPARE(path, dbDbusPath);
-
-        auto dbLocalPath = query.value(2).toString();
-        QCOMPARE(dbLocalPath, download->filePath());
-
-        auto dbHash = query.value(3).toString();
-        QCOMPARE(hash, dbHash);
-
-        auto dbHashAlgo = query.value(4).toString();
-        QCOMPARE(hashAlgoString, dbHashAlgo);
-
-        auto stateDb = query.value(5).toInt();
-        QCOMPARE(0, stateDb);
-
-        auto dbTotalSize = query.value(6).toString();
-        QCOMPARE(QString::number(download->totalSize()), dbTotalSize);
-
-        auto dbThrottle = query.value(7).toString();
-        QCOMPARE(QString::number(download->throttle()), dbThrottle);
-
-        db.close();
-    } else {
-        db.close();
-        QFAIL("Failed to get download from db!");
-    }
-
+    testingDb->connectToDownload(download.data());
     // update the throttle and test that it is update
     download->setThrottle(90);
-    db.open();
-    query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id);
-    auto r = query.exec();
-    qDebug() << r << query.lastError().text();
-    query.exec();
-    if (query.next()) {
-
-        auto dbThrottle = query.value(7).toString();
-        QCOMPARE(QString::number(download->throttle()), dbThrottle);
-
-        db.close();
-    } else {
-        db.close();
-        QFAIL("Failed to get download from db!");
-    }
-
-    // update the state and assert that it was stored
     download->setState(Download::PAUSE);
-
-    db.open();
-    query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id);
-    r = query.exec();
-    qDebug() << r << query.lastError().text();
-    if (query.next()) {
-        auto stateDb = query.value(5).toString();
-        QCOMPARE(QString("pause"), stateDb);
-        db.close();
-
-    } else {
-        db.close();
-        QFAIL("Failed to get download from db!");
-    }
+    QCOMPARE(2, spy.count());  // one per update
 }
 
 void
 TestDownloadsDb::testDisconnectedFromDownload() {
+    QScopedPointer<TestingDb> testingDb(new TestingDb);
+    QSignalSpy spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
+
     auto id = UuidUtils::getDBusString(QUuid::createUuid());
     QString path = "first path";
     auto url =  QUrl("http://ubuntu.com");
@@ -392,66 +327,10 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     QScopedPointer<FakeDownload> download(new FakeDownload(id, path, true, "",
         url, hash, hashAlgoString, metadata, headers));
 
-    // store the object, check the values and raise a change in the throttle
-    // and the state to test if we trigger an update
-    _db->storeSingleDownload(download.data());
-    _db->connetToDownload(download.data());
-
-    // query that the download is there and that the data is correct
-    QSqlDatabase db = _db->db();
-    db.open();
-    QSqlQuery query(db);
-    query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id);
-    query.exec();
-    if (query.next()) {
-        auto dbUrl = query.value(0).toString();
-        QCOMPARE(url.toString(), dbUrl);
-
-        auto dbDbusPath = query.value(1).toString();
-        QCOMPARE(path, dbDbusPath);
-
-        auto dbLocalPath = query.value(2).toString();
-        QCOMPARE(dbLocalPath, download->filePath());
-
-        auto dbHash = query.value(3).toString();
-        QCOMPARE(hash, dbHash);
-
-        auto dbHashAlgo = query.value(4).toString();
-        QCOMPARE(hashAlgoString, dbHashAlgo);
-
-        auto stateDb = query.value(5).toInt();
-        QCOMPARE(0, stateDb);
-
-        auto dbTotalSize = query.value(6).toString();
-        QCOMPARE(QString::number(download->totalSize()), dbTotalSize);
-
-        auto dbThrottle = query.value(7).toString();
-        QCOMPARE(QString::number(download->throttle()), dbThrottle);
-
-        db.close();
-    } else {
-        db.close();
-        QFAIL("Download fooo!");
-    }
-
-    _db->disconnectFromDownload(download.data());
-    // update the throttle and test that it is NOT update
+    testingDb->connectToDownload(download.data());
+    // update the throttle and test that it is update
     download->setThrottle(90);
-    db.open();
-    query.prepare(SELECT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", id);
-    auto r = query.exec();
-    qDebug() << r << query.lastError().text();
-    query.exec();
-    if (query.next()) {
-
-        auto dbThrottle = query.value(7).toString();
-        QCOMPARE(QString::number(0), dbThrottle);
-
-        db.close();
-    } else {
-        db.close();
-        QFAIL("Download baaaar!");
-    }
+    QCOMPARE(1, spy.count()); 
+    testingDb->disconnectFromDownload(download.data());
+    download->setState(Download::PAUSE);
 }

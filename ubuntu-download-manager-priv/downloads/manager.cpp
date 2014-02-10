@@ -124,7 +124,7 @@ Manager::registerDownload(Download* download) {
         LOG(WARNING) << download->downloadId()
             << "could not be stored in the db";
     }
-    _db->connetToDownload(download);
+    _db->connectToDownload(download);
     _downloadsQueue->add(download);
     _conn->registerObject(download->path(), download);
     QDBusObjectPath objectPath = QDBusObjectPath(download->path());
