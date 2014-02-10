@@ -308,7 +308,7 @@ TestDownloadsDb::testConnectedToDownload() {
     // update the throttle and test that it is update
     download->setThrottle(90);
     download->setState(Download::PAUSE);
-    QCOMPARE(2, spy.count());  // one per update
+    QTRY_COMPARE(2, spy.count());  // one per update
 }
 
 void
@@ -330,7 +330,8 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     testingDb->connectToDownload(download.data());
     // update the throttle and test that it is update
     download->setThrottle(90);
-    QCOMPARE(1, spy.count()); 
+    QTRY_COMPARE(1, spy.count()); 
     testingDb->disconnectFromDownload(download.data());
     download->setState(Download::PAUSE);
+    QTRY_COMPARE(1, spy.count()); 
 }
