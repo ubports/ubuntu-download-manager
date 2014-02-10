@@ -43,8 +43,8 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     bool isConfined;
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
-    Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
-        metadata, headers, this);
+    Download* down = new FakeDownload(id, "FAKE", dbusPath, isConfined,
+        rootPath, url, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -68,7 +68,7 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     bool isConfined;
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
-    Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath, url,
+    Download* down = new FakeDownload(id, "FAKE", dbusPath, isConfined, rootPath, url,
         hash, algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
@@ -96,8 +96,8 @@ FakeDownloadFactory::createDownload(const QString& downloadOwner,
     bool isConfined;
     QString id = _apparmor->getSecurePath(downloadOwner, dbusPath, rootPath,
         isConfined);
-    Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        QUrl(), "", algo, metadata, headers, this);
+    Download* down = new FakeDownload(id, "FAKE", dbusPath, isConfined,
+        rootPath, QUrl(), "", algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;
@@ -118,8 +118,8 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FakeDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers, this);
+    Download* down = new FakeDownload(id, "FAKE", dbusPath, isConfined,
+        rootPath, url, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();
     return down;

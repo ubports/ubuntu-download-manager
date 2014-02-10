@@ -32,10 +32,10 @@ TestDownloadQueue::init() {
     _networkInfo = new FakeSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
     _first = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
-        "first-path", _isConfined, _rootPath, QUrl(),
+        "TEST APP", "first-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>());
     _second = new FakeDownload(UuidUtils::getDBusString(QUuid::createUuid()),
-        "second-path", _isConfined, _rootPath, QUrl(),
+        "TEST APP", "second-path", _isConfined, _rootPath, QUrl(),
         QVariantMap(), QMap<QString, QString>());
     _q = new Queue();
 }

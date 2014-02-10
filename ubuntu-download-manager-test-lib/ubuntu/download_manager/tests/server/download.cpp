@@ -20,6 +20,7 @@
 #include "download.h"
 
 FakeDownload::FakeDownload(const QString& id,
+                           const QString& appId,
                            const QString& path,
                            bool isConfined,
                            const QString& rootPath,
@@ -27,12 +28,13 @@ FakeDownload::FakeDownload(const QString& id,
                            const QVariantMap& metadata,
                            const QMap<QString, QString> &headers,
                            QObject* parent)
-        : FileDownload(id, "", path, isConfined, rootPath, url, metadata,
+        : FileDownload(id, appId, path, isConfined, rootPath, url, metadata,
                 headers, parent),
         _canDownload(true) {
 }
 
 FakeDownload::FakeDownload(const QString& id,
+                           const QString& appId,
                            const QString& path,
                            bool isConfined,
                            const QString& rootPath,
@@ -42,7 +44,7 @@ FakeDownload::FakeDownload(const QString& id,
                            const QVariantMap& metadata,
                            const QMap<QString, QString>& headers,
                            QObject* parent)
-        : FileDownload(id, "", path, isConfined, rootPath, url, hash, algo,
+        : FileDownload(id, appId, path, isConfined, rootPath, url, hash, algo,
                 metadata, headers, parent),
         _canDownload(true) {
 }

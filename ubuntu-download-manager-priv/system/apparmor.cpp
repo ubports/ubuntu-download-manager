@@ -175,7 +175,7 @@ AppArmor::getAppId(const QString& connName) {
     // blocking but should be ok for now
     reply.waitForFinished();
     if (reply.isError()) {
-        LOG(ERROR) << reply.error();
+        LOG(WARNING) << reply.error();
         return "";
     } else {
         // use the returned value

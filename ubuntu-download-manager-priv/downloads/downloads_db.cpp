@@ -32,6 +32,7 @@
 namespace {
     const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE IF NOT EXISTS SingleDownload("\
         "uuid VARCHAR(40) PRIMARY KEY, "\
+        "appId TEXT NOT NULL,"
         "url TEXT NOT NULL, "\
         "dbus_path TEXT NOT NULL UNIQUE, "\
         "local_path TEXT, "\
@@ -62,8 +63,8 @@ namespace {
         "WHERE uuid=:uuid;";
 
     const QString INSERT_SINGLE_DOWNLOAD = "INSERT INTO SingleDownload("\
-        "uuid, url, dbus_path, local_path, hash, hash_algo, state, total_size, "\
-        "throttle, metadata, headers) VALUES (:uuid, :url, :dbus_path, "\
+        "uuid, appId, url, dbus_path, local_path, hash, hash_algo, state, total_size, "\
+        "throttle, metadata, headers) VALUES (:uuid, :appId, :url, :dbus_path, "\
         ":local_path, :hash, :hash_algo, :state, :total_size, :throttle, "\
         ":metadata, :headers)";
 
@@ -261,6 +262,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
     }
 
     query.bindValue(":uuid", download->downloadId());
+    query.bindValue(":appId", download->appId());
     query.bindValue(":url", download->url().toString());
     query.bindValue(":dbus_path", download->path());
     query.bindValue(":local_path", download->filePath());

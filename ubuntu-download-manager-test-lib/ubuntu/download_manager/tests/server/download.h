@@ -32,6 +32,7 @@ class FakeDownload : public FileDownload, public Fake {
 
  public:
     FakeDownload(const QString& id,
+                 const QString& appId,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,
@@ -40,6 +41,7 @@ class FakeDownload : public FileDownload, public Fake {
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0);
     FakeDownload(const QString& id,
+                 const QString& appId,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,

@@ -27,6 +27,7 @@ TestBaseDownload::init() {
     BaseTestCase::init();
 
     _id = "download-id";
+    _appId = "TEST APP";
     _path = "path-to-be-used";
     _isConfined = false;
     _rootPath = "/root/path/to/use";
@@ -36,7 +37,7 @@ TestBaseDownload::init() {
 void
 TestBaseDownload::testStartQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->start();
@@ -47,7 +48,7 @@ TestBaseDownload::testStartQueued() {
 void
 TestBaseDownload::testStartNotQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->setAddToQueue(false);
@@ -60,7 +61,7 @@ TestBaseDownload::testStartNotQueued() {
 void
 TestBaseDownload::testPauseQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->pause();
@@ -71,7 +72,7 @@ TestBaseDownload::testPauseQueued() {
 void
 TestBaseDownload::testPauseNotQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->setAddToQueue(false);
@@ -84,7 +85,7 @@ TestBaseDownload::testPauseNotQueued() {
 void
 TestBaseDownload::testResumeQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->resume();
@@ -95,7 +96,7 @@ TestBaseDownload::testResumeQueued() {
 void
 TestBaseDownload::testResumeNotQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->setAddToQueue(false);
@@ -108,7 +109,7 @@ TestBaseDownload::testResumeNotQueued() {
 void
 TestBaseDownload::testCancelQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->cancel();
@@ -119,7 +120,7 @@ TestBaseDownload::testCancelQueued() {
 void
 TestBaseDownload::testCancelNotQueued() {
     QScopedPointer<FakeDownload> down(
-        new FakeDownload(_id, _path, _isConfined, _rootPath, _url,
+        new FakeDownload(_id, _appId, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->record();
     down->setAddToQueue(false);
