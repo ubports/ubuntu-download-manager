@@ -27,6 +27,25 @@
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
+// class used for testing some methods without the need of a real db
+class TestingDb : public DownloadsDb {
+    Q_OBJECT
+
+ public:
+    explicit TestingDb(QObject *parent = 0)
+        : DownloadsDb(parent) {
+    }
+
+    bool store(Download* down) override {
+        // just emit the signal and do nothing
+        emit downloadStored(down);
+        return true;
+    }
+
+ signals:
+    void downloadStored(Download*);
+};
+
 class TestDownloadsDb : public BaseTestCase {
     Q_OBJECT
  public:
@@ -44,6 +63,8 @@ class TestDownloadsDb : public BaseTestCase {
     void testStoreSingleDownload();
     void testStoreSingleDownloadPresent_data();
     void testStoreSingleDownloadPresent();
+    void testConnectedToDownload();
+    void testDisconnectedFromDownload();
 
  private:
     DownloadsDb* _db;

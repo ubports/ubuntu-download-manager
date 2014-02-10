@@ -18,7 +18,6 @@
 
 #include <functional>
 #include <QRegExp>
-#include "downloads/queue.h"
 #include "downloads/manager.h"
 #include "system/apparmor.h"
 #include "system/logger.h"
@@ -42,6 +41,7 @@ Manager::Manager(Application* app,
     _conn = connection;
     RequestFactory::setStoppable(_stoppable);
     _downloadFactory = new Factory(this);
+    _db = DownloadsDb::instance();
     _downloadsQueue = new Queue(this);
     init();
 }
@@ -59,6 +59,7 @@ Manager::Manager(Application* app,
       _downloadFactory(downloadFactory),
       _downloadsQueue(queue),
       _stoppable(stoppable) {
+    _db = DownloadsDb::instance();
     _conn = connection;
     init();
 }
@@ -119,6 +120,11 @@ QDBusObjectPath
 Manager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
+    if (!_db->store(download)) {
+        LOG(WARNING) << download->downloadId()
+            << "could not be stored in the db";
+    }
+    _db->connectToDownload(download);
     _downloadsQueue->add(download);
     _conn->registerObject(download->path(), download);
     QDBusObjectPath objectPath = QDBusObjectPath(download->path());

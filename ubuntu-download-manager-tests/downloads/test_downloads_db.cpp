@@ -21,6 +21,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSignalSpy>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <system/uuid_utils.h>
@@ -30,12 +31,14 @@
 #include <ubuntu/download_manager/tests/server/process_factory.h>
 #include "test_downloads_db.h"
 
-#define TABLE_EXISTS "SELECT count(name) FROM sqlite_master "\
-    "WHERE type='table' AND name=:table_name;"
+namespace {
+    const QString TABLE_EXISTS = "SELECT count(name) FROM sqlite_master "\
+        "WHERE type='table' AND name=:table_name;";
 
-#define SELECT_SINGLE_DOWNLOAD "SELECT url, dbus_path, local_path, "\
-    "hash, hash_algo, state, total_size, throttle, metadata, headers "\
-    "FROM SingleDownload WHERE uuid=:uuid;"
+    const QString SELECT_SINGLE_DOWNLOAD = "SELECT url, dbus_path, local_path, "\
+        "hash, hash_algo, state, total_size, throttle, metadata, headers "\
+        "FROM SingleDownload WHERE uuid=:uuid;";
+}
 
 TestDownloadsDb::TestDownloadsDb(QObject *parent)
     : BaseTestCase("TestDownloadsDb", parent) {
@@ -44,7 +47,7 @@ TestDownloadsDb::TestDownloadsDb(QObject *parent)
 void
 TestDownloadsDb::init() {
     BaseTestCase::init();
-    _db = new DownloadsDb();
+    _db = DownloadsDb::instance();
 }
 
 void
@@ -52,7 +55,9 @@ TestDownloadsDb::cleanup() {
     BaseTestCase::cleanup();
     QString dbFile = _db->filename();
 
-    delete _db;
+
+    DownloadsDb::deleteInstance();
+    _db = nullptr;
 
     QFile::remove(dbFile);
     SystemNetworkInfo::deleteInstance();
@@ -283,3 +288,50 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     }
 }
 
+void
+TestDownloadsDb::testConnectedToDownload() {
+    QScopedPointer<TestingDb> testingDb(new TestingDb);
+    QSignalSpy spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
+
+    auto id = UuidUtils::getDBusString(QUuid::createUuid());
+    QString path = "first path";
+    auto url =  QUrl("http://ubuntu.com");
+    auto hash = QString();
+    QString hashAlgoString = "md5";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    QScopedPointer<FakeDownload> download(new FakeDownload(id, path, true, "",
+        url, hash, hashAlgoString, metadata, headers));
+
+    testingDb->connectToDownload(download.data());
+    // update the throttle and test that it is update
+    download->setThrottle(90);
+    download->setState(Download::PAUSE);
+    QTRY_COMPARE(2, spy.count());  // one per update
+}
+
+void
+TestDownloadsDb::testDisconnectedFromDownload() {
+    QScopedPointer<TestingDb> testingDb(new TestingDb);
+    QSignalSpy spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
+
+    auto id = UuidUtils::getDBusString(QUuid::createUuid());
+    QString path = "first path";
+    auto url =  QUrl("http://ubuntu.com");
+    auto hash = QString();
+    QString hashAlgoString = "md5";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    QScopedPointer<FakeDownload> download(new FakeDownload(id, path, true, "",
+        url, hash, hashAlgoString, metadata, headers));
+
+    testingDb->connectToDownload(download.data());
+    // update the throttle and test that it is update
+    download->setThrottle(90);
+    QTRY_COMPARE(1, spy.count()); 
+    testingDb->disconnectFromDownload(download.data());
+    download->setState(Download::PAUSE);
+    QTRY_COMPARE(1, spy.count()); 
+}

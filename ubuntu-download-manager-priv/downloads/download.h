@@ -168,6 +168,7 @@ class Download : public QObject {
 
     // internal signals
     void stateChanged();
+    void throttleChanged();
 
  protected:
     void setIsValid(bool isValid);

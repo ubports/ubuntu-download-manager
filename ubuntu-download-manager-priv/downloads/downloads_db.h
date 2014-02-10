@@ -34,13 +34,27 @@ class DownloadsDb : public QObject {
     Q_OBJECT
 
  public:
-    explicit DownloadsDb(QObject *parent = 0);
+    static DownloadsDb* instance();
+    static void setStoppable(bool stoppable);
+
+    // only used for testing purposes
+    static void setInstance(DownloadsDb* instance);
+    static void deleteInstance();
 
     QSqlDatabase db();
     QString filename();
     bool dbExists();  // return if the db is present and valid
     bool init();  // init or update the db
+    virtual bool store(Download* down);
     bool storeSingleDownload(FileDownload* download);
+    void connectToDownload(Download* download);
+    void disconnectFromDownload(Download* download);
+
+ public slots:
+    void onDownloadChanged();
+
+ protected:
+    explicit DownloadsDb(QObject *parent = 0);
 
  private:
     QString headersToString(const QMap<QString, QString>& headers);
@@ -50,6 +64,10 @@ class DownloadsDb : public QObject {
     Download::State stringToState(QString state);
 
  private:
+    // used for the singleton
+    static DownloadsDb* _instance;
+    static QMutex _mutex;
+
     QString _dbName;
     FileManager* _fileManager;
     QSqlDatabase _db;
