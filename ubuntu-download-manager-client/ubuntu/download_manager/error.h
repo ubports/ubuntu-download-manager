@@ -47,6 +47,7 @@ class DOWNLOAD_MANAGER_EXPORT Error : public QObject {
 
     virtual ~Error();
     Type type();
+    virtual QString errorString();
 
  protected:
     Error(Type type, QObject* parent = 0);
@@ -72,6 +73,7 @@ class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
     virtual ~DBusError();
     QString message();
     QString name();
+    QString errorString() override;
 
  protected:
     DBusError(QDBusError err, QObject* parent = 0);
@@ -92,6 +94,7 @@ class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
     virtual ~HttpError();
     int code();
     QString phrase();
+    QString errorString() override;
 
  protected:
     HttpError(HttpErrorStruct err, QObject* parent);
@@ -140,6 +143,7 @@ class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
     virtual ~NetworkError();
     ErrorCode code();
     QString phrase();
+    QString errorString() override;
 
  protected:
     NetworkError(NetworkErrorStruct err, QObject* parent);
@@ -163,6 +167,7 @@ class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
     int exitCode();
     QString standardOut();
     QString standardError();
+    QString errorString() override;
 
  protected:
     ProcessError(ProcessErrorStruct err, QObject* parent);
