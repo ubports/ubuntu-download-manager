@@ -36,6 +36,7 @@ TestDownload::init() {
     BaseTestCase::init();
 
     _id = UuidUtils::getDBusString(QUuid::createUuid());
+    _appId = "Testing App";
     _isConfined = false;
     _rootPath = testDirectory();
     _path = "random path to dbus";
@@ -65,32 +66,37 @@ TestDownload::cleanup() {
 void
 TestDownload::testNoHashConstructor_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
 
     QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/first/app" << QUrl("http://ubuntu.com");
+        << "MYAPP" << "/path/to/first/app" << QUrl("http://ubuntu.com");
     QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/second/app" << QUrl("http://ubuntu.com/juju");
+        << "SECOND APP" << "/path/to/second/app"
+        << QUrl("http://ubuntu.com/juju");
     QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet");
+        << "THIRD APP" << "/path/to/third/app"
+        << QUrl("http://ubuntu.com/tablet");
     QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
+        << "LAST APP" << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
 }
 
 void
 TestDownload::testNoHashConstructor() {
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
-        _rootPath, url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        _isConfined, _rootPath, url, _metadata, _headers));
 
     // assert that we did set the intial state correctly
     // gets for internal state
 
     QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->appId(), appId);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->state(), Download::IDLE);
@@ -101,37 +107,40 @@ TestDownload::testNoHashConstructor() {
 void
 TestDownload::testHashConstructor_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
     QTest::addColumn<QString>("algo");
 
     QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/first/app" << QUrl("http://ubuntu.com")
+        << "FIRST APP" << "/path/to/first/app" << QUrl("http://ubuntu.com")
         << "my-first-hash" << "md5";
     QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/second/app" << QUrl("http://ubuntu.com/juju")
-        << "my-second-hash" << "Md5";
+        << "SECOND APP" << "/path/to/second/app"
+        << QUrl("http://ubuntu.com/juju") << "my-second-hash" << "Md5";
     QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet")
-        << "my-third-hash" << "Sha1";
+        << "THIRD APP" << "/path/to/third/app"
+        << QUrl("http://ubuntu.com/tablet") << "my-third-hash" << "Sha1";
     QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
+        << "LAST APP" << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
         << "my-last-hash" << "Sha256";
 }
 
 void
 TestDownload::testHashConstructor() {
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
     QFETCH(QString, algo);
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
-        _rootPath, url, hash, algo, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        _isConfined, _rootPath, url, hash, algo, _metadata, _headers));
 
     QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->appId(), appId);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
@@ -156,8 +165,8 @@ void
 TestDownload::testPath() {
     // create an app download and assert that the returned data is correct
     QFETCH(QString, path);
-    QScopedPointer<FileDownload> download(new FileDownload(_id, path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QCOMPARE(download->path(), path);
 }
 
@@ -176,8 +185,8 @@ void
 TestDownload::testUrl() {
     // create an app download and assert that the returned data is correct
     QFETCH(QUrl, url);
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, url, _metadata, _headers));
     QCOMPARE(download->url(), url);
 }
 
@@ -200,8 +209,8 @@ TestDownload::testProgress() {
     QFETCH(qulonglong, total);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
@@ -243,8 +252,8 @@ TestDownload::testProgressNotKnownSize() {
     QFETCH(int, total);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
@@ -274,8 +283,8 @@ TestDownload::testTotalSize() {
     // assert that the total size is just set once
     // by emitting two signals with diff sizes
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
@@ -295,8 +304,8 @@ TestDownload::testTotalSize() {
 
 void
 TestDownload::testTotalSizeNoProgress() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+         _isConfined, _rootPath, _url, _metadata, _headers));
     QCOMPARE(0ULL, download->totalSize());
 }
 
@@ -313,8 +322,8 @@ TestDownload::testSetThrottleNoReply_data() {
 void
 TestDownload::testSetThrottleNoReply() {
     QFETCH(qulonglong, speed);
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     download->setThrottle(speed);
     QCOMPARE(speed, download->throttle());
 }
@@ -334,8 +343,8 @@ TestDownload::testSetThrottle() {
     QFETCH(uint, speed);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(throttleChanged()));
     download->setThrottle(speed);
 
@@ -368,8 +377,8 @@ void
 TestDownload::testSetGSMDownloadSame() {
     QFETCH(bool, value);
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(value);
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
 
@@ -391,8 +400,8 @@ TestDownload::testSetGSMDownloadDiff() {
     QFETCH(bool, oldValue);
     QFETCH(bool, newValue);
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(oldValue);
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
 
@@ -434,8 +443,8 @@ TestDownload::testCanDownloadGSM() {
     _networkInfo->setMode(mode.value<QNetworkInfo::NetworkMode>());
     _networkInfo->record();
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(true);
     QVERIFY(download->canDownload());
     QList<MethodData> calledMethods = _networkInfo->calledMethods();
@@ -480,8 +489,8 @@ TestDownload::testCanDownloadNoGSM() {
     _networkInfo->setMode(mode.value<QNetworkInfo::NetworkMode>());
     _networkInfo->record();
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(false);
 
     QCOMPARE(result, download->canDownload());
@@ -491,8 +500,8 @@ TestDownload::testCanDownloadNoGSM() {
 
 void
 TestDownload::testCancel() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
     download->cancel();
 
@@ -502,8 +511,8 @@ TestDownload::testCancel() {
 
 void
 TestDownload::testPause() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
     download->pause();
 
@@ -513,8 +522,8 @@ TestDownload::testPause() {
 
 void
 TestDownload::testResume() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
     download->resume();
 
@@ -524,8 +533,8 @@ TestDownload::testResume() {
 
 void
 TestDownload::testStart() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
     download->start();
 
@@ -538,8 +547,8 @@ TestDownload::testCancelDownload() {
     // tell the fake nam to record so that we can access the reply
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
@@ -569,8 +578,8 @@ TestDownload::testCancelDownload() {
 void
 TestDownload::testCancelDownloadNotStarted() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
@@ -589,8 +598,8 @@ TestDownload::testCancelDownloadNotStarted() {
 void
 TestDownload::testPauseDownload() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
@@ -624,8 +633,8 @@ TestDownload::testPauseDownload() {
 
 void
 TestDownload::testPauseDownloadNotStarted() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
@@ -640,8 +649,8 @@ TestDownload::testPauseDownloadNotStarted() {
 
 void
 TestDownload::testResumeRunning() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(resumed(bool)));  // NOLINT(readability/function)
 
@@ -659,8 +668,8 @@ TestDownload::testResumeRunning() {
 void
 TestDownload::testResumeDownload() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
@@ -697,8 +706,8 @@ TestDownload::testResumeDownload() {
 void
 TestDownload::testStartDownload() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
@@ -718,8 +727,8 @@ TestDownload::testStartDownload() {
 void
 TestDownload::testStartDownloadAlreadyStarted() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(),
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
@@ -741,8 +750,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
 void
 TestDownload::testOnSuccessNoHash() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -764,8 +773,9 @@ TestDownload::testOnSuccessNoHash() {
 void
 TestDownload::testOnSuccessHashError() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, "imposible-hash-is-not-hex", _algo, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, "imposible-hash-is-not-hex", _algo,
+        _metadata, _headers));
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -831,8 +841,8 @@ TestDownload::testOnSuccessHash() {
     QFETCH(QString, hash);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, hash, _algo, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, hash, _algo, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -882,8 +892,8 @@ TestDownload::testOnHttpError() {
     QFETCH(QString, message);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
 
@@ -899,7 +909,7 @@ TestDownload::testOnHttpError() {
     // set the attrs in the reply so that we do raise two signals
     reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
     reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, message);
-    
+
     // emit the error and esure that the signals are raised
     reply->emitHttpError(QNetworkReply::ContentAccessDenied);
     QCOMPARE(httpErrorSpy.count(), 1);
@@ -909,8 +919,8 @@ TestDownload::testOnHttpError() {
 void
 TestDownload::testOnSslError() {
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(error(QString)));
 
     download->start();  // change state
@@ -943,8 +953,8 @@ TestDownload::testOnNetworkError() {
     QFETCH(int, code);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));
@@ -960,7 +970,7 @@ TestDownload::testOnNetworkError() {
 
     // set the attrs in the reply so that we do raise two signals
     reply->clearAttribute(QNetworkRequest::HttpStatusCodeAttribute);
-    
+
     // emit the error and esure that the signals are raised
     reply->emitHttpError((QNetworkReply::NetworkError)code);
     QCOMPARE(networkErrorSpy.count(), 1);
@@ -996,8 +1006,8 @@ void
 TestDownload::testSetRawHeadersStart() {
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
     download->startDownload();
@@ -1049,8 +1059,8 @@ TestDownload::testSetRawHeadersWithRangeStart() {
     // similar to the previous test but we want to ensure that range is not set
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
     download->startDownload();
@@ -1097,8 +1107,8 @@ TestDownload::testSetRawHeadersResume() {
     QFETCH(StringMap, headers);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, headers));
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
@@ -1174,8 +1184,8 @@ TestDownload::testSetRawHeadersWithRangeResume() {
     QFETCH(StringMap, headers);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, headers));
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
@@ -1240,8 +1250,8 @@ TestDownload::testProcessExecutedNoParams() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
@@ -1303,8 +1313,8 @@ TestDownload::testProcessExecutedWithParams() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
@@ -1366,8 +1376,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
@@ -1408,8 +1418,8 @@ TestDownload::testProcessFinishedNoError() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -1445,8 +1455,8 @@ TestDownload::testProcessFinishedWithError() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy processErrorSpy(download.data(),
         SIGNAL(processError(ProcessErrorStruct)));
@@ -1503,8 +1513,8 @@ TestDownload::testProcessError() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy processErrorSpy(download.data(),
         SIGNAL(processError(ProcessErrorStruct)));
@@ -1545,8 +1555,8 @@ TestDownload::testProcessFinishedCrash() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(error(QString)));
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -1583,8 +1593,8 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
 
     // write something in the expected file
     QString fileName = download->filePath();
@@ -1643,8 +1653,8 @@ void
 TestDownload::testSetRawHeaderAcceptEncoding() {
     QFETCH(StringMap, headers);
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
     download->startDownload();
@@ -1665,8 +1675,8 @@ TestDownload::testSslErrorsIgnored() {
     errors.append(QSslError(QSslError::CertificateExpired));
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
     download->startDownload();
@@ -1694,8 +1704,8 @@ TestDownload::testSslErrorsNotIgnored() {
     errors.append(QSslError(QSslError::CertificateExpired));
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
     download->startDownload();
@@ -1725,8 +1735,8 @@ TestDownload::testLocalPathConfined() {
     QString localPath = "/home/my/local/path";
     metadata["local-path"] = localPath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, metadata, _headers));
 
     qDebug() << download->filePath();
     QVERIFY(download->filePath() != localPath);
@@ -1738,8 +1748,8 @@ TestDownload::testLocalPathNotConfined() {
     QString localPath = "/home/my/local/path";
     metadata["local-path"] = localPath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
 
     qDebug() << download->filePath();
     QCOMPARE(download->filePath(), localPath);
@@ -1747,24 +1757,25 @@ TestDownload::testLocalPathNotConfined() {
 
 void
 TestDownload::testInvalidUrl() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, QUrl(), _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, QUrl(), _metadata, _headers));
 
     QVERIFY(!download->isValid());
 }
 
 void
 TestDownload::testValidUrl() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(download->isValid());
 }
 
 void
 TestDownload::testInvalidHashAlgorithm() {
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, "hash", "not-valid-algo", _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, "hash", "not-valid-algo", _metadata,
+        _headers));
     QVERIFY(!download->isValid());
 }
 
@@ -1784,8 +1795,8 @@ TestDownload::testValidHashAlgorithm_data() {
 void
 TestDownload::testValidHashAlgorithm() {
     QFETCH(QString, algo);
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, "hash", algo, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, "hash", algo, _metadata, _headers));
     QVERIFY(download->isValid());
 }
 
@@ -1801,8 +1812,8 @@ TestDownload::testInvalidFilePresent() {
     QVariantMap metadata;
     metadata["local-path"] = filePath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
     QVERIFY(!download->isValid());
 }
 
@@ -1813,8 +1824,8 @@ TestDownload::testValidFileNotPresent() {
     QVariantMap metadata;
     metadata["local-path"] = filePath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
     QVERIFY(download->isValid());
 }
 
@@ -1823,8 +1834,8 @@ TestDownload::testDownloadPresent() {
     // create a download and get the filename to use, then write it
     // and create the same download and assert that the filename is diff
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QString filePath = download->filePath();
 
@@ -1833,8 +1844,8 @@ TestDownload::testDownloadPresent() {
     file->write("data data data!");
     file->close();
 
-    QScopedPointer<FileDownload> other(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> other(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(filePath != other->filePath());
 }
@@ -1845,7 +1856,7 @@ TestDownload::testDownloadPresentSeveralFiles_data() {
 
     QTest::newRow("One") << 1;
     QTest::newRow("Some") << 3;
-    QTest::newRow("Several") << 10; 
+    QTest::newRow("Several") << 10;
     QTest::newRow("Plenti") << 100;
 }
 
@@ -1853,8 +1864,8 @@ void
 TestDownload::testDownloadPresentSeveralFiles() {
     QFETCH(int, count);
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QString filePath = download->filePath();
 
@@ -1876,8 +1887,8 @@ TestDownload::testDownloadPresentSeveralFiles() {
         otherFile->close();
     }
 
-    QScopedPointer<FileDownload> other(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> other(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(filePath != other->filePath());
     if (count > 0) {
@@ -1897,8 +1908,8 @@ TestDownload::testProcessingJustOnce() {
     metadata["post-download-command"] = command;
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, hash, _algo, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, hash, _algo, metadata, _headers));
 
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
@@ -1931,8 +1942,8 @@ TestDownload::testFileSystemErrorProgress() {
     qulonglong total = 200ULL;
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(error(QString)));
 
     // start the download so that we do have access to the reply
@@ -1965,8 +1976,8 @@ TestDownload::testFileSystemErrorPause() {
     QByteArray fileData(0, 'f');
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QSignalSpy spy(download.data(), SIGNAL(error(QString)));
 
     // start the download so that we do have access to the reply
@@ -1997,8 +2008,8 @@ TestDownload::testRedirectCycle() {
     // request factory and set the redirect to a first url
     QUrl redirectUrl("http://redirect.example.com");
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
     download->startDownload();
@@ -2014,7 +2025,7 @@ TestDownload::testRedirectCycle() {
     reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
         redirectUrl);
     QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
-    
+
     // use a spy to wait for the second reply
     reply->emitFinished();
 
@@ -2024,7 +2035,7 @@ TestDownload::testRedirectCycle() {
         replySpy.takeFirst().at(0).value<NetworkReply*>());
 
     download->pause();
-    
+
     // set the attr to be a loop
     reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
         _url);
@@ -2045,8 +2056,8 @@ TestDownload::testSingleRedirect() {
     // ensure that a single redirect is followed
     QUrl redirectUrl("http://redirect.example.com");
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
     download->startDownload();
@@ -2121,8 +2132,8 @@ TestDownload::testSeveralRedirects() {
     QFETCH(QStringList, urls);
     auto redirectCount = 0;
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
     download->startDownload();
@@ -2138,7 +2149,7 @@ TestDownload::testSeveralRedirects() {
         reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
             url);
         QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
-        
+
         // use a spy to wait for the second reply
         reply->emitFinished();
 
@@ -2149,9 +2160,9 @@ TestDownload::testSeveralRedirects() {
             replySpy.takeFirst().at(0).value<NetworkReply*>());
         redirectCount++;
     }
-    
+
     download->pause();
-    
+
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));

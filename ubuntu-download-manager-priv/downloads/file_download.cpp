@@ -50,6 +50,7 @@ namespace DownloadManager {
 namespace Daemon {
 
 FileDownload::FileDownload(const QString& id,
+                   const QString& appId,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -57,7 +58,8 @@ FileDownload::FileDownload(const QString& id,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+    : Download(id, appId, path, isConfined, rootPath, metadata,
+            headers, parent),
       _totalSize(0),
       _url(url),
       _hash(""),
@@ -66,6 +68,7 @@ FileDownload::FileDownload(const QString& id,
 }
 
 FileDownload::FileDownload(const QString& id,
+                   const QString& appId,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -75,7 +78,8 @@ FileDownload::FileDownload(const QString& id,
                    const QVariantMap& metadata,
                    const QMap<QString, QString> &headers,
                    QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+    : Download(id, appId, path, isConfined, rootPath, metadata,
+            headers, parent),
       _totalSize(0),
       _url(url),
       _hash(hash) {

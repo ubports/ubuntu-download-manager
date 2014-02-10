@@ -162,6 +162,7 @@ class TestDownload: public BaseTestCase {
 
  private:
     QString _id;
+    QString _appId;
     bool _isConfined;
     QString _rootPath;
     QVariantMap _metadata;

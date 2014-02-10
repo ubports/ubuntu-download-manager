@@ -25,6 +25,7 @@ TestMmsDownload::TestMmsDownload(QObject* parent)
 void
 TestMmsDownload::testNetworkAccessManager() {
     QString id = "id of the download";
+    QString appId = "MY APP";
     QString path = "my-file";
     bool isConfined = false;
     QString rootPath = "/root/path/to/use";
@@ -39,7 +40,7 @@ TestMmsDownload::testNetworkAccessManager() {
         port, username, password);
 
     QScopedPointer<PublicMmsFileDownload> down(
-        new PublicMmsFileDownload(id, path, isConfined, rootPath,
+        new PublicMmsFileDownload(id, appId, path, isConfined, rootPath,
             url, metadata, headers, proxy));
     ApnRequestFactory* nam = qobject_cast<ApnRequestFactory*>(down->nam());
     QVERIFY(nam != nullptr);
@@ -48,6 +49,7 @@ TestMmsDownload::testNetworkAccessManager() {
 void
 TestMmsDownload::testAddToQueue() {
     QString id = "id of the download";
+    QString appId = "MY APP";
     QString path = "my-file";
     bool isConfined = false;
     QString rootPath = "/root/path/to/use";
@@ -62,7 +64,7 @@ TestMmsDownload::testAddToQueue() {
         port, username, password);
 
     QScopedPointer<PublicMmsFileDownload> down(
-        new PublicMmsFileDownload(id, path, isConfined, rootPath,
+        new PublicMmsFileDownload(id, appId, path, isConfined, rootPath,
             url, metadata, headers, proxy));
     QVERIFY(!down->addToQueue());
 }

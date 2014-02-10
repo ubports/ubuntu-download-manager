@@ -27,6 +27,7 @@ namespace DownloadManager {
 namespace Daemon {
 
 Download::Download(const QString& id,
+                   const QString& appId,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
@@ -35,6 +36,7 @@ Download::Download(const QString& id,
                    QObject* parent)
     : QObject(parent),
       _id(id),
+      _appId(appId),
       _throttle(0),
       _allowGSMDownload(true),
       _state(Download::IDLE),

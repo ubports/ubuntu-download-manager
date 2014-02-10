@@ -89,9 +89,10 @@ Factory::createDownload(const QString& dbusOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined = false;
+    auto appId = _apparmor->getAppId(dbusOwner);
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
-    Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
+    Download* down = new FileDownload(id, appId, dbusPath, isConfined, rootPath,
         url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -109,9 +110,10 @@ Factory::createDownload(const QString& dbusOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined = false;
+    auto appId = _apparmor->getAppId(dbusOwner);
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
+    Download* down = new FileDownload(id, appId, dbusPath, isConfined,
         rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -129,9 +131,10 @@ Factory::createDownload(const QString& dbusOwner,
     QString dbusPath;
     QString rootPath;
     bool isConfined = false;
+    auto appId = _apparmor->getAppId(dbusOwner);
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
-    Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
+    Download* down = new GroupDownload(id, appId, dbusPath, isConfined, rootPath,
         downloads, algo, allowed3G, metadata, headers, this);
     GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -153,9 +156,10 @@ Factory::createMmsDownload(const QString& dbusOwner,
     bool isConfined = false;
     QVariantMap metadata;
     QMap<QString, QString> headers;
+    auto appId = _apparmor->getAppId(dbusOwner);
     getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
         isConfined);
-    Download* down = new MmsFileDownload(id, dbusPath, isConfined,
+    Download* down = new MmsFileDownload(id, appId, dbusPath, isConfined,
         rootPath, url, metadata, headers, proxy);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -171,7 +175,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
+    Download* down = new FileDownload(id, "", dbusPath, isConfined, rootPath,
         url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -189,7 +193,7 @@ Factory::createDownloadForGroup(bool isConfined,
     QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
+    Download* down = new FileDownload(id, "", dbusPath, isConfined,
         rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);

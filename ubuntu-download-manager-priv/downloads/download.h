@@ -52,6 +52,7 @@ class Download : public QObject {
     };
 
     Download(const QString& id,
+             const QString& appId,
              const QString& path,
              bool isConfined,
              const QString& rootPath,
@@ -63,6 +64,10 @@ class Download : public QObject {
 
     QString downloadId() const {
         return _id;
+    }
+
+    QString appId() const {
+        return _appId;
     }
 
     QString path() const {
@@ -181,6 +186,7 @@ class Download : public QObject {
     bool _addToQueue = true;
     QString _lastError = "";
     QString _id;
+    QString _appId;
     qulonglong _throttle;
     bool _allowGSMDownload;
     Download::State _state;

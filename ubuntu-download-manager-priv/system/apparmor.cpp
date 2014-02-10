@@ -126,7 +126,7 @@ AppArmor::getSecurePath(const QString& connName,
     // blocking but should be ok for now
     reply.waitForFinished();
     if (reply.isError()) {
-        LOG(ERROR) << reply.error(); 
+        LOG(ERROR) << reply.error();
         dbusPath = QString(BASE_ACCOUNT_URL) + "/" + id;
         localPath = getLocalPath("");
         isConfined = false;
@@ -167,6 +167,23 @@ AppArmor::getSecurePath(const QString& connName,
         }  // not empty appid string
     }  // no dbus error
 }
+
+QString
+AppArmor::getAppId(const QString& connName) {
+    QDBusPendingReply<QString> reply =
+        _dbus->GetConnectionAppArmorSecurityContext(connName);
+    // blocking but should be ok for now
+    reply.waitForFinished();
+    if (reply.isError()) {
+        LOG(ERROR) << reply.error();
+        return "";
+    } else {
+        // use the returned value
+        QString appId = reply.value();
+        return appId;
+    }
+}
+
 
 }  // System
 

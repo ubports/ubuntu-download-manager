@@ -35,6 +35,7 @@ class PublicMmsFileDownload : public MmsFileDownload {
 
  public:
     PublicMmsFileDownload(const QString& id,
+                          const QString& appId,
                           const QString& path,
                           bool isConfined,
                           const QString& rootPath,
@@ -43,7 +44,7 @@ class PublicMmsFileDownload : public MmsFileDownload {
                           const QMap<QString, QString>& headers,
                           const QNetworkProxy& proxy,
                           QObject* parent = 0)
-        : MmsFileDownload(id, path, isConfined, rootPath, url, metadata,
+        : MmsFileDownload(id, appId, path, isConfined, rootPath, url, metadata,
               headers, proxy, parent) {
     }
 

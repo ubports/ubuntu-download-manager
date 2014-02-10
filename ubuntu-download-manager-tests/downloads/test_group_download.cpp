@@ -31,6 +31,7 @@ void
 TestGroupDownload::init() {
     BaseTestCase::init();
     _id = UuidUtils::getDBusString(QUuid::createUuid());
+    _appId = "Testing App";
     _path = "/group/dbus/path";
     _isConfined = false;
     _rootPath = "/random/dbus/path";
@@ -58,7 +59,7 @@ void
 TestGroupDownload::testCancelNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
+    GroupDownload* group = new GroupDownload(_id, _appId, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
         _headers, _downloadFactory, _fileManager);
     group->cancelDownload();
@@ -72,9 +73,9 @@ TestGroupDownload::testCancelAllDownloads() {
     downloads.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     group->cancelDownload();
     foreach(Download* download, _downloadFactory->downloads()) {
         QCOMPARE(Download::CANCEL, download->state());
@@ -93,7 +94,7 @@ TestGroupDownload::testCancelDownloadWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
@@ -126,7 +127,7 @@ TestGroupDownload::testCancelDownloadWithCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
@@ -146,9 +147,9 @@ void
 TestGroupDownload::testPauseNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
-        _headers, _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     group->pauseDownload();
 }
 
@@ -160,7 +161,7 @@ TestGroupDownload::testPauseAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
@@ -187,7 +188,7 @@ TestGroupDownload::testPauseDownloadWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
@@ -220,7 +221,7 @@ TestGroupDownload::testPauseDownloadWithCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
@@ -242,7 +243,7 @@ void
 TestGroupDownload::testResumeNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _downloadFactory, _fileManager));
     group->cancelDownload();
@@ -260,7 +261,7 @@ TestGroupDownload::testResumeAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _downloadFactory, _fileManager));
 
@@ -290,7 +291,7 @@ TestGroupDownload::testResumeWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers, _downloadFactory,
         _fileManager));
@@ -325,8 +326,8 @@ TestGroupDownload::testResumeWidhCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
@@ -358,8 +359,8 @@ TestGroupDownload::testReusmeNoStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _downloadFactory,
         _fileManager));
 
@@ -377,8 +378,8 @@ void
 TestGroupDownload::testStartNoDownloads() {
     QList<GroupDownloadStruct> downloads;
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloads, _algo,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloads, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
     group->startDownload();
@@ -396,7 +397,8 @@ TestGroupDownload::testStartAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+                _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
 
@@ -422,9 +424,9 @@ TestGroupDownload::testStartAlreadyStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -452,9 +454,9 @@ TestGroupDownload::testStartResume() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -484,9 +486,9 @@ TestGroupDownload::testStartFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
@@ -513,9 +515,9 @@ TestGroupDownload::testStartCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     downloads[0]->cancel();
@@ -543,9 +545,9 @@ TestGroupDownload::testSingleDownloadFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
@@ -570,9 +572,9 @@ TestGroupDownload::testAllDownloadsFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
@@ -598,9 +600,9 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
@@ -626,9 +628,9 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
@@ -656,9 +658,9 @@ TestGroupDownload::testLocalPathSingleDownload() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     Q_UNUSED(group);
 
@@ -702,9 +704,9 @@ TestGroupDownload::testConfinedSingleDownload() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, confined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+       confined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+       _metadata, _headers, _downloadFactory, _fileManager));
 
     Q_UNUSED(group);
 
@@ -723,9 +725,9 @@ TestGroupDownload::testInvalidUrl() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
 }
@@ -740,9 +742,9 @@ TestGroupDownload::testValidUrl() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(group->isValid());
 }
@@ -757,9 +759,9 @@ TestGroupDownload::testInvalidHashAlgorithm() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", "sasaas"));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "wrong", _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, "wrong", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
 }
@@ -788,9 +790,9 @@ TestGroupDownload::testValidHashAlgorithm() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", "sasa"));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, algo, _isGSMDownloadAllowed, _metadata,
+        _headers, _downloadFactory, _fileManager));
 
     QVERIFY(group->isValid());
 }
@@ -811,9 +813,9 @@ TestGroupDownload::testInvalidFilePresent() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
 }
@@ -830,9 +832,9 @@ TestGroupDownload::testValidFileNotPresent() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(group->isValid());
 }
@@ -840,9 +842,9 @@ TestGroupDownload::testValidFileNotPresent() {
 void
 TestGroupDownload::testEmptyGroupRaisesFinish() {
     QList<GroupDownloadStruct> downloadsStruct;
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
     QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
@@ -864,9 +866,9 @@ TestGroupDownload::testDuplicatedLocalPath() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _downloadFactory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _appId, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
 }

@@ -53,6 +53,7 @@ class AppArmor : public QObject {
                                QString& dbusPath,
                                QString& localPath,
                                bool& isConfined);
+    virtual QString getAppId(const QString& connName);
  private:
     QString getLocalPath(const QString& appId);
 

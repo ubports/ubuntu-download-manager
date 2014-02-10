@@ -136,7 +136,7 @@ FakeDownloadFactory::createDownloadForGroup(bool isConfined,
     QString id;
     QString dbusPath;
     _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
+    Download* down = new FileDownload(id, "", dbusPath, isConfined,
         rootPath, url, hash, algo, metadata, headers, this);
     _downloads.append(down);
     qDebug() << "Downloads count" << _downloads.count();

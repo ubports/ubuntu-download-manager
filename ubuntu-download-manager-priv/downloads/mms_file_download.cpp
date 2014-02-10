@@ -26,6 +26,7 @@ namespace DownloadManager {
 namespace Daemon {
 
 MmsFileDownload::MmsFileDownload(const QString& id,
+                    const QString& appId,
                     const QString& path,
                     bool isConfined,
                     const QString& rootPath,
@@ -34,7 +35,7 @@ MmsFileDownload::MmsFileDownload(const QString& id,
                     const QMap<QString, QString>& headers,
                     const QNetworkProxy& proxy,
                     QObject* parent)
-    : FileDownload(id, path, isConfined, rootPath, url,
+    : FileDownload(id, appId, path, isConfined, rootPath, url,
                    metadata, headers, parent){
     _requestFactory = new ApnRequestFactory(proxy);
     setAddToQueue(false);
