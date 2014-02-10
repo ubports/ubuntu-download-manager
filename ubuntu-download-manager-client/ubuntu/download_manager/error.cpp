@@ -20,6 +20,13 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include "error.h"
 
+namespace {
+    const QString DBUS_ERROR_STRING = "DBusError: %1 - %2";
+    const QString HTTP_ERROR_STRING = "HttpError: %1 - %2";
+    const QString NETWORK_ERROR_STRING = "NetworkError: %1 - %2";
+    const QString PROCESS_ERROR_STRING = "PRocessError: %1 - %2\nExit code: %3\nStdout: %4\nStderr:%5";
+}
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -41,6 +48,21 @@ class ErrorPrivate {
         return _type;
     }
 
+    QString errorString() {
+        switch(_type) {
+            case Error::DBus:
+                return "DBusError";
+            case Error::Http:
+                return "HttpError";
+            case Error::Network:
+                return "NetworkError";
+            case Error::Process:
+                return "ProcessError";
+            default:
+                return "";
+        }
+    }
+
  private:
     Error::Type _type;
     Error* q_ptr;
@@ -55,12 +77,16 @@ class DBusErrorPrivate {
           q_ptr(parent) {
     }
 
-    QString message() {
+    inline QString message() {
         return _err.message();
     }
 
-    QString name() {
+    inline QString name() {
         return _err.name();
+    }
+
+    inline QString errorString() {
+        return DBUS_ERROR_STRING.arg(_err.name(), _err.message());
     }
 
  private:
@@ -85,6 +111,11 @@ class HttpErrorPrivate {
         return _err.getPhrase();
     }
 
+    inline QString errorString() {
+        return HTTP_ERROR_STRING.arg(QString::number(_err.getCode()),
+            _err.getPhrase());
+    }
+
  private:
     HttpErrorStruct _err;
     HttpError* q_ptr;
@@ -99,13 +130,18 @@ class NetworkErrorPrivate {
           q_ptr(parent) {
     }
 
-    NetworkError::ErrorCode code() {
+    inline NetworkError::ErrorCode code() {
         auto intCode = static_cast<NetworkError::ErrorCode>(_err.getCode());
         return intCode;
     }
 
-    QString phrase() {
+    inline QString phrase() {
         return _err.getPhrase();
+    }
+    
+    inline QString errorString() {
+        return NETWORK_ERROR_STRING.arg(QString::number(_err.getCode()),
+            _err.getPhrase());
     }
 
  private:
@@ -143,6 +179,12 @@ class ProcessErrorPrivate {
         return _err.getStandardError();
     }
 
+    inline QString errorString() {
+        return PROCESS_ERROR_STRING.arg(QString::number(_err.getCode()),
+            _err.getPhrase(), QString::number(_err.getExitCode()),
+            _err.getStandardOutput(), _err.getStandardError());
+    }
+
  private:
     ProcessErrorStruct _err;
     ProcessError* q_ptr;
@@ -167,6 +209,11 @@ Error::type() {
     return d->type();
 }
 
+QString
+Error::errorString() {
+    Q_D(Error);
+    return d->errorString();
+}
 
 DBusError::DBusError(QDBusError err, QObject* parent)
     : Error(Error::DBus, parent),
@@ -187,6 +234,12 @@ QString
 DBusError::name() {
     Q_D(DBusError);
     return d->name();
+}
+
+QString
+DBusError::errorString() {
+    Q_D(DBusError);
+    return d->errorString();
 }
 
 HttpError::HttpError(HttpErrorStruct err, QObject* parent)
@@ -210,6 +263,12 @@ HttpError::phrase() {
     return d->phrase();
 }
 
+QString
+HttpError::errorString() {
+    Q_D(HttpError);
+    return d->errorString();
+}
+
 NetworkError::NetworkError(NetworkErrorStruct err, QObject* parent)
     : Error(Error::Network, parent),
       d_ptr(new NetworkErrorPrivate(err, this)) {
@@ -229,6 +288,12 @@ QString
 NetworkError::phrase() {
     Q_D(NetworkError);
     return d->phrase();
+}
+
+QString
+NetworkError::errorString() {
+    Q_D(NetworkError);
+    return d->errorString();
 }
 
 ProcessError::ProcessError(ProcessErrorStruct err, QObject* parent)
@@ -268,6 +333,12 @@ QString
 ProcessError::standardError() {
     Q_D(ProcessError);
     return d->standardError();
+}
+
+QString
+ProcessError::errorString() {
+    Q_D(ProcessError);
+    return d->errorString();
 }
 
 }  // DownloadManager
