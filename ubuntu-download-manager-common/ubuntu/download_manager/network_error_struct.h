@@ -20,6 +20,7 @@
 #define DOWNLOADER_LIB_NETWORK_ERROR_STRUCT_H
 
 #include <QString>
+#include "common.h"
 
 class QDBusArgument;
 
@@ -27,7 +28,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class NetworkErrorStruct {
+class DOWNLOAD_MANAGER_EXPORT NetworkErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(QString phrase READ getPhrase)
 

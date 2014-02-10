@@ -23,9 +23,9 @@
 #include <QList>
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/download_manager/common.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
-#include "ubuntu-download-manager-client_global.h"
 
 
 class QDBusConnection;
@@ -43,7 +43,7 @@ typedef std::function<void(Download*)> DownloadCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
 class ManagerPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Manager : public QObject {
+class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
     Q_DECLARE_PRIVATE(Manager)
     Q_OBJECT
 

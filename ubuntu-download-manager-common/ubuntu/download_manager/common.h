@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,18 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifndef UBUNTU_DOWNLOADMANAGER_COMMON_H
+#define UBUNTU_DOWNLOADMANAGER_COMMON_H
 
-#ifndef APPDOWNLOADERLIB_GLOBAL_H
-#define APPDOWNLOADERLIB_GLOBAL_H
-
-#include <QtCore/qglobal.h>
-
-#if defined(APPDOWNLOADERLIB_LIBRARY)
-#  define APPDOWNLOADERLIBSHARED_EXPORT Q_DECL_EXPORT
+#if __GNUC__ >= 4
+    #define DOWNLOAD_MANAGER_EXPORT __attribute__ ((visibility("default")))
 #else
-#  define APPDOWNLOADERLIBSHARED_EXPORT Q_DECL_IMPORT
+    #define DOWNLOAD_MANAGER_EXPORT
 #endif
 
-#endif // APPDOWNLOADERLIB_GLOBAL_H
-
-
+#endif

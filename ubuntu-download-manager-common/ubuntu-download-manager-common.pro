@@ -19,21 +19,21 @@ SOURCES += \
     ubuntu/download_manager/process_error_struct.cpp
 
 public_headers = \
+    ubuntu/download_manager/common.h \
     ubuntu/download_manager/metatypes.h \
     ubuntu/download_manager/download_struct.h \
     ubuntu/download_manager/group_download_struct.h \
-    ubuntu/download_manager/http_error_struct.h \ 
+    ubuntu/download_manager/http_error_struct.h \
     ubuntu/download_manager/network_error_struct.h \
     ubuntu/download_manager/process_error_struct.h
 
 private_headers = \
-    ubuntu_download_manager_common_global.h \
     ubuntu/download_manager/system/dbus_connection.h \
     ubuntu/download_manager/system/hash_algorithm.h
 
 HEADERS +=\
     $$public_headers \
-    $$private_headers 
+    $$private_headers
 
 headers.files = $$public_headers
 

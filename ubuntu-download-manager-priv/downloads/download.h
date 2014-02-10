@@ -23,7 +23,6 @@
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
-#include "app-downloader-lib_global.h"
 #include "system/process_factory.h"
 #include "system/request_factory.h"
 #include "system/system_network_info.h"

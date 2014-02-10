@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QString>
 #include <QVariantMap>
+#include "common.h"
 
 class QDBusArgument;
 namespace Ubuntu {
@@ -29,7 +30,7 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 typedef QMap<QString, QString> StringList;
-class DownloadStruct {
+class DOWNLOAD_MANAGER_EXPORT DownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString hash READ getHash)
     Q_PROPERTY(QString algorithm READ getAlgorithm)

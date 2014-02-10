@@ -22,7 +22,7 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QString>
-#include "ubuntu-download-manager-client_global.h"
+#include <ubuntu/download_manager/common.h>
 
 class QDBusConnection;
 class QDBusObjectPath;
@@ -37,7 +37,7 @@ class NetworkErrorStruct;
 class ProcessErrorStruct;
 class ManagerPrivate;
 class DownloadPrivate;
-class UBUNTUDOWNLOADMANAGERCLIENTSHARED_EXPORT Download : public QObject {
+class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Download)
 

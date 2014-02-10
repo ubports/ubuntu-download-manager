@@ -23,8 +23,8 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
+#include <ubuntu/download_manager/common.h>
 #include <ubuntu/download_manager/system/dbus_connection.h>
-#include "app-downloader-lib_global.h"
 
 namespace Ubuntu {
 
@@ -46,7 +46,7 @@ class DaemonPrivate;
 typedef std::function<Manager*(System::Application*, System::DBusConnection*)>
     ManagerConstructor;
 
-class APPDOWNLOADERLIBSHARED_EXPORT Daemon : public QObject {
+class DOWNLOAD_MANAGER_EXPORT Daemon : public QObject {
     Q_DECLARE_PRIVATE(Daemon)
     Q_OBJECT
 

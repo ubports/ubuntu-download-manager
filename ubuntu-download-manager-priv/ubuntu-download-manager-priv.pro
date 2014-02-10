@@ -44,7 +44,6 @@ SOURCES += \
     system/apn_proxy.cpp
 
 HEADERS +=\
-    app-downloader-lib_global.h \
     downloads/daemon.h \
     downloads/download.h \
     downloads/download_adaptor.h \
