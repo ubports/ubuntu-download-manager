@@ -59,6 +59,11 @@
         <arg name="error" type="s" direction="out"/>
     </signal>
 
+    <signal name="authError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="AuthErrorStruct"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
     <signal name="httpError">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="HttpErrorStruct"/>
         <arg name="error" type="(is)" direction="out"/>

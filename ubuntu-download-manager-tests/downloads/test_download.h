@@ -104,6 +104,8 @@ class TestDownload: public BaseTestCase {
     void testOnSslError();
     void testOnNetworkError_data();
     void testOnNetworkError();
+    void testOnAuthError();
+    void testOnProxyAuthError();
     void testSetRawHeadersStart();
     void testSetRawHeadersWithRangeStart();
     void testSetRawHeadersResume();
