@@ -29,6 +29,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+class AuthErrorStruct;
 class HttpErrorStruct;
 class NetworkErrorStruct;
 class ProcessErrorStruct;
@@ -39,6 +40,7 @@ class DOWNLOAD_MANAGER_EXPORT Error : public QObject {
 
  public:
     enum Type {
+        Auth,
         DBus,
         Http,
         Network,
@@ -81,6 +83,32 @@ class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
  private:
     // use pimpl pattern so that users do not have to be recompiled
     DBusErrorPrivate* d_ptr;
+};
+
+class AuthErrorPrivate;
+class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
+    Q_OBJECT
+    Q_DECLARE_PRIVATE(AuthError)
+
+    friend class DownloadPrivate;
+
+ public:
+    enum Type {
+        Server,
+        Proxy
+    };
+
+    virtual ~AuthError();
+    Type type();
+    QString phrase();
+    QString errorString() override;
+
+ protected:
+    AuthError(AuthErrorStruct err, QObject* parent);
+
+ private:
+    // use pimpl pattern so that users do not have to be recompiled
+    AuthErrorPrivate* d_ptr;
 };
 
 class HttpErrorPrivate;

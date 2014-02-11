@@ -32,6 +32,7 @@ class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
 
     // let the client test to tell the manager to return dbus errors
     void returnDBusErrors(bool errors);
+    void returnAuthError(const QString &download, AuthErrorStruct error);
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);

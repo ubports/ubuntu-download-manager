@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef DOWNLOAD_INTERFACE_H_1391245617
-#define DOWNLOAD_INTERFACE_H_1391245617
+#ifndef DOWNLOAD_INTERFACE_H_1392136772
+#define DOWNLOAD_INTERFACE_H_1392136772
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -106,6 +106,7 @@ public Q_SLOTS: // METHODS
     }
 
 Q_SIGNALS: // SIGNALS
+    void authError(AuthErrorStruct error);
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QString &path);

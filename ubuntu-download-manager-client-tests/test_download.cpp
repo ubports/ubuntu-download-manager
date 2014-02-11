@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QNetworkReply>
 #include <QSignalSpy>
 #include <ubuntu/download_manager/error.h>
 #include "test_download.h"
@@ -134,6 +135,41 @@ TestDownload::testTotalSizeError() {
     QVERIFY(_down->isError());
     QVERIFY(_down->error() != nullptr);
     QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testAuthErrorRaised_data() {
+    QTest::addColumn<QNetworkReply::NetworkError>("code");
+    QTest::addColumn<QString>("msg");
+
+    QTest::newRow("Server Authentication")
+        << QNetworkReply::AuthenticationRequiredError
+        << "Server rejected request";
+    QTest::newRow("Proxy Authentication")
+        << QNetworkReply::ProxyAuthenticationRequiredError
+        << "Proxy rejected request";
+}
+
+void
+TestDownload::testAuthErrorRaised() {
+    QFETCH(QNetworkReply::NetworkError, code);
+    QFETCH(QString, msg);
+
+    AuthErrorStruct err(code, msg);
+    returnAuthError(_url, err);
+
+    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    _down->start();
+
+    QTRY_COMPARE(1, spy.count());
+    auto error = spy.takeFirst().at(0).value<Error*>();
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::Auth, error->type());
+
+    auto authError = qobject_cast<AuthError*>(error);
+    QCOMPARE(static_cast<int>(code), static_cast<int>(authError->type()));
+    QCOMPARE(msg, authError->phrase());
 }
 
 void

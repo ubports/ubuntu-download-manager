@@ -40,6 +40,13 @@ TestingDaemon::returnDBusErrors(bool errors) {
 }
 
 void
+TestingDaemon::returnAuthError(const QString &download,
+                               AuthErrorStruct error) {
+    auto man = qobject_cast<TestingManager*>(manager());
+    man->returnAuthError(download, error);
+}
+
+void
 TestingDaemon::returnHttpError(const QString &download,
                                HttpErrorStruct error) {
     auto man = qobject_cast<TestingManager*>(manager());
