@@ -25,7 +25,6 @@
 #include <QStringList>
 #include <QUrl>
 #include <QSslError>
-#include <syslog.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include "logger.h"
@@ -81,10 +80,10 @@ Logger::setupLogging(const QString filename) {
 
     auto appName = QCoreApplication::instance()->applicationName();
 
-    google::SetLogDestination(google::INFO, toStdString(path).c_str());
     if (!_init) {
         _init = true;
         google::InitGoogleLogging(toStdString(appName).c_str());
+        google::SetLogDestination(google::INFO, toStdString(path).c_str());
     }
 }
 
