@@ -169,8 +169,11 @@ class DaemonPrivate {
         if (args.contains(LOG_DIR)) {
             index = args.indexOf(LOG_DIR);
             if (args.count() > index + 1) {
-                auto logPath = QDir(args[index + 1]).absoluteFilePath(
-                    "ubuntu-download-manager");
+                auto logPath = QDir(args[index + 1]);
+                if (!logPath.exists()) {
+                    logPath = "";
+                }
+                logPath.absoluteFilePath("ubuntu-download-manager");
                 Logger::setupLogging(logPath);
                 LOG(INFO) << "Log path" << logPath;
             } else {
