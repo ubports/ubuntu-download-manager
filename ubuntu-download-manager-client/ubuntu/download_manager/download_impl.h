@@ -16,13 +16,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H
 
+#include <QDBusConnection>
+#include <QDBusObjectPath>
 #include <QObject>
 #include <QVariantMap>
 #include <QString>
 #include <ubuntu/download_manager/common.h>
+#include <ubuntu/download_manager/metatypes.h>
+#include "download_interface.h"
+#include "download_pendingcall_watcher.h"
+#include "error.h"
+#include "download.h"
 
 class QDBusConnection;
 class QDBusObjectPath;
@@ -36,10 +43,8 @@ class HttpErrorStruct;
 class NetworkErrorStruct;
 class ProcessErrorStruct;
 class ManagerPrivate;
-class DownloadPrivate;
-class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
+class DownloadImpl : public Download {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Download)
 
     // allow the manager to create downloads
     friend class ManagerPrivate;
@@ -47,7 +52,7 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     friend class DownloadManagerPendingCallWatcher;
 
  public:
-    virtual ~Download();
+    virtual ~DownloadImpl();
 
     void start();
     void pause();
@@ -60,39 +65,35 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 
-    QString id();
+    QString id() const;
     QVariantMap metadata();
     qulonglong progress();
     qulonglong totalSize();
 
-    bool isError();
-    Error* error();
+    bool isError() const;
+    Error* error() const;
 
  protected:
-    Download(const QDBusConnection& conn, Error* err, QObject* parent = 0);
-    Download(const QDBusConnection& conn,
-             const QString& servicePath,
-             const QDBusObjectPath& objectPath,
-             QObject* parent = 0);
+    DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent = 0);
+    DownloadImpl(const QDBusConnection& conn,
+                 const QString& servicePath,
+                 const QDBusObjectPath& objectPath,
+                 QObject* parent = 0);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onHttpError(HttpErrorStruct))
-    Q_PRIVATE_SLOT(d_func(), void onNetworkError(NetworkErrorStruct))
-    Q_PRIVATE_SLOT(d_func(), void onProcessError(ProcessErrorStruct))
-
- signals:
-    void canceled(bool success);
-    void error(Error* error);
-    void finished(const QString& path);
-    void paused(bool success);
-    void processing(const QString &path);
-    void progress(qulonglong received, qulonglong total);
-    void resumed(bool success);
-    void started(bool success);
+    void setLastError(Error* err);
+    void setLastError(const QDBusError& err);
+    void onHttpError(HttpErrorStruct);
+    void onNetworkError(NetworkErrorStruct);
+    void onProcessError(ProcessErrorStruct);
 
  private:
-    // use pimpl pattern so that users do not have to be recompiled
-    DownloadPrivate* d_ptr;
+    QString _id;
+    bool _isError = false;
+    Error* _lastError = nullptr;
+    DownloadInterface* _dbusInterface = nullptr;
+    QDBusConnection _conn;
+    QString _servicePath;
 
 };
 
@@ -100,4 +101,4 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
 
 }  // DownloadManager
 
-#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
+#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H
