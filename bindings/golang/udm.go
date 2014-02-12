@@ -24,7 +24,6 @@ package udm
 
 import (
 	"launchpad.net/go-dbus/v1"
-	"log"
 	"runtime"
 )
 
@@ -198,11 +197,9 @@ func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) (*FileDownload
 func (down *FileDownload) TotalSize() (size uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "totalSize")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: TotalSize")
 		return 0, err
 	}
 	if err = reply.Args(&size); err != nil {
-		log.Fatal("FAILED: Casting size")
 		return 0, err
 	}
 	return size, nil
@@ -212,11 +209,9 @@ func (down *FileDownload) TotalSize() (size uint64, err error) {
 func (down *FileDownload) Progress() (progress uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "progress")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: Progress")
 		return 0, err
 	}
 	if err = reply.Args(&progress); err != nil {
-		log.Fatal("FAILED: Casting progress")
 		return 0, err
 	}
 	return progress, nil
@@ -226,11 +221,9 @@ func (down *FileDownload) Progress() (progress uint64, err error) {
 func (down *FileDownload) Metadata() (metadata map[string]string, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "metadata")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: Metadata")
 		return nil, err
 	}
 	if err = reply.Args(&metadata); err != nil {
-		log.Fatal("FAILED: Casting metadata")
 		return nil, err
 	}
 	return metadata, nil
@@ -240,7 +233,6 @@ func (down *FileDownload) Metadata() (metadata map[string]string, err error) {
 func (down *FileDownload) SetThrottle(throttle uint64) (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "setThrottle", throttle)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: SetThrottle")
 		return err
 	}
 	return nil
@@ -250,11 +242,9 @@ func (down *FileDownload) SetThrottle(throttle uint64) (err error) {
 func (down *FileDownload) Throttle() (throttle uint64, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "throttle")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: Throttle")
 		return 0, err
 	}
 	if err = reply.Args(&throttle); err != nil {
-		log.Fatal("FAILED: Casting metadata")
 		return 0, err
 	}
 	return throttle, nil
@@ -265,7 +255,6 @@ func (down *FileDownload) Throttle() (throttle uint64, err error) {
 func (down *FileDownload) AllowMobileDownload(allowed bool) (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "allowGSMDownload", allowed)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: AllowMobileDownload ")
 		return err
 	}
 	return nil
@@ -275,11 +264,9 @@ func (down *FileDownload) AllowMobileDownload(allowed bool) (err error) {
 func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "isGSMDownloadAllowed", allowed)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: IsMobileDownload")
 		return false, err
 	}
 	if err = reply.Args(&allowed); err != nil {
-		log.Fatal("FAILED: Casting metadata")
 		return false, err
 	}
 	return allowed, nil
@@ -330,7 +317,6 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 func (down *FileDownload) Start() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "start")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: start")
 		return err
 	}
 	return nil
@@ -340,7 +326,6 @@ func (down *FileDownload) Start() (err error) {
 func (down *FileDownload) Pause() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "pause")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: start")
 		return err
 	}
 	return nil
@@ -350,7 +335,6 @@ func (down *FileDownload) Pause() (err error) {
 func (down *FileDownload) Resume() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "resume")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: start")
 		return err
 	}
 	return nil
@@ -361,7 +345,6 @@ func (down *FileDownload) Resume() (err error) {
 func (down *FileDownload) Cancel() (err error) {
 	reply, err := down.proxy.Call(DOWNLOAD_INTERFACE, "cancel")
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: start")
 		return err
 	}
 	return nil
@@ -491,11 +474,11 @@ type DownloadManager struct {
 func NewDownloadManager() (*DownloadManager, error) {
 	conn, err := dbus.Connect(dbus.SessionBus)
 	if err != nil {
-		log.Printf("Connection error:")
+		return nil, err
 	}
 
 	if err != nil {
-		log.Printf("Error: %s\n")
+		return nil, err
 	}
 
 	proxy := conn.Object(DOWNLOAD_SERVICE, "/")
@@ -529,7 +512,6 @@ func NewDownloadManager() (*DownloadManager, error) {
 func (man *DownloadManager) CreateDownload(url string, hash string, algo hashType, metadata map[string]interface{}, headers map[string]string) (down Download, err error) {
 	var t map[string]*dbus.Variant
 	for key, value := range metadata {
-		log.Print("Key:", key, "Value:", value)
 		t[key] = &dbus.Variant{Value: value}
 	}
 	s := struct {
@@ -542,11 +524,9 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo hashTyp
 	var path dbus.ObjectPath
 	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createDownload", s)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: createDownload")
 		return nil, err
 	}
 	if err = reply.Args(&path); err != nil {
-		log.Fatal("FAILED: Casting path")
 		return nil, err
 	}
 	down, err = newFileDownload(man.conn, path)
@@ -556,15 +536,13 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo hashTyp
 // CreateMmsDownload creates an mms download that will be performed right away. An
 // mms download only uses mobile that and an apn proxy to download a multime media
 // message.
-func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port int, username string, password string) (down Download, err error) {
+func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port int32, username string, password string) (down Download, err error) {
 	var path dbus.ObjectPath
 	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createMmsDownload", url, hostname, port, username, password)
 	if err != nil || reply.Type == dbus.TypeError {
-		log.Fatal("FAILED: createMmsDownload")
 		return nil, err
 	}
 	if err = reply.Args(&path); err != nil {
-		log.Fatal("FAILED: Casting path")
 		return nil, err
 	}
 	down, err = newFileDownload(man.conn, path)
