@@ -64,7 +64,7 @@ class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DBusError)
 
-    friend class ManagerPrivate;
+    friend class ManagerImpl;
     friend class DownloadImpl;
     friend class DownloadManagerPendingCallWatcher;
     friend class DownloadPendingCallWatcher;

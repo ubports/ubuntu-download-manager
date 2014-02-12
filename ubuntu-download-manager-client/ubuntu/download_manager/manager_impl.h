@@ -16,16 +16,18 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_IMPL_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_IMPL_H
 
-#include <functional>
-#include <QList>
-#include <QObject>
-#include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/download_manager/common.h>
-#include <ubuntu/download_manager/download_struct.h>
-#include <ubuntu/download_manager/group_download_struct.h>
+#include <QDBusConnection>
+#include <QDBusObjectPath>
+#include <ubuntu/download_manager/system/dbus_connection.h>
+#include "download.h"
+#include "error.h"
+#include "group_download.h"
+#include "manager_interface.h"
+#include "manager_pendingcall_watcher.h"
+#include "manager.h"
 
 
 class QDBusConnection;
@@ -39,20 +41,16 @@ class Error;
 class GroupDownload;
 class ManagerInterface;
 
-typedef std::function<void(Download*)> DownloadCb;
-typedef std::function<void(GroupDownload*)> GroupCb;
-
-class ManagerPrivate;
-class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
-    Q_DECLARE_PRIVATE(Manager)
+class ManagerImpl : public Manager {
     Q_OBJECT
 
     // allow watchers to emit the signals
+    friend class Manager;
     friend class DownloadManagerPendingCallWatcher;
     friend class GroupManagerPendingCallWatcher;
 
  public:
-    virtual ~Manager();
+    virtual ~ManagerImpl();
     virtual void createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
                                 DownloadCb cb,
@@ -70,37 +68,36 @@ class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
                                 GroupCb cb,
                                 GroupCb errCb);
 
-    bool isError();
-    Error* lastError();
+    bool isError() const;
+    Error* lastError() const;
     void allowMobileDataDownload(bool allowed);
     bool isMobileDataDownload();
     qulonglong defaultThrottle();
     void setDefaultThrottle(qulonglong speed);
     void exit();
 
-    static Manager* createSessionManager(const QString& path = "", QObject* parent=0);
-    static Manager* createSystemManager(const QString& path = "", QObject* parent=0);
-
- signals:
-    void downloadCreated(Download* down);
-    void groupCreated(GroupDownload* down);
-
  protected:
-    Manager(const QDBusConnection& conn,
+    ManagerImpl(const QDBusConnection& conn,
             const QString& path = "",
             QObject* parent= 0);
     // used for testing purposes
-    Manager(const QDBusConnection& conn,
+    ManagerImpl(const QDBusConnection& conn,
             const QString& path,
             ManagerInterface* interface,
             QObject* parent);
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onWatcherDone())
+    void init();
+    void onWatcherDone();
+    void setLastError(const QDBusError& err);
 
  private:
-    // use pimpl pattern so that users do not have to be recompiled
-    ManagerPrivate* d_ptr;
+    bool _isError = false;
+    QDBusConnection _conn;
+    QString _servicePath;
+    Error* _lastError = nullptr;
+    ManagerInterface* _dbusInterface = nullptr;
+
 };
 
 }  // DownloadManager

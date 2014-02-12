@@ -10,6 +10,7 @@ TEMPLATE = lib
 DEFINES += UBUNTUDOWNLOADMANAGERCLIENT_LIBRARY
 
 SOURCES += ubuntu/download_manager/manager.cpp \
+           ubuntu/download_manager/manager_impl.cpp \
            ubuntu/download_manager/download_interface.cpp \
            ubuntu/download_manager/manager_interface.cpp \
            ubuntu/download_manager/download_impl.cpp \
@@ -26,6 +27,7 @@ public_headers = \
     ubuntu/download_manager/error.h
 
 private_headers = \
+    ubuntu/download_manager/manager_impl.h \
     ubuntu/download_manager/download_impl.h \
     ubuntu/download_manager/download_interface.h \
     ubuntu/download_manager/manager_interface.h \
