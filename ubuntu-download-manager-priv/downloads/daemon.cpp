@@ -173,9 +173,8 @@ class DaemonPrivate {
                 if (!logPath.exists()) {
                     logPath = "";
                 }
-                logPath.absoluteFilePath("ubuntu-download-manager");
-                Logger::setupLogging(logPath);
-                LOG(INFO) << "Log path" << logPath;
+                Logger::setupLogging(logPath.absoluteFilePath(
+                    "ubuntu-download-manager"));
             } else {
                 LOG(ERROR) << "Missing log dir path.";
                 Logger::setupLogging();
