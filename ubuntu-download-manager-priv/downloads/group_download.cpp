@@ -147,7 +147,7 @@ GroupDownload::cancelAllDownloads() {
 
     // loop over the finished downloads and remove the files
     foreach(const QString& path, _finishedDownloads) {
-        GROUP_LOG(INFO) << "Removing file:" << path;
+        GROUP_LOG(INFO) << "Removing file: " << path;
         _fileManager->remove(path);
     }
 }
@@ -292,7 +292,7 @@ GroupDownload::onFinished(const QString& file) {
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());
     _finishedDownloads.append(file);
-    GROUP_LOG(INFO) << "Finished downloads"
+    GROUP_LOG(INFO) << "Finished downloads "
         << _finishedDownloads;
     // if we have the same number of downloads finished
     // that downloads we are done :)
