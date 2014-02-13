@@ -67,17 +67,30 @@ std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
 }
 
 std::ostream& operator<<(std::ostream &out, const QVariantMap& map) {
-    Q_UNUSED(map);
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key].toString();
+    }
+    out << "}";
     return out;
 }
 
 std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
-    Q_UNUSED(map);
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key];
+    }
+    out << "}";
     return out;
 }
 
 std::ostream& operator<<(std::ostream &out, StructList list) {
-    Q_UNUSED(list);
+    out << "(";
+    foreach(const GroupDownloadStruct& group, list) {
+        out << "{ url:" << group.getUrl() << " hash:" << group.getHash()
+            << " local file:" << group.getLocalFile() << "}";
+    }
+    out << ")";
     return out;
 }
 

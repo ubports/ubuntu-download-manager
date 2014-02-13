@@ -50,9 +50,9 @@ class DOWNLOAD_MANAGER_EXPORT GroupDownloadStruct {
     static void registerMetaType();
 
     // property getters
-    QString getUrl();
-    QString getHash();
-    QString getLocalFile();
+    QString getUrl() const;
+    QString getHash() const;
+    QString getLocalFile() const;
 
  private:
     QString _url;
