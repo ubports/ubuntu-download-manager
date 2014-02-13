@@ -168,7 +168,6 @@ TestDownload::testAuthErrorRaised() {
     QCOMPARE(Error::Auth, error->type());
 
     auto authError = qobject_cast<AuthError*>(error);
-    QCOMPARE(static_cast<int>(code), static_cast<int>(authError->type()));
     QCOMPARE(msg, authError->phrase());
 }
 
