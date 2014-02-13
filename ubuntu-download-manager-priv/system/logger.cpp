@@ -63,6 +63,10 @@ std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
     return out;
 }
 
+namespace {
+    const QString LOG_NAME = "ubuntu-download-manager.log";
+}
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -72,10 +76,18 @@ namespace System {
 static bool _init = false;
 
 void
-Logger::setupLogging(const QString filename) {
-    auto path = filename;
-    if (filename == "" ){
-        path = getLogDir() + "/ubuntu-download-manager.log";
+Logger::setupLogging(const QString logDir) {
+    auto path = logDir;
+    if (path == "" ){
+        path = getLogDir() + QDir::separator() + LOG_NAME;
+    } else {
+        bool wasCreated = QDir().mkpath(logDir);
+        if (wasCreated) {
+            path = QDir(logDir).absoluteFilePath(LOG_NAME);
+        } else {
+            qCritical() << "Could not create the logging path" << logDir;
+            path = getLogDir() + QDir::separator() + LOG_NAME;
+        }
     }
 
     auto appName = QCoreApplication::instance()->applicationName();

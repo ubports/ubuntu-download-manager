@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDir>
 #include <QtDBus/QDBusConnection>
 #include <QSharedPointer>
 #include <QSslCertificate>
@@ -169,12 +168,9 @@ class DaemonPrivate {
         if (args.contains(LOG_DIR)) {
             index = args.indexOf(LOG_DIR);
             if (args.count() > index + 1) {
-                auto logPath = QDir(args[index + 1]);
-                if (!logPath.exists()) {
-                    logPath = "";
-                }
-                Logger::setupLogging(logPath.absoluteFilePath(
-                    "ubuntu-download-manager"));
+                auto logPath = args[index + 1];
+                Logger::setupLogging(logPath);
+		LOG(INFO) << "Log path is" << logPath;
             } else {
                 LOG(ERROR) << "Missing log dir path.";
                 Logger::setupLogging();
