@@ -3,7 +3,7 @@ include(../common-vars.pri)
 
 QT       += network dbus systeminfo sql
 QT       -= gui
-#DEFINES += NDEBUG
+DEFINES += NDEBUG
 
 TARGET = ubuntu-download-manager-priv
 TEMPLATE = lib
