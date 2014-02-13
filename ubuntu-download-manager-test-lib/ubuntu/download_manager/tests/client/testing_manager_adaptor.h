@@ -9,11 +9,13 @@
  * before re-generating it.
  */
 
-#ifndef TESTING_MANAGER_ADAPTOR_H_1392304508
-#define TESTING_MANAGER_ADAPTOR_H_1392304508
+#ifndef TESTING_MANAGER_ADAPTOR_H_1391594312
+#define TESTING_MANAGER_ADAPTOR_H_1391594312
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
+#include <ubuntu/download_manager/metatypes.h>
+
 QT_BEGIN_NAMESPACE
 class QByteArray;
 template<class T> class QList;
@@ -35,11 +37,6 @@ class TestingManagerAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"returnDBusErrors\">\n"
 "      <arg direction=\"in\" type=\"b\" name=\"returnErrors\"/>\n"
 "    </method>\n"
-"    <method name=\"returnAuthError\">\n"
-"      <annotation value=\"AuthErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
-"      <arg direction=\"in\" type=\"s\" name=\"download\"/>\n"
-"      <arg direction=\"in\" type=\"(is)\" name=\"error\"/>\n"
-"    </method>\n"
 "    <method name=\"returnHttpError\">\n"
 "      <annotation value=\"HttpErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"download\"/>\n"
@@ -55,11 +52,6 @@ class TestingManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"s\" name=\"download\"/>\n"
 "      <arg direction=\"in\" type=\"(isiss)\" name=\"error\"/>\n"
 "    </method>\n"
-"    <method name=\"returnAuthError\">\n"
-"      <annotation value=\"AuthErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
-"      <arg direction=\"in\" type=\"s\" name=\"download\"/>\n"
-"      <arg direction=\"in\" type=\"(is)\" name=\"error\"/>\n"
-"    </method>\n"
 "  </interface>\n"
         "")
 public:
@@ -68,8 +60,6 @@ public:
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
-    void returnAuthError(const QString &download, AuthErrorStruct error);
-    void returnAuthError(const QString &download, AuthErrorStruct error);
     void returnDBusErrors(bool returnErrors);
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);

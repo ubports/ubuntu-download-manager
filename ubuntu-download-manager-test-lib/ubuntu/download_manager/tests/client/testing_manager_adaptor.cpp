@@ -33,18 +33,6 @@ TestingManagerAdaptor::~TestingManagerAdaptor()
     // destructor
 }
 
-void TestingManagerAdaptor::returnAuthError(const QString &download, AuthErrorStruct error)
-{
-    // handle method call com.canonical.applications.testing.DownloadManager.returnAuthError
-    QMetaObject::invokeMethod(parent(), "returnAuthError", Q_ARG(QString, download), Q_ARG(AuthErrorStruct, error));
-}
-
-void TestingManagerAdaptor::returnAuthError(const QString &download, AuthErrorStruct error)
-{
-    // handle method call com.canonical.applications.testing.DownloadManager.returnAuthError
-    QMetaObject::invokeMethod(parent(), "returnAuthError", Q_ARG(QString, download), Q_ARG(AuthErrorStruct, error));
-}
-
 void TestingManagerAdaptor::returnDBusErrors(bool returnErrors)
 {
     // handle method call com.canonical.applications.testing.DownloadManager.returnDBusErrors
