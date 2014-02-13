@@ -28,6 +28,8 @@
 #include "system/logger.h"
 #include "system/network_reply.h"
 
+#define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload{" + parent()->objectName() + "} ":"") << "Download ID{" << objectName() << "}"
+
 
 namespace {
 
@@ -121,13 +123,13 @@ FileDownload::pauseDownload() {
 
     if (_reply == nullptr) {
         // cannot pause because is not running
-        LOG(INFO) << "Cannot pause download because reply is NULL";
-        LOG(INFO) << "EMIT paused(false)";
+        DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
+        DOWN_LOG(INFO) << "EMIT paused(false)";
         emit paused(false);
         return;
     }
 
-    LOG(INFO) << "Pausing download" << _url;
+    DOWN_LOG(INFO) << "Pausing download" << _url;
     // we need to disconnect the signals to ensure that they are not
     // emitted due to the operation we are going to perform. We read
     // the data in the reply and store it in a file
@@ -141,7 +143,7 @@ FileDownload::pauseDownload() {
     } else {
         _reply->deleteLater();
         _reply = nullptr;
-        LOG(INFO) << "EMIT paused(true)";
+        DOWN_LOG(INFO) << "EMIT paused(true)";
         _downloading = false;
         emit paused(true);
     }
@@ -149,17 +151,17 @@ FileDownload::pauseDownload() {
 
 void
 FileDownload::resumeDownload() {
-    LOG(INFO) << __PRETTY_FUNCTION__ << _url;
+    DOWN_LOG(INFO) << __PRETTY_FUNCTION__ << _url;
 
     if (_reply != nullptr) {
         // cannot resume because it is already running
-        LOG(INFO) << "Cannot resume download because reply != NULL";
-        LOG(INFO) << "EMIT resumed(false)";
+        DOWN_LOG(INFO) << "Cannot resume download because reply != NULL";
+        DOWN_LOG(INFO) << "EMIT resumed(false)";
         emit resumed(false);
         return;
     }
 
-    LOG(INFO) << "Resuming download.";
+    DOWN_LOG(INFO) << "Resuming download.";
     QNetworkRequest request = buildRequest();
 
     // overrides the range header, we do not let clients set the range!!!
@@ -173,7 +175,7 @@ FileDownload::resumeDownload() {
 
     connectToReplySignals();
 
-    LOG(INFO) << "EMIT resumed(true)";
+    DOWN_LOG(INFO) << "EMIT resumed(true)";
     _downloading = true;
     emit resumed(true);
 }
@@ -184,8 +186,8 @@ FileDownload::startDownload() {
 
     if (_reply != nullptr) {
         // the download was already started, lets say that we did it
-        LOG(INFO) << "Cannot start download because reply != NULL";
-        LOG(INFO) << "EMIT started(false)";
+        DOWN_LOG(INFO) << "Cannot start download because reply != NULL";
+        DOWN_LOG(INFO) << "EMIT started(false)";
         emit started(true);
         return;
     }
@@ -199,14 +201,14 @@ FileDownload::startDownload() {
         emit started(false);
     }
 
-    LOG(INFO) << "Network is accessible, performing download request";
+    DOWN_LOG(INFO) << "Network is accessible, performing download request";
     // signals should take care of calling deleteLater on the
     // NetworkReply object
     _reply = _requestFactory->get(buildRequest());
     _reply->setReadBufferSize(throttle());
 
     connectToReplySignals();
-    LOG(INFO) << "EMIT started(true)";
+    DOWN_LOG(INFO) << "EMIT started(true)";
     _downloading = true;
     emit started(true);
 }
@@ -262,7 +264,7 @@ FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
 
 void
 FileDownload::onError(QNetworkReply::NetworkError code) {
-    LOG(ERROR) << _url << " ERROR:" << ":" << code;
+    DOWN_LOG(ERROR) << _url << " ERROR:" << ":" << code;
     _downloading = false;
     QString msg;
 
@@ -292,11 +294,11 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
 
 void
 FileDownload::onRedirect(QUrl redirect) {
-    LOG(INFO) << "Following redirect to" << redirect;
+    DOWN_LOG(INFO) << "Following redirect to" << redirect;
     // update the _url value and perform a second request to try and get the data
     if (_visitedUrls.contains(redirect)) {
         // we are in a loop!!! we have to raise an error about this.
-        LOG(WARNING) << "Redirect loop found";
+        DOWN_LOG(WARNING) << "Redirect loop found";
         NetworkErrorStruct err(QNetworkReply::ContentNotFoundError);
         emit networkError(err);
         emitError(NETWORK_ERROR);
@@ -342,7 +344,7 @@ FileDownload::onDownloadCompleted() {
         QString fileSig = QString(hash.result().toHex());
 
         if (fileSig != _hash) {
-            LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
+            DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
             emitError(HASH_ERROR);
             return;
         }
@@ -363,7 +365,7 @@ FileDownload::onDownloadCompleted() {
         QStringList commandData =
             metadata()[METADATA_COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
-            LOG(ERROR) << "COMMAND DATA MISSING";
+            DOWN_LOG(ERROR) << "COMMAND DATA MISSING";
             emitError(COMMAND_ERROR);
             return;
         } else {
@@ -391,13 +393,13 @@ FileDownload::onDownloadCompleted() {
             connect(postDownloadProcess, &Process::error,
                 this, &FileDownload::onProcessError);
 
-            LOG(INFO) << "Executing" << command << args;
+            DOWN_LOG(INFO) << "Executing" << command << args;
             postDownloadProcess->start(command, args);
             return;
         }
     } else {
         setState(Download::FINISH);
-        LOG(INFO) << "EMIT finished" << filePath();
+        DOWN_LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     }
 
@@ -435,7 +437,7 @@ FileDownload::onProcessError(QProcess::ProcessError error) {
     auto p = qobject_cast<Process*>(sender());
     auto standardOut = p->readAllStandardOutput();
     auto standardErr = p->readAllStandardError();
-    LOG(ERROR) << "Error " << error << "executing"
+    DOWN_LOG(ERROR) << "Error " << error << "executing"
         << p->program() << "with args" << p->arguments()
         << "Stdout:" << standardOut << "Stderr:" << standardErr;
     p->deleteLater();
@@ -452,7 +454,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         // remove the file since we are done with it
         cleanUpCurrentData();
         setState(Download::FINISH);
-        LOG(INFO) << "EMIT finished" << filePath();
+        DOWN_LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
         auto standardOut = p->readAllStandardOutput();
@@ -541,7 +543,7 @@ FileDownload::flushFile() {
     auto flushed  = _currentData->flush();
     if (!flushed) {
         auto err = _currentData->error();
-        LOG(ERROR) << "Could not write that in the file system" << err;
+        DOWN_LOG(ERROR) << "Could not write that in the file system" << err;
         emitError(QString(FILE_SYSTEM_ERROR).arg(err));
     }
     return flushed;

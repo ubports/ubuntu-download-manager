@@ -21,9 +21,11 @@
 #include <QDateTime>
 #include <QDir>
 #include <QDBusError>
+#include <QMap>
 #include <QStandardPaths>
 #include <QStringList>
 #include <QUrl>
+#include <QVariantMap>
 #include <QSslError>
 #include <syslog.h>
 #include <sys/types.h>
@@ -61,6 +63,21 @@ std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors) {
 std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
     out << " " << qPrintable(error.name())
         << ":" << qPrintable(error.message());
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QVariantMap& map) {
+    Q_UNUSED(map);
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
+    Q_UNUSED(map);
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, StructList list) {
+    Q_UNUSED(list);
     return out;
 }
 

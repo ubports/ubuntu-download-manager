@@ -163,6 +163,9 @@ Manager::createDownload(const QString& url,
                         const QString& algo,
                         const QVariantMap& metadata,
                         StringMap headers) {
+    LOG(INFO) << "Create download == {url:" << url << " hash: " << hash
+        << " algo: " << algo << " metadata: " << metadata << " headers: "
+        << headers << "}";
     DownloadCreationFunc createDownloadFunc =
         [this, url, hash, algo, metadata, headers](QString owner) {
         Download* download = nullptr;
@@ -189,6 +192,9 @@ Manager::createMmsDownload(const QString& url,
                            int port,
                            const QString& username,
                            const QString& password) {
+    LOG(INFO) << "Create MMS download == {url:" << url << " hostname: "
+        << hostname << " port:" << port << " username:" << username
+        << " pwd: " << password << "}";
     DownloadCreationFunc createDownloadFunc =
         [this, url, hostname, port, username, password](QString owner) {
         auto download = _downloadFactory->createMmsDownload(owner, url,
@@ -204,6 +210,9 @@ Manager::createDownloadGroup(StructList downloads,
                              bool allowed3G,
                              const QVariantMap& metadata,
                              StringMap headers) {
+    LOG(INFO) << "Create group download == {downloads:" << downloads
+        << " algo:" << algo << " allowMobile" << allowed3G << " metadata:"
+        << metadata << " headers:"  << headers << "}";
     DownloadCreationFunc createDownloadFunc =
         [this, downloads, algo, allowed3G, metadata,
             headers] (QString owner) {
