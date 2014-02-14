@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 9),
                libqt5sql5-sqlite,
                libnih-dbus-dev,
                libgoogle-glog-dev,
-               dbus-test-runner
+               dbus-test-runner,
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
@@ -29,19 +29,21 @@ Replaces: ubuntu-download-manager-common1
 Description: Ubuntu Download Manager - shared common library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
- This package includes the common shared library between the client lib and and the service lib.
+ This package includes the common shared library between the client lib and the
+ service lib.
 
 Package: libubuntu-download-manager-common-dev
 Section: libdevel
 Architecture: any
 Depends: libubuntu-download-manager-common0 (= ${binary:Version}),
+         qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
 Breaks: ubuntu-download-manager-common-dev
 Replaces: ubuntu-download-manager-common-dev
 Description: QT library for Ubuntu Download Manager - development files
- .
- This package contains the common headers shared between the client library and the daemon library.
+ This package contains the common headers shared between the client library and
+ the daemon library.
 
 Package: libubuntu-download-manager-priv0
 Section: libs
@@ -51,7 +53,7 @@ Depends: ${misc:Depends},
          libubuntu-download-manager-common0 (= ${binary:Version}),
 Breaks: ubuntu-download-manager-priv1
 Replaces: ubuntu-download-manager-priv1
-Description: Ubuntu Download Manager - shared library
+Description: Ubuntu Download Manager - shared private library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the private shared library.
@@ -64,7 +66,7 @@ Depends: ${misc:Depends},
          libubuntu-download-manager-common0 (= ${binary:Version}),
 Breaks: ubuntu-download-manager-client1
 Replaces: ubuntu-download-manager-client1
-Description: Ubuntu Download Manager - shared library
+Description: Ubuntu Download Manager - shared public library
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the public shared library.
@@ -74,13 +76,14 @@ Section: libdevel
 Architecture: any
 Depends: libubuntu-download-manager-common-dev (= ${binary:Version}),
          libubuntu-download-manager-client0 (= ${binary:Version}),
+         qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
 Breaks: ubuntu-download-manager-client-dev
 Replaces: ubuntu-download-manager-client-dev
 Description: QT library for Ubuntu Download Manager - development files
- .
- This package contains the header that can be used to allow an application use the Ubuntu Download Manager client library.
+ This package contains the header that can be used to allow an application use
+ the Ubuntu Download Manager client library.
 
 Package: ubuntu-download-manager
 Section: net
