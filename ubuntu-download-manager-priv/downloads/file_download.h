@@ -128,6 +128,7 @@ class FileDownload : public Download {
     qulonglong _totalSize = 0;
     QUrl _url;
     QString _filePath;
+    QString _tempFilePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = nullptr;

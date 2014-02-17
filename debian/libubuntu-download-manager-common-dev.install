@@ -5,5 +5,6 @@ usr/include/ubuntu/download_manager/group_download_struct.h
 usr/include/ubuntu/download_manager/http_error_struct.h
 usr/include/ubuntu/download_manager/network_error_struct.h
 usr/include/ubuntu/download_manager/process_error_struct.h
+usr/include/ubuntu/download_manager/metadata.h
 usr/lib/*/pkgconfig/ubuntu-download-manager-common.pc
 usr/lib/*/libubuntu-download-manager-common.so

@@ -41,7 +41,8 @@ SOURCES += \
     downloads/state_machines/final_state.cpp \
     system/apn_request_factory.cpp \
     downloads/mms_file_download.cpp \
-    system/apn_proxy.cpp
+    system/apn_proxy.cpp \
+    system/filename_mutex.cpp
 
 HEADERS +=\
     downloads/daemon.h \
@@ -74,7 +75,8 @@ HEADERS +=\
     downloads/state_machines/final_state.h \
     system/apn_request_factory.h \
     downloads/mms_file_download.h \
-    system/apn_proxy.h
+    system/apn_proxy.h \
+    system/filename_mutex.h
 
 OTHER_FILES += \
     generate_adaptors.sh \
