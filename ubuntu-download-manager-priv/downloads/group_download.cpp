@@ -16,6 +16,7 @@
  * boston, ma 02110-1301, usa.
  */
 
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/file_download.h"
@@ -83,7 +84,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
 
         FileDownload* singleDownload;
         QVariantMap downloadMetadata = QVariantMap(metadataMap);
-        downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
+        downloadMetadata[Metadata::LOCAL_PATH_KEY] = download.getLocalFile();
 
         if (hash.isEmpty()) {
             singleDownload = qobject_cast<FileDownload*>(

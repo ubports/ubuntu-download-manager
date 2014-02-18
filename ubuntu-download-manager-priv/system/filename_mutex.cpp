@@ -18,6 +18,8 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <ubuntu/download_manager/metadata.h>
+#include "logger.h"
 #include "filename_mutex.h"
 
 namespace Ubuntu {
@@ -26,15 +28,23 @@ namespace DownloadManager {
 
 namespace System {
 
-FilenameMutex::FilenameMutex(QObject* parent)
+FileNameMutex* FileNameMutex::_instance = nullptr;
+QMutex FileNameMutex::_singletonMutex;
+
+FileNameMutex::FileNameMutex(QObject* parent)
     : QObject(parent) {
 }
 
 QString
-FilenameMutex::getFilename(QString expectedName) {
+FileNameMutex::lockFileName(const QString& expectedName) {
     auto path = expectedName;
     _mutex.lock();
     QFileInfo fileInfo(expectedName);
+    if (!_paths.contains(path) && !QFile::exists(path)) {
+        _paths.insert(path);
+        _mutex.unlock();
+        return path;
+    }
     // Split the file into 2 parts - dot+extension, and everything
     // else. For example, "path/file.tar.gz" becomes
     // "path/file"+".tar.gz", while "path/file" (note lack of
@@ -58,6 +68,8 @@ FilenameMutex::getFilename(QString expectedName) {
         // If no file exists with the new name, return it.
         if (!_paths.contains(path) && !QFile::exists(path)) {
             _paths.insert(path);
+            LOG(INFO) << "Locked path '" << path << "'";
+            break;
         }
     }  // for
 
@@ -66,9 +78,61 @@ FilenameMutex::getFilename(QString expectedName) {
 }
 
 QString
-FilenameMutex::getFilename(QVariantMap metadata) {
-    Q_UNUSED(metadata);
-    return "";
+FileNameMutex::lockFileName(const QVariantMap& metadata) {
+    auto path = metadata[Metadata::LOCAL_PATH_KEY].toString();
+    _mutex.lock();
+    _paths.insert(path);
+    _mutex.unlock();
+    return path;
+}
+
+void
+FileNameMutex::unlockFileName(const QString& filename) {
+    _mutex.lock();
+    auto removed = _paths.remove(filename);
+    if (!removed) {
+        LOG(WARNING) << "Tired to remove filename '" << filename
+            << "' when it was not owned by any object.";
+    } else {
+        LOG(INFO) << "Released path '" << filename << "'";
+    }
+    _mutex.unlock();
+}
+
+bool
+FileNameMutex::isLocked(const QString& filename) {
+    _mutex.lock();
+    auto present = _paths.contains(filename);
+    _mutex.unlock();
+    return present;
+}
+
+FileNameMutex*
+FileNameMutex::instance() {
+    if(_instance == nullptr) {
+        _singletonMutex.lock();
+        if(_instance == nullptr)
+            _instance = new FileNameMutex();
+        _singletonMutex.unlock();
+    }
+    return _instance;
+}
+
+void
+FileNameMutex::deleteInstance() {
+    if(_instance != nullptr) {
+        _singletonMutex.lock();
+        if(_instance != nullptr) {
+            delete _instance;
+            _instance = nullptr;
+        }
+        _singletonMutex.unlock();
+    }
+}
+
+void
+FileNameMutex::setInstance(FileNameMutex* instance) {
+    _instance = instance;
 }
 
 }  // System

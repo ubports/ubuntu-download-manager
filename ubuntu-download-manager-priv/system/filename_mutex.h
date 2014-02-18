@@ -30,16 +30,30 @@ namespace DownloadManager {
 
 namespace System {
 
-class FilenameMutex : public QObject {
+class FileNameMutex : public QObject {
     Q_OBJECT
  public:
-    explicit FilenameMutex(QObject* parent = 0);
-    QString getFilename(QString expectedName);
-    QString getFilename(QVariantMap metadata);
+    explicit FileNameMutex(QObject* parent = 0);
+    virtual QString lockFileName(const QString& expectedName);
+    virtual QString lockFileName(const QVariantMap& metadata);
+    virtual void unlockFileName(const QString& filename);
+    virtual bool isLocked(const QString& filename);
+
+    static FileNameMutex* instance();
+
+    // only used for testing so that we can inject a fake
+    static void setInstance(FileNameMutex* instance);
+    static void deleteInstance();
+
+ protected:
+    QSet<QString> _paths;
 
  private:
+    // used for the singleton
+    static FileNameMutex* _instance;
+    static QMutex _singletonMutex;
+
     QMutex _mutex;
-    QSet<QString> _paths;
 };
 
 }  // System

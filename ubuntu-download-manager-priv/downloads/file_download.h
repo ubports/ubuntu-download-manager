@@ -29,8 +29,7 @@
 #include <ubuntu/download_manager/process_error_struct.h>
 #include "downloads/download.h"
 #include "system/file_manager.h"
-
-#define LOCAL_PATH_KEY "local-path"
+#include "system/filename_mutex.h"
 
 namespace Ubuntu {
 
@@ -133,6 +132,7 @@ class FileDownload : public Download {
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
+    FileNameMutex* _fileNameMutex = nullptr;
     QList<QUrl> _visitedUrls;
 };
 

@@ -23,8 +23,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/file_download.h"
+#include "system/filename_mutex.h"
 #include "system/logger.h"
 #include "system/network_reply.h"
 
@@ -32,14 +34,12 @@
 namespace {
 
     const QString DATA_FILE_NAME = "data.download";
-    const QString METADATA_FILE_NAME = "metadata";
-    const QString METADATA_COMMAND_KEY = "post-download-command";
-    const QString METADATA_COMMAND_FILE_KEY = "$file";
     const QString NETWORK_ERROR = "NETWORK ERROR";
     const QString HASH_ERROR = "HASH ERROR";
     const QString COMMAND_ERROR = "COMMAND ERROR";
     const QString SSL_ERROR = "SSL ERROR";
     const QString FILE_SYSTEM_ERROR = "FILE SYSTEM ERROR: %1";
+    const QString TEMP_EXTENSION = ".tmp";
 
 }
 
@@ -111,6 +111,9 @@ FileDownload::cancelDownload() {
 
     // remove current data and metadata
     cleanUpCurrentData();
+    // unlock the file name so that other downloads can use it it if is
+    // no used in the file system
+    _fileNameMutex->unlockFileName(_filePath);
     _downloading = false;
     emit canceled(true);
 }
@@ -310,7 +313,9 @@ FileDownload::onRedirect(QUrl redirect) {
     _reply->deleteLater();
     _reply = nullptr;
 
-    // clean the local file
+    // clean the local file without unlocking the file the reason for
+    // this is that the file pat is going to be reused to store the
+    // data from the redirect
     cleanUpCurrentData();
 
     // perform again the request but do not emit started signal
@@ -353,7 +358,7 @@ FileDownload::onDownloadCompleted() {
     // means we are done here else we execute the command AND raise the
     // finish signals once the command was done (or an error ocurred in
     // the command execution.
-    if (metadata().contains(METADATA_COMMAND_KEY)) {
+    if (metadata().contains(Metadata::COMMAND_KEY)) {
         // just emit processing if we DO NOT have a hash because else we
         // already emitted it.
         if (_hash.isEmpty()) {
@@ -361,7 +366,7 @@ FileDownload::onDownloadCompleted() {
         }
         // toStringList will return an empty list if it cannot be converted
         QStringList commandData =
-            metadata()[METADATA_COMMAND_KEY].toStringList();
+            metadata()[Metadata::COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
             LOG(ERROR) << "COMMAND DATA MISSING";
             emitError(COMMAND_ERROR);
@@ -374,7 +379,7 @@ FileDownload::onDownloadCompleted() {
             QStringList args;
 
             foreach(const QString& arg, commandData) {
-                if (arg == METADATA_COMMAND_FILE_KEY)
+                if (arg == Metadata::COMMAND_FILE_KEY)
                     args << filePath();
                 else
                     args << arg;
@@ -398,6 +403,7 @@ FileDownload::onDownloadCompleted() {
     } else {
         setState(Download::FINISH);
         LOG(INFO) << "EMIT finished" << filePath();
+        _fileNameMutex->unlockFileName(_filePath);
         emit finished(filePath());
     }
 
@@ -451,6 +457,9 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
+        // let other files use the file name if it is not present in
+        // the filesystem
+        _fileNameMutex->unlockFileName(_filePath);
         setState(Download::FINISH);
         LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
@@ -491,6 +500,7 @@ FileDownload::onOnlineStateChanged(bool online) {
 void
 FileDownload::init() {
     _requestFactory = RequestFactory::instance();
+    _fileNameMutex = System::FileNameMutex::instance();
     SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
     _connected = networkInfo->isOnline();
     _downloading = false;
@@ -500,6 +510,7 @@ FileDownload::init() {
         this, &FileDownload::onOnlineStateChanged);
 
     _filePath = getSaveFileName();
+    _tempFilePath = _filePath + TEMP_EXTENSION;
 
     // ensure that the download is valid
     if (!_url.isValid()) {
@@ -549,17 +560,19 @@ FileDownload::flushFile() {
 
 QString
 FileDownload::getSaveFileName() {
+    // the mutex will ensure that we do not have race conditions about
+    // the file names in the download manager
     QString path = _url.path();
     QString basename = QFileInfo(path).fileName();
 
     if (basename.isEmpty())
         basename = DATA_FILE_NAME;
 
-    QVariantMap metadataMap = metadata();
     QString finalPath;
+    auto metadataMap = metadata();
 
-    if (!isConfined() && metadataMap.contains(LOCAL_PATH_KEY)) {
-        finalPath = metadataMap[LOCAL_PATH_KEY].toString();
+    if (!isConfined() && metadataMap.contains(Metadata::LOCAL_PATH_KEY)) {
+        finalPath = _fileNameMutex->lockFileName(metadataMap);
 
         // in this case and because the app is not confined we are
         // going to check if the file exists, if it does we will
@@ -570,11 +583,8 @@ FileDownload::getSaveFileName() {
                 finalPath));
         }
     } else {
-        finalPath = rootPath() + QDir::separator() + basename;
-        if (QFile::exists(finalPath)) {
-            finalPath = uniqueFilePath(finalPath);
-        }
-
+        auto desiredPath = rootPath() + QDir::separator() + basename;
+        finalPath = _fileNameMutex->lockFileName(desiredPath);
     }
 
     return finalPath;
@@ -658,6 +668,8 @@ FileDownload::emitError(const QString& error) {
     _reply->deleteLater();
     _reply = nullptr;
     cleanUpCurrentData();
+    // let other downloads use the same file name
+    _fileNameMutex->unlockFileName(_filePath);
     Download::emitError(error);
 }
 
