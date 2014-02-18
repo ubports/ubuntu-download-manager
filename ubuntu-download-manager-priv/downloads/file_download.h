@@ -119,7 +119,7 @@ class FileDownload : public Download {
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
     QString getSaveFileName();
-    QString uniqueFilePath(QString path);
+    void emitFinished();
 
  private:
     bool _downloading = false;

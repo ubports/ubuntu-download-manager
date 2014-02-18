@@ -195,7 +195,7 @@ FileDownload::startDownload() {
 
     // create file that will be used to mantain the state of the
     // download when resumed.
-    _currentData = FileManager::instance()->createFile(_filePath);
+    _currentData = FileManager::instance()->createFile(_tempFilePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
@@ -319,7 +319,7 @@ FileDownload::onRedirect(QUrl redirect) {
     cleanUpCurrentData();
 
     // perform again the request but do not emit started signal
-    _currentData = FileManager::instance()->createFile(_filePath);
+    _currentData = FileManager::instance()->createFile(_tempFilePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
@@ -401,10 +401,7 @@ FileDownload::onDownloadCompleted() {
             return;
         }
     } else {
-        setState(Download::FINISH);
-        LOG(INFO) << "EMIT finished" << filePath();
-        _fileNameMutex->unlockFileName(_filePath);
-        emit finished(filePath());
+        emitFinished();
     }
 
     // clean the reply
@@ -457,12 +454,24 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
-        // let other files use the file name if it is not present in
-        // the filesystem
-        _fileNameMutex->unlockFileName(_filePath);
-        setState(Download::FINISH);
-        LOG(INFO) << "EMIT finished" << filePath();
-        emit finished(filePath());
+        emitFinished();
+        // remove the file because that is the contract that we have with
+        // the clients
+        auto fileMan = FileManager::instance();
+
+        if (fileMan->exists(_tempFilePath)) {
+            qDebug()  << "Removing '" << _tempFilePath << "'";
+            LOG(INFO) << "Removing '" << _tempFilePath << "'";
+            fileMan->remove(_tempFilePath);
+        }
+
+        if (fileMan->exists(_filePath)) {
+            qDebug() << "Removing '" << _filePath << "'";
+            LOG(INFO) << "Removing '" << _filePath << "'";
+            fileMan->remove(_filePath);
+        }
+
+        
     } else {
         auto standardOut = p->readAllStandardOutput();
         auto standardErr = p->readAllStandardError();
@@ -590,33 +599,20 @@ FileDownload::getSaveFileName() {
     return finalPath;
 }
 
-QString
-FileDownload::uniqueFilePath(QString path) {
-    QFileInfo fileInfo(path);
+void
+FileDownload::emitFinished() {
+    auto fileMan = FileManager::instance();
 
-    // Split the file into 2 parts - dot+extension, and everything else. For
-    // example, "path/file.tar.gz" becomes "path/file"+".tar.gz", while
-    // "path/file" (note lack of extension) becomes "path/file"+"".
-    auto secondPart = fileInfo.completeSuffix();
-    auto firstPart = path;
+    LOG(INFO) << "EMIT finished" << filePath();
+    setState(Download::FINISH);
 
-    if (!secondPart.isEmpty()) {
-        secondPart = "." + secondPart;
-        firstPart = path.left(path.size() - secondPart.size());
+    if (fileMan->exists(_tempFilePath)) {
+        LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
+            << _filePath << "'";
+        fileMan->rename(_tempFilePath, _filePath);
     }
-
-    // Try with an ever-increasing number suffix, until we've reached a file
-    // that does not yet exist.
-    for (int ii = 1; ; ii++) {
-        // Construct the new file name by adding the unique number between the
-        // first and second part.
-        auto finalPath = QString("%1 (%2)%3").arg(firstPart).arg(ii).arg(secondPart);
-        // If no file exists with the new name, return it.
-        if (!QFile::exists(finalPath)) {
-            return finalPath;
-        }
-    }  // for
-    return path;
+    _fileNameMutex->unlockFileName(_filePath);
+    emit finished(_filePath);
 }
 
 void
@@ -632,7 +628,7 @@ FileDownload::cleanUpCurrentData() {
         _currentData->deleteLater();
         _currentData = nullptr;
     } else {
-        QScopedPointer<QFile> tempFile(new QFile(_filePath));
+        QScopedPointer<QFile> tempFile(new QFile(_tempFilePath));
         success = tempFile->remove();
         if (!success)
             error = tempFile->error();

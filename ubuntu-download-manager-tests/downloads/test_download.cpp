@@ -714,7 +714,9 @@ TestDownload::testStartDownload() {
     QCOMPARE(spy.count(), 1);
 
     // assert that the files does exist in the system
-    QFileInfo info = QFileInfo(download->filePath());
+    QFileInfo info(download->filePath());
+    QVERIFY(!info.exists());
+    info = QFileInfo(download->filePath() + ".tmp");
     QVERIFY(info.exists());
 }
 
@@ -738,6 +740,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
 
     // assert that the files does exist in the system
     QFileInfo info = QFileInfo(download->filePath());
+    QVERIFY(!info.exists());
+    info = QFileInfo(download->filePath() + ".tmp");
     QVERIFY(info.exists());
 }
 
@@ -1586,8 +1590,9 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
 
     // write something in the expected file
     QString fileName = download->filePath();
@@ -1615,7 +1620,8 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(0, QProcess::NormalExit);
-    // asser that the file does not longer exist in the system
+    QTRY_COMPARE(1, finishedSpy.count());
+    // assert that the file does not longer exist in the system
     QVERIFY(!QFile::exists(fileName));
 }
 
