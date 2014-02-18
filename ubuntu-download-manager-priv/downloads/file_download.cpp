@@ -460,13 +460,11 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
         auto fileMan = FileManager::instance();
 
         if (fileMan->exists(_tempFilePath)) {
-            qDebug()  << "Removing '" << _tempFilePath << "'";
             LOG(INFO) << "Removing '" << _tempFilePath << "'";
             fileMan->remove(_tempFilePath);
         }
 
         if (fileMan->exists(_filePath)) {
-            qDebug() << "Removing '" << _filePath << "'";
             LOG(INFO) << "Removing '" << _filePath << "'";
             fileMan->remove(_filePath);
         }
