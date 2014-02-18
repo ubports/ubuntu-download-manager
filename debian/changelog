@@ -1,3 +1,71 @@
+ubuntu-download-manager (0.3+14.04.20140214.1-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Bootstrap CI Train
+
+  [ Manuel de la Pena ]
+  * Ensure that the return value from flush is checked to ensure that if
+    there are any issues when flushing the file this are fwd to the
+    client. (LP: #1261999)
+  * Add a common library to be used by the client library and the daemon
+    side lib. (LP: #1250420)
+  * Adds the client library that allows apps to use the download manager
+    without knowing the dbus api. (LP: #1250423)
+  * Ensure that the error code from a fail file removal is logged. (LP:
+    #1269078)
+  * Fix copyright issues. (LP: #1269837)
+  * Check if the file is present and use a more human redable filename
+    that does not break extensions. (LP: #1269801)
+  * Provide better logging for when the post download command fails.
+    (LP: #1269212)
+  * Provides the initial implementation of the Manager class that allows
+    to create downloads in the UDM via the client lib. (LP: #1268911)
+  * Provide the missing manager methods and a better way for testing.
+  * Add a new constructor to allow an even simpler way to create
+    downloads. (LP: #1268932)
+  * Pass the QIODevice so that all the data is not loaded in memory.
+    (LP: #1271684)
+  * Use google logging for the service so that we do not eat other
+    processes debug messages and use a more mature and decent logging
+    framework. (LP: #1262001)
+  * Do the correct casting. (LP: #1274019)
+  * Provide a new method that allows to create mms downloads that are
+    not queued and take the APN proxy details to be used for the get
+    request. (LP: #1273190)
+  * Split the errors in file download so that dealing with them is
+    easier.
+  * Remove all occurrences of NULL and change them for nullptr.
+  * Remove all occurrences of #define string to use a empty namespace so
+    that we do not pollute the general space.
+  * Provide all the methods required to work with downloads. (LP:
+    #1272287)
+  * Ensure that redirects are followed from udm unless we are in a loop.
+    If the download gets in a redirect loop a network error is emitted.
+    (LP: #1274335)
+  * Provide a nicer way to deal with errors in the client lib.
+  * Make the method not to be sync anymore and use qt signals to notify
+    the users that a download was created. (LP: #1273822)
+  * Provide the minimum code to be able to use mms downloads via go.
+  * Ensure that we do not leak includes from QDBus. (LP: #1277462)
+  * Ensure that the downloads are stored in the db as soon as they are
+    updated.
+  * Remove the references from an other project. (LP: #1277279)
+  * Do not leak the global headers and ensure that the required ones are
+    present in the -dev packages. (LP: #1277384, #1278394)
+  * Provide errorString method to allows to get the info of the error
+    without casting. (LP: #1277808)
+  * Fix the go bindings. (LP: #1279409, #1279430)
+
+  [ Rodney Dawes ]
+  * Do not leak the global headers and ensure that the required ones are
+    present in the -dev packages. (LP: #1277384, #1278394)
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * Fix dependencies for the -dev packages, and then fix some minor
+    packaging issues
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Feb 2014 17:42:29 +0000
+
 ubuntu-download-manager (0.3+14.04.20131219-0ubuntu1) trusty; urgency=low
 
   [ Loïc Minier ]
