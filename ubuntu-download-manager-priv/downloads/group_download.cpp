@@ -23,6 +23,8 @@
 #include "system/logger.h"
 #include "system/uuid_factory.h"
 
+#define GROUP_LOG(LEVEL) LOG(LEVEL) << "Group Download{" << objectName() << "}"
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -111,6 +113,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
                     rootPath(), url, hash, algo, downloadMetadata,
                     headersMap));
         }
+        singleDownload->setParent(this);
 
         // ensure that the local path is not used by any other download
         // in this group.
@@ -154,7 +157,7 @@ GroupDownload::cancelAllDownloads() {
 
     // loop over the finished downloads and remove the files
     foreach(const QString& path, _finishedDownloads) {
-        LOG(INFO) << "Removing file:" << path;
+        GROUP_LOG(INFO) << "Removing file: " << path;
         _fileManager->remove(path);
     }
 }
@@ -171,7 +174,7 @@ GroupDownload::pauseDownload() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
-            LOG(INFO) << "Pausing download of "
+            GROUP_LOG(INFO) << "Pausing download of "
                 << download->url();
             download->pause();
             download->pauseDownload();
@@ -341,7 +344,7 @@ GroupDownload::onFinished(const QString& file) {
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());
     _finishedDownloads.append(file);
-    LOG(INFO) << "Finished downloads"
+    GROUP_LOG(INFO) << "Finished downloads "
         << _finishedDownloads;
     // if we have the same number of downloads finished
     // that downloads we are done :)

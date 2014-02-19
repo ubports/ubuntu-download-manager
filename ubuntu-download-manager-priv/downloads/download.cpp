@@ -44,6 +44,7 @@ Download::Download(const QString& id,
       _metadata(metadata),
       _headers(headers) {
     _networkInfo = SystemNetworkInfo::instance();
+    setObjectName(id);
 }
 
 Download::~Download() {
