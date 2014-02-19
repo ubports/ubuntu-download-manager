@@ -28,7 +28,7 @@ namespace System {
 NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
     : QObject(parent),
       _reply(reply) {
-    // connect to all the signals so that we foward them
+    // connect to all the signals so that we forward them
     if (_reply != nullptr) {
         connect(_reply, &QNetworkReply::downloadProgress,
             this, &NetworkReply::downloadProgress);
@@ -36,7 +36,7 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
             this, &NetworkReply::finished);
         connect(_reply, &QNetworkReply::sslErrors,
             this, &NetworkReply::sslErrors);
-	// becuase error is overloaded we need to help the compiler
+	// because error is overloaded we need to help the compiler
 	connect(_reply, static_cast<void(QNetworkReply::*)
 	    (QNetworkReply::NetworkError)>(&QNetworkReply::error),
 		this, &NetworkReply::error);
@@ -104,6 +104,11 @@ NetworkReply::canIgnoreSslErrors(const QList<QSslError>& errors) {
 QVariant
 NetworkReply::attribute(QNetworkRequest::Attribute code) const {
     return _reply->attribute(code);
+}
+
+QString
+NetworkReply::errorString() const {
+    return _reply->errorString();
 }
 
 }  // System

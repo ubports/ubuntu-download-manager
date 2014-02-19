@@ -44,9 +44,10 @@ class NetworkReply : public QObject {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
     virtual bool canIgnoreSslErrors(const QList<QSslError>& errors);
     virtual QVariant attribute(QNetworkRequest::Attribute code) const;
+    virtual QString errorString() const;
 
  signals:
-    // signals fowarded from the real reply object
+    // signals forwarded from the real reply object
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void error(QNetworkReply::NetworkError code);
     void finished();
