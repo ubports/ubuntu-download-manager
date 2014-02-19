@@ -21,6 +21,7 @@
 
 #include <QMap>
 #include <QList>
+#include "auth_error_struct.h"
 #include "http_error_struct.h"
 #include "network_error_struct.h"
 #include "process_error_struct.h"
@@ -32,7 +33,7 @@ using namespace Ubuntu::DownloadManager;
 typedef QMap<QString, QString> StringMap;
 typedef QList<GroupDownloadStruct> StructList;
 
-
+Q_DECLARE_METATYPE(AuthErrorStruct)
 Q_DECLARE_METATYPE(HttpErrorStruct)
 Q_DECLARE_METATYPE(NetworkErrorStruct)
 Q_DECLARE_METATYPE(ProcessErrorStruct)

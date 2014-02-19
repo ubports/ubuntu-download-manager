@@ -59,6 +59,8 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
         this, &DownloadImpl::onNetworkError);
     connect(_dbusInterface, &DownloadInterface::processError,
         this, &DownloadImpl::onProcessError);
+    connect(_dbusInterface, &DownloadInterface::authError,
+        this, &DownloadImpl::onAuthError);
 }
 
 DownloadImpl::DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent)
@@ -252,6 +254,12 @@ DownloadImpl::onNetworkError(NetworkErrorStruct errStruct) {
 void
 DownloadImpl::onProcessError(ProcessErrorStruct errStruct) {
     auto err = new ProcessError(errStruct, this);
+    setLastError(err);
+}
+
+void
+DownloadImpl::onAuthError(AuthErrorStruct errStruct) {
+    auto err = new AuthError(errStruct, q);
     setLastError(err);
 }
 

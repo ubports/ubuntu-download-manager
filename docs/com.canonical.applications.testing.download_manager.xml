@@ -23,5 +23,10 @@
         <arg name="error" type="(isiss)" direction="in"/>
     </method>
 
+    <method name="returnAuthError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="AuthErrorStruct"/>
+        <arg name="download" type="s" direction="in"/>
+        <arg name="error" type="(is)" direction="in"/>
+    </method>
  </interface>
 </node>

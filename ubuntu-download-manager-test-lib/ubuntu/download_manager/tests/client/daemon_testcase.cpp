@@ -89,6 +89,27 @@ DaemonTestCase::returnDBusErrors(bool errors) {
 }
 
 void
+DaemonTestCase::returnAuthError(const QString &download, AuthErrorStruct error) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+            _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+            testingInterface->returnAuthError(download, error);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+	    auto error = reply.error();
+	    QString msg = "Could not tell the daemon to return Auth errors: "
+                + error.name() + ":" +  error.message();
+            QFAIL(msg.toUtf8());
+        }
+    } else {
+        QFAIL("returnHttpError must be used after init has been executed.");
+    }
+}
+
+void
 DaemonTestCase::returnHttpError(const QString &download, HttpErrorStruct error) {
     if (_daemonProcess != nullptr) {
         auto conn = QDBusConnection::sessionBus();

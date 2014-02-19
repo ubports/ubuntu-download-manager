@@ -62,6 +62,10 @@ class FakeDownload : public FileDownload, public Fake {
     // useful methods to emit signals
     void emitFinished(const QString& path);
     void emitError(const QString& error);
+    void emitAuthError(AuthErrorStruct error);
+    void emitHttpError(HttpErrorStruct error);
+    void emitNetworkError(NetworkErrorStruct error);
+    void emitProcessError(ProcessErrorStruct error);
 
     using Download::setAddToQueue;
 

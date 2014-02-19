@@ -86,6 +86,7 @@ class DownloadImpl : public Download {
     void onHttpError(HttpErrorStruct);
     void onNetworkError(NetworkErrorStruct);
     void onProcessError(ProcessErrorStruct);
+    void onAuthError(AuthErrorStruct);
 
  private:
     QString _id;

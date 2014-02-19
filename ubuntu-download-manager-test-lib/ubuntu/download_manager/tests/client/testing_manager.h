@@ -58,6 +58,7 @@ class TestingManager : public Manager {
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);
+    void returnAuthError(const QString &download, AuthErrorStruct error);
 
  protected:
     QDBusObjectPath registerDownload(Download* download) override;
