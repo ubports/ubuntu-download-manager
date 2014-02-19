@@ -74,6 +74,18 @@ TestingManager::returnProcessError(const QString &download,
     }
 }
 
+void
+TestingManager::returnAuthError(const QString &download,
+                                AuthErrorStruct error) {
+    auto q = queue();
+    foreach(Download* down, q->downloads().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(down);
+        if (testDown != nullptr && testDown->url() == download) {
+            testDown->returnAuthError(error);
+        }
+    }
+}
+
 QDBusObjectPath
 TestingManager::registerDownload(Download* download) {
     QDBusObjectPath path;

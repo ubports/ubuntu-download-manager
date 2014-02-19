@@ -76,6 +76,8 @@ class DownloadPrivate {
             q, SLOT(onNetworkError(NetworkErrorStruct)));
         q->connect(_dbusInterface, SIGNAL(processError(ProcessErrorStruct)),
             q, SLOT(onProcessError(ProcessErrorStruct)));
+        q->connect(_dbusInterface, SIGNAL(authError(AuthErrorStruct)),
+            q, SLOT(onAuthError(AuthErrorStruct)));
     }
 
     DownloadPrivate(const QDBusConnection& conn, Error* err, Download* parent)
@@ -259,6 +261,12 @@ class DownloadPrivate {
     void onProcessError(ProcessErrorStruct errStruct) {
         Q_Q(Download);
         auto err = new ProcessError(errStruct, q);
+        setLastError(err);
+    }
+
+    void onAuthError(AuthErrorStruct errStruct) {
+        Q_Q(Download);
+        auto err = new AuthError(errStruct, q);
         setLastError(err);
     }
 
