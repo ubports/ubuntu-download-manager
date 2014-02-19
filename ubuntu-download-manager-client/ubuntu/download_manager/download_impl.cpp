@@ -259,7 +259,7 @@ DownloadImpl::onProcessError(ProcessErrorStruct errStruct) {
 
 void
 DownloadImpl::onAuthError(AuthErrorStruct errStruct) {
-    auto err = new AuthError(errStruct, q);
+    auto err = new AuthError(errStruct, this);
     setLastError(err);
 }
 

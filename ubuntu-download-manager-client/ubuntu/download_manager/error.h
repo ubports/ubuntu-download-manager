@@ -90,7 +90,7 @@ class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(AuthError)
 
-    friend class DownloadPrivate;
+    friend class DownloadImpl;
 
  public:
     enum Type {
