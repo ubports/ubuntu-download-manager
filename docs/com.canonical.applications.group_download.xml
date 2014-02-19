@@ -62,6 +62,30 @@
         <arg name="error" type="s" direction="out"/>
     </signal>
 
+    <signal name="authError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="AuthErrorStruct"/>
+        <arg name="url" type="s" direction="out"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="httpError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="HttpErrorStruct"/>
+        <arg name="url" type="s" direction="out"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="networkError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="NetworkErrorStruct"/>
+        <arg name="url" type="s" direction="out"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="processError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="ProcessErrorStruct"/>
+        <arg name="url" type="s" direction="out"/>
+        <arg name="error" type="(isiss)" direction="out"/>
+    </signal>
+
     <signal name="progress">
         <arg name="received" type="t" direction="out"/>
         <arg name="total" type="t" direction="out"/>
