@@ -62,11 +62,13 @@ ManagerImpl::init() {
     qRegisterMetaType<DBusError*>("DBusError*");
     qRegisterMetaType<HttpError*>("HttpError*");
     qRegisterMetaType<NetworkError*>("NetworkError*");
+    qRegisterMetaType<AuthError*>("AuthError*");
     qRegisterMetaType<ProcessError*>("ProcessError*");
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
+    qDBusRegisterMetaType<AuthErrorStruct>();
     qDBusRegisterMetaType<HttpErrorStruct>();
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
