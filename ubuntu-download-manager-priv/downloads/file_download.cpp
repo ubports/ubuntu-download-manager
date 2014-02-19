@@ -40,6 +40,10 @@ namespace {
     const QString SSL_ERROR = "SSL ERROR";
     const QString FILE_SYSTEM_ERROR = "FILE SYSTEM ERROR: %1";
     const QString TEMP_EXTENSION = ".tmp";
+    const QString AUTH_ERROR = "AUTHENTICATION ERROR";
+    const QString PROXY_AUTH_ERROR = "PROXY_AUTHENTICATION ERROR";
+    const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
+
 
 }
 
@@ -81,7 +85,7 @@ FileDownload::FileDownload(const QString& id,
       _hash(hash) {
     init();
     _algo = HashAlgorithm::getHashAlgo(algo);
-    // check that the algorithm is correct if the hash is not emtpy
+    // check that the algorithm is correct if the hash is not empty
     if (!_hash.isEmpty() && !HashAlgorithm::isValidAlgo(algo)) {
         setIsValid(false);
         setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
@@ -193,7 +197,7 @@ FileDownload::startDownload() {
         return;
     }
 
-    // create file that will be used to mantain the state of the
+    // create file that will be used to maintain the state of the
     // download when resumed.
     _currentData = FileManager::instance()->createFile(_tempFilePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
@@ -268,6 +272,7 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
     LOG(ERROR) << _url << " ERROR:" << ":" << code;
     _downloading = false;
     QString msg;
+    QString errStr;
 
     // decide if we are talking about an http error or no
     auto statusCode = _reply->attribute(
@@ -284,13 +289,23 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
             }
             HttpErrorStruct err(status, msg);
             emit httpError(err);
+            errStr = NETWORK_ERROR;
         }
     } else {
-        NetworkErrorStruct err(code);
-        emit networkError(err);
+        if (code == QNetworkReply::AuthenticationRequiredError) {
+            AuthErrorStruct err(AuthErrorStruct::Server, _reply->errorString());
+            emit authError(err);
+            errStr = AUTH_ERROR;
+        } else if (code == QNetworkReply::ProxyAuthenticationRequiredError) {
+            AuthErrorStruct err(AuthErrorStruct::Proxy, _reply->errorString());
+            emit authError(err);
+            errStr = PROXY_AUTH_ERROR;
+        } else {
+            NetworkErrorStruct err(code, _reply->errorString());
+            emit networkError(err);
+        }
     }
-
-    emitError(NETWORK_ERROR);
+    emitError(errStr);
 }
 
 void
@@ -356,7 +371,7 @@ FileDownload::onDownloadCompleted() {
     // there are two possible cases, the first, we do not have the metadata
     // info to execute a command once the download was finished and that
     // means we are done here else we execute the command AND raise the
-    // finish signals once the command was done (or an error ocurred in
+    // finish signals once the command was done (or an error occurred in
     // the command execution.
     if (metadata().contains(Metadata::COMMAND_KEY)) {
         // just emit processing if we DO NOT have a hash because else we
@@ -372,7 +387,7 @@ FileDownload::onDownloadCompleted() {
             emitError(COMMAND_ERROR);
             return;
         } else {
-            // first item of the string list is the commnad
+            // first item of the string list is the command
             // the rest is the arguments
             QString command = commandData.at(0);
             commandData.removeAt(0);

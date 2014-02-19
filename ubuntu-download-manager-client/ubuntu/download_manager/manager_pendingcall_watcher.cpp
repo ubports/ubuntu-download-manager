@@ -19,7 +19,7 @@
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
-#include "download.h"
+#include "download_impl.h"
 #include "error.h"
 #include "group_download.h"
 #include "manager.h"
@@ -51,13 +51,13 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // creater error and deal with it
         auto err = new DBusError(reply.error());
-        auto down = new Download(_conn, err);
+        auto down = new DownloadImpl(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
     } else {
         qDebug() << "Success!";
         auto path = reply.value();
-        auto down = new Download(_conn, _servicePath, path);
+        auto down = new DownloadImpl(_conn, _servicePath, path);
         emit man->downloadCreated(down);
         _cb(down);
     }

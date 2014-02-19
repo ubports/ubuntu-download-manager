@@ -17,7 +17,8 @@ SOURCES += \
     ubuntu/download_manager/http_error_struct.cpp \
     ubuntu/download_manager/network_error_struct.cpp \
     ubuntu/download_manager/process_error_struct.cpp \
-    ubuntu/download_manager/metadata.cpp
+    ubuntu/download_manager/metadata.cpp \
+    ubuntu/download_manager/auth_error_struct.cpp
 
 public_headers = \
     ubuntu/download_manager/common.h \
@@ -27,7 +28,8 @@ public_headers = \
     ubuntu/download_manager/http_error_struct.h \
     ubuntu/download_manager/network_error_struct.h \
     ubuntu/download_manager/process_error_struct.h \
-    ubuntu/download_manager/metadata.h
+    ubuntu/download_manager/metadata.h \
+    ubuntu/download_manager/auth_error_struct.h
 
 private_headers = \
     ubuntu/download_manager/system/dbus_connection.h \

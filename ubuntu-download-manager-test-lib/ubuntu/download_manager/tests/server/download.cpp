@@ -135,3 +135,24 @@ FakeDownload::emitError(const QString& errorMsg) {
     setState(Download::ERROR);
     emit error(errorMsg);
 }
+
+void
+FakeDownload::emitAuthError(AuthErrorStruct error) {
+    emit authError(error);
+}
+
+void
+FakeDownload::emitHttpError(HttpErrorStruct error) {
+    emit httpError(error);
+}
+
+void
+FakeDownload::emitNetworkError(NetworkErrorStruct error) {
+    emit networkError(error);
+}
+
+void
+FakeDownload::emitProcessError(ProcessErrorStruct error) {
+    emit processError(error);
+}
+

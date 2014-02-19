@@ -906,8 +906,8 @@ TestDownload::testOnHttpError() {
     // set the attrs in the reply so that we do raise two signals
     reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
     reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, message);
-    
-    // emit the error and esure that the signals are raised
+
+    // emit the error and ensure that the signals are raised
     reply->emitHttpError(QNetworkReply::ContentAccessDenied);
     QCOMPARE(httpErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
@@ -971,6 +971,62 @@ TestDownload::testOnNetworkError() {
     // emit the error and ensure that the signals are raised
     reply->emitHttpError((QNetworkReply::NetworkError)code);
     QCOMPARE(networkErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnAuthError() {
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy authErrorSpy(download.data(),
+        SIGNAL(authError(AuthErrorStruct)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the error and ensure that the signals are raised
+    reply->emitHttpError(QNetworkReply::AuthenticationRequiredError);
+    QCOMPARE(networkErrorSpy.count(), 0);
+    QCOMPARE(authErrorSpy.count(), 1);
+    auto error = authErrorSpy.takeFirst().at(0).value<AuthErrorStruct>();
+    QVERIFY(error.getType() == AuthErrorStruct::Server);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnProxyAuthError() {
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy authErrorSpy(download.data(),
+        SIGNAL(authError(AuthErrorStruct)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the error and ensure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ProxyAuthenticationRequiredError);
+    QCOMPARE(networkErrorSpy.count(), 0);
+    QCOMPARE(authErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
 }
 

@@ -127,7 +127,7 @@ FakeNetworkReply::emitSslErrors(const QList<QSslError>& errors) {
 
 void
 FakeNetworkReply::emitHttpError(QNetworkReply::NetworkError code) {
-    emit error(code); 
+    emit error(code);
 }
 
 QVariant
