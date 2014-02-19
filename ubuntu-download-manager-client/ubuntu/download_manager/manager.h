@@ -28,8 +28,6 @@
 #include <ubuntu/download_manager/group_download_struct.h>
 
 
-class QDBusConnection;
-
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -37,46 +35,41 @@ namespace DownloadManager {
 class Download;
 class Error;
 class GroupDownload;
-class ManagerInterface;
 
 typedef std::function<void(Download*)> DownloadCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
-class ManagerPrivate;
 class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
-    Q_DECLARE_PRIVATE(Manager)
     Q_OBJECT
 
-    // allow watchers to emit the signals
-    friend class DownloadManagerPendingCallWatcher;
-    friend class GroupManagerPendingCallWatcher;
-
  public:
-    virtual ~Manager();
-    virtual void createDownload(DownloadStruct downStruct);
+    explicit Manager(QObject* parent = 0)
+        : QObject(parent) {}
+
+    virtual void createDownload(DownloadStruct downStruct) = 0;
     virtual void createDownload(DownloadStruct downStruct,
                                 DownloadCb cb,
-                                DownloadCb errCb);
+                                DownloadCb errCb) = 0;
     virtual void createDownload(StructList downs,
                                 const QString &algorithm,
                                 bool allowed3G,
                                 const QVariantMap &metadata,
-                                StringMap headers);
+                                StringMap headers) = 0;
     virtual void createDownload(StructList downs,
                                 const QString &algorithm,
                                 bool allowed3G,
                                 const QVariantMap &metadata,
                                 StringMap headers,
                                 GroupCb cb,
-                                GroupCb errCb);
+                                GroupCb errCb) = 0;
 
-    bool isError();
-    Error* lastError();
-    void allowMobileDataDownload(bool allowed);
-    bool isMobileDataDownload();
-    qulonglong defaultThrottle();
-    void setDefaultThrottle(qulonglong speed);
-    void exit();
+    virtual bool isError() const = 0;
+    virtual Error* lastError() const = 0;
+    virtual void allowMobileDataDownload(bool allowed) = 0;
+    virtual bool isMobileDataDownload() = 0;
+    virtual qulonglong defaultThrottle() = 0;
+    virtual void setDefaultThrottle(qulonglong speed) = 0;
+    virtual void exit() = 0;
 
     static Manager* createSessionManager(const QString& path = "", QObject* parent=0);
     static Manager* createSystemManager(const QString& path = "", QObject* parent=0);
@@ -85,22 +78,6 @@ class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
     void downloadCreated(Download* down);
     void groupCreated(GroupDownload* down);
 
- protected:
-    Manager(const QDBusConnection& conn,
-            const QString& path = "",
-            QObject* parent= 0);
-    // used for testing purposes
-    Manager(const QDBusConnection& conn,
-            const QString& path,
-            ManagerInterface* interface,
-            QObject* parent);
-
- private:
-    Q_PRIVATE_SLOT(d_func(), void onWatcherDone())
-
- private:
-    // use pimpl pattern so that users do not have to be recompiled
-    ManagerPrivate* d_ptr;
 };
 
 }  // DownloadManager
