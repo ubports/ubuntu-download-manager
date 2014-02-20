@@ -1,3 +1,21 @@
+ubuntu-download-manager (0.3+14.04.20140220-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Provide pure abstract classes to simplify testing. (LP: #1278789)
+
+  [ Manuel de la Pena ]
+  * If proxy or server authentication is needed the download interface
+    raises an authentication error signal. (LP: #1278982)
+  * Add auth errors to the client lib. (LP: #1279854)
+  * Fwd the single file auth errors to as group download errors. (LP:
+    #1279856)
+  * Fix login and allow to pass the path via the command line. (LP:
+    #1278779)
+  * Improve logs. (LP: #1279425)
+  * Provide pure abstract classes to simplify testing. (LP: #1278789)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 20 Feb 2014 13:12:24 +0000
+
 ubuntu-download-manager (0.3+14.04.20140214.1-0ubuntu1) trusty; urgency=low
 
   [ CI bot ]

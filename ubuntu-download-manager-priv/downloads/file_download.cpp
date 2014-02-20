@@ -483,7 +483,6 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
             LOG(INFO) << "Removing '" << _filePath << "'";
             fileMan->remove(_filePath);
         }
-
     } else {
         auto standardOut = p->readAllStandardOutput();
         auto standardErr = p->readAllStandardError();
