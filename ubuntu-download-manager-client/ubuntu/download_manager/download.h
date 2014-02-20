@@ -79,6 +79,7 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     Q_PRIVATE_SLOT(d_func(), void onHttpError(HttpErrorStruct))
     Q_PRIVATE_SLOT(d_func(), void onNetworkError(NetworkErrorStruct))
     Q_PRIVATE_SLOT(d_func(), void onProcessError(ProcessErrorStruct))
+    Q_PRIVATE_SLOT(d_func(), void onAuthError(AuthErrorStruct))
 
  signals:
     void canceled(bool success);

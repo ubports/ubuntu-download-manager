@@ -22,6 +22,7 @@
 
 namespace {
     const QString DBUS_ERROR_STRING = "DBusError: %1 - %2";
+    const QString AUTH_ERROR_STRING = "AuthError: %1 - %2";
     const QString HTTP_ERROR_STRING = "HttpError: %1 - %2";
     const QString NETWORK_ERROR_STRING = "NetworkError: %1 - %2";
     const QString PROCESS_ERROR_STRING = "ProcessError: %1 - %2\nExit code: %3\nStdout: %4\nStderr:%5";
@@ -94,6 +95,46 @@ class DBusErrorPrivate {
     DBusError* q_ptr;
 };
 
+class AuthErrorPrivate {
+    Q_DECLARE_PUBLIC(AuthError)
+
+ public:
+    AuthErrorPrivate(AuthErrorStruct err, AuthError* parent)
+        : _err(err),
+          q_ptr(parent) {
+    }
+
+    inline AuthError::Type type() {
+        switch(_err.getType()) {
+            case AuthErrorStruct::Proxy:
+                return AuthError::Proxy;
+            default:
+                return AuthError::Server;
+        }
+    }
+
+    inline QString getTypeString() {
+        switch(_err.getType()) {
+            case AuthErrorStruct::Proxy:
+                return "Proxy";
+            default:
+                return "Server";
+        }
+    }
+
+    inline QString phrase() {
+        return _err.getPhrase();
+    }
+
+    inline QString errorString() {
+        return AUTH_ERROR_STRING.arg(getTypeString(), _err.getPhrase());
+    }
+
+ private:
+    AuthErrorStruct _err;
+    AuthError* q_ptr;
+};
+
 class HttpErrorPrivate {
     Q_DECLARE_PUBLIC(HttpError)
 
@@ -138,7 +179,7 @@ class NetworkErrorPrivate {
     inline QString phrase() {
         return _err.getPhrase();
     }
-    
+
     inline QString errorString() {
         return NETWORK_ERROR_STRING.arg(QString::number(_err.getCode()),
             _err.getPhrase());
@@ -239,6 +280,33 @@ DBusError::name() {
 QString
 DBusError::errorString() {
     Q_D(DBusError);
+    return d->errorString();
+}
+
+AuthError::AuthError(AuthErrorStruct err, QObject* parent)
+    : Error(Error::Auth, parent),
+      d_ptr(new AuthErrorPrivate(err, this)) {
+}
+
+AuthError::~AuthError() {
+    delete d_ptr;
+}
+
+AuthError::Type
+AuthError::type() {
+    Q_D(AuthError);
+    return d->type();
+}
+
+QString
+AuthError::phrase() {
+    Q_D(AuthError);
+    return d->phrase();
+}
+
+QString
+AuthError::errorString() {
+    Q_D(AuthError);
     return d->errorString();
 }
 
