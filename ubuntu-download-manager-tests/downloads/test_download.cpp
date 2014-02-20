@@ -87,7 +87,7 @@ TestDownload::testNoHashConstructor() {
     QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
         _rootPath, url, _metadata, _headers));
 
-    // assert that we did set the intial state correctly
+    // assert that we did set the initial state correctly
     // gets for internal state
 
     QCOMPARE(download->downloadId(), id);
@@ -144,7 +144,7 @@ TestDownload::testHashConstructor() {
 void
 TestDownload::testPath_data() {
     // create a number of rows with a diff path to ensure that
-    // the accesor does return the correct one
+    // the accessor does return the correct one
     QTest::addColumn<QString>("path");
     QTest::newRow("First row") << "/first/random/path";
     QTest::newRow("Second row") << "/second/random/path";
@@ -164,7 +164,7 @@ TestDownload::testPath() {
 void
 TestDownload::testUrl_data() {
     // create a number of rows with a diff url to ensure that
-    // the accesor does return the correct one
+    // the accessor does return the correct one
     QTest::addColumn<QUrl>("url");
     QTest::newRow("First row") << QUrl("http://ubuntu.com");
     QTest::newRow("Second row") << QUrl("http://one.ubuntu.com");
@@ -214,7 +214,7 @@ TestDownload::testProgress() {
     reply->setData(fileData);
     emit reply->downloadProgress(received, total);
 
-    // assert that the total is set and that the signals is emited
+    // assert that the total is set and that the signals is emitted
     QCOMPARE(download->totalSize(), total);
     QCOMPARE(spy.count(), 1);
 
@@ -899,8 +899,8 @@ TestDownload::testOnHttpError() {
     // set the attrs in the reply so that we do raise two signals
     reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
     reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, message);
-    
-    // emit the error and esure that the signals are raised
+
+    // emit the error and ensure that the signals are raised
     reply->emitHttpError(QNetworkReply::ContentAccessDenied);
     QCOMPARE(httpErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
@@ -960,10 +960,66 @@ TestDownload::testOnNetworkError() {
 
     // set the attrs in the reply so that we do raise two signals
     reply->clearAttribute(QNetworkRequest::HttpStatusCodeAttribute);
-    
-    // emit the error and esure that the signals are raised
+
+    // emit the error and ensure that the signals are raised
     reply->emitHttpError((QNetworkReply::NetworkError)code);
     QCOMPARE(networkErrorSpy.count(), 1);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnAuthError() {
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy authErrorSpy(download.data(),
+        SIGNAL(authError(AuthErrorStruct)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the error and ensure that the signals are raised
+    reply->emitHttpError(QNetworkReply::AuthenticationRequiredError);
+    QCOMPARE(networkErrorSpy.count(), 0);
+    QCOMPARE(authErrorSpy.count(), 1);
+    auto error = authErrorSpy.takeFirst().at(0).value<AuthErrorStruct>();
+    QVERIFY(error.getType() == AuthErrorStruct::Server);
+    QCOMPARE(errorSpy.count(), 1);
+}
+
+void
+TestDownload::testOnProxyAuthError() {
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy authErrorSpy(download.data(),
+        SIGNAL(authError(AuthErrorStruct)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the error and ensure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ProxyAuthenticationRequiredError);
+    QCOMPARE(networkErrorSpy.count(), 0);
+    QCOMPARE(authErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
 }
 
@@ -1612,7 +1668,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(0, QProcess::NormalExit);
-    // asser that the file does not longer exist in the system
+    // assert that the file does not longer exist in the system
     QVERIFY(!QFile::exists(fileName));
 }
 
@@ -2014,7 +2070,7 @@ TestDownload::testRedirectCycle() {
     reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
         redirectUrl);
     QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
-    
+
     // use a spy to wait for the second reply
     reply->emitFinished();
 
@@ -2024,7 +2080,7 @@ TestDownload::testRedirectCycle() {
         replySpy.takeFirst().at(0).value<NetworkReply*>());
 
     download->pause();
-    
+
     // set the attr to be a loop
     reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
         _url);
@@ -2062,7 +2118,7 @@ TestDownload::testSingleRedirect() {
     reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
         redirectUrl);
     QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
-    
+
     // use a spy to wait for the second reply
     reply->emitFinished();
 
@@ -2073,7 +2129,7 @@ TestDownload::testSingleRedirect() {
         replySpy.takeFirst().at(0).value<NetworkReply*>());
 
     download->pause();
-    
+
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));
@@ -2138,7 +2194,7 @@ TestDownload::testSeveralRedirects() {
         reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
             url);
         QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
-        
+
         // use a spy to wait for the second reply
         reply->emitFinished();
 
@@ -2149,9 +2205,9 @@ TestDownload::testSeveralRedirects() {
             replySpy.takeFirst().at(0).value<NetworkReply*>());
         redirectCount++;
     }
-    
+
     download->pause();
-    
+
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
     QSignalSpy networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));

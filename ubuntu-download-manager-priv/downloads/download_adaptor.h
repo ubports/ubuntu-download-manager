@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_ADAPTOR_H_1390825398
-#define DOWNLOAD_ADAPTOR_H_1390825398
+#ifndef DOWNLOAD_ADAPTOR_H_1392117488
+#define DOWNLOAD_ADAPTOR_H_1392117488
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -78,6 +78,10 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <signal name=\"error\">\n"
 "      <arg direction=\"out\" type=\"s\" name=\"error\"/>\n"
 "    </signal>\n"
+"    <signal name=\"authError\">\n"
+"      <annotation value=\"AuthErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
+"      <arg direction=\"out\" type=\"(is)\" name=\"error\"/>\n"
+"    </signal>\n"
 "    <signal name=\"httpError\">\n"
 "      <annotation value=\"HttpErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
 "      <arg direction=\"out\" type=\"(is)\" name=\"error\"/>\n"
@@ -117,6 +121,7 @@ public Q_SLOTS: // METHODS
     qulonglong throttle();
     qulonglong totalSize();
 Q_SIGNALS: // SIGNALS
+    void authError(AuthErrorStruct error);
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QString &path);
