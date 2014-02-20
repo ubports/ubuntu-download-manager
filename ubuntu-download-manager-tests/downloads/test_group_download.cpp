@@ -20,7 +20,9 @@
 #include <QSignalSpy>
 #include <downloads/group_download.h>
 #include <system/uuid_utils.h>
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/tests/server/download.h>
+#include <ubuntu/download_manager/tests/server/group_download.h>
 #include "test_group_download.h"
 
 TestGroupDownload::TestGroupDownload(QObject *parent)
@@ -666,18 +668,18 @@ TestGroupDownload::testLocalPathSingleDownload() {
 
     // assert that each metadata has the local file set
     QVariantMap downMeta = downloads[0]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[0].getLocalFile());
 
     downMeta = downloads[1]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[1].getLocalFile());
 
     downMeta = downloads[2]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[2].getLocalFile());
 }
 
@@ -869,4 +871,116 @@ TestGroupDownload::testDuplicatedLocalPath() {
         _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
+}
+
+void
+TestGroupDownload::testAuthErrorEmitted_data() {
+    QTest::addColumn<QString>("url");
+
+    QTest::newRow("First url") << "http://www.one.ubuntu.com";
+    QTest::newRow("Second url") << "http://ubuntu.com/file";
+}
+
+void
+TestGroupDownload::testAuthErrorEmitted() {
+    QFETCH(QString, url);
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct(url,
+        "first path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "second path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
+
+    QSignalSpy spy(group.data(), SIGNAL(authError(QString, AuthErrorStruct)));
+    group->emitAuthError(url, AuthErrorStruct());
+    QCOMPARE(1, spy.count());
+}
+
+void
+TestGroupDownload::testHttpErrorEmitted_data() {
+    QTest::addColumn<QString>("url");
+
+    QTest::newRow("First url") << "http://www.one.ubuntu.com";
+    QTest::newRow("Second url") << "http://ubuntu.com/file";
+}
+
+void
+TestGroupDownload::testHttpErrorEmitted() {
+    QFETCH(QString, url);
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct(url,
+        "first path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "second path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
+
+    QSignalSpy spy(group.data(), SIGNAL(httpError(QString, HttpErrorStruct)));
+    group->emitHttpError(url, HttpErrorStruct());
+    QCOMPARE(1, spy.count());
+}
+
+void
+TestGroupDownload::testNetworkErrorEmitted_data() {
+    QTest::addColumn<QString>("url");
+
+    QTest::newRow("First url") << "http://www.one.ubuntu.com";
+    QTest::newRow("Second url") << "http://ubuntu.com/file";
+}
+
+void
+TestGroupDownload::testNetworkErrorEmitted() {
+    QFETCH(QString, url);
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct(url,
+        "first path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "second path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
+
+    QSignalSpy spy(group.data(), SIGNAL(networkError(QString, NetworkErrorStruct)));
+    group->emitNetworkError(url, NetworkErrorStruct());
+    QCOMPARE(1, spy.count());
+}
+
+void
+TestGroupDownload::testProcessErrorEmitted_data() {
+    QTest::addColumn<QString>("url");
+
+    QTest::newRow("First url") << "http://www.one.ubuntu.com";
+    QTest::newRow("Second url") << "http://ubuntu.com/file";
+}
+
+void
+TestGroupDownload::testProcessErrorEmitted() {
+    QFETCH(QString, url);
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct(url,
+        "first path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "second path", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
+        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
+        _metadata, _headers, _downloadFactory, _fileManager));
+
+    QSignalSpy spy(group.data(), SIGNAL(processError(QString, ProcessErrorStruct)));
+    group->emitProcessError(url, ProcessErrorStruct());
+    QCOMPARE(1, spy.count());
 }

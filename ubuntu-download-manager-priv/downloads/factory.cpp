@@ -18,6 +18,7 @@
 
 #include <QNetworkProxy>
 #include <QPair>
+#include <ubuntu/download_manager/metadata.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/group_download.h"
 #include "downloads/group_download_adaptor.h"
@@ -25,12 +26,6 @@
 #include "downloads/mms_file_download.h"
 #include "downloads/factory.h"
 #include "system/logger.h"
-
-namespace {
-
-    const QString OBJECT_PATH_KEY = "objectpath";
-
-}
 
 namespace Ubuntu {
 
@@ -61,9 +56,9 @@ Factory::getDownloadPath(const QString& dbusOwner,
                          QString& rootPath,
                          bool& isConfined) {
     TRACE << dbusOwner;
-    if (metadata.contains(OBJECT_PATH_KEY)) {
+    if (metadata.contains(Metadata::OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
-        id = metadata[OBJECT_PATH_KEY].toString();
+        id = metadata[Metadata::OBJECT_PATH_KEY].toString();
         if (id.isEmpty()) {
             LOG(ERROR) << "Id sent by client is ''";
             id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,

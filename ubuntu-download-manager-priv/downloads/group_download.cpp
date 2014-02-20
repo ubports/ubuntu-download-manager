@@ -16,12 +16,15 @@
  * boston, ma 02110-1301, usa.
  */
 
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include "downloads/download_adaptor.h"
 #include "downloads/file_download.h"
 #include "downloads/group_download.h"
 #include "system/logger.h"
 #include "system/uuid_factory.h"
+
+#define GROUP_LOG(LEVEL) LOG(LEVEL) << "Group Download{" << objectName() << "}"
 
 namespace Ubuntu {
 
@@ -55,8 +58,6 @@ GroupDownload::~GroupDownload() {
 
 void
 GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
-    connect(singleDownload, &Download::error,
-        this, &GroupDownload::onError);
     connect(singleDownload, static_cast<void(Download::*)
             (qulonglong, qulonglong)>(&Download::progress),
                 this, &GroupDownload::onProgress);
@@ -64,6 +65,18 @@ GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
         this, &GroupDownload::onFinished);
     connect(singleDownload, &FileDownload::processing,
         this, &GroupDownload::processing);
+
+    // connect to the error signals
+    connect(singleDownload, &Download::error,
+        this, &GroupDownload::onError);
+    connect(singleDownload, &FileDownload::authError,
+        this, &GroupDownload::onAuthError);
+    connect(singleDownload, &FileDownload::httpError,
+        this, &GroupDownload::onHttpError);
+    connect(singleDownload, &FileDownload::networkError,
+        this, &GroupDownload::onNetworkError);
+    connect(singleDownload, &FileDownload::processError,
+        this, &GroupDownload::onProcessError);
 }
 
 void
@@ -83,7 +96,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
 
         FileDownload* singleDownload;
         QVariantMap downloadMetadata = QVariantMap(metadataMap);
-        downloadMetadata[LOCAL_PATH_KEY] = download.getLocalFile();
+        downloadMetadata[Metadata::LOCAL_PATH_KEY] = download.getLocalFile();
 
         if (hash.isEmpty()) {
             singleDownload = qobject_cast<FileDownload*>(
@@ -101,6 +114,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
                     rootPath(), url, hash, algo, downloadMetadata,
                     headersMap));
         }
+        singleDownload->setParent(this);
 
         // ensure that the local path is not used by any other download
         // in this group.
@@ -144,7 +158,7 @@ GroupDownload::cancelAllDownloads() {
 
     // loop over the finished downloads and remove the files
     foreach(const QString& path, _finishedDownloads) {
-        LOG(INFO) << "Removing file:" << path;
+        GROUP_LOG(INFO) << "Removing file: " << path;
         _fileManager->remove(path);
     }
 }
@@ -161,7 +175,7 @@ GroupDownload::pauseDownload() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
-            LOG(INFO) << "Pausing download of "
+            GROUP_LOG(INFO) << "Pausing download of "
                 << download->url();
             download->pause();
             download->pauseDownload();
@@ -246,6 +260,48 @@ GroupDownload::onError(const QString& error) {
     emitError(errorMsg);
 }
 
+QString
+GroupDownload::getUrlFromSender(QObject* sender) {
+    auto down = qobject_cast<FileDownload*>(sender);
+    if (down != nullptr) {
+        return down->url().toString();
+    } else {
+        return "";
+    }
+}
+
+void
+GroupDownload::onAuthError(AuthErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit authError(url, err);
+    }
+}
+
+void
+GroupDownload::onHttpError(HttpErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit httpError(url, err);
+    }
+}
+
+void
+GroupDownload::onNetworkError(NetworkErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit networkError(url, err);
+    }
+}
+
+void
+GroupDownload::onProcessError(ProcessErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit processError(url, err);
+    }
+}
+
 void
 GroupDownload::onProgress(qulonglong received, qulonglong total) {
     FileDownload* down = qobject_cast<FileDownload*>(sender());
@@ -289,7 +345,7 @@ GroupDownload::onFinished(const QString& file) {
     _downloadsProgress[down->url()] = QPair<qulonglong, qulonglong>(
         down->totalSize(), down->totalSize());
     _finishedDownloads.append(file);
-    LOG(INFO) << "Finished downloads"
+    GROUP_LOG(INFO) << "Finished downloads "
         << _finishedDownloads;
     // if we have the same number of downloads finished
     // that downloads we are done :)

@@ -42,19 +42,19 @@ GroupDownloadAdaptor::~GroupDownloadAdaptor()
 
 void GroupDownloadAdaptor::allowGSMDownload(bool allowed)
 {
-    // handle method call com.canonical.applications.Download.allowGSMDownload
+    // handle method call com.canonical.applications.GroupDownload.allowGSMDownload
     QMetaObject::invokeMethod(parent(), "allowGSMDownload", Q_ARG(bool, allowed));
 }
 
 void GroupDownloadAdaptor::cancel()
 {
-    // handle method call com.canonical.applications.Download.cancel
+    // handle method call com.canonical.applications.GroupDownload.cancel
     QMetaObject::invokeMethod(parent(), "cancel");
 }
 
 bool GroupDownloadAdaptor::isGSMDownloadAllowed()
 {
-    // handle method call com.canonical.applications.Download.isGSMDownloadAllowed
+    // handle method call com.canonical.applications.GroupDownload.isGSMDownloadAllowed
     bool allowed;
     QMetaObject::invokeMethod(parent(), "isGSMDownloadAllowed", Q_RETURN_ARG(bool, allowed));
     return allowed;
@@ -62,7 +62,7 @@ bool GroupDownloadAdaptor::isGSMDownloadAllowed()
 
 QVariantMap GroupDownloadAdaptor::metadata()
 {
-    // handle method call com.canonical.applications.Download.metadata
+    // handle method call com.canonical.applications.GroupDownload.metadata
     QVariantMap data;
     QMetaObject::invokeMethod(parent(), "metadata", Q_RETURN_ARG(QVariantMap, data));
     return data;
@@ -70,37 +70,37 @@ QVariantMap GroupDownloadAdaptor::metadata()
 
 void GroupDownloadAdaptor::pause()
 {
-    // handle method call com.canonical.applications.Download.pause
+    // handle method call com.canonical.applications.GroupDownload.pause
     QMetaObject::invokeMethod(parent(), "pause");
 }
 
 qulonglong GroupDownloadAdaptor::progress(qulonglong &started, qulonglong &paused, qulonglong &finished)
 {
-    // handle method call com.canonical.applications.Download.progress
+    // handle method call com.canonical.applications.GroupDownload.progress
     return static_cast<GroupDownload*>(parent())->progress(started, paused, finished);
 }
 
 void GroupDownloadAdaptor::resume()
 {
-    // handle method call com.canonical.applications.Download.resume
+    // handle method call com.canonical.applications.GroupDownload.resume
     QMetaObject::invokeMethod(parent(), "resume");
 }
 
 void GroupDownloadAdaptor::setThrottle(qulonglong speed)
 {
-    // handle method call com.canonical.applications.Download.setThrottle
+    // handle method call com.canonical.applications.GroupDownload.setThrottle
     QMetaObject::invokeMethod(parent(), "setThrottle", Q_ARG(qulonglong, speed));
 }
 
 void GroupDownloadAdaptor::start()
 {
-    // handle method call com.canonical.applications.Download.start
+    // handle method call com.canonical.applications.GroupDownload.start
     QMetaObject::invokeMethod(parent(), "start");
 }
 
 qulonglong GroupDownloadAdaptor::throttle()
 {
-    // handle method call com.canonical.applications.Download.throttle
+    // handle method call com.canonical.applications.GroupDownload.throttle
     qulonglong speed;
     QMetaObject::invokeMethod(parent(), "throttle", Q_RETURN_ARG(qulonglong, speed));
     return speed;
@@ -108,7 +108,7 @@ qulonglong GroupDownloadAdaptor::throttle()
 
 qulonglong GroupDownloadAdaptor::totalSize()
 {
-    // handle method call com.canonical.applications.Download.totalSize
+    // handle method call com.canonical.applications.GroupDownload.totalSize
     qulonglong total;
     QMetaObject::invokeMethod(parent(), "totalSize", Q_RETURN_ARG(qulonglong, total));
     return total;

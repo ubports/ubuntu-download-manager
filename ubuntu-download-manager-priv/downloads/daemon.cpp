@@ -31,6 +31,7 @@ namespace {
     const QString DISABLE_TIMEOUT = "-disable-timeout";
     const QString SELFSIGNED_CERT = "-self-signed-certs";
     const QString STOPPABLE =  "-stoppable";
+    const QString LOG_DIR= "-log-dir";
 }
 
 namespace Ubuntu {
@@ -161,8 +162,25 @@ class DaemonPrivate {
  private:
     void parseCommandLine() {
         QStringList args = _app->arguments();
+        int index;
+
+        // set logging
+        if (args.contains(LOG_DIR)) {
+            index = args.indexOf(LOG_DIR);
+            if (args.count() > index + 1) {
+                auto logPath = args[index + 1];
+                Logger::setupLogging(logPath);
+                LOG(INFO) << "Log path is" << logPath;
+            } else {
+                LOG(ERROR) << "Missing log dir path.";
+                Logger::setupLogging();
+            }
+        } else {
+            Logger::setupLogging();
+        }
+
         if (args.contains(SELFSIGNED_CERT)) {
-            int index = args.indexOf(SELFSIGNED_CERT);
+            index = args.indexOf(SELFSIGNED_CERT);
             if (args.count() > index + 1) {
                 QString certsRegex = args[index + 1];
                 _certs = QSslCertificate::fromPath(certsRegex);
@@ -200,9 +218,6 @@ class DaemonPrivate {
         q->connect(_downInterface,
             SIGNAL(sizeChanged(int)),  // NOLINT (readability/function)
             q, SLOT(onDownloadManagerSizeChanged(int))); // NOLINT (readability/function)
-
-        // set logging
-        Logger::setupLogging();
     }
 
  private:

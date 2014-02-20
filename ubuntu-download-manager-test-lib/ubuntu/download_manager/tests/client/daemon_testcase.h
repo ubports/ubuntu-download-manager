@@ -43,6 +43,7 @@ class DaemonTestCase : public BaseTestCase {
     QUrl serverUrl();
     void addFileToHttpServer(const QString& absolutePath);
     void returnDBusErrors(bool errors);
+    void returnAuthError(const QString &download, AuthErrorStruct error);
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);

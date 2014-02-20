@@ -9,8 +9,8 @@
  * before re-generating it.
  */
 
-#ifndef GROUP_DOWNLOAD_ADAPTOR_H_1377511556
-#define GROUP_DOWNLOAD_ADAPTOR_H_1377511556
+#ifndef GROUP_DOWNLOAD_ADAPTOR_H_1392149243
+#define GROUP_DOWNLOAD_ADAPTOR_H_1392149243
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
@@ -31,7 +31,7 @@ namespace DownloadManager {
 namespace Daemon {
 
 /*
- * Adaptor class for interface com.canonical.applications.Download
+ * Adaptor class for interface com.canonical.applications.GroupDownload
  */
 class GroupDownloadAdaptor: public QDBusAbstractAdaptor
 {
@@ -86,6 +86,26 @@ class GroupDownloadAdaptor: public QDBusAbstractAdaptor
 "    <signal name=\"error\">\n"
 "      <arg direction=\"out\" type=\"s\" name=\"error\"/>\n"
 "    </signal>\n"
+"    <signal name=\"authError\">\n"
+"      <annotation value=\"AuthErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
+"      <arg direction=\"out\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"out\" type=\"(is)\" name=\"error\"/>\n"
+"    </signal>\n"
+"    <signal name=\"httpError\">\n"
+"      <annotation value=\"HttpErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
+"      <arg direction=\"out\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"out\" type=\"(is)\" name=\"error\"/>\n"
+"    </signal>\n"
+"    <signal name=\"networkError\">\n"
+"      <annotation value=\"NetworkErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
+"      <arg direction=\"out\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"out\" type=\"(is)\" name=\"error\"/>\n"
+"    </signal>\n"
+"    <signal name=\"processError\">\n"
+"      <annotation value=\"ProcessErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In1\"/>\n"
+"      <arg direction=\"out\" type=\"s\" name=\"url\"/>\n"
+"      <arg direction=\"out\" type=\"(isiss)\" name=\"error\"/>\n"
+"    </signal>\n"
 "    <signal name=\"progress\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"received\"/>\n"
 "      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
@@ -113,10 +133,14 @@ public Q_SLOTS: // METHODS
     qulonglong throttle();
     qulonglong totalSize();
 Q_SIGNALS: // SIGNALS
+    void authError(const QString &url, AuthErrorStruct error);
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QStringList &path);
+    void httpError(const QString &url, HttpErrorStruct error);
+    void networkError(const QString &url, NetworkErrorStruct error);
     void paused(bool success);
+    void processError(const QString &url, ProcessErrorStruct error);
     void processing(const QString &path);
     void progress(qulonglong received, qulonglong total);
     void resumed(bool success);

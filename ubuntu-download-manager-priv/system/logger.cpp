@@ -21,11 +21,12 @@
 #include <QDateTime>
 #include <QDir>
 #include <QDBusError>
+#include <QMap>
 #include <QStandardPaths>
 #include <QStringList>
 #include <QUrl>
+#include <QVariantMap>
 #include <QSslError>
-#include <syslog.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include "logger.h"
@@ -64,6 +65,38 @@ std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
     return out;
 }
 
+std::ostream& operator<<(std::ostream &out, const QVariantMap& map) {
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key].toString();
+    }
+    out << "}";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key];
+    }
+    out << "}";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, StructList list) {
+    out << "(";
+    foreach(const GroupDownloadStruct& group, list) {
+        out << "{ url:" << group.getUrl() << " hash:" << group.getHash()
+            << " local file:" << group.getLocalFile() << "}";
+    }
+    out << ")";
+    return out;
+}
+
+namespace {
+    const QString LOG_NAME = "ubuntu-download-manager.log";
+}
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -73,18 +106,26 @@ namespace System {
 static bool _init = false;
 
 void
-Logger::setupLogging(const QString filename) {
-    auto path = filename;
-    if (filename == "" ){
-        path = getLogDir() + "/ubuntu-download-manager.log";
+Logger::setupLogging(const QString logDir) {
+    auto path = logDir;
+    if (path == "" ){
+        path = getLogDir() + QDir::separator() + LOG_NAME;
+    } else {
+        bool wasCreated = QDir().mkpath(logDir);
+        if (wasCreated) {
+            path = QDir(logDir).absoluteFilePath(LOG_NAME);
+        } else {
+            qCritical() << "Could not create the logging path" << logDir;
+            path = getLogDir() + QDir::separator() + LOG_NAME;
+        }
     }
 
     auto appName = QCoreApplication::instance()->applicationName();
 
-    google::SetLogDestination(google::INFO, toStdString(path).c_str());
     if (!_init) {
         _init = true;
         google::InitGoogleLogging(toStdString(appName).c_str());
+        google::SetLogDestination(google::INFO, toStdString(path).c_str());
     }
 }
 

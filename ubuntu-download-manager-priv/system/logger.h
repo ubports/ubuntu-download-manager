@@ -24,6 +24,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QtGlobal>
+#include <ubuntu/download_manager/metatypes.h>
 #include <glog/logging.h>
 #include <iostream>
 #include <sstream>
@@ -41,6 +42,9 @@ std::ostream& operator<<(std::ostream &out, const QStringList& var);
 std::ostream& operator<<(std::ostream &out, const QUrl& var);
 std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors);
 std::ostream& operator<<(std::ostream &out, const QDBusError& error);
+std::ostream& operator<<(std::ostream &out, const QVariantMap& map);
+std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map);
+std::ostream& operator<<(std::ostream &out, StructList list);
 
 namespace Ubuntu {
 
@@ -53,7 +57,7 @@ class Logger : public QObject {
 
  public:
 
-    static void setupLogging(const QString filename = "");
+    static void setupLogging(const QString logDir= "");
     static bool setLogLevel(QtMsgType level);
     static QString getLogDir();
     static std::string toStdString(const QString& str);

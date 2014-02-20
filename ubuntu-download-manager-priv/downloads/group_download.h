@@ -35,6 +35,7 @@ namespace DownloadManager {
 
 namespace Daemon {
 
+class Factory;
 class GroupDownload : public Download {
     Q_OBJECT
 
@@ -65,6 +66,10 @@ class GroupDownload : public Download {
 
  signals:
     void finished(const QStringList &path);
+    void authError(const QString &url, AuthErrorStruct error);
+    void httpError(const QString &url, HttpErrorStruct error);
+    void networkError(const QString &url, NetworkErrorStruct error);
+    void processError(const QString &url, ProcessErrorStruct error);
 
  private:
     void cancelAllDownloads();
@@ -72,12 +77,19 @@ class GroupDownload : public Download {
     void init(QList<GroupDownloadStruct> downloads,
               const QString& algo,
               bool isGSMDownloadAllowed);
-    void onError(const QString& error);
+    QString getUrlFromSender(QObject* sender);
     void onProgress(qulonglong received, qulonglong total);
     void onFinished(const QString& file);
+    void onError(const QString& error);
+    void onAuthError(AuthErrorStruct err);
+    void onHttpError(HttpErrorStruct err);
+    void onNetworkError(NetworkErrorStruct err);
+    void onProcessError(ProcessErrorStruct err);
+
+ protected:
+    QList<FileDownload*> _downloads;
 
  private:
-    QList<FileDownload*> _downloads;
     QStringList _finishedDownloads;
     QMap<QUrl, QPair<qulonglong, qulonglong> > _downloadsProgress;
     Factory* _downFactory = nullptr;

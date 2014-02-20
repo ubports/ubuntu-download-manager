@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef TESTING_INTERFACE_H_1391440734
-#define TESTING_INTERFACE_H_1391440734
+#ifndef TESTING_INTERFACE_H_1392137146
+#define TESTING_INTERFACE_H_1392137146
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -37,6 +37,13 @@ public:
     ~TestingInterface();
 
 public Q_SLOTS: // METHODS
+    inline QDBusPendingReply<> returnAuthError(const QString &download, AuthErrorStruct error)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(download) << QVariant::fromValue(error);
+        return asyncCallWithArgumentList(QLatin1String("returnAuthError"), argumentList);
+    }
+
     inline QDBusPendingReply<> returnDBusErrors(bool returnErrors)
     {
         QList<QVariant> argumentList;
