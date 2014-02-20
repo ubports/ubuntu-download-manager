@@ -37,6 +37,7 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
     void returnHttpError(HttpErrorStruct error);
     void returnNetworkError(NetworkErrorStruct error);
     void returnProcessError(ProcessErrorStruct error);
+    void returnAuthError(AuthErrorStruct error);
 
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
@@ -64,9 +65,11 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
 
  private:
     bool _returnErrors = false;
+    bool _returnAuthError = false;
     bool _returnHttpError = false;
     bool _returnNetworkError = false;
     bool _returnProcessError = false;
+    AuthErrorStruct _authErr;
     HttpErrorStruct _httpErr;
     NetworkErrorStruct _networkErr;
     ProcessErrorStruct _processErr;

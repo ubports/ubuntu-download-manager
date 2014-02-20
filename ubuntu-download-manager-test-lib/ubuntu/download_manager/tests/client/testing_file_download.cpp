@@ -62,6 +62,7 @@ TestingFileDownload::returnDBusErrors(bool errors) {
 
 void
 TestingFileDownload::returnHttpError(HttpErrorStruct error) {
+    _returnAuthError = false;
     _returnHttpError = true;
     _returnNetworkError = false;
      _returnProcessError = false;
@@ -70,6 +71,7 @@ TestingFileDownload::returnHttpError(HttpErrorStruct error) {
 
 void
 TestingFileDownload::returnNetworkError(NetworkErrorStruct error) {
+    _returnAuthError = false;
     _returnHttpError = false;
     _returnNetworkError = true;
      _returnProcessError = false;
@@ -78,10 +80,20 @@ TestingFileDownload::returnNetworkError(NetworkErrorStruct error) {
 
 void
 TestingFileDownload::returnProcessError(ProcessErrorStruct error) {
+    _returnAuthError = false;
     _returnHttpError = false;
     _returnNetworkError = false;
-     _returnProcessError = true;
-     _processErr = error;
+    _returnProcessError = true;
+    _processErr = error;
+}
+
+void
+TestingFileDownload::returnAuthError(AuthErrorStruct error) {
+    _returnAuthError = true;
+    _returnHttpError = false;
+    _returnNetworkError = false;
+    _returnProcessError = false;
+    _authErr = error;
 }
 
 qulonglong
@@ -185,6 +197,11 @@ TestingFileDownload::start() {
     }
 
     _down->start();
+
+    if (_returnAuthError) {
+        emit authError(_authErr);
+        emitError("Forced http error");
+    }
 
     if (_returnHttpError) {
         emit httpError(_httpErr);
