@@ -63,7 +63,7 @@ ManagerImpl::init() {
     qRegisterMetaType<HttpError*>("HttpError*");
     qRegisterMetaType<NetworkError*>("NetworkError*");
     qRegisterMetaType<ProcessError*>("ProcessError*");
-    qRegisterMetaType<DownloadList*>("DownloadList*");
+    qRegisterMetaType<DownloadsList*>("DownloadsList*");
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
@@ -120,7 +120,7 @@ ManagerImpl::createDownload(StructList downs,
 
 void
 ManagerImpl::getAllDownloads() {
-    DownloadsListCb cb = [](DownloadList*){};
+    DownloadsListCb cb = [](DownloadsList*){};
     getAllDownloads(cb, cb);
 }
 
@@ -137,7 +137,7 @@ void
 ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
                                          const QString &value) {
     MetadataDownloadsListCb cb =
-        [](const QString&, const QString&, DownloadList*){};
+        [](const QString&, const QString&, DownloadsList*){};
     getAllDownloadsWithMetadata(name, value, cb, cb);
 }
 

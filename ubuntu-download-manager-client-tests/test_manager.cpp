@@ -141,7 +141,7 @@ TestManager::testGetAllDownloadsSignalsEmitted_data() {
 
     QTest::newRow("5 downloads") << 5;
     QTest::newRow("10 downloads") << 10;
-    QTest::newRow("20 downloads") << 20;
+    QTest::newRow("15 downloads") << 15;
 }
 
 void
@@ -153,7 +153,7 @@ TestManager::testGetAllDownloadsSignalsEmitted() {
     QMap<QString, QString> headers;
 
     QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
-    QSignalSpy listSpy(_man, SIGNAL(downloadsFound(DownloadList*)));
+    QSignalSpy listSpy(_man, SIGNAL(downloadsFound(DownloadsList*)));
 
     for (int index = 0; index < count; index++) {
         url += index;
@@ -166,7 +166,7 @@ TestManager::testGetAllDownloadsSignalsEmitted() {
     _man->getAllDownloads();
 
     QTRY_COMPARE(1, listSpy.count());
-    auto downs = listSpy.takeFirst().at(0).value<DownloadList*>();
+    auto downs = listSpy.takeFirst().at(0).value<DownloadsList*>();
     QCOMPARE(count, downs->downloads().count());
 
     delete downs;
@@ -178,7 +178,7 @@ TestManager::testGetAllDownloadsSignalsEmittedCallbacks_data() {
 
     QTest::newRow("5 downloads") << 5;
     QTest::newRow("10 downloads") << 10;
-    QTest::newRow("20 downloads") << 20;
+    QTest::newRow("15 downloads") << 15;
 }
 
 void
@@ -188,10 +188,10 @@ TestManager::testGetAllDownloadsSignalsEmittedCallbacks() {
     QString url = "http://example.com/";
     QVariantMap metadata;
     QMap<QString, QString> headers;
-    DownloadsListCb cb = [](DownloadList*){};
+    DownloadsListCb cb = [](DownloadsList*){};
 
     QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
-    QSignalSpy listSpy(_man, SIGNAL(downloadsFound(DownloadList*)));
+    QSignalSpy listSpy(_man, SIGNAL(downloadsFound(DownloadsList*)));
 
     for (int index = 0; index < count; index++) {
         url += index;
@@ -204,7 +204,7 @@ TestManager::testGetAllDownloadsSignalsEmittedCallbacks() {
     _man->getAllDownloads(cb, cb);
 
     QTRY_COMPARE(1, listSpy.count());
-    auto downs = listSpy.takeFirst().at(0).value<DownloadList*>();
+    auto downs = listSpy.takeFirst().at(0).value<DownloadsList*>();
     QCOMPARE(count, downs->downloads().count());
 
     delete downs;
@@ -216,7 +216,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmitted_data() {
 
     QTest::newRow("5 downloads") << 5;
     QTest::newRow("10 downloads") << 10;
-    QTest::newRow("20 downloads") << 20;
+    QTest::newRow("15 downloads") << 15;
 }
 
 void
@@ -233,7 +233,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmitted() {
     QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     QSignalSpy listSpy(_man, SIGNAL(
         downloadsWithMetadataFound(const QString&, const QString&,
-            DownloadList*)));
+            DownloadsList*)));
 
     for (int index = 0; index < count; index++) {
         url += index;
@@ -261,7 +261,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmitted() {
     auto signalValue = signalInfo.at(1).toString();
     QCOMPARE(value, signalValue);
 
-    auto downs = signalInfo.at(2).value<DownloadList*>();
+    auto downs = signalInfo.at(2).value<DownloadsList*>();
 
     QCOMPARE(metadataCount, downs->downloads().count());
 
@@ -274,7 +274,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks_data() {
 
     QTest::newRow("5 downloads") << 5;
     QTest::newRow("10 downloads") << 10;
-    QTest::newRow("20 downloads") << 20;
+    QTest::newRow("15 downloads") << 15;
 }
 
 void
@@ -288,12 +288,12 @@ TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks() {
     QVariantMap metadata;
     QMap<QString, QString> headers;
     MetadataDownloadsListCb cb =
-        [](const QString&, const QString&, DownloadList*){};
+        [](const QString&, const QString&, DownloadsList*){};
 
     QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     QSignalSpy listSpy(_man, SIGNAL(
         downloadsWithMetadataFound(const QString&, const QString&,
-            DownloadList*)));
+            DownloadsList*)));
 
     for (int index = 0; index < count; index++) {
         url += index;
@@ -321,7 +321,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks() {
     auto signalValue = signalInfo.at(1).toString();
     QCOMPARE(value, signalValue);
 
-    auto downs = signalInfo.at(2).value<DownloadList*>();
+    auto downs = signalInfo.at(2).value<DownloadsList*>();
 
     QCOMPARE(metadataCount, downs->downloads().count());
 

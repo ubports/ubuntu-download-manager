@@ -16,12 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
 
-#include <QObject>
-#include <QList>
-#include <ubuntu/download_manager/common.h>
+#include "downloads_list.h"
 
 namespace Ubuntu {
 
@@ -30,20 +28,26 @@ namespace DownloadManager {
 class Error;
 class Download;
 
-class DOWNLOAD_MANAGER_EXPORT DownloadList : public QObject {
+class DOWNLOAD_MANAGER_EXPORT DownloadsListImpl : public DownloadsList {
     Q_OBJECT
 
  public:
-    explicit DownloadList(QObject* parent = 0)
-        : QObject(parent) {}
+    DownloadsListImpl(QObject* parent = 0);
+    DownloadsListImpl(const QList<QSharedPointer<Download >> downs, QObject* parent = 0);
+    DownloadsListImpl(Error* err, QObject* parent = 0);
+    virtual ~DownloadsListImpl();
 
-    virtual QList<Download*> downloads() const = 0;
-    virtual bool isError() const = 0;
-    virtual Error* error() const = 0;
+    virtual QList<QSharedPointer<Download> > downloads() const;
+    virtual bool isError() const;
+    virtual Error* error() const;
+
+ private:
+    QList<QSharedPointer<Download> > _downs;
+    Error* _lastError = nullptr;
 };
 
 }  // Ubuntu
 
 }  // DownloadManager
 
-#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H
+#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H

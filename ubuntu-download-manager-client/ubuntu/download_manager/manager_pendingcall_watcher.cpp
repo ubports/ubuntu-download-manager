@@ -20,7 +20,7 @@
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
 #include "download_impl.h"
-#include "download_list_impl.h"
+#include "downloads_list_impl.h"
 #include "error.h"
 #include "group_download.h"
 #include "manager.h"
@@ -81,25 +81,27 @@ DownloadsListManagerPCW::DownloadsListManagerPCW(const QDBusConnection& conn,
 void
 DownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
-    DownloadListImpl* list;
+    DownloadsListImpl* list;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // create error and deal with it
         auto err = new DBusError(reply.error());
-        list = new DownloadListImpl(err);
+        list = new DownloadsListImpl(err);
         _errCb(list);
         emit man->downloadsFound(list);
     } else {
         qDebug() << "Success!";
         auto paths = reply.value();
-        QList<Download*> downloads;
-        list = new DownloadListImpl();
+        QList<QSharedPointer<Download> > downloads;
+        list = new DownloadsListImpl();
         foreach(const QDBusObjectPath& path, paths) {
-            auto down = new DownloadImpl(_conn, _servicePath, path);
+            QSharedPointer<Download> down =
+                QSharedPointer<Download>(new DownloadImpl(_conn,
+                            _servicePath, path));
             downloads.append(down);
         }
-        list = new DownloadListImpl(downloads);
+        list = new DownloadsListImpl(downloads);
         emit man->downloadsFound(list);
         _cb(list);
     }
@@ -128,25 +130,27 @@ MetadataDownloadsListManagerPCW::MetadataDownloadsListManagerPCW(
 void
 MetadataDownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
-    DownloadListImpl* list;
+    DownloadsListImpl* list;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
         // create error and deal with it
         auto err = new DBusError(reply.error());
-        list = new DownloadListImpl(err);
+        list = new DownloadsListImpl(err);
         _errCb(_key, _value, list);
         emit man->downloadsWithMetadataFound(_key, _value, list);
     } else {
         qDebug() << "Success!";
         auto paths = reply.value();
-        QList<Download*> downloads;
-        list = new DownloadListImpl();
+        QList<QSharedPointer<Download> > downloads;
+        list = new DownloadsListImpl();
         foreach(const QDBusObjectPath& path, paths) {
-            auto down = new DownloadImpl(_conn, _servicePath, path);
+            QSharedPointer<Download> down =
+                QSharedPointer<Download>(new DownloadImpl(
+                            _conn, _servicePath, path));
             downloads.append(down);
         }
-        list = new DownloadListImpl(downloads);
+        list = new DownloadsListImpl(downloads);
         emit man->downloadsWithMetadataFound(_key, _value, list);
         _cb(_key, _value, list);
     }

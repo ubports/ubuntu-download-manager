@@ -20,7 +20,7 @@
 #define TEST_DOWNLOADS_LIST_H
 
 #include <QObject>
-#include <ubuntu/download_manager/download_list_impl.h>
+#include <ubuntu/download_manager/downloads_list_impl.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 #include "local_tree_testcase.h"
 

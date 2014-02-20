@@ -16,49 +16,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "download.h"
-#include "error.h"
-#include "download_list_impl.h"
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H
+
+#include <QList>
+#include <QObject>
+#include <QSharedPointer>
+#include <ubuntu/download_manager/common.h>
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-DownloadListImpl::DownloadListImpl(QObject* parent)
-    : DownloadList(parent) {
-}
+class Error;
+class Download;
 
-DownloadListImpl::DownloadListImpl(const QList<Download*> downs,
-                                   QObject* parent)
-    : DownloadList(parent),
-      _downs(downs){
-}
+class DOWNLOAD_MANAGER_EXPORT DownloadsList : public QObject {
+    Q_OBJECT
 
-DownloadListImpl::DownloadListImpl(Error* err, QObject* parent)
-    : DownloadList(parent),
-      _lastError(err) {
-}
+ public:
+    explicit DownloadsList(QObject* parent = 0)
+        : QObject(parent) {}
 
-DownloadListImpl::~DownloadListImpl() {
-    delete _lastError;
-    qDeleteAll(_downs);
-}
-
-QList<Download*>
-DownloadListImpl::downloads() const {
-    return _downs;
-}
-
-bool
-DownloadListImpl::isError() const {
-    return _lastError != nullptr;
-}
-
-Error*
-DownloadListImpl::error() const {
-    return _lastError;
-}
+    virtual QList<QSharedPointer<Download> > downloads() const = 0;
+    virtual bool isError() const = 0;
+    virtual Error* error() const = 0;
+};
 
 }  // Ubuntu
 
 }  // DownloadManager
+
+#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_H

@@ -27,13 +27,13 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Download;
-class DownloadList;
+class DownloadsList;
 class Error;
 class GroupDownload;
 
 typedef std::function<void(Download*)> DownloadCb;
-typedef std::function<void(DownloadList*)> DownloadsListCb;
-typedef std::function<void(const QString&, const QString&, DownloadList*)> MetadataDownloadsListCb;
+typedef std::function<void(DownloadsList*)> DownloadsListCb;
+typedef std::function<void(const QString&, const QString&, DownloadsList*)> MetadataDownloadsListCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
 

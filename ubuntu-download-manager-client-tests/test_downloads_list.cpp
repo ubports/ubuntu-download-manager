@@ -28,12 +28,12 @@ void
 TestDownloadsList::testIsError() {
     TestingError* err = new TestingError(
         Ubuntu::DownloadManager::Error::DBus);
-    QScopedPointer<DownloadListImpl> errList(new DownloadListImpl(err));
+    QScopedPointer<DownloadsListImpl> errList(new DownloadsListImpl(err));
     QVERIFY(errList->isError());
 }
 
 void
 TestDownloadsList::testIsErrorEmptyList() {
-    QScopedPointer<DownloadListImpl> list(new DownloadListImpl());
+    QScopedPointer<DownloadsListImpl> list(new DownloadsListImpl());
     QVERIFY(!list->isError());
 }

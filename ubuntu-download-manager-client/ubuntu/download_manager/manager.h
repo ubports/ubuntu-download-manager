@@ -26,7 +26,7 @@
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
 #include "download.h"
-#include "download_list.h"
+#include "downloads_list.h"
 #include "error.h"
 
 
@@ -37,8 +37,8 @@ namespace DownloadManager {
 class GroupDownload;
 
 typedef std::function<void(Download*)> DownloadCb;
-typedef std::function<void(DownloadList*)> DownloadsListCb;
-typedef std::function<void(const QString&, const QString&, DownloadList*)> MetadataDownloadsListCb;
+typedef std::function<void(DownloadsList*)> DownloadsListCb;
+typedef std::function<void(const QString&, const QString&, DownloadsList*)> MetadataDownloadsListCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
 class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
@@ -88,10 +88,10 @@ class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
 
  signals:
     void downloadCreated(Download* down);
-    void downloadsFound(DownloadList* downloads);
+    void downloadsFound(DownloadsList* downloads);
     void downloadsWithMetadataFound(const QString& name,
                                     const QString& value,
-                                    DownloadList* downloads);
+                                    DownloadsList* downloads);
     void groupCreated(GroupDownload* down);
 
 };
