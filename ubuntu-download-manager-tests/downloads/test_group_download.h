@@ -87,6 +87,16 @@ class TestGroupDownload : public BaseTestCase {
     // ensure that local paths are just used once
     void testDuplicatedLocalPath();
 
+    // tests that ensure that the signals are raised
+    void testAuthErrorEmitted_data();
+    void testAuthErrorEmitted();
+    void testHttpErrorEmitted_data();
+    void testHttpErrorEmitted();
+    void testNetworkErrorEmitted_data();
+    void testNetworkErrorEmitted();
+    void testProcessErrorEmitted_data();
+    void testProcessErrorEmitted();
+
  private:
     QString _id;
     QString _path;

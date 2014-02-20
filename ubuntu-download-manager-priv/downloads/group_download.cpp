@@ -55,8 +55,6 @@ GroupDownload::~GroupDownload() {
 
 void
 GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
-    connect(singleDownload, &Download::error,
-        this, &GroupDownload::onError);
     connect(singleDownload, static_cast<void(Download::*)
             (qulonglong, qulonglong)>(&Download::progress),
                 this, &GroupDownload::onProgress);
@@ -64,6 +62,18 @@ GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
         this, &GroupDownload::onFinished);
     connect(singleDownload, &FileDownload::processing,
         this, &GroupDownload::processing);
+
+    // connect to the error signals
+    connect(singleDownload, &Download::error,
+        this, &GroupDownload::onError);
+    connect(singleDownload, &FileDownload::authError,
+        this, &GroupDownload::onAuthError);
+    connect(singleDownload, &FileDownload::httpError,
+        this, &GroupDownload::onHttpError);
+    connect(singleDownload, &FileDownload::networkError,
+        this, &GroupDownload::onNetworkError);
+    connect(singleDownload, &FileDownload::processError,
+        this, &GroupDownload::onProcessError);
 }
 
 void
@@ -244,6 +254,48 @@ GroupDownload::onError(const QString& error) {
     cancelAllDownloads();
     QString errorMsg = down->url().toString() + ":" + error;
     emitError(errorMsg);
+}
+
+QString
+GroupDownload::getUrlFromSender(QObject* sender) {
+    auto down = qobject_cast<FileDownload*>(sender);
+    if (down != nullptr) {
+        return down->url().toString();
+    } else {
+        return "";
+    }
+}
+
+void
+GroupDownload::onAuthError(AuthErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit authError(url, err);
+    }
+}
+
+void
+GroupDownload::onHttpError(HttpErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit httpError(url, err);
+    }
+}
+
+void
+GroupDownload::onNetworkError(NetworkErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit networkError(url, err);
+    }
+}
+
+void
+GroupDownload::onProcessError(ProcessErrorStruct err) {
+    auto url = getUrlFromSender(sender());
+    if (!url.isEmpty()) {
+        emit processError(url, err);
+    }
 }
 
 void
