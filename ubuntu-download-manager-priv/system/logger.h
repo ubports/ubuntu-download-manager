@@ -53,7 +53,7 @@ class Logger : public QObject {
 
  public:
 
-    static void setupLogging(const QString filename = "");
+    static void setupLogging(const QString logDir= "");
     static bool setLogLevel(QtMsgType level);
     static QString getLogDir();
     static std::string toStdString(const QString& str);
