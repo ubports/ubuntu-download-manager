@@ -35,6 +35,7 @@ namespace DownloadManager {
 
 namespace Daemon {
 
+class Factory;
 class GroupDownload : public Download {
     Q_OBJECT
 
