@@ -24,6 +24,7 @@
 #include <downloads/downloads_db.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/download_manager/tests/server/filename_mutex.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
@@ -68,6 +69,7 @@ class TestDownloadsDb : public BaseTestCase {
 
  private:
     DownloadsDb* _db;
+    FakeFileNameMutex* _fileNameMutex;
 };
 
 DECLARE_TEST(TestDownloadsDb)
