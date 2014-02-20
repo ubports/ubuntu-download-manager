@@ -76,6 +76,7 @@ Manager::init() {
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
+    qDBusRegisterMetaType<AuthErrorStruct>();
     qDBusRegisterMetaType<HttpErrorStruct>();
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
