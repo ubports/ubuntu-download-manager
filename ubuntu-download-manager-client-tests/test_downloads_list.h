@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,32 +16,29 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_PENDINGCALL_WATCHER_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_PENDINGCALL_WATCHER_H
+#ifndef TEST_DOWNLOADS_LIST_H
+#define TEST_DOWNLOADS_LIST_H
 
 #include <QObject>
-#include "download.h"
-#include "pending_call_watcher.h"
+#include <ubuntu/download_manager/download_list_impl.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include "local_tree_testcase.h"
 
-namespace Ubuntu {
+using namespace Ubuntu::DownloadManager;
 
-namespace DownloadManager {
-
-class DownloadPCW : public PendingCallWatcher {
+class TestDownloadsList : public LocalTreeTestCase {
     Q_OBJECT
 
  public:
-    DownloadPCW(const QDBusConnection& conn,
-                               const QString& servicePath,
-                               const QDBusPendingCall& call,
-                               Download* parent = 0);
+    explicit TestDownloadsList(QObject *parent = 0);
 
- private slots:
-    void onFinished(QDBusPendingCallWatcher* watcher);
+ private slots:  // NOLINT(whitespace/indent)
+
+    void testIsError();
+    void testIsErrorEmptyList();
 };
 
-}  // DownloadManager
+DECLARE_TEST(TestDownloadsList)
 
-}  // Ubuntu
+#endif // TEST_DOWNLOADS_LIST_H
 
-#endif // DOWNLOAD_PENDINGCALL_WATCHER_H

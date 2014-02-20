@@ -13,14 +13,17 @@ TEMPLATE = app
 HEADERS += \
     test_group_manager_watch.h \
     test_download_manager_watch.h \
+    test_downloads_list.h \
     test_manager.h \
     local_tree_testcase.h \
+    error.h \
     test_download_watch.h \
     test_download.h
 
 SOURCES += main.cpp \
     test_group_manager_watch.cpp \
     test_download_manager_watch.cpp \
+    test_downloads_list.cpp \
     test_manager.cpp \
     local_tree_testcase.cpp \
     test_download_watch.cpp \

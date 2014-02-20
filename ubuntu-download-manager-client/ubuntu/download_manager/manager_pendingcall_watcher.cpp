@@ -19,7 +19,8 @@
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
-#include "download.h"
+#include "download_impl.h"
+#include "download_list_impl.h"
 #include "error.h"
 #include "group_download.h"
 #include "manager.h"
@@ -29,35 +30,34 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
-                                                  const QDBusConnection& conn,
-                                                  const QString& servicePath,
-                                                  const QDBusPendingCall& call,
-                                                  DownloadCb cb,
-                                                  DownloadCb errCb,
-                                                  QObject* parent)
+DownloadManagerPCW::DownloadManagerPCW(const QDBusConnection& conn,
+                                       const QString& servicePath,
+                                       const QDBusPendingCall& call,
+                                       DownloadCb cb,
+                                       DownloadCb errCb,
+                                       QObject* parent)
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,
-        this, &DownloadManagerPendingCallWatcher::onFinished);
+        this, &DownloadManagerPCW::onFinished);
 }
 
 void
-DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+DownloadManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
-        // creater error and deal with it
+        // create error and deal with it
         auto err = new DBusError(reply.error());
-        auto down = new Download(_conn, err);
+        auto down = new DownloadImpl(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
     } else {
         qDebug() << "Success!";
         auto path = reply.value();
-        auto down = new Download(_conn, _servicePath, path);
+        auto down = new DownloadImpl(_conn, _servicePath, path);
         emit man->downloadCreated(down);
         _cb(down);
     }
@@ -65,23 +65,110 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
     watcher->deleteLater();
 }
 
-
-GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
-                                            const QDBusConnection& conn,
-                                            const QString& servicePath,
-                                            const QDBusPendingCall& call,
-                                            GroupCb cb,
-                                            GroupCb errCb,
-                                            QObject* parent)
+DownloadsListManagerPCW::DownloadsListManagerPCW(const QDBusConnection& conn,
+                                                 const QString& servicePath,
+                                                 const QDBusPendingCall& call,
+                                                 DownloadsListCb cb,
+                                                 DownloadsListCb errCb,
+                                                 QObject* parent)
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     connect(this, &QDBusPendingCallWatcher::finished,
-        this, &GroupManagerPendingCallWatcher::onFinished);
+        this, &DownloadsListManagerPCW::onFinished);
 }
 
 void
-GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+DownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
+    QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
+    DownloadListImpl* list;
+    auto man = static_cast<Manager*>(parent());
+    if (reply.isError()) {
+        qDebug() << "ERROR" << reply.error() << reply.error().type();
+        // create error and deal with it
+        auto err = new DBusError(reply.error());
+        list = new DownloadListImpl(err);
+        _errCb(list);
+        emit man->downloadsFound(list);
+    } else {
+        qDebug() << "Success!";
+        auto paths = reply.value();
+        QList<Download*> downloads;
+        list = new DownloadListImpl();
+        foreach(const QDBusObjectPath& path, paths) {
+            auto down = new DownloadImpl(_conn, _servicePath, path);
+            downloads.append(down);
+        }
+        list = new DownloadListImpl(downloads);
+        emit man->downloadsFound(list);
+        _cb(list);
+    }
+    emit callbackExecuted();
+    watcher->deleteLater();
+}
+
+MetadataDownloadsListManagerPCW::MetadataDownloadsListManagerPCW(
+                                    const QDBusConnection& conn,
+                                    const QString& servicePath,
+                                    const QDBusPendingCall& call,
+                                    const QString& key,
+                                    const QString& value,
+                                    MetadataDownloadsListCb cb,
+                                    MetadataDownloadsListCb errCb,
+                                    QObject* parent)
+    : PendingCallWatcher(conn, servicePath, call, parent),
+      _key(key),
+      _value(value),
+      _cb(cb),
+      _errCb(errCb) {
+    connect(this, &QDBusPendingCallWatcher::finished,
+        this, &MetadataDownloadsListManagerPCW::onFinished);
+}
+
+void
+MetadataDownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
+    QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
+    DownloadListImpl* list;
+    auto man = static_cast<Manager*>(parent());
+    if (reply.isError()) {
+        qDebug() << "ERROR" << reply.error() << reply.error().type();
+        // create error and deal with it
+        auto err = new DBusError(reply.error());
+        list = new DownloadListImpl(err);
+        _errCb(_key, _value, list);
+        emit man->downloadsWithMetadataFound(_key, _value, list);
+    } else {
+        qDebug() << "Success!";
+        auto paths = reply.value();
+        QList<Download*> downloads;
+        list = new DownloadListImpl();
+        foreach(const QDBusObjectPath& path, paths) {
+            auto down = new DownloadImpl(_conn, _servicePath, path);
+            downloads.append(down);
+        }
+        list = new DownloadListImpl(downloads);
+        emit man->downloadsWithMetadataFound(_key, _value, list);
+        _cb(_key, _value, list);
+    }
+    emit callbackExecuted();
+    watcher->deleteLater();
+}
+
+GroupManagerPCW::GroupManagerPCW(const QDBusConnection& conn,
+                                 const QString& servicePath,
+                                 const QDBusPendingCall& call,
+                                 GroupCb cb,
+                                 GroupCb errCb,
+                                 QObject* parent)
+    : PendingCallWatcher(conn, servicePath, call, parent),
+      _cb(cb),
+      _errCb(errCb) {
+    connect(this, &QDBusPendingCallWatcher::finished,
+        this, &GroupManagerPCW::onFinished);
+}
+
+void
+GroupManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {

@@ -24,61 +24,36 @@
 #include <QString>
 #include <ubuntu/download_manager/common.h>
 
-class QDBusConnection;
-class QDBusObjectPath;
-
 namespace Ubuntu {
 
 namespace DownloadManager {
 
 class Error;
-class HttpErrorStruct;
-class NetworkErrorStruct;
-class ProcessErrorStruct;
-class ManagerPrivate;
-class DownloadPrivate;
 class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     Q_OBJECT
-    Q_DECLARE_PRIVATE(Download)
-
-    // allow the manager to create downloads
-    friend class ManagerPrivate;
-    friend class DownloadPendingCallWatcher;
-    friend class DownloadManagerPendingCallWatcher;
 
  public:
-    virtual ~Download();
+    explicit Download(QObject* parent = 0)
+        : QObject(parent) {}
 
-    void start();
-    void pause();
-    void resume();
-    void cancel();
+    virtual void start() = 0;
+    virtual void pause() = 0;
+    virtual void resume() = 0;
+    virtual void cancel() = 0;
 
-    void allowMobileDownload(bool allowed);
-    bool isMobileDownloadAllowed();
+    virtual void allowMobileDownload(bool allowed) = 0;
+    virtual bool isMobileDownloadAllowed() = 0;
 
-    void setThrottle(qulonglong speed);
-    qulonglong throttle();
+    virtual void setThrottle(qulonglong speed) = 0;
+    virtual qulonglong throttle() = 0;
 
-    QString id();
-    QVariantMap metadata();
-    qulonglong progress();
-    qulonglong totalSize();
+    virtual QString id() const = 0;
+    virtual QVariantMap metadata() = 0;
+    virtual qulonglong progress() = 0;
+    virtual qulonglong totalSize() = 0;
 
-    bool isError();
-    Error* error();
-
- protected:
-    Download(const QDBusConnection& conn, Error* err, QObject* parent = 0);
-    Download(const QDBusConnection& conn,
-             const QString& servicePath,
-             const QDBusObjectPath& objectPath,
-             QObject* parent = 0);
-
- private:
-    Q_PRIVATE_SLOT(d_func(), void onHttpError(HttpErrorStruct))
-    Q_PRIVATE_SLOT(d_func(), void onNetworkError(NetworkErrorStruct))
-    Q_PRIVATE_SLOT(d_func(), void onProcessError(ProcessErrorStruct))
+    virtual bool isError() const = 0;
+    virtual Error* error() const = 0;
 
  signals:
     void canceled(bool success);
@@ -89,10 +64,6 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     void progress(qulonglong received, qulonglong total);
     void resumed(bool success);
     void started(bool success);
-
- private:
-    // use pimpl pattern so that users do not have to be recompiled
-    DownloadPrivate* d_ptr;
 
 };
 

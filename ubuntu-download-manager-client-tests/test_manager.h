@@ -47,6 +47,14 @@ class TestManager : public LocalTreeTestCase {
     void testExitError();
     void testCreateDownloadSignalsEmitted();
     void testCreateDownloadSignalsEmittedCallbacks();
+    void testGetAllDownloadsSignalsEmitted_data();
+    void testGetAllDownloadsSignalsEmitted();
+    void testGetAllDownloadsSignalsEmittedCallbacks_data();
+    void testGetAllDownloadsSignalsEmittedCallbacks();
+    void testGetAllDownloadsMetadataSignalsEmitted_data();
+    void testGetAllDownloadsMetadataSignalsEmitted();
+    void testGetAllDownloadsMetadataSignalsEmittedCallbacks_data();
+    void testGetAllDownloadsMetadataSignalsEmittedCallbacks();
 
  private:
     Manager* _man;

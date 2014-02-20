@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,32 +16,38 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_PENDINGCALL_WATCHER_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_PENDINGCALL_WATCHER_H
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
 
-#include <QObject>
-#include "download.h"
-#include "pending_call_watcher.h"
+#include "download_list.h"
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class DownloadPCW : public PendingCallWatcher {
+class Error;
+class Download;
+
+class DOWNLOAD_MANAGER_EXPORT DownloadListImpl : public DownloadList {
     Q_OBJECT
 
  public:
-    DownloadPCW(const QDBusConnection& conn,
-                               const QString& servicePath,
-                               const QDBusPendingCall& call,
-                               Download* parent = 0);
+    DownloadListImpl(QObject* parent = 0);
+    DownloadListImpl(const QList<Download*> downs, QObject* parent = 0);
+    DownloadListImpl(Error* err, QObject* parent = 0);
+    virtual ~DownloadListImpl();
 
- private slots:
-    void onFinished(QDBusPendingCallWatcher* watcher);
+    virtual QList<Download*> downloads() const;
+    virtual bool isError() const;
+    virtual Error* error() const;
+
+ private:
+    QList<Download*> _downs;
+    Error* _lastError = nullptr;
 };
-
-}  // DownloadManager
 
 }  // Ubuntu
 
-#endif // DOWNLOAD_PENDINGCALL_WATCHER_H
+}  // DownloadManager
+
+#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
