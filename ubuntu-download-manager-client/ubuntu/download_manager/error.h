@@ -66,8 +66,8 @@ class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DBusError)
 
-    friend class ManagerPrivate;
-    friend class DownloadPrivate;
+    friend class ManagerImpl;
+    friend class DownloadImpl;
     friend class DownloadManagerPendingCallWatcher;
     friend class DownloadPendingCallWatcher;
     friend class GroupManagerPendingCallWatcher;
@@ -90,7 +90,7 @@ class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(AuthError)
 
-    friend class DownloadPrivate;
+    friend class DownloadImpl;
 
  public:
     enum Type {
@@ -116,7 +116,7 @@ class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(HttpError)
 
-    friend class DownloadPrivate;
+    friend class DownloadImpl;
 
  public:
     virtual ~HttpError();
@@ -137,7 +137,7 @@ class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(NetworkError)
 
-    friend class DownloadPrivate;
+    friend class DownloadImpl;
 
  public:
     enum ErrorCode {
@@ -186,7 +186,7 @@ class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(ProcessError)
 
-    friend class DownloadPrivate;
+    friend class DownloadImpl;
 
  public:
     virtual ~ProcessError();
