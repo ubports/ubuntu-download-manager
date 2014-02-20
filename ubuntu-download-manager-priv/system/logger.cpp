@@ -21,9 +21,11 @@
 #include <QDateTime>
 #include <QDir>
 #include <QDBusError>
+#include <QMap>
 #include <QStandardPaths>
 #include <QStringList>
 #include <QUrl>
+#include <QVariantMap>
 #include <QSslError>
 #include <sys/types.h>
 #include <unistd.h>
@@ -60,6 +62,34 @@ std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors) {
 std::ostream& operator<<(std::ostream &out, const QDBusError& error) {
     out << " " << qPrintable(error.name())
         << ":" << qPrintable(error.message());
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QVariantMap& map) {
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key].toString();
+    }
+    out << "}";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
+    out << "{";
+    foreach(const QString& key, map.keys()) {
+            out << key << ":" << map[key];
+    }
+    out << "}";
+    return out;
+}
+
+std::ostream& operator<<(std::ostream &out, StructList list) {
+    out << "(";
+    foreach(const GroupDownloadStruct& group, list) {
+        out << "{ url:" << group.getUrl() << " hash:" << group.getHash()
+            << " local file:" << group.getLocalFile() << "}";
+    }
+    out << ")";
     return out;
 }
 

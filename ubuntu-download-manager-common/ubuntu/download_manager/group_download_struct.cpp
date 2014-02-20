@@ -85,17 +85,17 @@ void GroupDownloadStruct::registerMetaType() {
 }
 
 QString
-GroupDownloadStruct::getUrl() {
+GroupDownloadStruct::getUrl() const {
     return _url;
 }
 
 QString
-GroupDownloadStruct::getHash() {
+GroupDownloadStruct::getHash() const {
     return _hash;
 }
 
 QString
-GroupDownloadStruct::getLocalFile() {
+GroupDownloadStruct::getLocalFile() const {
     return _localFile;
 }
 
