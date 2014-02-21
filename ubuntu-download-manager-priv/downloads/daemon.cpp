@@ -170,11 +170,14 @@ class DaemonPrivate {
             if (args.count() > index + 1) {
                 auto logPath = args[index + 1];
                 Logger::setupLogging(logPath);
-		LOG(INFO) << "Log path is" << logPath;
+                LOG(INFO) << "Log path is" << logPath;
             } else {
-                LOG(ERROR) << "Missing log dir path.";
                 Logger::setupLogging();
+                LOG(ERROR) << "Missing log dir path.";
             }
+        } else {
+                Logger::setupLogging();
+                LOG(INFO) << "Using default log path.";
         }
 
         if (args.contains(SELFSIGNED_CERT)) {
