@@ -8,8 +8,6 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#include "downloads/group_download.h"
-#include "downloads/group_download_adaptor.h"
 #include <QtCore/QMetaObject>
 #include <QtCore/QByteArray>
 #include <QtCore/QList>
@@ -17,6 +15,8 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
+#include "group_download.h"
+#include "group_download_adaptor.h"
 
 namespace Ubuntu {
 

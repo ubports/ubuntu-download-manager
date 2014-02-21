@@ -17,10 +17,10 @@
  */
 
 #include <QDebug>
-#include <downloads/queue.h>
-#include <downloads/download.h>
-#include <downloads/download_adaptor.h>
-#include <downloads/file_download.h>
+#include <ubuntu/downloads/queue.h>
+#include <ubuntu/downloads/download.h>
+#include <ubuntu/downloads/download_adaptor.h>
+#include <ubuntu/downloads/file_download.h>
 #include "testing_file_download.h"
 #include "testing_manager.h"
 

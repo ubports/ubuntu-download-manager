@@ -20,8 +20,8 @@
 #define TEST_DOWNLOAD_QUEUE_H
 
 #include <QObject>
-#include <downloads/download_adaptor.h>
-#include <downloads/queue.h>
+#include <ubuntu/downloads/download_adaptor.h>
+#include <ubuntu/downloads/queue.h>
 #include <ubuntu/download_manager/tests/server/download.h>
 #include <ubuntu/download_manager/tests/server/request_factory.h>
 #include <ubuntu/download_manager/tests/server/process_factory.h>

@@ -20,7 +20,7 @@
 #define FAKE_DOWNLOAD_MANAGER_H
 
 #include <QObject>
-#include <downloads/manager.h>
+#include <ubuntu/downloads/manager.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

@@ -24,7 +24,7 @@
 #include <QState>
 #include <QObject>
 #include <QVariant>
-#include "downloads/sm_file_download.h"
+#include "ubuntu/downloads/sm_file_download.h"
 
 namespace Ubuntu {
 

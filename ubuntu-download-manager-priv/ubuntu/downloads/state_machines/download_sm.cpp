@@ -20,7 +20,7 @@
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
-#include "system/logger.h"
+#include "ubuntu/system/logger.h"
 #include "download_sm.h"
 #include "final_state.h"
 #include "state.h"

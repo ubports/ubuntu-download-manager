@@ -17,9 +17,9 @@
  */
 
 #include <QSignalSpy>
-#include <downloads/factory.h>
+#include <ubuntu/downloads/factory.h>
 #include <ubuntu/download_manager/download_struct.h>
-#include <system/uuid_utils.h>
+#include <ubuntu/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/process_factory.h>
 #include <ubuntu/download_manager/tests/server/system_network_info.h>
 #include "test_download_manager.h"

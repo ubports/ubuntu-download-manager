@@ -21,8 +21,8 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <downloads/manager.h>
-#include <downloads/file_download.h>
+#include <ubuntu/downloads/manager.h>
+#include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/tests/server/application.h>
 #include <ubuntu/download_manager/tests/server/apparmor.h>
 #include <ubuntu/download_manager/tests/server/dbus_connection.h>

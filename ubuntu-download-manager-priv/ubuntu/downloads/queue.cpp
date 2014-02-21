@@ -17,9 +17,9 @@
  */
 
 #include <QSignalMapper>
-#include "downloads/queue.h"
-#include "system/logger.h"
-#include "system/system_network_info.h"
+#include "ubuntu/system/logger.h"
+#include "ubuntu/system/system_network_info.h"
+#include "queue.h"
 
 namespace Ubuntu {
 

@@ -18,8 +18,8 @@
 
 #include <QScopedPointer>
 #include <QSignalSpy>
-#include <downloads/group_download.h>
-#include <system/uuid_utils.h>
+#include <ubuntu/downloads/group_download.h>
+#include <ubuntu/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
 #include <ubuntu/download_manager/tests/server/group_download.h>
 #include "test_group_download.h"

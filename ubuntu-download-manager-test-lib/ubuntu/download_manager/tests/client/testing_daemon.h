@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
-#include <downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
+#include <ubuntu/udm/daemon.h>  // comes from the priv lib, just for testing!!!!
 
 class TestingManagerAdaptor;
 class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {

@@ -20,8 +20,8 @@
 #define FAKE_DOWNLOAD_H
 
 #include <QSharedPointer>
-#include <downloads/file_download.h>
-#include <system/system_network_info.h>
+#include <ubuntu/downloads/file_download.h>
+#include <ubuntu/system/system_network_info.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/download_manager/tests/fake.h"
 

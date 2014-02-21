@@ -19,8 +19,8 @@
 #include <QDebug>
 #include <QDBusError>
 #include <ubuntu/download_manager/system/dbus_connection.h>
-#include <system/application.h>
-#include <system/timer.h>
+#include <ubuntu/system/application.h>
+#include <ubuntu/system/timer.h>
 #include "testing_manager.h"
 #include "testing_manager_adaptor.h"
 #include "testing_daemon.h"

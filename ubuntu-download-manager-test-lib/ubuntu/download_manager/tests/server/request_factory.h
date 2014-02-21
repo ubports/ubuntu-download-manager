@@ -23,7 +23,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QPair>
-#include <system/request_factory.h>
+#include <ubuntu/system/request_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

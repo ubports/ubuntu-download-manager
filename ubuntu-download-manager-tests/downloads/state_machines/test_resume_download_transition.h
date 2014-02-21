@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QState>
 #include <QStateMachine>
-#include <downloads/state_machines/download_sm.h>
+#include <ubuntu/downloads/state_machines/download_sm.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 #include <ubuntu/download_manager/tests/server/sm_file_download.h>
@@ -34,7 +34,7 @@ class TestResumeDownloadTransition : public BaseTestCase {
     Q_OBJECT
  public:
     explicit TestResumeDownloadTransition(QObject *parent = 0);
-    
+
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
