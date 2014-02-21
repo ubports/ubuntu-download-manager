@@ -18,10 +18,10 @@
 
 #include <functional>
 #include <QRegExp>
-#include "downloads/manager.h"
-#include "system/apparmor.h"
-#include "system/logger.h"
-#include "system/request_factory.h"
+#include "ubuntu/system/apparmor.h"
+#include "ubuntu/system/logger.h"
+#include "ubuntu/system/request_factory.h"
+#include "manager.h"
 
 namespace Ubuntu {
 

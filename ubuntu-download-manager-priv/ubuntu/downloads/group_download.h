@@ -24,10 +24,10 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <ubuntu/download_manager/group_download_struct.h>
-#include "downloads/download.h"
-#include "downloads/factory.h"
-#include "downloads/file_download.h"
-#include "system/file_manager.h"
+#include "ubuntu/system/file_manager.h"
+#include "download.h"
+#include "factory.h"
+#include "file_download.h"
 
 namespace Ubuntu {
 

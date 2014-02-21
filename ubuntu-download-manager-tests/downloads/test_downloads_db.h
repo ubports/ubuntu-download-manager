@@ -21,7 +21,7 @@
 #include <QDir>
 #include <QObject>
 #include <QSqlDatabase>
-#include <downloads/downloads_db.h>
+#include <ubuntu/downloads/downloads_db.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 

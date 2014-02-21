@@ -21,7 +21,7 @@
 
 #include <QDBusContext>
 #include <QObject>
-#include <downloads/file_download.h>
+#include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;

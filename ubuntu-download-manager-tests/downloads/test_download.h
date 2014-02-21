@@ -21,7 +21,7 @@
 
 #include <QDir>
 #include <QObject>
-#include <downloads/file_download.h>
+#include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/tests/server/file_manager.h>
 #include <ubuntu/download_manager/tests/server/system_network_info.h>

@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_FACTORY_H
 
 #include <QObject>
-#include <downloads/factory.h>
+#include <ubuntu/downloads/factory.h>
 #include <ubuntu/download_manager/tests/server/apparmor.h>
 #include <ubuntu/download_manager/tests/server/system_network_info.h>
 #include <ubuntu/download_manager/tests/server/request_factory.h>

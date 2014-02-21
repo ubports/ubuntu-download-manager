@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
-#include <downloads/manager.h>  // comes from the priv lib, just for testing!!!!
+#include <ubuntu/downloads/manager.h>  // comes from the priv lib, just for testing!!!!
 
 using namespace Ubuntu::DownloadManager::Daemon;
 

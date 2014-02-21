@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QSslError>
-#include <downloads/sm_file_download.h>
+#include <ubuntu/downloads/sm_file_download.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::Daemon;

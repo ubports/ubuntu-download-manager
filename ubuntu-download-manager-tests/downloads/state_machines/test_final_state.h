@@ -23,7 +23,7 @@
 #include <QState>
 #include <QStateMachine>
 #include <QSignalTransition>
-#include <downloads/state_machines/final_state.h>
+#include <ubuntu/downloads/state_machines/final_state.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 

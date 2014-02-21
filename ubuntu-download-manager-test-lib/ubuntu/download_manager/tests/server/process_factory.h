@@ -20,7 +20,7 @@
 #define FAKE_PROCESS_FACTORY_H
 
 #include <QObject>
-#include <system/process_factory.h>
+#include <ubuntu/system/process_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

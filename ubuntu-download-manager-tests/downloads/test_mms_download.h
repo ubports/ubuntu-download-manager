@@ -20,9 +20,9 @@
 #define TEST_MMS_DOWNLOAD_H
 
 #include <QObject>
-#include <system/request_factory.h>
-#include <system/apn_request_factory.h>
-#include <downloads/mms_file_download.h>
+#include <ubuntu/system/request_factory.h>
+#include <ubuntu/system/apn_request_factory.h>
+#include <ubuntu/downloads/mms_file_download.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 

@@ -26,8 +26,8 @@
 #include <QSqlError>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
 #include <unistd.h>
-#include "downloads/downloads_db.h"
-#include "system/logger.h"
+#include "ubuntu/system/logger.h"
+#include "downloads_db.h"
 
 namespace {
     const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE IF NOT EXISTS SingleDownload("\

@@ -22,8 +22,8 @@
 #include <QList>
 #include <QPair>
 #include <QSharedPointer>
-#include "downloads/download.h"
-#include "downloads/download_adaptor.h"
+#include "download.h"
+#include "download_adaptor.h"
 
 namespace Ubuntu {
 

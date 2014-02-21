@@ -23,9 +23,9 @@
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
-#include "system/process_factory.h"
-#include "system/request_factory.h"
-#include "system/system_network_info.h"
+#include "ubuntu/system/process_factory.h"
+#include "ubuntu/system/request_factory.h"
+#include "ubuntu/system/system_network_info.h"
 
 
 namespace Ubuntu {
