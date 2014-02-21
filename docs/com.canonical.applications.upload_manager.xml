@@ -1,0 +1,52 @@
+<node>
+  <interface name="com.canonical.applications.UploadManager">
+    <method name="createUpload">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="UploadStruct"/>
+        <arg name="upload" type="(ssa{sv}a{ss})" direction="in" />
+        <arg name="uploadPath" type="o" direction="out" />
+    </method>
+
+    <method name="createMmsUpload">
+        <arg name="url" type="s" direction="in" />
+        <arg name="file" type="s" direction="in" />
+        <arg name="hostname" type="s" direction="in" />
+        <arg name="port" type="i" direction="in" />
+        <arg name="username" type="s" direction="in" />
+        <arg name="password" type="s" direction="in" />
+        <arg name="uploadPath" type="o" direction="out" />
+    </method>
+
+    <method name="getAllUploads">
+        <arg name="uploads" type="ao" direction="out" />
+    </method>
+
+    <method name="getAllUploadsWithMetadata">
+        <arg name="name" type="s" direction="in"/>
+        <arg name="value" type="s" direction="in"/>
+        <arg name="uploads" type="ao" direction="out" />
+    </method>
+
+    <method name="setDefaultThrottle">
+        <arg name="speed" type="t" direction="in"/>
+    </method>
+
+    <method name="defaultThrottle">
+        <arg name="speed" type="t" direction="out"/>
+    </method>
+
+    <method name="allowMobileUpload">
+        <arg name="allowed" type="b" direction="in"/>
+    </method>
+
+    <method name="isMobileUploadAllowed">
+        <arg name="allowed" type="b" direction="out"/>
+    </method>
+
+    <method name="exit" />
+
+    <signal name="uploadCreated">
+        <arg name="path" type="o" direction="out"/>
+    </signal>
+
+ </interface>
+</node>
