@@ -77,15 +77,6 @@ FileNameMutex::lockFileName(const QString& expectedName) {
     return path;
 }
 
-QString
-FileNameMutex::lockFileName(const QVariantMap& metadata) {
-    auto path = metadata[Metadata::LOCAL_PATH_KEY].toString();
-    _mutex.lock();
-    _paths.insert(path);
-    _mutex.unlock();
-    return path;
-}
-
 void
 FileNameMutex::unlockFileName(const QString& filename) {
     _mutex.lock();

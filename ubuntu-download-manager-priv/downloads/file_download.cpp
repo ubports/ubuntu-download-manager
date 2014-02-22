@@ -529,8 +529,7 @@ FileDownload::init() {
     connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
         this, &FileDownload::onOnlineStateChanged);
 
-    _filePath = getSaveFileName();
-    _tempFilePath = _filePath + TEMP_EXTENSION;
+    initFileNames();
 
     // ensure that the download is valid
     if (!_url.isValid()) {
@@ -578,8 +577,8 @@ FileDownload::flushFile() {
     return flushed;
 }
 
-QString
-FileDownload::getSaveFileName() {
+void
+FileDownload::initFileNames() {
     // the mutex will ensure that we do not have race conditions about
     // the file names in the download manager
     QString path = _url.path();
@@ -588,26 +587,26 @@ FileDownload::getSaveFileName() {
     if (basename.isEmpty())
         basename = DATA_FILE_NAME;
 
-    QString finalPath;
     auto metadataMap = metadata();
 
     if (!isConfined() && metadataMap.contains(Metadata::LOCAL_PATH_KEY)) {
-        finalPath = _fileNameMutex->lockFileName(metadataMap);
+        _filePath = metadataMap[Metadata::LOCAL_PATH_KEY].toString();
+        _tempFilePath = _fileNameMutex->lockFileName(
+            _filePath + TEMP_EXTENSION);
 
         // in this case and because the app is not confined we are
         // going to check if the file exists, if it does we will
         // raise an error
-        if (QFile::exists(finalPath)) {
+        if (QFile::exists(_filePath)) {
             setIsValid(false);
             setLastError(QString("File already exists at: '%1'").arg(
-                finalPath));
+                _filePath));
         }
     } else {
         auto desiredPath = rootPath() + QDir::separator() + basename;
-        finalPath = _fileNameMutex->lockFileName(desiredPath);
+        _filePath = _fileNameMutex->lockFileName(desiredPath);
+        _tempFilePath = _filePath + TEMP_EXTENSION;
     }
-
-    return finalPath;
 }
 
 void

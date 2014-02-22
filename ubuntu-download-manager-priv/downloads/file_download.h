@@ -120,7 +120,7 @@ class FileDownload : public Download {
     void onProcessFinished(int exitCode,
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
-    QString getSaveFileName();
+    void initFileNames();
     void emitFinished();
 
  private:

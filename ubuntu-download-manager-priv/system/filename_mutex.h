@@ -35,7 +35,6 @@ class FileNameMutex : public QObject {
  public:
     explicit FileNameMutex(QObject* parent = 0);
     virtual QString lockFileName(const QString& expectedName);
-    virtual QString lockFileName(const QVariantMap& metadata);
     virtual void unlockFileName(const QString& filename);
     virtual bool isLocked(const QString& filename);
 
