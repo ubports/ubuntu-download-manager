@@ -66,6 +66,16 @@ HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/server/apn_request_factory.h \
            ubuntu/download_manager/tests/server/group_download.h
 
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
+
+LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
+
+INCLUDEPATH += $$PWD/../udm-priv-common
+DEPENDPATH += $$PWD/../udm-priv-common
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
@@ -75,8 +85,3 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-p
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
 DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
-
-LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
-
-INCLUDEPATH += $$PWD/../udm-priv-common
-DEPENDPATH += $$PWD/../udm-priv-common

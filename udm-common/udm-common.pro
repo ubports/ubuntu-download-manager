@@ -1,26 +1,19 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-02-25T13:30:31
-#
-#-------------------------------------------------
+include(../common-project-config.pri)
+include(../common-vars.pri)
 
+QT       += dbus 
 QT       -= gui
+DEFINES += NDEBUG
 
 TARGET = udm-common
 TEMPLATE = lib
 
-DEFINES += UDMCOMMON_LIBRARY
+SOURCES += \
+    ubuntu/system/dbus_connection.cpp \
+    ubuntu/system/hash_algorithm.cpp
 
-SOURCES += udmcommon.cpp
+HEADERS += \
+    ubuntu/system/dbus_connection.h \
+    ubuntu/system/hash_algorithm.h
 
-HEADERS += udmcommon.h\
-        udm-common_global.h
-
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}
+include(../common-installs-config.pri)

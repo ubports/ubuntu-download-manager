@@ -50,6 +50,11 @@ pkgconfig.files = ubuntu-download-manager-client.pc
 include(../common-pkgconfig.pri)
 INSTALLS += pkgconfig
 
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common

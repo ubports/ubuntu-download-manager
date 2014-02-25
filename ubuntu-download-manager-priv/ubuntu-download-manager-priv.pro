@@ -52,12 +52,17 @@ HEADERS +=\
 
 include(../common-installs-config.pri)
 
-LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
 
-INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
-DEPENDPATH += $$PWD/../ubuntu-download-manager-common
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
 
 LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
 
 INCLUDEPATH += $$PWD/../udm-priv-common
 DEPENDPATH += $$PWD/../udm-priv-common
+
+LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
+
+INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
+DEPENDPATH += $$PWD/../ubuntu-download-manager-common

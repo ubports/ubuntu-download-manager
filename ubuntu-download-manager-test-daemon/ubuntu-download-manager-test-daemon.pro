@@ -13,6 +13,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
+
+LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
+
+INCLUDEPATH += $$PWD/../udm-priv-common
+DEPENDPATH += $$PWD/../udm-priv-common
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
@@ -27,8 +37,3 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manag
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib
 DEPENDPATH += $$PWD/../ubuntu-download-manager-test-lib
-
-LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
-
-INCLUDEPATH += $$PWD/../udm-priv-common
-DEPENDPATH += $$PWD/../udm-priv-common

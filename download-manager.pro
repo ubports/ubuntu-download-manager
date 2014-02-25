@@ -4,8 +4,9 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-    ubuntu-download-manager-common \
+    udm-common \
     udm-priv-common \
+    ubuntu-download-manager-common \
     ubuntu-download-manager-priv \
     ubuntu-download-manager \
     ubuntu-download-manager-client \
@@ -15,16 +16,22 @@ SUBDIRS += \
     ubuntu-download-manager-client-tests \
     ubuntu-upload-manager \
     ubuntu-upload-manager-common \
-    ubuntu-upload-manager-priv \
-    udm-common
+    ubuntu-upload-manager-priv
 
-udm-priv-common.depends = ubuntu-download-manager-common
+udm-priv-common.depends = udm-common
 
-ubuntu-download-manager-priv.depends = udm-priv-common
+ubuntu-download-manager-priv.depends += udm-common
+ubuntu-download-manager-priv.depends += udm-priv-common
 
-ubuntu-download-manager.depends = ubuntu-download-manager-priv
-ubuntu-upload-manager.depends = ubuntu-download-manager-priv
+ubuntu-download-manager.depends += udm-common
+ubuntu-download-manager.depends += udm-priv-common
+ubuntu-download-manager.depends += ubuntu-download-manager-priv
 
+ubuntu-upload-manager.depends += udm-common
+ubuntu-upload-manager.depends += udm-priv-common
+ubuntu-upload-manager.depends += ubuntu-upload-manager-priv
+
+ubuntu-download-manager-client.depends = udm-common
 ubuntu-download-manager-client.depends = ubuntu-download-manager-common
 
 ubuntu-download-manager-tests.depends += ubuntu-download-manager-test-lib

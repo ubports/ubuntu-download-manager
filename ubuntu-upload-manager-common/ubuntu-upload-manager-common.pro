@@ -1,9 +1,7 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-02-21T18:48:38
-#
-#-------------------------------------------------
+include( ../common-project-config.pri )
+include( ../common-vars.pri )
 
+QT       += dbus network
 QT       -= gui
 
 TARGET = ubuntu-upload-manager-common
@@ -11,16 +9,28 @@ TEMPLATE = lib
 
 DEFINES += UBUNTUUPLOADMANAGERCOMMON_LIBRARY
 
-SOURCES += test.cpp
+SOURCES += \
+    ubuntu/upload_manager/upload_struct.cpp
 
-HEADERS += test.h\
-        ubuntu-upload-manager-common_global.h
+public_headers = \
+    ubuntu/upload_manager/upload_struct.h \
+    ubuntu/upload_manager/metatypes.h
 
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}
+HEADERS +=\
+    $$public_headers
+
+headers.files = $$public_headers
+
+include(../common-installs-config.pri)
+
+pkgconfig.files = ubuntu-upload-manager-common.pc
+include(../common-pkgconfig.pri)
+INSTALLS += pkgconfig
+
+OTHER_FILES += \
+    ubuntu-upload-manager-common.pc.in
+
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common

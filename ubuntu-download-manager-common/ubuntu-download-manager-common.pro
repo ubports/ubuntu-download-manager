@@ -16,9 +16,6 @@ SOURCES += \
     ubuntu/download_manager/network_error_struct.cpp \
     ubuntu/download_manager/process_error_struct.cpp \
     ubuntu/download_manager/auth_error_struct.cpp \
-    ubuntu/system/dbus_connection.cpp \
-    ubuntu/system/hash_algorithm.cpp \
-    ubuntu/upload_manager/upload_struct.cpp
 
 public_headers = \
     ubuntu/download_manager/common.h \
@@ -29,16 +26,10 @@ public_headers = \
     ubuntu/download_manager/network_error_struct.h \
     ubuntu/download_manager/process_error_struct.h \
     ubuntu/download_manager/auth_error_struct.h \
-    ubuntu/upload_manager/upload_struct.h \
-    ubuntu/upload_manager/metatypes.h
 
-private_headers = \
-    ubuntu/system/dbus_connection.h \
-    ubuntu/system/hash_algorithm.h
 
 HEADERS +=\
-    $$public_headers \
-    $$private_headers
+    $$public_headers
 
 headers.files = $$public_headers
 
@@ -50,3 +41,8 @@ INSTALLS += pkgconfig
 
 OTHER_FILES += \
     ubuntu-download-manager-common.pc.in
+
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
