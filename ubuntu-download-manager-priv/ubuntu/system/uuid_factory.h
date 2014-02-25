@@ -24,8 +24,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class UuidFactory : public QObject {
@@ -38,8 +36,6 @@ class UuidFactory : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 #endif  // DOWNLOADER_LIB_UUID_FACTORY_H

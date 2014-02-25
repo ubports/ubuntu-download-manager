@@ -24,8 +24,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class TimerPrivate;
@@ -48,8 +46,6 @@ class Timer : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

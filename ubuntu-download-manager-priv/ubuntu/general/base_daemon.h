@@ -16,19 +16,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
-#define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
+#ifndef UBUNTU_GENERAL_LIB_DAEMON_H
+#define UBUNTU_GENERAL_LIB_DAEMON_H
 
 #include <functional>
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
-#include <ubuntu/download_manager/common.h>
-#include <ubuntu/download_manager/system/dbus_connection.h>
+#include <ubuntu/system/dbus_connection.h>
 
 namespace Ubuntu {
-
-namespace DownloadManager {
 
 namespace System {
 
@@ -38,26 +35,29 @@ class Timer;
 
 }
 
-namespace Daemon {
+namespace General {
 
-class Manager;
-class DaemonPrivate;
+class BaseManager;
+class ManagerFactory;
+class AdaptorFactory;
 
-typedef std::function<Manager*(System::Application*, System::DBusConnection*)>
+typedef std::function<BaseManager*(System::Application*, System::DBusConnection*)>
     ManagerConstructor;
 
-class DOWNLOAD_MANAGER_EXPORT Daemon : public QObject {
-    Q_DECLARE_PRIVATE(Daemon)
+class BaseDaemon : public QObject {
     Q_OBJECT
 
  public:
-    explicit Daemon(QObject *parent = 0);
-    Daemon(System::Application* app,
+    BaseDaemon(ManagerFactory* managerFactory,
+           AdaptorFactory* adaptorFactory,
+           QObject *parent = 0);
+    BaseDaemon(ManagerFactory* managerFactory,
+           AdaptorFactory* adaptorFactory,
+           System::Application* app,
            System::DBusConnection* conn,
            System::Timer* timer,
-           Manager* man,
            QObject *parent = 0);
-    virtual ~Daemon();
+    virtual ~BaseDaemon();
 
     bool isTimeoutEnabled();
     void enableTimeout(bool enabled);
@@ -69,28 +69,34 @@ class DOWNLOAD_MANAGER_EXPORT Daemon : public QObject {
     void setSelfSignedCerts(QList<QSslCertificate> cert);
 
  public slots:  // NOLINT (whitespace/indent)
-    virtual void start(QString path="com.canonical.applications.Downloader");
+    virtual void start(const QString& path);
     void stop();
 
  protected:
-    // constructor that can be used to pass a special case of manager
-    // this is useful when a subclass was to speciallize the manager
-    Daemon(ManagerConstructor manConstructor, QObject* parent = 0);
-
-    Manager* manager();
+    BaseManager* manager();
 
  private:
-    Q_PRIVATE_SLOT(d_func(), void onTimeout())
-    Q_PRIVATE_SLOT(d_func(), void onDownloadManagerSizeChanged(int))  // NOLINT (readability/function)
+    void init();
+    void parseCommandLine();
+    void onTimeout();
+    void onDownloadManagerSizeChanged(int);
 
  private:
-    // use pimpl so that we can mantains ABI compatibility
-    DaemonPrivate* d_ptr;
+    QString _path = "";
+    bool _isTimeoutEnabled = true;
+    bool _stoppable = false;
+    QList<QSslCertificate> _certs;
+    System::Application* _app = nullptr;
+    System::Timer* _shutDownTimer = nullptr;
+    System::DBusConnection* _conn = nullptr;
+    ManagerFactory* _managerFactory = nullptr;
+    AdaptorFactory* _adaptorFactory = nullptr;
+    BaseManager* _manager = nullptr;
+    QObject* _managerAdaptor = nullptr;
 };
 
-}  // Daemon
-
-}  // DownloadManager
+}  // General
 
 }  // Ubuntu
+
 #endif  // DOWNLOADER_LIB_DOWNLOAD_DAEMON_H

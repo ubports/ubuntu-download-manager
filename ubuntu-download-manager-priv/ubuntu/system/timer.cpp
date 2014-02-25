@@ -22,8 +22,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 Timer::Timer(QObject* parent)
@@ -50,7 +48,5 @@ Timer::stop() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

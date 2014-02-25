@@ -23,7 +23,7 @@
 #include <ubuntu/system/file_manager.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class FakeFile : public File {
     Q_OBJECT

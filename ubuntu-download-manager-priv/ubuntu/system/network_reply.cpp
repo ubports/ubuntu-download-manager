@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
@@ -112,7 +110,5 @@ NetworkReply::errorString() const {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

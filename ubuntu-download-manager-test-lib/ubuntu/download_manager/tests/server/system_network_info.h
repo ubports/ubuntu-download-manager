@@ -23,7 +23,7 @@
 #include <ubuntu/system/system_network_info.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class NetworkModeWrapper : public QObject {
     Q_OBJECT

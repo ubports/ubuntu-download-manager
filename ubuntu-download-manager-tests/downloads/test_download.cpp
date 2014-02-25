@@ -19,7 +19,7 @@
 #include <QNetworkRequest>
 #include <QSignalSpy>
 #include <QSslError>
-#include <ubuntu/download_manager/system/hash_algorithm.h>
+#include <ubuntu/system/hash_algorithm.h>
 #include <ubuntu/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/network_reply.h>
 #include <ubuntu/download_manager/tests/server/process.h>

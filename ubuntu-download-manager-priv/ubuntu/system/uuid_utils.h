@@ -24,8 +24,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class UuidUtils {
@@ -34,8 +32,6 @@ class UuidUtils {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

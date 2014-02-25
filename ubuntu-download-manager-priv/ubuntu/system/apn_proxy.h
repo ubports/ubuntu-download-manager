@@ -24,8 +24,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class ApnProxy : public QObject {
@@ -39,8 +37,6 @@ class ApnProxy : public QObject {
 };
 
 } //  System
-
-}  // DownloadManager
 
 }  // Ubuntu
 #endif // APN_PROXY_H

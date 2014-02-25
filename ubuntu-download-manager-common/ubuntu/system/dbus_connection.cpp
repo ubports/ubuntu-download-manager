@@ -20,8 +20,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 DBusConnection::DBusConnection(QObject* parent)
@@ -63,7 +61,5 @@ DBusConnection::connection() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

@@ -99,8 +99,6 @@ namespace {
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 static bool _init = false;
@@ -160,7 +158,5 @@ Logger::toStdString(const QString& str) {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

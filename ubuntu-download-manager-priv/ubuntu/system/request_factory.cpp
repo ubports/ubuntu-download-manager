@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 RequestFactory* RequestFactory::_instance = nullptr;
@@ -154,7 +152,5 @@ RequestFactory::onSslErrors(const QList<QSslError>& errors) {
 
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

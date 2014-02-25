@@ -29,8 +29,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class RequestFactory : public QObject {
@@ -77,8 +75,6 @@ class RequestFactory : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

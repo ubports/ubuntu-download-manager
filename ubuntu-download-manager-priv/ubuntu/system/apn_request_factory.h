@@ -25,8 +25,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class ApnRequestFactory : public RequestFactory {
@@ -39,8 +37,6 @@ class ApnRequestFactory : public RequestFactory {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

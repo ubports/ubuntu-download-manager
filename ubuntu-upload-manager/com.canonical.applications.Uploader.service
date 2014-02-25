@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.canonical.applications.Uploader
+User=root
+Exec=/usr/bin/ubuntu-upload-manager

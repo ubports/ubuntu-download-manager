@@ -24,7 +24,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <ubuntu/download_manager/system/hash_algorithm.h>
+#include <ubuntu/system/hash_algorithm.h>
 #include <unistd.h>
 #include "ubuntu/system/logger.h"
 #include "downloads_db.h"

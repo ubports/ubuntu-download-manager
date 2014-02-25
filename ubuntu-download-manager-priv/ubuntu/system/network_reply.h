@@ -27,8 +27,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class NetworkReply : public QObject {
@@ -60,8 +58,6 @@ class NetworkReply : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

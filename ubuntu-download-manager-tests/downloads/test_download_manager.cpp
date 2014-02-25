@@ -42,7 +42,7 @@ TestDownloadManager::init() {
     RequestFactory::setInstance(_requestFactory);
     _downloadFactory = new FakeDownloadFactory(
         _apparmor);
-    _man = new Manager(_app, _conn, _downloadFactory, _q);
+    _man = new DownloadManager(_app, _conn, _downloadFactory, _q);
 }
 
 void
@@ -262,7 +262,7 @@ TestDownloadManager::testGetAllDownloads() {
     _conn->record();
 
     // do not use the fake uuid factory, else we only get one object path
-    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
+    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
 
     QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -309,7 +309,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     _conn->record();
 
     // do not use the fake uuid factory, else we only get one object path
-    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
+    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
 
     QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
@@ -387,7 +387,7 @@ TestDownloadManager::testSetThrottleWithDownloads() {
     FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
         apparmor);
 
-    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q));
+    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -484,7 +484,7 @@ TestDownloadManager::testStoppable() {
         apparmor);
     _app->record();
 
-    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q, true));
+    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q, true));
     man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -499,7 +499,7 @@ TestDownloadManager::testNotStoppable() {
         apparmor);
     _app->record();
 
-    QScopedPointer<Manager> man(new Manager(_app, _conn, downloadFactory, q, false));
+    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q, false));
     man->exit();
     QList<MethodData> calledMethods = _app->calledMethods();
     QCOMPARE(0, calledMethods.count());

@@ -38,16 +38,18 @@ TestDaemon::cleanup() {
 
 void
 TestDaemon::testStart() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
     conn->setRegisterServiceResult(true);
     conn->setRegisterObjectResult(true);
     conn->record();
-    FakeApplication* app = new FakeApplication();
+    auto app = new FakeApplication();
     app->record();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -71,16 +73,18 @@ TestDaemon::testStart() {
 void
 TestDaemon::testStartPath() {
     QString myPath = "com.canonical.tests";
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
     conn->setRegisterServiceResult(true);
     conn->setRegisterObjectResult(true);
     conn->record();
-    FakeApplication* app = new FakeApplication();
+    auto app = new FakeApplication();
     app->record();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->start(myPath);
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -102,16 +106,18 @@ TestDaemon::testStartPath() {
 
 void
 TestDaemon::testStartFailServiceRegister() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
     conn->setRegisterServiceResult(false);
     conn->setRegisterObjectResult(true);
     conn->record();
-    FakeApplication* app = new FakeApplication();
+    auto app = new FakeApplication();
     app->record();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -127,16 +133,18 @@ TestDaemon::testStartFailServiceRegister() {
 
 void
 TestDaemon::testStartFailObjectRegister() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
     conn->setRegisterServiceResult(true);
     conn->setRegisterObjectResult(false);
     conn->record();
-    FakeApplication* app = new FakeApplication();
+    auto app = new FakeApplication();
     app->record();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->start();
 
     QList<MethodData> calledMethods = conn->calledMethods();
@@ -153,13 +161,16 @@ TestDaemon::testStartFailObjectRegister() {
 
 void
 TestDaemon::testTimerStop() {
-    FakeTimer* timer = new FakeTimer();
+    auto timer = new FakeTimer();
     timer->setIsActive(true);
     timer->record();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
+
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
 
     man->emitSizeChaged(1);
 
@@ -171,13 +182,16 @@ TestDaemon::testTimerStop() {
 
 void
 TestDaemon::testTimerStart() {
-    FakeTimer* timer = new FakeTimer();
+    auto timer = new FakeTimer();
     timer->setIsActive(false);
     timer->record();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
+
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
 
     man->emitSizeChaged(0);
 
@@ -189,11 +203,14 @@ TestDaemon::testTimerStart() {
 
 void
 TestDaemon::testTimeoutExit() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
+
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     app->record();
 
     // emit the timeout signal and assert that exit was called
@@ -206,11 +223,12 @@ TestDaemon::testTimeoutExit() {
 
 void
 TestDaemon::testDisableTimeout() {
-    FakeTimer* timer = new FakeTimer();
+    auto timer = new FakeTimer();
     timer->record();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
     // set the args so that we disable the timeout
     QStringList args;
@@ -218,17 +236,19 @@ TestDaemon::testDisableTimeout() {
     app->setArguments(args);
 
     // assert that start is never called
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     QList<MethodData> calledMethods = timer->calledMethods();
     QCOMPARE(0, calledMethods.count());
 }
 
 void
 TestDaemon::testSelfSignedCerts() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
     man->record();
 
     QStringList args;
@@ -236,7 +256,8 @@ TestDaemon::testSelfSignedCerts() {
     app->setArguments(args);
 
     // assert that we set the certs
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     QList<MethodData> calledMethods = man->calledMethods();
     QCOMPARE(1, calledMethods.count());
     QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
@@ -244,17 +265,19 @@ TestDaemon::testSelfSignedCerts() {
 
 void
 TestDaemon::testSelfSignedCertsMissingPath() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
     man->record();
     QStringList args;
     args << "-self-signed-certs";
     app->setArguments(args);
 
     // assert that we do not crash
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     QList<MethodData> calledMethods = man->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
@@ -269,13 +292,15 @@ TestDaemon::testStoppable_data() {
 
 void
 TestDaemon::testStoppable() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
     QFETCH(bool, enabled);
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->setStoppable(enabled);
     QCOMPARE(daemon->isStoppable(), enabled);
 }
@@ -290,27 +315,31 @@ TestDaemon::testSetTimeout_data() {
 
 void
 TestDaemon::testSetTimeout() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
     QFETCH(bool, enabled);
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->enableTimeout(enabled);
     QCOMPARE(enabled, daemon->isTimeoutEnabled());
 }
 
 void
 TestDaemon::testSetSelfSignedSslCerts() {
-    FakeTimer* timer = new FakeTimer();
-    FakeDBusConnection* conn = new FakeDBusConnection();
-    FakeApplication* app = new FakeApplication();
-    FakeDownloadManager* man = new FakeDownloadManager(app, conn);
+    auto timer = new FakeTimer();
+    auto conn = new FakeDBusConnection();
+    auto app = new FakeApplication();
+    auto man = new FakeDownloadManager(app, conn);
+    auto factory = new FakeDownloadManagerFactory(man);
 
     QList<QSslCertificate> certs = QSslCertificate::fromPath(
         dataDirectory() + "/*.pem");
-    QScopedPointer<Daemon::Daemon> daemon(new Daemon::Daemon(app, conn, timer, man, this));
+    QScopedPointer<Daemon::DownloadDaemon> daemon(
+        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
     daemon->setSelfSignedCerts(certs);
     QList<QSslCertificate> daemonCerts = daemon->selfSignedCerts();
     QCOMPARE(certs.count(), daemonCerts.count());

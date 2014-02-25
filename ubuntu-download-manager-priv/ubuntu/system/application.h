@@ -24,8 +24,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class Application : public QObject {
@@ -39,8 +37,6 @@ class Application : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

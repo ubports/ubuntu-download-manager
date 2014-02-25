@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
@@ -33,7 +31,5 @@ ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

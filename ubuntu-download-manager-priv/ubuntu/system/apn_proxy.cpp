@@ -20,8 +20,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 ApnProxy::ApnProxy(QObject *parent)
@@ -32,8 +30,6 @@ QNetworkProxy
 ApnProxy::getProxy() {
     QNetworkProxy proxy;
     return proxy;
-}
-
 }
 
 }

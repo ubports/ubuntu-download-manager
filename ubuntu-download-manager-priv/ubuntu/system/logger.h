@@ -48,8 +48,6 @@ std::ostream& operator<<(std::ostream &out, StructList list);
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class Logger : public QObject {
@@ -67,8 +65,6 @@ class Logger : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

@@ -18,11 +18,12 @@
 
 #ifndef FAKE_DBUS_CONNECTION_H
 #define FAKE_DBUS_CONNECTION_H
-#include <ubuntu/download_manager/system/dbus_connection.h>
+
+#include <ubuntu/system/dbus_connection.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class RegisterOptionsWrapper : public QObject {
     Q_OBJECT

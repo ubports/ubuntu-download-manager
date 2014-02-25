@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,32 +16,39 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_HASH_ALGORITHM_H
-#define DOWNLOADER_LIB_HASH_ALGORITHM_H
+#ifndef UBUNTU_DOWNLOADS_MANAGER_FACTORY_H
+#define UBUNTU_DOWNLOADS_MANAGER_FACTORY_H
 
-#include <QCryptographicHash>
-#include <QList>
-#include <QString>
+#include <ubuntu/system/dbus_connection.h>
+#include "ubuntu/system/application.h"
+#include "ubuntu/general/manager_factory.h"
 
 namespace Ubuntu {
 
+using namespace General;
+
 namespace DownloadManager {
 
-namespace System {
+namespace Daemon {
 
-class HashAlgorithm {
+class DownloadManagerFactory : public ManagerFactory {
+    Q_OBJECT
+
  public:
-    static QCryptographicHash::Algorithm getHashAlgo(const QString& algorithm);
-    static QString getHashAlgo(QCryptographicHash::Algorithm algorithm);
-    static bool isValidAlgo(const QString& algorithm);
- private:
-    static QList<QString> algoList;
+    explicit DownloadManagerFactory(QObject *parent = 0);
+
+    virtual BaseManager* createManager(System::Application* app,
+                                       System::DBusConnection* connection,
+                                       bool stoppable = false,
+                                       QObject *parent = 0);
 };
 
-}  // System
+}  // Daemon
 
 }  // DownloadManager
 
 }  // Ubuntu
 
-#endif  // DOWNLOADER_LIB_HASH_ALGORITHM_H
+#endif  // UBUNTU_GENERAL_MANAGER_FACTORY_H
+
+

@@ -20,8 +20,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 ProcessFactory* ProcessFactory::_instance = nullptr;
@@ -65,7 +63,5 @@ ProcessFactory::setInstance(ProcessFactory* instance) {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

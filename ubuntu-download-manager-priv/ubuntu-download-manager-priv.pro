@@ -11,7 +11,7 @@ TEMPLATE = lib
 DEFINES += APPDOWNLOADERLIB_LIBRARY
 
 SOURCES += \
-    ubuntu/udm/daemon.cpp \
+    ubuntu/downloads/daemon.cpp \
     ubuntu/downloads/download.cpp \
     ubuntu/downloads/download_adaptor.cpp \
     ubuntu/downloads/downloads_db.cpp \
@@ -27,6 +27,10 @@ SOURCES += \
     ubuntu/downloads/state_machines/state.cpp \
     ubuntu/downloads/state_machines/final_state.cpp \
     ubuntu/downloads/mms_file_download.cpp \
+    ubuntu/downloads/download_adaptor_factory.cpp \
+    ubuntu/downloads/download_manager_factory.cpp \
+    ubuntu/general/base_daemon.cpp \
+    ubuntu/general/base_manager.cpp \
     ubuntu/system/uuid_utils.cpp \
     ubuntu/system/uuid_factory.cpp \
     ubuntu/system/timer.cpp \
@@ -44,7 +48,7 @@ SOURCES += \
     ubuntu/system/apn_proxy.cpp
 
 HEADERS +=\
-    ubuntu/udm/daemon.h \
+    ubuntu/downloads/daemon.h \
     ubuntu/downloads/download.h \
     ubuntu/downloads/download_adaptor.h \
     ubuntu/downloads/downloads_db.h \
@@ -60,6 +64,12 @@ HEADERS +=\
     ubuntu/downloads/state_machines/state.h \
     ubuntu/downloads/state_machines/final_state.h \
     ubuntu/downloads/mms_file_download.h \
+    ubuntu/general/base_daemon.h \
+    ubuntu/general/base_manager.h \
+    ubuntu/general/adaptor_factory.h \
+    ubuntu/general/manager_factory.h \
+    ubuntu/downloads/download_adaptor_factory.h \
+    ubuntu/downloads/download_manager_factory.h \
     ubuntu/system/uuid_utils.h \
     ubuntu/system/uuid_factory.h \
     ubuntu/system/timer.h \

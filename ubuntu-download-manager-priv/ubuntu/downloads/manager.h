@@ -22,10 +22,10 @@
 #include <QObject>
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusContext>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/download_manager/system/dbus_connection.h>
+#include <ubuntu/system/dbus_connection.h>
+#include "ubuntu/general/base_manager.h"
 #include "ubuntu/system/application.h"
 #include "download.h"
 #include "downloads_db.h"
@@ -34,31 +34,34 @@
 
 namespace Ubuntu {
 
+using namespace General;
+
 namespace DownloadManager {
 
 namespace Daemon {
 
-class Manager : public QObject, public QDBusContext {
+class DownloadManager : public BaseManager {
     Q_OBJECT
 
  public:
-    Manager(Application* app,
-            DBusConnection* connection,
-            bool stoppable = false,
-            QObject *parent = 0);
-    Manager(Application* app,
-            DBusConnection* connection,
-            Factory* downloadFactory,
-            Queue* queue,
-            bool stoppable = false,
-            QObject *parent = 0);
-    virtual ~Manager();
+    DownloadManager(Application* app,
+                    DBusConnection* connection,
+                    bool stoppable = false,
+                    QObject *parent = 0);
+    DownloadManager(Application* app,
+                    DBusConnection* connection,
+                    Factory* downloadFactory,
+                    Queue* queue,
+                    bool stoppable = false,
+                    QObject *parent = 0);
+    virtual ~DownloadManager();
 
     void loadPreviewsDownloads(const QString &path);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+    static const QString SERVICE_PATH;
 
  public slots:  // NOLINT(whitespace/indent)
     virtual QDBusObjectPath createDownload(DownloadStruct download);
@@ -82,11 +85,8 @@ class Manager : public QObject, public QDBusContext {
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
                                                       const QString& value);
-    virtual void exit();
-
  signals:
     void downloadCreated(const QDBusObjectPath& path);
-    void sizeChanged(int count);
 
  protected:
     Queue* queue() {

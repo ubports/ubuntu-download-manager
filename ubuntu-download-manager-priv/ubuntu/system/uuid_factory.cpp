@@ -20,8 +20,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 UuidFactory::UuidFactory(QObject *parent)
@@ -34,7 +32,5 @@ UuidFactory::createUuid() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

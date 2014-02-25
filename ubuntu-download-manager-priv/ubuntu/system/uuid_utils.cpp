@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 QString
@@ -31,7 +29,5 @@ UuidUtils::getDBusString(const QUuid& id) {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

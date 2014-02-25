@@ -23,7 +23,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
-#include <ubuntu/download_manager/system/hash_algorithm.h>
+#include <ubuntu/system/hash_algorithm.h>
 #include "ubuntu/system/logger.h"
 #include "ubuntu/system/network_reply.h"
 #include "file_download.h"

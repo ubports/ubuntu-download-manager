@@ -23,14 +23,12 @@
 #include <QPair>
 #include <QString>
 #include <QSharedPointer>
-#include <ubuntu/download_manager/system/dbus_connection.h>
+#include <ubuntu/system/dbus_connection.h>
 #include "dbus_proxy.h"
 #include "uuid_factory.h"
 
 
 namespace Ubuntu {
-
-namespace DownloadManager {
 
 namespace System {
 
@@ -65,8 +63,6 @@ class AppArmor : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

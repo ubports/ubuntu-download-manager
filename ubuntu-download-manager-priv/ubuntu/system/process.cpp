@@ -22,8 +22,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 
@@ -86,7 +84,5 @@ Process::onReadyReadStandardOutput() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

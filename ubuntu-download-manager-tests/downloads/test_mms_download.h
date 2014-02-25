@@ -27,8 +27,8 @@
 #include <ubuntu/download_manager/tests/test_runner.h>
 
 
+using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
-using namespace Ubuntu::DownloadManager::System;
 
 class PublicMmsFileDownload : public MmsFileDownload {
     Q_OBJECT

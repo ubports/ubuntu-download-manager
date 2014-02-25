@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 
@@ -43,7 +41,5 @@ Application::arguments() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

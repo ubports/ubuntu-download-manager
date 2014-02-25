@@ -23,8 +23,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 SystemNetworkInfo* SystemNetworkInfo::_instance = nullptr;
@@ -208,7 +206,5 @@ SystemNetworkInfo::onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int in
 #endif
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

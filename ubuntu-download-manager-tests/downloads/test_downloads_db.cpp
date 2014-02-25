@@ -23,7 +23,7 @@
 #include <QSqlError>
 #include <QSignalSpy>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/download_manager/system/hash_algorithm.h>
+#include <ubuntu/system/hash_algorithm.h>
 #include <ubuntu/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
 #include <ubuntu/download_manager/tests/server/system_network_info.h>

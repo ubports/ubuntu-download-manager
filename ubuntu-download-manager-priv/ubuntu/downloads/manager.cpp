@@ -29,15 +29,16 @@ namespace DownloadManager {
 
 namespace Daemon {
 
-Manager::Manager(Application* app,
-                 DBusConnection* connection,
-                 bool stoppable,
-                 QObject* parent)
-    : QObject(parent),
-      QDBusContext(),
-      _app(app),
-      _throttle(0),
-      _stoppable(stoppable) {
+
+const QString DownloadManager::SERVICE_PATH =
+    "com.canonical.applications.Downloader";
+
+DownloadManager::DownloadManager(Application* app,
+                                 DBusConnection* connection,
+                                 bool stoppable,
+                                 QObject* parent)
+    : BaseManager(app, stoppable, parent),
+      _throttle(0) {
     _conn = connection;
     RequestFactory::setStoppable(_stoppable);
     _downloadFactory = new Factory(this);
@@ -46,31 +47,28 @@ Manager::Manager(Application* app,
     init();
 }
 
-Manager::Manager(Application* app,
-                 DBusConnection* connection,
-                 Factory* downloadFactory,
-                 Queue* queue,
-                 bool stoppable,
-                 QObject* parent)
-    : QObject(parent),
-      QDBusContext(),
-      _app(app),
+DownloadManager::DownloadManager(Application* app,
+                                 DBusConnection* connection,
+                                 Factory* downloadFactory,
+                                 Queue* queue,
+                                 bool stoppable,
+                                 QObject* parent)
+    : BaseManager(app, stoppable, parent),
       _throttle(0),
       _downloadFactory(downloadFactory),
-      _downloadsQueue(queue),
-      _stoppable(stoppable) {
+      _downloadsQueue(queue) {
     _db = DownloadsDb::instance();
     _conn = connection;
     init();
 }
 
-Manager::~Manager() {
+DownloadManager::~DownloadManager() {
     delete _downloadsQueue;
     delete _downloadFactory;
 }
 
 void
-Manager::init() {
+DownloadManager::init() {
     // register the required types
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
@@ -82,43 +80,43 @@ Manager::init() {
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
     connect(_downloadsQueue, &Queue::downloadRemoved,
-        this, &Manager::onDownloadsChanged);
+        this, &DownloadManager::onDownloadsChanged);
     connect(_downloadsQueue, &Queue::downloadAdded,
-        this, &Manager::onDownloadsChanged);
+        this, &DownloadManager::onDownloadsChanged);
 }
 
 void
-Manager::addDownload(Download* download) {
+DownloadManager::addDownload(Download* download) {
     Q_UNUSED(download);
     // TODO(mandel): Implement this.
 }
 
 void
-Manager::loadPreviewsDownloads(QString path) {
+DownloadManager::loadPreviewsDownloads(QString path) {
     // TODO(mandel): list the dirs of the different downloads that we
     // can find, loop and create each of them
     Q_UNUSED(path);
 }
 
 QList<QSslCertificate>
-Manager::acceptedCertificates() {
+DownloadManager::acceptedCertificates() {
     return _downloadFactory->acceptedCertificates();
 }
 
 void
-Manager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+DownloadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
     LOG(INFO) << __PRETTY_FUNCTION__;
     _downloadFactory->setAcceptedCertificates(certs);
 }
 
 void
-Manager::onDownloadsChanged(QString path) {
+DownloadManager::onDownloadsChanged(QString path) {
     LOG(INFO) << __PRETTY_FUNCTION__ << path;
     emit sizeChanged(_downloadsQueue->size());
 }
 
 QDBusObjectPath
-Manager::registerDownload(Download* download) {
+DownloadManager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
     if (!_db->store(download)) {
@@ -137,7 +135,7 @@ Manager::registerDownload(Download* download) {
 }
 
 QDBusObjectPath
-Manager::createDownload(DownloadCreationFunc createDownloadFunc) {
+DownloadManager::createDownload(DownloadCreationFunc createDownloadFunc) {
     QString owner = "";
 
     bool wasCalledFromDBus = calledFromDBus();
@@ -159,11 +157,11 @@ Manager::createDownload(DownloadCreationFunc createDownloadFunc) {
 }
 
 QDBusObjectPath
-Manager::createDownload(const QString& url,
-                        const QString& hash,
-                        const QString& algo,
-                        const QVariantMap& metadata,
-                        StringMap headers) {
+DownloadManager::createDownload(const QString& url,
+                                const QString& hash,
+                                const QString& algo,
+                                const QVariantMap& metadata,
+                                StringMap headers) {
     LOG(INFO) << "Create download == {url:" << url << " hash: " << hash
         << " algo: " << algo << " metadata: " << metadata << " headers: "
         << headers << "}";
@@ -182,17 +180,17 @@ Manager::createDownload(const QString& url,
 }
 
 QDBusObjectPath
-Manager::createDownload(DownloadStruct download) {
+DownloadManager::createDownload(DownloadStruct download) {
     return createDownload(download.getUrl(), download.getHash(),
         download.getAlgorithm(), download.getMetadata(), download.getHeaders());
 }
 
 QDBusObjectPath
-Manager::createMmsDownload(const QString& url,
-                           const QString& hostname,
-                           int port,
-                           const QString& username,
-                           const QString& password) {
+DownloadManager::createMmsDownload(const QString& url,
+                                   const QString& hostname,
+                                   int port,
+                                   const QString& username,
+                                   const QString& password) {
     LOG(INFO) << "Create MMS download == {url:" << url << " hostname: "
         << hostname << " port:" << port << " username:" << username
         << " pwd: " << password << "}";
@@ -206,11 +204,11 @@ Manager::createMmsDownload(const QString& url,
 }
 
 QDBusObjectPath
-Manager::createDownloadGroup(StructList downloads,
-                             const QString& algo,
-                             bool allowed3G,
-                             const QVariantMap& metadata,
-                             StringMap headers) {
+DownloadManager::createDownloadGroup(StructList downloads,
+                                     const QString& algo,
+                                     bool allowed3G,
+                                     const QVariantMap& metadata,
+                                     StringMap headers) {
     LOG(INFO) << "Create group download == {downloads:" << downloads
         << " algo:" << algo << " allowMobile" << allowed3G << " metadata:"
         << metadata << " headers:"  << headers << "}";
@@ -226,12 +224,12 @@ Manager::createDownloadGroup(StructList downloads,
 }
 
 qulonglong
-Manager::defaultThrottle() {
+DownloadManager::defaultThrottle() {
     return _throttle;
 }
 
 void
-Manager::setDefaultThrottle(qulonglong speed) {
+DownloadManager::setDefaultThrottle(qulonglong speed) {
     _throttle = speed;
     QHash<QString, Download*> downloads = _downloadsQueue->downloads();
     foreach(const QString& path, downloads.keys()) {
@@ -240,7 +238,7 @@ Manager::setDefaultThrottle(qulonglong speed) {
 }
 
 void
-Manager::allowGSMDownload(bool allowed) {
+DownloadManager::allowGSMDownload(bool allowed) {
     _allowMobileData = allowed;
     QHash<QString, Download*> downloads = _downloadsQueue->downloads();
     foreach(const QString& path, downloads.keys()) {
@@ -249,12 +247,12 @@ Manager::allowGSMDownload(bool allowed) {
 }
 
 bool
-Manager::isGSMDownloadAllowed() {
+DownloadManager::isGSMDownloadAllowed() {
     return _allowMobileData;
 }
 
 QList<QDBusObjectPath>
-Manager::getAllDownloads() {
+DownloadManager::getAllDownloads() {
     QList<QDBusObjectPath> paths;
     foreach(const QString& path, _downloadsQueue->paths())
         paths << QDBusObjectPath(path);
@@ -262,8 +260,8 @@ Manager::getAllDownloads() {
 }
 
 QList<QDBusObjectPath>
-Manager::getAllDownloadsWithMetadata(const QString &name,
-                                     const QString &value) {
+DownloadManager::getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value) {
     QList<QDBusObjectPath> paths;
     QHash<QString, Download*> downloads = _downloadsQueue->downloads();
     foreach(const QString& path, downloads.keys()) {
@@ -276,19 +274,6 @@ Manager::getAllDownloadsWithMetadata(const QString &name,
         }
     }
     return paths;
-}
-
-
-void
-Manager::exit() {
-    if (_stoppable) {
-        _app->exit(0);
-    } else {
-        if (calledFromDBus()) {
-            sendErrorReply(QDBusError::NotSupported,
-                "Daemon should have been started with -stoppable");
-        }  // dbus call
-    }
 }
 
 }  // Daemon

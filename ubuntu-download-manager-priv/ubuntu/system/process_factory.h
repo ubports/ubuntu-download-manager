@@ -25,8 +25,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 class ProcessFactory : public QObject {
@@ -51,8 +49,6 @@ class ProcessFactory : public QObject {
 };
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
 

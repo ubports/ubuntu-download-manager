@@ -26,7 +26,7 @@
 #include <ubuntu/system/request_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class RequestWrapper : public QObject {
     Q_OBJECT

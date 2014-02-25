@@ -30,9 +30,9 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 using namespace System;
+
+namespace DownloadManager {
 
 namespace Daemon {
 

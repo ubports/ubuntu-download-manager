@@ -31,8 +31,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 QString AppArmor::UNCONFINED_ID = "unconfined";
@@ -169,7 +167,5 @@ AppArmor::getSecurePath(const QString& connName,
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu

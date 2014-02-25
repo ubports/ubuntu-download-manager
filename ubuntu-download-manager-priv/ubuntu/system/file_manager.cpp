@@ -21,8 +21,6 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 namespace System {
 
 File::File(const QString& name) {
@@ -133,7 +131,5 @@ void FileManager::deleteInstance() {
 }
 
 }  // System
-
-}  // DownloadManager
 
 }  // Ubuntu
