@@ -35,6 +35,11 @@ exists ($$OUT_PWD/data){
     QMAKE_EXTRA_TARGETS += first copydata
 }
 
+LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
+
+INCLUDEPATH += $$PWD/../udm-priv-common
+DEPENDPATH += $$PWD/../udm-priv-common
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
@@ -57,5 +62,5 @@ DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv  dbus-test-runner -m 120 --task=./$${TARGET} -c
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv  dbus-test-runner -m 120 --task=./$${TARGET} -c
 QMAKE_EXTRA_TARGETS += check

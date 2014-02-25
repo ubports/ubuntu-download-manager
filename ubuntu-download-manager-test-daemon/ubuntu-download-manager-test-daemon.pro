@@ -27,3 +27,8 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manag
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib
 DEPENDPATH += $$PWD/../ubuntu-download-manager-test-lib
+
+LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
+
+INCLUDEPATH += $$PWD/../udm-priv-common
+DEPENDPATH += $$PWD/../udm-priv-common

@@ -5,6 +5,7 @@ CONFIG += ordered
 
 SUBDIRS += \
     ubuntu-download-manager-common \
+    udm-priv-common \
     ubuntu-download-manager-priv \
     ubuntu-download-manager \
     ubuntu-download-manager-client \
@@ -13,9 +14,13 @@ SUBDIRS += \
     ubuntu-download-manager-test-daemon \
     ubuntu-download-manager-client-tests \
     ubuntu-upload-manager \
-    ubuntu-upload-manager-common
+    ubuntu-upload-manager-common \
+    ubuntu-upload-manager-priv \
+    udm-common
 
-ubuntu-download-manager-priv.depends = ubuntu-download-manager-common
+udm-priv-common.depends = ubuntu-download-manager-common
+
+ubuntu-download-manager-priv.depends = udm-priv-common
 
 ubuntu-download-manager.depends = ubuntu-download-manager-priv
 ubuntu-upload-manager.depends = ubuntu-download-manager-priv
