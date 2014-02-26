@@ -19,7 +19,7 @@
 #ifndef FAKE_DBUS_CONNECTION_H
 #define FAKE_DBUS_CONNECTION_H
 
-#include <ubuntu/system/dbus_connection.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 

@@ -21,7 +21,7 @@
 
 #include <QDBusConnection>
 #include <QDBusObjectPath>
-#include <ubuntu/system/dbus_connection.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
 #include "download.h"
 #include "error.h"
 #include "group_download.h"

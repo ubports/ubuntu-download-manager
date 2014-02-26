@@ -20,7 +20,7 @@
 #define TEST_GROUP_DOWNLOAD_H
 
 #include <QObject>
-#include <ubuntu/system/uuid_factory.h>
+#include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/download_manager/tests/server/apparmor.h>
 #include <ubuntu/download_manager/tests/server/file_manager.h>

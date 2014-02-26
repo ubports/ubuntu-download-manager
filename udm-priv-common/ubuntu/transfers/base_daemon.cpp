@@ -20,9 +20,9 @@
 #include <QtDBus/QDBusConnection>
 #include <QSharedPointer>
 #include <QSslCertificate>
-#include "ubuntu/system/application.h"
-#include "ubuntu/system/logger.h"
-#include "ubuntu/system/timer.h"
+#include "ubuntu/transfers/system/application.h"
+#include "ubuntu/transfers/system/logger.h"
+#include "ubuntu/transfers/system/timer.h"
 #include "adaptor_factory.h"
 #include "manager_factory.h"
 #include "base_daemon.h"

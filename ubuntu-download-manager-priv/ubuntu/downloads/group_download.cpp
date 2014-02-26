@@ -16,9 +16,9 @@
  * boston, ma 02110-1301, usa.
  */
 
-#include <ubuntu/system/hash_algorithm.h>
-#include "ubuntu/system/logger.h"
-#include "ubuntu/system/uuid_factory.h"
+#include <ubuntu/transfers/system/hash_algorithm.h>
+#include "ubuntu/transfers/system/logger.h"
+#include "ubuntu/transfers/system/uuid_factory.h"
 #include "download_adaptor.h"
 #include "file_download.h"
 #include "group_download.h"

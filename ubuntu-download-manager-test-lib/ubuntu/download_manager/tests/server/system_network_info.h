@@ -20,7 +20,7 @@
 #define FAKE_SYSTEM_NETWORK_INFO_H
 
 #include <QObject>
-#include <ubuntu/system/system_network_info.h>
+#include <ubuntu/transfers/system/system_network_info.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::System;

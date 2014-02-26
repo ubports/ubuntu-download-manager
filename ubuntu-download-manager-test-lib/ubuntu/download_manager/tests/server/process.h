@@ -20,7 +20,7 @@
 #define FAKE_PROCESS_H
 
 #include <QObject>
-#include <ubuntu/system/process.h>
+#include <ubuntu/transfers/system/process.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::System;
