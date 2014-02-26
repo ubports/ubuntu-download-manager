@@ -19,7 +19,7 @@
 
 namespace Ubuntu {
 
-using namespace Errors;
+using namespace Transfers::Errors;
 
 namespace UploadManager {
 /*

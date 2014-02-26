@@ -22,6 +22,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 NetworkErrorStruct::NetworkErrorStruct()
@@ -162,5 +164,7 @@ NetworkErrorStruct::getPhrase() {
 }
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu

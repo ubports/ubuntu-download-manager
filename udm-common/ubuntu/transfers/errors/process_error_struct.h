@@ -25,6 +25,8 @@ class QDBusArgument;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 class ProcessErrorStruct {
@@ -70,6 +72,8 @@ class ProcessErrorStruct {
 };
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu
 
