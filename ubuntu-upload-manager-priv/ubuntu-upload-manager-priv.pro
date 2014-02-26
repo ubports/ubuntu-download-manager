@@ -11,10 +11,18 @@ TEMPLATE = lib
 DEFINES += UBUNTUUPLOADMANAGERPRIV_LIBRARY
 
 SOURCES += \
+    ubuntu/uploads/daemon.cpp \
+    ubuntu/uploads/manager.cpp \
+    ubuntu/uploads/upload_manager_factory.cpp \
+    ubuntu/uploads/upload_adaptor_factory.cpp \
     ubuntu/uploads/upload_adaptor.cpp \
     ubuntu/uploads/upload_manager_adaptor.cpp
 
 HEADERS += \
+    ubuntu/uploads/daemon.h \
+    ubuntu/uploads/manager.h \
+    ubuntu/uploads/upload_manager_factory.h \
+    ubuntu/uploads/upload_adaptor_factory.h \
     ubuntu/uploads/upload_adaptor.h \
     ubuntu/uploads/upload_manager_adaptor.h
 
