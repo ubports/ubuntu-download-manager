@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "ubuntu/system/logger.h"
+#include "ubuntu/transfers/system/logger.h"
 #include "final_state.h"
 
 namespace Ubuntu {

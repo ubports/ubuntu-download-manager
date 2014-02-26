@@ -19,8 +19,8 @@
 #ifndef UBUNTU_DOWNLOADS_MANAGER_FACTORY_H
 #define UBUNTU_DOWNLOADS_MANAGER_FACTORY_H
 
-#include <ubuntu/system/dbus_connection.h>
-#include "ubuntu/system/application.h"
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include "ubuntu/transfers/system/application.h"
 #include "ubuntu/transfers/manager_factory.h"
 
 namespace Ubuntu {
