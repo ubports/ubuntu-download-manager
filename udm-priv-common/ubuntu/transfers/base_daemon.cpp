@@ -40,7 +40,7 @@ namespace Ubuntu {
 
 using namespace System;
 
-namespace General {
+namespace Transfers {
 
 BaseDaemon::BaseDaemon(ManagerFactory* managerFactory,
                AdaptorFactory* adaptorFactory,
