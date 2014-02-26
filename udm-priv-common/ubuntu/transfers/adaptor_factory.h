@@ -24,7 +24,7 @@
 
 namespace Ubuntu {
 
-namespace General {
+namespace Transfers {
 
 class AdaptorFactory : public QObject {
  public:

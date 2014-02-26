@@ -24,7 +24,7 @@
 
 namespace Ubuntu {
 
-using namespace General;
+using namespace Transfers;
 
 namespace DownloadManager {
 

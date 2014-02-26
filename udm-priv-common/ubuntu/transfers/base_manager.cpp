@@ -20,7 +20,7 @@
 
 namespace Ubuntu {
 
-namespace General {
+namespace Transfers {
 
 BaseManager::BaseManager(System::Application* app,
                          bool stoppable,
