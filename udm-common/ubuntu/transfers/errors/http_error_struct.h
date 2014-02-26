@@ -25,6 +25,8 @@ class QDBusArgument;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 class HttpErrorStruct {
@@ -52,6 +54,8 @@ class HttpErrorStruct {
 };
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu
 #endif // HTTP_ERROR_STRUCT_H

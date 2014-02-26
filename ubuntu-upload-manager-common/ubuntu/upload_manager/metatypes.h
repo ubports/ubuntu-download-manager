@@ -27,7 +27,7 @@
 #include <ubuntu/transfers/errors/process_error_struct.h>
 #include "upload_struct.h"
 
-using namespace Ubuntu::Errors;
+using namespace Ubuntu::Transfers::Errors;
 using namespace Ubuntu::UploadManager;
 
 typedef QMap<QString, QString> StringMap;

@@ -21,6 +21,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 AuthErrorStruct::AuthErrorStruct()
@@ -89,4 +91,5 @@ AuthErrorStruct::getPhrase() {
 
 }  // Errors
 
+}  // Transfers
 }  // Ubuntu

@@ -17,8 +17,6 @@
 
 namespace Ubuntu {
 
-using namespace Errors;
-
 namespace DownloadManager {
 
 ManagerInterface::ManagerInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent)

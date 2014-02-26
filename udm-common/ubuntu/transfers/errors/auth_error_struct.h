@@ -23,6 +23,8 @@ class QDBusArgument;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 class AuthErrorStruct {
@@ -55,6 +57,8 @@ class AuthErrorStruct {
 };
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu
 #endif // AUTH_ERROR_STRUCT_H

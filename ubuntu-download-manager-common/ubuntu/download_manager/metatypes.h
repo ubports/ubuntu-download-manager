@@ -29,7 +29,7 @@
 #include "group_download_struct.h"
 
 using namespace Ubuntu::DownloadManager;
-using namespace Ubuntu::Errors;
+using namespace Ubuntu::Transfers::Errors;
 
 typedef QMap<QString, QString> StringMap;
 typedef QList<GroupDownloadStruct> StructList;
