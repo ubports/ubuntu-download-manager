@@ -27,11 +27,15 @@ class QDBusError;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
     class AuthErrorStruct;
     class HttpErrorStruct;
     class NetworkErrorStruct;
     class ProcessErrorStruct;
+}
+
 }
 
 namespace DownloadManager {
@@ -107,7 +111,7 @@ class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
     QString errorString() override;
 
  protected:
-    AuthError(Errors::AuthErrorStruct err, QObject* parent);
+    AuthError(Transfers::Errors::AuthErrorStruct err, QObject* parent);
 
  private:
     // use pimpl pattern so that users do not have to be recompiled
@@ -128,7 +132,7 @@ class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
     QString errorString() override;
 
  protected:
-    HttpError(Errors::HttpErrorStruct err, QObject* parent);
+    HttpError(Transfers::Errors::HttpErrorStruct err, QObject* parent);
 
  private:
     // use pimpl pattern so that users do not have to be recompiled
@@ -177,7 +181,7 @@ class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
     QString errorString() override;
 
  protected:
-    NetworkError(Errors::NetworkErrorStruct err, QObject* parent);
+    NetworkError(Transfers::Errors::NetworkErrorStruct err, QObject* parent);
 
  private:
     // use pimpl pattern so that users do not have to be recompiled
@@ -201,7 +205,7 @@ class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
     QString errorString() override;
 
  protected:
-    ProcessError(Errors::ProcessErrorStruct err, QObject* parent);
+    ProcessError(Transfers::Errors::ProcessErrorStruct err, QObject* parent);
 
  private:
     // use pimpl pattern so that users do not have to be recompiled

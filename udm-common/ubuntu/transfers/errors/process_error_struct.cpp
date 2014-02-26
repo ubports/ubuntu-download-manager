@@ -22,6 +22,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 ProcessErrorStruct::ProcessErrorStruct()
@@ -152,7 +154,8 @@ ProcessErrorStruct::getStandardError() {
     return _stderr;
 }
 
-
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu

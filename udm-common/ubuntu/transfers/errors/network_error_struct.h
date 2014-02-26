@@ -25,6 +25,8 @@ class QDBusArgument;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 class NetworkErrorStruct {
@@ -53,6 +55,8 @@ class NetworkErrorStruct {
 };
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu
 

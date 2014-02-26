@@ -21,6 +21,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace Errors {
 
 HttpErrorStruct::HttpErrorStruct()
@@ -76,5 +78,7 @@ HttpErrorStruct::getPhrase() {
 }
 
 }  // Errors
+
+}  // Transfers
 
 }  // Ubuntu
