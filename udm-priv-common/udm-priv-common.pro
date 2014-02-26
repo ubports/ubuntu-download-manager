@@ -13,6 +13,7 @@ DEFINES += UDMPRIVCOMMON_LIBRARY
 SOURCES += \
     ubuntu/general/base_daemon.cpp \
     ubuntu/general/base_manager.cpp \
+    ubuntu/general/transfer.cpp \
     ubuntu/system/uuid_utils.cpp \
     ubuntu/system/uuid_factory.cpp \
     ubuntu/system/timer.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
 HEADERS += \
     ubuntu/general/base_daemon.h \
     ubuntu/general/base_manager.h \
+    ubuntu/general/transfer.h \
     ubuntu/general/adaptor_factory.h \
     ubuntu/general/manager_factory.h \
     ubuntu/system/uuid_utils.h \

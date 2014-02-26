@@ -197,4 +197,5 @@ class Download : public QObject {
 }  // DownloadManager
 
 }  // Ubuntu
+
 #endif  // DOWNLOADER_LIB_APP_DOWNLOAD_H
