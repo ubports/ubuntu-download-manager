@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSharedPointer>
-#include <ubuntu/system/dbus_connection.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
 
 namespace Ubuntu {
 

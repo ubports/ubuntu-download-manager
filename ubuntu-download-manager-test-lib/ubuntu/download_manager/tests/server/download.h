@@ -21,7 +21,7 @@
 
 #include <QSharedPointer>
 #include <ubuntu/downloads/file_download.h>
-#include <ubuntu/system/system_network_info.h>
+#include <ubuntu/transfers/system/system_network_info.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/download_manager/tests/fake.h"
 

@@ -19,8 +19,8 @@
 #ifndef UBUNTU_GENERAL_MANAGER_FACTORY_H
 #define UBUNTU_GENERAL_MANAGER_FACTORY_H
 
-#include <ubuntu/system/dbus_connection.h>
-#include "ubuntu/system/application.h"
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include "ubuntu/transfers/system/application.h"
 #include "base_manager.h"
 
 namespace Ubuntu {

@@ -20,7 +20,7 @@
 #define FAKE_APN_REQUEST_FACTORY_H
 
 #include <QObject>
-#include <ubuntu/system/apn_request_factory.h>
+#include <ubuntu/transfers/system/apn_request_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace  Ubuntu::System;

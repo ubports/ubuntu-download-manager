@@ -20,7 +20,7 @@
 #define DOWNLOAD_ADAPTOR_FACTORY_H
 
 #include <QObject>
-#include "ubuntu/general/adaptor_factory.h"
+#include "ubuntu/transfers/adaptor_factory.h"
 
 namespace Ubuntu {
 
