@@ -35,7 +35,7 @@ class Timer;
 
 }
 
-namespace General {
+namespace Transfers {
 
 class BaseManager;
 class ManagerFactory;
