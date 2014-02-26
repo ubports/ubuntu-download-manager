@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <ubuntu/downloads/manager.h>
-#include <ubuntu/general/manager_factory.h>
+#include <ubuntu/transfers/manager_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::General;

@@ -23,7 +23,7 @@
 #include <QPair>
 #include <QString>
 #include <QSharedPointer>
-#include <ubuntu/system/dbus_connection.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
 #include "dbus_proxy.h"
 #include "uuid_factory.h"
 

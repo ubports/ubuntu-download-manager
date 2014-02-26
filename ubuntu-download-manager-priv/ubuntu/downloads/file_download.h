@@ -28,7 +28,7 @@
 #include <ubuntu/errors/http_error_struct.h>
 #include <ubuntu/errors/network_error_struct.h>
 #include <ubuntu/errors/process_error_struct.h>
-#include "ubuntu/system/file_manager.h"
+#include "ubuntu/transfers/system/file_manager.h"
 #include "download.h"
 
 #define LOCAL_PATH_KEY "local-path"

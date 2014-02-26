@@ -21,8 +21,8 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <ubuntu/system/apparmor.h>
-#include <ubuntu/system/uuid_factory.h>
+#include <ubuntu/transfers/system/apparmor.h>
+#include <ubuntu/transfers/system/uuid_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::System;

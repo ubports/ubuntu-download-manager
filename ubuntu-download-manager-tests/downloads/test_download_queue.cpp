@@ -17,7 +17,7 @@
  */
 
 #include <QSignalSpy>
-#include <ubuntu/system/uuid_utils.h>
+#include <ubuntu/transfers/system/uuid_utils.h>
 #include "test_download_queue.h"
 
 TestDownloadQueue::TestDownloadQueue(QObject *parent)

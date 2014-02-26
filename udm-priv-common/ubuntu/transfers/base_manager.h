@@ -23,7 +23,7 @@
 #include <QList>
 #include <QObject>
 #include <QSslCertificate>
-#include "ubuntu/system/application.h"
+#include "ubuntu/transfers/system/application.h"
 
 namespace Ubuntu {
 

@@ -24,9 +24,9 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <ubuntu/system/hash_algorithm.h>
+#include <ubuntu/transfers/system/hash_algorithm.h>
 #include <unistd.h>
-#include "ubuntu/system/logger.h"
+#include "ubuntu/transfers/system/logger.h"
 #include "downloads_db.h"
 
 namespace {

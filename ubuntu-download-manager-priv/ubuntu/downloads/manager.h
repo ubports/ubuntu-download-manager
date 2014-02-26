@@ -24,9 +24,9 @@
 #include <QtDBus/QDBusObjectPath>
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/system/dbus_connection.h>
-#include "ubuntu/general/base_manager.h"
-#include "ubuntu/system/application.h"
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include "ubuntu/transfers/base_manager.h"
+#include "ubuntu/transfers/system/application.h"
 #include "download.h"
 #include "downloads_db.h"
 #include "queue.h"

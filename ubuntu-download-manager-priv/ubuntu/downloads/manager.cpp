@@ -18,9 +18,9 @@
 
 #include <functional>
 #include <QRegExp>
-#include "ubuntu/system/apparmor.h"
-#include "ubuntu/system/logger.h"
-#include "ubuntu/system/request_factory.h"
+#include "ubuntu/transfers/system/apparmor.h"
+#include "ubuntu/transfers/system/logger.h"
+#include "ubuntu/transfers/system/request_factory.h"
 #include "manager.h"
 
 namespace Ubuntu {
