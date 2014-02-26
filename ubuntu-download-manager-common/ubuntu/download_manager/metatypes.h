@@ -21,10 +21,10 @@
 
 #include <QMap>
 #include <QList>
-#include <ubuntu/errors/auth_error_struct.h>
-#include <ubuntu/errors/http_error_struct.h>
-#include <ubuntu/errors/network_error_struct.h>
-#include <ubuntu/errors/process_error_struct.h>
+#include <ubuntu/transfers/errors/auth_error_struct.h>
+#include <ubuntu/transfers/errors/http_error_struct.h>
+#include <ubuntu/transfers/errors/network_error_struct.h>
+#include <ubuntu/transfers/errors/process_error_struct.h>
 #include "download_struct.h"
 #include "group_download_struct.h"
 
