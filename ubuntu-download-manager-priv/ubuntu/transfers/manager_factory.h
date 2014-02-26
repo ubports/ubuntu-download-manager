@@ -25,7 +25,7 @@
 
 namespace Ubuntu {
 
-namespace General {
+namespace Transfers {
 
 class ManagerFactory : public QObject {
  public:

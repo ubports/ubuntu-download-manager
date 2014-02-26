@@ -23,11 +23,11 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
 
-using namespace Ubuntu::General;
+using namespace Ubuntu::Transfers;
 using namespace Ubuntu::System;
 
 class TestingManagerAdaptor;
-class TestingDaemon : public Ubuntu::General::BaseDaemon {
+class TestingDaemon : public Ubuntu::Transfers::BaseDaemon {
     Q_OBJECT
  public:
     explicit TestingDaemon(QObject *parent = 0);

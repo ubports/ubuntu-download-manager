@@ -24,7 +24,7 @@
 #include <ubuntu/transfers/manager_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::General;
+using namespace Ubuntu::Transfers;
 using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 

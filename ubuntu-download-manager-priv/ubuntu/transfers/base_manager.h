@@ -29,7 +29,7 @@ namespace Ubuntu {
 
 using namespace System;
 
-namespace General {
+namespace Transfers {
 
 class BaseManager : public QObject, public QDBusContext {
     Q_OBJECT
