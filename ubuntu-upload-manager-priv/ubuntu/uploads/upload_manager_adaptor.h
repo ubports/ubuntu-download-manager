@@ -14,8 +14,8 @@
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
-#include "metatypes.h"
 #include <ubuntu/upload_manager/metatypes.h>
+
 QT_BEGIN_NAMESPACE
 class QByteArray;
 template<class T> class QList;
@@ -24,6 +24,12 @@ class QString;
 class QStringList;
 class QVariant;
 QT_END_NAMESPACE
+
+namespace Ubuntu {
+
+using namespace Errors;
+
+namespace UploadManager {
 
 /*
  * Adaptor class for interface com.canonical.applications.UploadManager
@@ -93,4 +99,7 @@ Q_SIGNALS: // SIGNALS
     void uploadCreated(const QDBusObjectPath &path);
 };
 
+}  // UploadManager
+
+}  // Ubuntu
 #endif

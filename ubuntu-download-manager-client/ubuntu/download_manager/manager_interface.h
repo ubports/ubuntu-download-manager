@@ -23,6 +23,8 @@
 
 namespace Ubuntu {
 
+using namespace Errors;
+
 namespace DownloadManager {
 
 /*

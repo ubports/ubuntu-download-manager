@@ -13,6 +13,7 @@ SOURCES += \
     ubuntu/upload_manager/upload_struct.cpp
 
 public_headers = \
+    ubuntu/upload_manager/common.h \
     ubuntu/upload_manager/upload_struct.h \
     ubuntu/upload_manager/metatypes.h
 
@@ -34,3 +35,4 @@ LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
 
 INCLUDEPATH += $$PWD/../udm-common
 DEPENDPATH += $$PWD/../udm-common
+

@@ -16,34 +16,34 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
+#ifndef DOWNLOADER_LIB_NETWORK_ERROR_STRUCT_H
+#define DOWNLOADER_LIB_NETWORK_ERROR_STRUCT_H
 
 #include <QString>
-#include "common.h"
 
 class QDBusArgument;
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
-class DOWNLOAD_MANAGER_EXPORT HttpErrorStruct {
+class NetworkErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(QString phrase READ getPhrase)
- public:
-    HttpErrorStruct();
-    HttpErrorStruct(int code, QString phrase);
-    HttpErrorStruct(const HttpErrorStruct& other);
-    HttpErrorStruct& operator=(const HttpErrorStruct& other);
 
+ public:
+    NetworkErrorStruct();
+    NetworkErrorStruct(int error);
+    NetworkErrorStruct(int code, QString phrase);
+    NetworkErrorStruct(const NetworkErrorStruct& other);
+    NetworkErrorStruct& operator=(const NetworkErrorStruct& other);
 
     friend QDBusArgument &operator<<(QDBusArgument &argument,
-        const HttpErrorStruct& error);
+        const NetworkErrorStruct& error);
     friend const QDBusArgument &operator>>(const QDBusArgument &argument,
-        HttpErrorStruct& error);
+        NetworkErrorStruct& error);
 
-    // properties getters
+    // property getters
     int getCode();
     QString getPhrase();
 
@@ -52,7 +52,8 @@ class DOWNLOAD_MANAGER_EXPORT HttpErrorStruct {
     QString _phrase;
 };
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu
-#endif // HTTP_ERROR_STRUCT_H
+
+#endif // NETWORK_ERROR_STRUCT_H

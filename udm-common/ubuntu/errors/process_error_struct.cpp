@@ -22,7 +22,7 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
 ProcessErrorStruct::ProcessErrorStruct()
     : _code(0),
@@ -153,6 +153,6 @@ ProcessErrorStruct::getStandardError() {
 }
 
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu

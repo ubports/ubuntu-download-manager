@@ -39,15 +39,10 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Error;
-class HttpErrorStruct;
-class NetworkErrorStruct;
-class ProcessErrorStruct;
-class ManagerPrivate;
 class DownloadImpl : public Download {
     Q_OBJECT
 
     // allow the manager to create downloads
-    friend class ManagerPrivate;
     friend class DownloadPendingCallWatcher;
     friend class DownloadManagerPendingCallWatcher;
 

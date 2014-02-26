@@ -24,6 +24,12 @@ class QStringList;
 class QVariant;
 QT_END_NAMESPACE
 
+namespace Ubuntu {
+
+using namespace Errors;
+
+namespace UploadManager {
+
 /*
  * Adaptor class for interface com.canonical.applications.Upload
  */
@@ -112,4 +118,7 @@ Q_SIGNALS: // SIGNALS
     void started(bool success);
 };
 
+}  // UploadManager
+
+}  // Ubuntu
 #endif

@@ -22,7 +22,7 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
 NetworkErrorStruct::NetworkErrorStruct()
     :  _code(0),
@@ -161,6 +161,6 @@ NetworkErrorStruct::getPhrase() {
     return _phrase;
 }
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu

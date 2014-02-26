@@ -17,64 +17,76 @@
  */
 
 #include <QDBusArgument>
-#include "http_error_struct.h"
+#include "auth_error_struct.h"
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
-HttpErrorStruct::HttpErrorStruct()
-    : _code(200),
-      _phrase("OK"){
+AuthErrorStruct::AuthErrorStruct()
+    : _type(),
+      _phrase("") {
 }
 
-HttpErrorStruct::HttpErrorStruct(int code, QString phrase)
-    : _code(code),
+AuthErrorStruct::AuthErrorStruct(AuthErrorStruct::Type type, QString phrase)
+    : _type(type),
       _phrase(phrase) {
 }
 
-HttpErrorStruct::HttpErrorStruct(const HttpErrorStruct& other)
-    : _code(other._code),
-      _phrase(other._phrase) {
+AuthErrorStruct::AuthErrorStruct(int type, QString phrase)
+    : _type(static_cast<AuthErrorStruct::Type>(type)),
+      _phrase(phrase) {
 }
 
-HttpErrorStruct& HttpErrorStruct::operator=(const HttpErrorStruct& other) {
-    _code = other._code;
+AuthErrorStruct::AuthErrorStruct(const AuthErrorStruct& other)
+    : _type(other._type),
+      _phrase(other._phrase){
+}
+
+AuthErrorStruct&
+AuthErrorStruct::operator=(const AuthErrorStruct& other) {
+    _type = other._type;
     _phrase = other._phrase;
 
     return *this;
 }
 
-QDBusArgument &operator<<(QDBusArgument &argument,
-                          const HttpErrorStruct& error) {
+QDBusArgument&
+operator<<(QDBusArgument &argument,
+           const AuthErrorStruct& error) {
     argument.beginStructure();
-    argument << error._code;
+    argument << static_cast<int>(error._type);
     argument << error._phrase;
     argument.endStructure();
 
     return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument,
-                          HttpErrorStruct& error) {
+const QDBusArgument&
+operator>>(const QDBusArgument &argument,
+           AuthErrorStruct& error) {
+    int tempType;
     argument.beginStructure();
-    argument >> error._code;
+    argument >> tempType;
     argument >> error._phrase;
     argument.endStructure();
+
+    error._type = static_cast<AuthErrorStruct::Type>(tempType);
 
     return argument;
 }
 
-int
-HttpErrorStruct::getCode() {
-    return _code;
+
+AuthErrorStruct::Type
+AuthErrorStruct::getType() {
+    return _type;
 }
 
 QString
-HttpErrorStruct::getPhrase() {
+AuthErrorStruct::getPhrase() {
     return _phrase;
 }
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu

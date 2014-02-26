@@ -24,16 +24,18 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
-#include <ubuntu/download_manager/auth_error_struct.h>
-#include <ubuntu/download_manager/http_error_struct.h>
-#include <ubuntu/download_manager/network_error_struct.h>
-#include <ubuntu/download_manager/process_error_struct.h>
+#include <ubuntu/errors/auth_error_struct.h>
+#include <ubuntu/errors/http_error_struct.h>
+#include <ubuntu/errors/network_error_struct.h>
+#include <ubuntu/errors/process_error_struct.h>
 #include "ubuntu/system/file_manager.h"
 #include "download.h"
 
 #define LOCAL_PATH_KEY "local-path"
 
 namespace Ubuntu {
+
+using namespace Errors;
 
 namespace DownloadManager {
 

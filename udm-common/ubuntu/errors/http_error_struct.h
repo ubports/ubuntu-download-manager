@@ -16,47 +16,42 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_AUTH_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_AUTH_ERROR_STRUCT_H
+#ifndef DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
+#define DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
 
-#include "common.h"
+#include <QString>
 
 class QDBusArgument;
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
-class AuthErrorStruct {
-    Q_PROPERTY(AuthErrorStruct::Type type READ getType)
+class HttpErrorStruct {
+    Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(QString phrase READ getPhrase)
  public:
-    enum Type {
-        Server,
-        Proxy
-    };
+    HttpErrorStruct();
+    HttpErrorStruct(int code, QString phrase);
+    HttpErrorStruct(const HttpErrorStruct& other);
+    HttpErrorStruct& operator=(const HttpErrorStruct& other);
 
-    AuthErrorStruct();
-    AuthErrorStruct(AuthErrorStruct::Type type, QString phrase);
-    AuthErrorStruct(int type, QString phrase);
-    AuthErrorStruct(const AuthErrorStruct& other);
-    AuthErrorStruct& operator=(const AuthErrorStruct& other);
 
     friend QDBusArgument &operator<<(QDBusArgument &argument,
-        const AuthErrorStruct& error);
+        const HttpErrorStruct& error);
     friend const QDBusArgument &operator>>(const QDBusArgument &argument,
-        AuthErrorStruct& error);
+        HttpErrorStruct& error);
 
     // properties getters
-    AuthErrorStruct::Type getType();
+    int getCode();
     QString getPhrase();
 
  private:
-    AuthErrorStruct::Type _type;
+    int _code;
     QString _phrase;
 };
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu
-#endif // AUTH_ERROR_STRUCT_H
+#endif // HTTP_ERROR_STRUCT_H

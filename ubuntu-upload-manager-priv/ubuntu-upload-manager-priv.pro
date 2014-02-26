@@ -20,6 +20,21 @@ HEADERS += \
 
 include(../common-installs-config.pri)
 
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
+
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
+
+LIBS += -L$$OUT_PWD/../ubuntu-upload-manager-common/ -lubuntu-upload-manager-common
+
+INCLUDEPATH += $$PWD/../ubuntu-upload-manager-common
+DEPENDPATH += $$PWD/../ubuntu-upload-manager-common
+
+LIBS += -L$$OUT_PWD/../ubuntu-upload-manager-common/ -lubuntu-upload-manager-common
+
+INCLUDEPATH += $$PWD/../ubuntu-upload-manager-common
+DEPENDPATH += $$PWD/../ubuntu-upload-manager-common
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common

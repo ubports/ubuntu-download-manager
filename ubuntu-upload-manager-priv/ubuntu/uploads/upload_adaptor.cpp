@@ -17,6 +17,12 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
+namespace Ubuntu {
+
+using namespace Errors;
+
+namespace UploadManager {
+
 /*
  * Implementation of adaptor class UploadAdaptor
  */
@@ -89,3 +95,6 @@ qulonglong UploadAdaptor::throttle()
     return speed;
 }
 
+}  // UploadManager
+
+}  // Ubuntu

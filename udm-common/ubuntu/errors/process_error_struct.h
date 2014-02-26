@@ -20,15 +20,14 @@
 #define DOWNLOADER_LIB_PROCESS_ERROR_STRUCT_H
 
 #include <QString>
-#include "common.h"
 
 class QDBusArgument;
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Errors {
 
-class DOWNLOAD_MANAGER_EXPORT ProcessErrorStruct {
+class ProcessErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(int exitCode READ getExitCode)
     Q_PROPERTY(QString phrase READ getPhrase)
@@ -70,7 +69,7 @@ class DOWNLOAD_MANAGER_EXPORT ProcessErrorStruct {
     QString _stderr;
 };
 
-}  // DownloadManager
+}  // Errors
 
 }  // Ubuntu
 

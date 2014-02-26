@@ -17,6 +17,11 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
+namespace Ubuntu {
+
+using namespace Errors;
+
+namespace UploadManager {
 /*
  * Implementation of adaptor class UploadManagerAdaptor
  */
@@ -99,3 +104,6 @@ void UploadManagerAdaptor::setDefaultThrottle(qulonglong speed)
     QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(qulonglong, speed));
 }
 
+}  // UploadManager
+
+}  // Ubuntu

@@ -21,12 +21,21 @@
 
 #include <QMap>
 #include <QList>
+#include <ubuntu/errors/auth_error_struct.h>
+#include <ubuntu/errors/http_error_struct.h>
+#include <ubuntu/errors/network_error_struct.h>
+#include <ubuntu/errors/process_error_struct.h>
 #include "upload_struct.h"
 
+using namespace Ubuntu::Errors;
 using namespace Ubuntu::UploadManager;
 
 typedef QMap<QString, QString> StringMap;
 
+Q_DECLARE_METATYPE(AuthErrorStruct)
+Q_DECLARE_METATYPE(HttpErrorStruct)
+Q_DECLARE_METATYPE(NetworkErrorStruct)
+Q_DECLARE_METATYPE(ProcessErrorStruct)
 Q_DECLARE_METATYPE(UploadStruct)
 Q_DECLARE_METATYPE(StringMap)
 
