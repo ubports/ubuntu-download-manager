@@ -29,8 +29,8 @@ SOURCES += \
     ubuntu/downloads/mms_file_download.cpp \
     ubuntu/downloads/download_adaptor_factory.cpp \
     ubuntu/downloads/download_manager_factory.cpp \
-    ubuntu/general/base_daemon.cpp \
-    ubuntu/general/base_manager.cpp \
+    ubuntu/transfers/base_daemon.cpp \
+    ubuntu/transfers/base_manager.cpp \
     ubuntu/system/uuid_utils.cpp \
     ubuntu/system/uuid_factory.cpp \
     ubuntu/system/timer.cpp \
@@ -64,10 +64,10 @@ HEADERS +=\
     ubuntu/downloads/state_machines/state.h \
     ubuntu/downloads/state_machines/final_state.h \
     ubuntu/downloads/mms_file_download.h \
-    ubuntu/general/base_daemon.h \
-    ubuntu/general/base_manager.h \
-    ubuntu/general/adaptor_factory.h \
-    ubuntu/general/manager_factory.h \
+    ubuntu/transfers/base_daemon.h \
+    ubuntu/transfers/base_manager.h \
+    ubuntu/transfers/adaptor_factory.h \
+    ubuntu/transfers/manager_factory.h \
     ubuntu/downloads/download_adaptor_factory.h \
     ubuntu/downloads/download_manager_factory.h \
     ubuntu/system/uuid_utils.h \

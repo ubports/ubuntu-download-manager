@@ -21,7 +21,7 @@
 
 #include <ubuntu/system/dbus_connection.h>
 #include "ubuntu/system/application.h"
-#include "ubuntu/general/manager_factory.h"
+#include "ubuntu/transfers/manager_factory.h"
 
 namespace Ubuntu {
 

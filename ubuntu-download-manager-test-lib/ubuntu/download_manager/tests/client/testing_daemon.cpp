@@ -22,7 +22,7 @@
 #include <ubuntu/system/application.h>
 #include <ubuntu/system/timer.h>
 #include <ubuntu/downloads/download_adaptor_factory.h>
-#include <ubuntu/general/manager_factory.h>
+#include <ubuntu/transfers/manager_factory.h>
 #include "testing_manager.h"
 #include "testing_manager_adaptor.h"
 #include "testing_daemon.h"
