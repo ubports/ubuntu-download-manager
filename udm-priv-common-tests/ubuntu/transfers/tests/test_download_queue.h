@@ -20,41 +20,47 @@
 #define TEST_DOWNLOAD_QUEUE_H
 
 #include <QObject>
-#include <ubuntu/downloads/queue.h>
-#include <ubuntu/download_manager/tests/server/download.h>
-#include <ubuntu/download_manager/tests/server/request_factory.h>
-#include <ubuntu/download_manager/tests/server/process_factory.h>
-#include <ubuntu/download_manager/tests/server/system_network_info.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/transfers/queue.h>
+#include <ubuntu/transfers/tests/system/request_factory.h>
+#include <ubuntu/transfers/tests/system/process_factory.h>
+#include <ubuntu/transfers/tests/system/system_network_info.h>
+#include <ubuntu/transfers/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include "transfer.h"
 
-class TestDownloadQueue : public BaseTestCase {
+namespace Ubuntu {
+
+namespace Transfers {
+
+namespace Tests {
+
+class TestTransferQueue : public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownloadQueue(QObject *parent = 0);
+    explicit TestTransferQueue(QObject *parent = 0);
 
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
     void cleanup() override;
 
-    void testAddDownload();
-    void testStartDownloadWithNoCurrent();
-    void testStartDownloadWithCurrent();
-    void testStartDownloadWithNoCurrentCannotDownload();
-    void testPauseDownloadNoOtherReady();
-    void testPauseDownloadOtherReady();
-    void testResumeDownloadNoOtherPresent();
-    void testResumeDownloadOtherPresent();
-    void testResumeDownloadNoOtherPresentCannotDownload();
-    void testCancelDownloadNoOtherReady();
-    void testCancelDownloadOtherReady();
-    void testCancelDownloadOtherReadyCannotDownload();
-    void testCancelDownloadNotStarted();
-    void testDownloads();
-    void testDownloadFinishedOtherReady();
-    void testDownloadErrorWithOtherReady();
+    void testAddTransfer();
+    void testStartTransferWithNoCurrent();
+    void testStartTransferWithCurrent();
+    void testStartTransferWithNoCurrentCannotTransfer();
+    void testPauseTransferNoOtherReady();
+    void testPauseTransferOtherReady();
+    void testResumeTransferNoOtherPresent();
+    void testResumeTransferOtherPresent();
+    void testResumeTransferNoOtherPresentCannotTransfer();
+    void testCancelTransferNoOtherReady();
+    void testCancelTransferOtherReady();
+    void testCancelTransferOtherReadyCannotTransfer();
+    void testCancelTransferNotStarted();
+    void testTransfers();
+    void testTransferFinishedOtherReady();
+    void testTransferErrorWithOtherReady();
 
     // unmanaged downloads tests
     void testNewUnmanagedIncreasesNumber();
@@ -66,11 +72,17 @@ class TestDownloadQueue : public BaseTestCase {
     bool _isConfined;
     QString _rootPath;
     FakeSystemNetworkInfo* _networkInfo;
-    FakeDownload* _first;
-    FakeDownload* _second;
+    FakeTransfer* _first;
+    FakeTransfer* _second;
     Queue* _q;
 };
 
-DECLARE_TEST(TestDownloadQueue)
+DECLARE_TEST(TestTransferQueue)
+
+}  // Tests
+
+}  // Transfers
+
+}  // Ubuntu
 
 #endif  // TEST_DOWNLOAD_QUEUE_H

@@ -102,6 +102,11 @@ Transfer::addToQueue() const {
 }
 
 void
+Transfer::setAddToQueue(bool addToQueue) {
+    _addToQueue = addToQueue;
+}
+
+void
 Transfer::setThrottle(qulonglong speed) {
     if (speed != _throttle) {
         _throttle = speed;

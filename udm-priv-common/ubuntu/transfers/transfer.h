@@ -53,6 +53,7 @@ class Transfer : public QObject {
     virtual bool canTransfer();
     virtual bool isValid() const;
     bool addToQueue() const;
+    void setAddToQueue(bool addToQueue);
 
     // methods to be overridden by the children
     virtual bool pausable() = 0;
