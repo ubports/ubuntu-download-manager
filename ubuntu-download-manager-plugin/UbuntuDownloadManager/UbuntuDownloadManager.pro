@@ -1,5 +1,5 @@
-include(../common-project-config.pri)
-include(../common-vars.pri)
+include(../../common-project-config.pri)
+include(../../common-vars.pri)
 
 TEMPLATE = subdirs
 SUBDIRS = modules/UbuntuDownloadManager
