@@ -25,11 +25,13 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+#include <ubuntu/transfers/tests/system/system_network_info.h>
+#include <ubuntu/transfers/tests/system/request_factory.h>
+#include <ubuntu/transfers/tests/system/process_factory.h>
 #include <ubuntu/download_manager/tests/server/download.h>
-#include <ubuntu/download_manager/tests/server/system_network_info.h>
-#include <ubuntu/download_manager/tests/server/request_factory.h>
-#include <ubuntu/download_manager/tests/server/process_factory.h>
 #include "test_downloads_db.h"
+
+using namespace Ubuntu::Transfers::System;
 
 namespace {
     const QString TABLE_EXISTS = "SELECT count(name) FROM sqlite_master "\

@@ -22,9 +22,10 @@
 #include <QObject>
 #include <ubuntu/downloads/manager.h>
 #include <ubuntu/transfers/manager_factory.h>
-#include "ubuntu/download_manager/tests/fake.h"
+#include <ubuntu/transfers/tests/fake.h>
 
 using namespace Ubuntu::Transfers;
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 

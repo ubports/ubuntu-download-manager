@@ -99,6 +99,8 @@ namespace {
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 static bool _init = false;
@@ -158,5 +160,7 @@ Logger::toStdString(const QString& str) {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

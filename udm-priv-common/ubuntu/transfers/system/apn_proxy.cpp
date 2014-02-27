@@ -20,6 +20,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 ApnProxy::ApnProxy(QObject *parent)
@@ -32,6 +34,8 @@ ApnProxy::getProxy() {
     return proxy;
 }
 
-}
+}  // System
 
-}
+}  // Transfers
+
+}  // Ubuntu

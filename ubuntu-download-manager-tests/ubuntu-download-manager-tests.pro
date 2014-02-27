@@ -13,7 +13,6 @@ SOURCES += \
     downloads/test_download.cpp \
     downloads/test_daemon.cpp \
     downloads/test_download_manager.cpp \
-    downloads/test_download_queue.cpp \
     downloads/test_group_download.cpp \
     downloads/test_downloads_db.cpp \
     downloads/test_download_factory.cpp \
@@ -34,7 +33,6 @@ HEADERS += \
     downloads/test_download.h \
     downloads/test_daemon.h \
     downloads/test_download_manager.h \
-    downloads/test_download_queue.h \
     downloads/test_group_download.h \
     downloads/test_downloads_db.h \
     downloads/test_download_factory.h \
@@ -80,11 +78,16 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
 DEPENDPATH += $$PWD/../ubuntu-udownload-manager-common
 
+LIBS += -L$$OUT_PWD/../udm-testing/ -ludm-testing
+
+INCLUDEPATH += $$PWD/../udm-testing
+DEPENDPATH += $$PWD/../udm-testing
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manager-test-lib
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib
 DEPENDPATH += $$PWD/../ubuntu-download-manager-test-lib
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../udm-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv:$$OUT_PWD/../ubuntu-download-manager-test-lib ./$${TARGET}
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../udm-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-priv:$$OUT_PWD/../udm-testing:$$OUT_PWD/../ubuntu-download-manager-test-lib ./$${TARGET}
 QMAKE_EXTRA_TARGETS += check

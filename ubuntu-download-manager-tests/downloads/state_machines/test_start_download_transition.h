@@ -24,8 +24,8 @@
 #include <QState>
 #include <QStateMachine>
 #include <ubuntu/downloads/state_machines/download_sm.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 #include <ubuntu/download_manager/tests/server/sm_file_download.h>
 
 using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
@@ -35,7 +35,7 @@ class TestStartDownloadTransition : public BaseTestCase {
 
  public:
     explicit TestStartDownloadTransition(QObject *parent = 0);
-    
+
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;

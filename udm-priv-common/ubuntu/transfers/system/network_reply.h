@@ -27,6 +27,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class NetworkReply : public QObject {
@@ -58,6 +60,8 @@ class NetworkReply : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

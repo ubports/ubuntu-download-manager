@@ -22,9 +22,11 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <ubuntu/downloads/downloads_db.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 
+using namespace Ubuntu::Transfers::Tests;
+using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 // class used for testing some methods without the need of a real db

@@ -20,6 +20,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 QList<QString> HashAlgorithm::algoList = QList<QString>() << "md5" << "sha1"
@@ -74,5 +76,7 @@ HashAlgorithm::isValidAlgo(const QString& algorithm) {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

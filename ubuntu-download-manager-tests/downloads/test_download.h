@@ -23,12 +23,15 @@
 #include <QObject>
 #include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/download_manager/tests/server/file_manager.h>
-#include <ubuntu/download_manager/tests/server/system_network_info.h>
-#include <ubuntu/download_manager/tests/server/request_factory.h>
-#include <ubuntu/download_manager/tests/server/process_factory.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/system/file_manager.h>
+#include <ubuntu/transfers/tests/system/system_network_info.h>
+#include <ubuntu/transfers/tests/system/request_factory.h>
+#include <ubuntu/transfers/tests/system/process_factory.h>
+#include <ubuntu/transfers/system/uuid_utils.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
+
+using namespace Ubuntu::Transfers::Tests;
 
 class TestDownload: public BaseTestCase {
     Q_OBJECT

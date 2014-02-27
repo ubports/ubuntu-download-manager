@@ -20,6 +20,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 ProcessFactory* ProcessFactory::_instance = nullptr;
@@ -63,5 +65,7 @@ ProcessFactory::setInstance(ProcessFactory* instance) {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

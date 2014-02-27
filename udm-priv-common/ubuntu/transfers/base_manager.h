@@ -27,9 +27,9 @@
 
 namespace Ubuntu {
 
-using namespace System;
-
 namespace Transfers {
+
+using namespace System;
 
 class BaseManager : public QObject, public QDBusContext {
     Q_OBJECT

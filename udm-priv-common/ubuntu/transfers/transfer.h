@@ -20,10 +20,11 @@
 #define UBUNTU_GENERAL_LIB_TRANSFER_H
 
 #include <QObject>
+#include "ubuntu/transfers/system/system_network_info.h"
 
 namespace Ubuntu {
 
-namespace General {
+namespace Transfers {
 
 class Transfer : public QObject {
     Q_OBJECT
@@ -54,6 +55,7 @@ class Transfer : public QObject {
     bool addToQueue() const;
 
     // methods to be overridden by the children
+    virtual bool pausable() = 0;
     virtual void cancelTransfer() = 0;
     virtual void pauseTransfer() = 0;
     virtual void resumeTransfer() = 0;
@@ -66,10 +68,10 @@ class Transfer : public QObject {
     virtual void allowGSMDownload(bool allowed);
     virtual bool isGSMDownloadAllowed();
 
-    virtual inline void cancel();
-    virtual inline void pause();
-    virtual inline void resume();
-    virtual inline void start();
+    virtual void cancel();
+    virtual void pause();
+    virtual void resume();
+    virtual void start();
 
  signals:
     void canceled(bool success);
@@ -92,10 +94,10 @@ class Transfer : public QObject {
     Transfer::State _state;
     QString _dbusPath;
     bool _isConfined;
-    SystemNetworkInfo* _networkInfo;
+    System::SystemNetworkInfo* _networkInfo;
 };
 
-}  // General
+}  // Transfers
 
 }  // Ubuntu
 

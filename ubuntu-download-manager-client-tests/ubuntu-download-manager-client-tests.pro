@@ -55,6 +55,11 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-client/ -lubuntu-download-manager
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-client
 DEPENDPATH += $$PWD/../ubuntu-download-manager-client
 
+LIBS += -L$$OUT_PWD/../udm-testing/ -ludm-testing
+
+INCLUDEPATH += $$PWD/../udm-testing
+DEPENDPATH += $$PWD/../udm-testing
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manager-test-lib
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib
@@ -66,5 +71,5 @@ INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
 DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
 check.depends = $${TARGET}
-check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../udm-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv  dbus-test-runner -m 120 --task=./$${TARGET} -c
+check.commands = LD_LIBRARY_PATH=$$OUT_PWD/../udm-common:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../udm-testing:$$OUT_PWD/../udm-priv-common:$$OUT_PWD/../ubuntu-download-manager-common:$$OUT_PWD/../ubuntu-download-manager-client:$$OUT_PWD/../ubuntu-download-manager-test-lib:$$OUT_PWD/../ubuntu-download-manager-priv  dbus-test-runner -m 120 --task=./$${TARGET} -c
 QMAKE_EXTRA_TARGETS += check

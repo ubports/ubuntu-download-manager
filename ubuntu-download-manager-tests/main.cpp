@@ -17,7 +17,7 @@
  */
 
 #include <QCoreApplication>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 
 int main(int argc, char *argv[]) {
     QCoreApplication a(argc, argv);

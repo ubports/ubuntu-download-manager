@@ -21,8 +21,10 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/tests/server/download.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
+
+using namespace Ubuntu::Transfers::Tests;
 
 class TestBaseDownload : public BaseTestCase {
     Q_OBJECT

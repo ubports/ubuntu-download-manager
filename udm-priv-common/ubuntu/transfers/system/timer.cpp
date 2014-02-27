@@ -22,6 +22,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 Timer::Timer(QObject* parent)
@@ -48,5 +50,7 @@ Timer::stop() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

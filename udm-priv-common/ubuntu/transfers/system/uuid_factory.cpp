@@ -20,6 +20,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 UuidFactory::UuidFactory(QObject *parent)
@@ -32,5 +34,7 @@ UuidFactory::createUuid() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
