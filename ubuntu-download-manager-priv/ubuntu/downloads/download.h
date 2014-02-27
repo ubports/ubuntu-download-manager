@@ -30,7 +30,7 @@
 
 namespace Ubuntu {
 
-using namespace System;
+using namespace Transfers::System;
 
 namespace DownloadManager {
 

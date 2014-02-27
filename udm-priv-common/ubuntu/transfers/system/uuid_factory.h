@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class UuidFactory : public QObject {
@@ -36,6 +38,8 @@ class UuidFactory : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 #endif  // DOWNLOADER_LIB_UUID_FACTORY_H

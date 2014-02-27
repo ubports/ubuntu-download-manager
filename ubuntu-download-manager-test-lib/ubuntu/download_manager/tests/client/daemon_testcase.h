@@ -23,11 +23,12 @@
 #include <QObject>
 #include <QProcess>
 #include <QUrl>
+#include <ubuntu/transfers/tests/base_testcase.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include "ubuntu/download_manager/tests/base_testcase.h"
 #include "testing_daemon.h"
 
 using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::Transfers::Tests;
 
 class DaemonTestCase : public BaseTestCase {
     Q_OBJECT

@@ -29,6 +29,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class RequestFactory : public QObject {
@@ -75,6 +77,8 @@ class RequestFactory : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

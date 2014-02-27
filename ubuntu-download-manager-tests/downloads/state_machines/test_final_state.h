@@ -24,10 +24,10 @@
 #include <QStateMachine>
 #include <QSignalTransition>
 #include <ubuntu/downloads/state_machines/final_state.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 
-
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
 
 class TestFinalStateHelperObject : public QObject {

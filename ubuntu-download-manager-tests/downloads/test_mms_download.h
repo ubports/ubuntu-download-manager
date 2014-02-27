@@ -23,11 +23,12 @@
 #include <ubuntu/transfers/system/request_factory.h>
 #include <ubuntu/transfers/system/apn_request_factory.h>
 #include <ubuntu/downloads/mms_file_download.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 
 
-using namespace Ubuntu::System;
+using namespace Ubuntu::Transfers::Tests;
+using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class PublicMmsFileDownload : public MmsFileDownload {

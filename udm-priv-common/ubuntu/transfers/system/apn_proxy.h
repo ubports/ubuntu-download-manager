@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class ApnProxy : public QObject {
@@ -36,7 +38,9 @@ class ApnProxy : public QObject {
 
 };
 
-} //  System
+}  //  System
+
+}  // Transfers 
 
 }  // Ubuntu
 #endif // APN_PROXY_H

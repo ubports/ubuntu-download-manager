@@ -30,6 +30,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class AppArmor : public QObject {
@@ -63,6 +65,8 @@ class AppArmor : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

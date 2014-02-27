@@ -25,6 +25,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class HashAlgorithm {
@@ -37,6 +39,8 @@ class HashAlgorithm {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

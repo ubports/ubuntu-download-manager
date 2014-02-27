@@ -22,8 +22,9 @@
 
 namespace Ubuntu {
 
-namespace System {
+namespace Transfers {
 
+namespace System {
 
 Process::Process(QObject* parent)
     : QObject(parent) {
@@ -84,5 +85,7 @@ Process::onReadyReadStandardOutput() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

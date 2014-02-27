@@ -21,8 +21,9 @@
 
 namespace Ubuntu {
 
-namespace System {
+namespace Transfers {
 
+namespace System {
 
 Application::Application(QObject* parent)
     : QObject(parent) {
@@ -41,5 +42,7 @@ Application::arguments() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

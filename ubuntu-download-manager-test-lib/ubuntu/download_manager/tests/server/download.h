@@ -22,10 +22,11 @@
 #include <QSharedPointer>
 #include <ubuntu/downloads/file_download.h>
 #include <ubuntu/transfers/system/system_network_info.h>
+#include <ubuntu/transfers/tests/fake.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::Daemon;
+using namespace Ubuntu::Transfers::Tests;
 
 class FakeDownload : public FileDownload, public Fake {
     Q_OBJECT

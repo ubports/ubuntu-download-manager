@@ -13,6 +13,8 @@ DEFINES += UDMPRIVCOMMON_LIBRARY
 SOURCES += \
     ubuntu/transfers/base_daemon.cpp \
     ubuntu/transfers/base_manager.cpp \
+    ubuntu/transfers/queue.cpp \
+    ubuntu/transfers/transfer.cpp \
     ubuntu/transfers/system/uuid_utils.cpp \
     ubuntu/transfers/system/uuid_factory.cpp \
     ubuntu/transfers/system/timer.cpp \
@@ -32,6 +34,8 @@ SOURCES += \
 HEADERS += \
     ubuntu/transfers/base_daemon.h \
     ubuntu/transfers/base_manager.h \
+    ubuntu/transfers/queue.h \
+    ubuntu/transfers/transfer.h \
     ubuntu/transfers/adaptor_factory.h \
     ubuntu/transfers/manager_factory.h \
     ubuntu/transfers/system/uuid_utils.h \

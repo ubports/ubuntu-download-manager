@@ -31,6 +31,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 QString AppArmor::UNCONFINED_ID = "unconfined";
@@ -167,5 +169,7 @@ AppArmor::getSecurePath(const QString& connName,
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

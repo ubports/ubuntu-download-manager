@@ -23,16 +23,16 @@
 #include <QSharedPointer>
 #include <ubuntu/downloads/manager.h>
 #include <ubuntu/downloads/file_download.h>
-#include <ubuntu/download_manager/tests/server/application.h>
-#include <ubuntu/download_manager/tests/server/apparmor.h>
-#include <ubuntu/download_manager/tests/server/dbus_connection.h>
+#include <ubuntu/transfers/tests/test_runner.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/system/application.h>
+#include <ubuntu/transfers/tests/system/apparmor.h>
+#include <ubuntu/transfers/tests/system/dbus_connection.h>
+#include <ubuntu/transfers/tests/system/request_factory.h>
+#include <ubuntu/transfers/tests/system/uuid_factory.h>
+#include <ubuntu/transfers/tests/system/system_network_info.h>
 #include <ubuntu/download_manager/tests/server/queue.h>
 #include <ubuntu/download_manager/tests/server/factory.h>
-#include <ubuntu/download_manager/tests/server/request_factory.h>
-#include <ubuntu/download_manager/tests/server/uuid_factory.h>
-#include <ubuntu/download_manager/tests/server/system_network_info.h>
-#include <ubuntu/download_manager/tests/test_runner.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
 
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;

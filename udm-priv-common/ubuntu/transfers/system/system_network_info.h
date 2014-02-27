@@ -28,6 +28,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class SystemNetworkInfo : public QObject {
@@ -94,6 +96,8 @@ class SystemNetworkInfo : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

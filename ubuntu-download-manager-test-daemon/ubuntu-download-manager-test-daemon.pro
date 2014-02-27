@@ -33,6 +33,11 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-p
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
 DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
+LIBS += -L$$OUT_PWD/../udm-testing/ -ludm-testing
+
+INCLUDEPATH += $$PWD/../udm-testing
+DEPENDPATH += $$PWD/../udm-testing
+
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-test-lib/ -lubuntu-download-manager-test-lib
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-test-lib

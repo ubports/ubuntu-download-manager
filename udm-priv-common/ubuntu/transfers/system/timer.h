@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class TimerPrivate;
@@ -46,6 +48,8 @@ class Timer : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

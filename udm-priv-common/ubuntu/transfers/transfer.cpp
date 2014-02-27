@@ -16,17 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <ubuntu/system/logger.h>
+#include <ubuntu/transfers/system/logger.h>
 #include "transfer.h"
 
 namespace Ubuntu {
 
-namespace General {
+namespace Transfers {
 
 Transfer::Transfer(const QString& id,
          const QString& path,
          bool isConfined,
-         QObject* parent) {
+         QObject* parent)
+    : QObject(parent),
+      _id(id),
+      _throttle(0),
+      _allowMobileData(true),
+      _state(Transfer::IDLE),
+      _dbusPath(path),
+      _isConfined(isConfined) {
+    _networkInfo = System::SystemNetworkInfo::instance();
+    setObjectName(id);
 }
 
 QString
@@ -50,7 +59,7 @@ Transfer::state() const {
 }
 
 void
-Transfer::setState(Download::State state) {
+Transfer::setState(Transfer::State state) {
     if (_state != state) {
         _state = state;
         emit stateChanged();
@@ -64,7 +73,7 @@ Transfer::canTransfer() {
     switch (mode) {
         case QNetworkInfo::UnknownMode:
             qWarning() << "Network Mode unknown!";
-            return _allowGSMDownload;
+            return _allowMobileData;
             break;
         case QNetworkInfo::GsmMode:
         case QNetworkInfo::CdmaMode:
@@ -72,7 +81,7 @@ Transfer::canTransfer() {
         case QNetworkInfo::WimaxMode:
         case QNetworkInfo::TdscdmaMode:
         case QNetworkInfo::LteMode:
-            return _allowGSMDownload;
+            return _allowMobileData;
         case QNetworkInfo::WlanMode:
         case QNetworkInfo::EthernetMode:
         case QNetworkInfo::BluetoothMode:
@@ -93,7 +102,16 @@ Transfer::addToQueue() const {
 }
 
 void
+Transfer::setAddToQueue(bool addToQueue) {
+    _addToQueue = addToQueue;
+}
+
+void
 Transfer::setThrottle(qulonglong speed) {
+    if (speed != _throttle) {
+        _throttle = speed;
+        emit throttleChanged();
+    }
 }
 
 qulonglong
@@ -103,10 +121,16 @@ Transfer::throttle() {
 
 void
 Transfer::allowGSMDownload(bool allowed) {
+    if (_allowMobileData != allowed) {
+        _allowMobileData = allowed;
+        // emit the signals so that they q knows what to do
+        emit stateChanged();
+    }
 }
 
 bool
 Transfer::isGSMDownloadAllowed() {
+    return _allowMobileData;
 }
 
 void
