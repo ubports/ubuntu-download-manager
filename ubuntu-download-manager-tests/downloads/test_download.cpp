@@ -92,7 +92,7 @@ TestDownload::testNoHashConstructor() {
     // assert that we did set the initial state correctly
     // gets for internal state
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->state(), Download::IDLE);
@@ -133,7 +133,7 @@ TestDownload::testHashConstructor() {
     QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
         _rootPath, url, hash, algo, _metadata, _headers));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
@@ -208,7 +208,7 @@ TestDownload::testProgress() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
@@ -251,7 +251,7 @@ TestDownload::testProgressNotKnownSize() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
@@ -282,7 +282,7 @@ TestDownload::testTotalSize() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
@@ -344,7 +344,7 @@ TestDownload::testSetThrottle() {
     QTRY_COMPARE(1, spy.count());
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
@@ -439,7 +439,7 @@ TestDownload::testCanDownloadGSM() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(true);
-    QVERIFY(download->canDownload());
+    QVERIFY(download->canTransfer());
     QList<MethodData> calledMethods = _networkInfo->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
@@ -486,7 +486,7 @@ TestDownload::testCanDownloadNoGSM() {
         _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(false);
 
-    QCOMPARE(result, download->canDownload());
+    QCOMPARE(result, download->canTransfer());
     QList<MethodData> calledMethods = _networkInfo->calledMethods();
     QCOMPARE(1, calledMethods.count());
 }
@@ -546,9 +546,9 @@ TestDownload::testCancelDownload() {
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     download->cancel();  // change state
-    download->cancelDownload();  // method under test
+    download->cancelTransfer();  // method under test
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -577,7 +577,7 @@ TestDownload::testCancelDownloadNotStarted() {
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->cancel();  // change state
-    download->cancelDownload();  // method under test
+    download->cancelTransfer();  // method under test
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(0, calledMethods.count());
@@ -597,7 +597,7 @@ TestDownload::testPauseDownload() {
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -607,7 +607,7 @@ TestDownload::testPauseDownload() {
     reply->setData(QByteArray(900, 's'));
 
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
@@ -632,7 +632,7 @@ TestDownload::testPauseDownloadNotStarted() {
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->pause();
-    download->pauseDownload();
+    download->pauseTransfer();
 
     QCOMPARE(spy.count(), 1);
 
@@ -648,9 +648,9 @@ TestDownload::testResumeRunning() {
         SIGNAL(resumed(bool)));  // NOLINT(readability/function)
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     QCOMPARE(spy.count(), 1);
 
@@ -666,7 +666,7 @@ TestDownload::testResumeDownload() {
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -676,12 +676,12 @@ TestDownload::testResumeDownload() {
     reply->setData(QByteArray(900, 's'));
 
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     // get the info for the second created request
     calledMethods = _reqFactory->calledMethods();
@@ -705,7 +705,7 @@ TestDownload::testStartDownload() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -726,8 +726,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
-    download->startDownload();  // second redundant call under test
+    download->startTransfer();
+    download->startTransfer();  // second redundant call under test
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -749,7 +749,7 @@ TestDownload::testOnSuccessNoHash() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -772,7 +772,7 @@ TestDownload::testOnSuccessHashError() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -782,12 +782,12 @@ TestDownload::testOnSuccessHashError() {
     reply->setData(QByteArray(200, 'f'));
 
     download->pause();
-    download->pauseDownload();   // write the data in the internal storage
+    download->pauseTransfer();   // write the data in the internal storage
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     calledMethods = _reqFactory->calledMethods();
     reply = reinterpret_cast<FakeNetworkReply*>(
@@ -839,7 +839,7 @@ TestDownload::testOnSuccessHash() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -849,12 +849,12 @@ TestDownload::testOnSuccessHash() {
     reply->setData(data);
 
     download->pause();
-    download->pauseDownload();   // write the data in the internal storage
+    download->pauseTransfer();   // write the data in the internal storage
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     calledMethods = _reqFactory->calledMethods();
     reply = reinterpret_cast<FakeNetworkReply*>(
@@ -890,7 +890,7 @@ TestDownload::testOnHttpError() {
     QSignalSpy httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -916,7 +916,7 @@ TestDownload::testOnSslError() {
     QSignalSpy spy(download.data(), SIGNAL(error(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -952,7 +952,7 @@ TestDownload::testOnNetworkError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -981,7 +981,7 @@ TestDownload::testOnAuthError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1010,7 +1010,7 @@ TestDownload::testOnProxyAuthError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1058,7 +1058,7 @@ TestDownload::testSetRawHeadersStart() {
         _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1111,7 +1111,7 @@ TestDownload::testSetRawHeadersWithRangeStart() {
         _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1160,7 +1160,7 @@ TestDownload::testSetRawHeadersResume() {
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1170,12 +1170,12 @@ TestDownload::testSetRawHeadersResume() {
     reply->setData(QByteArray(900, 's'));
 
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     // get the info for the second created request
     calledMethods = _reqFactory->calledMethods();
@@ -1237,7 +1237,7 @@ TestDownload::testSetRawHeadersWithRangeResume() {
     QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1247,12 +1247,12 @@ TestDownload::testSetRawHeadersWithRangeResume() {
     reply->setData(QByteArray(900, 's'));
 
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     // get the info for the second created request
     calledMethods = _reqFactory->calledMethods();
@@ -1303,7 +1303,7 @@ TestDownload::testProcessExecutedNoParams() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1366,7 +1366,7 @@ TestDownload::testProcessExecutedWithParams() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1429,7 +1429,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1472,7 +1472,7 @@ TestDownload::testProcessFinishedNoError() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1511,7 +1511,7 @@ TestDownload::testProcessFinishedWithError() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1569,7 +1569,7 @@ TestDownload::testProcessError() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1609,7 +1609,7 @@ TestDownload::testProcessFinishedCrash() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1652,7 +1652,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
     file->close();
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1705,7 +1705,7 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
         _rootPath, _url, _metadata, headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1727,7 +1727,7 @@ TestDownload::testSslErrorsIgnored() {
         _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QSignalSpy stateSpy(download.data(), SIGNAL(stateChanged()));
 
@@ -1756,7 +1756,7 @@ TestDownload::testSslErrorsNotIgnored() {
         _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QSignalSpy stateSpy(download.data(), SIGNAL(stateChanged()));
 
@@ -1961,7 +1961,7 @@ TestDownload::testProcessingJustOnce() {
     QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1995,7 +1995,7 @@ TestDownload::testFileSystemErrorProgress() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     auto calledMethods = _reqFactory->calledMethods();
     auto reply = reinterpret_cast<FakeNetworkReply*>(
@@ -2029,7 +2029,7 @@ TestDownload::testFileSystemErrorPause() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     auto calledMethods = _reqFactory->calledMethods();
     auto reply = reinterpret_cast<FakeNetworkReply*>(
@@ -2037,7 +2037,7 @@ TestDownload::testFileSystemErrorPause() {
     reply->setData(fileData);
 
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     // assert that the error signal is emitted
     QCOMPARE(spy.count(), 1);
@@ -2059,7 +2059,7 @@ TestDownload::testRedirectCycle() {
         _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -2107,7 +2107,7 @@ TestDownload::testSingleRedirect() {
         _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -2183,7 +2183,7 @@ TestDownload::testSeveralRedirects() {
         _rootPath, _url, _metadata, _headers));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();

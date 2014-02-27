@@ -54,7 +54,7 @@ TestBaseDownload::testStartNotQueued() {
     down->start();
 
     QCOMPARE(1, down->calledMethods().count());
-    QCOMPARE(QString("startDownload"), down->calledMethods()[0].methodName());
+    QCOMPARE(QString("startTransfer"), down->calledMethods()[0].methodName());
 }
 
 void
@@ -78,7 +78,7 @@ TestBaseDownload::testPauseNotQueued() {
     down->pause();
 
     QCOMPARE(1, down->calledMethods().count());
-    QCOMPARE(QString("pauseDownload"), down->calledMethods()[0].methodName());
+    QCOMPARE(QString("pauseTransfer"), down->calledMethods()[0].methodName());
 }
 
 void
@@ -102,7 +102,7 @@ TestBaseDownload::testResumeNotQueued() {
     down->resume();
 
     QCOMPARE(1, down->calledMethods().count());
-    QCOMPARE(QString("resumeDownload"), down->calledMethods()[0].methodName());
+    QCOMPARE(QString("resumeTransfer"), down->calledMethods()[0].methodName());
 }
 
 void
@@ -126,5 +126,5 @@ TestBaseDownload::testCancelNotQueued() {
     down->cancel();
 
     QCOMPARE(1, down->calledMethods().count());
-    QCOMPARE(QString("cancelDownload"), down->calledMethods()[0].methodName());
+    QCOMPARE(QString("cancelTransfer"), down->calledMethods()[0].methodName());
 }

@@ -18,7 +18,6 @@ SOURCES += \
     ubuntu/downloads/factory.cpp \
     ubuntu/downloads/manager.cpp \
     ubuntu/downloads/download_manager_adaptor.cpp \
-    ubuntu/downloads/queue.cpp \
     ubuntu/downloads/group_download.cpp \
     ubuntu/downloads/group_download_adaptor.cpp \
     ubuntu/downloads/file_download.cpp \
@@ -38,7 +37,6 @@ HEADERS +=\
     ubuntu/downloads/factory.h \
     ubuntu/downloads/manager.h \
     ubuntu/downloads/download_manager_adaptor.h \
-    ubuntu/downloads/queue.h \
     ubuntu/downloads/group_download.h \
     ubuntu/downloads/group_download_adaptor.h \
     ubuntu/downloads/file_download.h \

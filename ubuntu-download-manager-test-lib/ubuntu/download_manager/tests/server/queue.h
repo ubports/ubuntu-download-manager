@@ -19,12 +19,12 @@
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
 #include <QSharedPointer>
-#include <ubuntu/downloads/queue.h>
+#include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/system/system_network_info.h>
 #include <ubuntu/transfers/tests/fake.h>
 
+using namespace Ubuntu::Transfers;
 using namespace Ubuntu::Transfers::Tests;
-using namespace Ubuntu::DownloadManager::Daemon;
 
 class FakeDownloadQueue : public Queue, public Fake {
     Q_OBJECT
@@ -32,7 +32,7 @@ class FakeDownloadQueue : public Queue, public Fake {
  public:
     explicit FakeDownloadQueue(QObject *parent = 0);
 
-    void add(Download* download) override;
+    void add(Transfer* download) override;
     int size() override;
     void setSize(int size);
 

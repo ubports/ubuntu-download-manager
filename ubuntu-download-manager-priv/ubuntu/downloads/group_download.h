@@ -53,10 +53,10 @@ class GroupDownload : public Download {
                   QObject* parent = 0);
     virtual ~GroupDownload();
 
-    virtual void cancelDownload() override;
-    virtual void pauseDownload() override;
-    virtual void resumeDownload() override;
-    virtual void startDownload() override;
+    virtual void cancelTransfer() override;
+    virtual void pauseTransfer() override;
+    virtual void resumeTransfer() override;
+    virtual void startTransfer() override;
 
  public slots:  // NOLINT(whitespace/indent)
     virtual qulonglong progress() override;

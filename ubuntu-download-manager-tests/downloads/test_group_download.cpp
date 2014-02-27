@@ -62,7 +62,7 @@ TestGroupDownload::testCancelNoDownloads() {
     GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
         _headers, _downloadFactory, _fileManager);
-    group->cancelDownload();
+    group->cancelTransfer();
 }
 
 void
@@ -76,7 +76,7 @@ TestGroupDownload::testCancelAllDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    group->cancelDownload();
+    group->cancelTransfer();
     foreach(Download* download, _downloadFactory->downloads()) {
         QCOMPARE(Download::CANCEL, download->state());
     }
@@ -101,7 +101,7 @@ TestGroupDownload::testCancelDownloadWithFinished() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
-    group->cancelDownload();
+    group->cancelTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -134,7 +134,7 @@ TestGroupDownload::testCancelDownloadWithCancel() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
-    group->cancelDownload();
+    group->cancelTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -150,7 +150,7 @@ TestGroupDownload::testPauseNoDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
         _headers, _downloadFactory, _fileManager));
-    group->pauseDownload();
+    group->pauseTransfer();
 }
 
 void
@@ -170,7 +170,7 @@ TestGroupDownload::testPauseAllDownloads() {
     foreach(Download* download, downloads) {
         download->start();
     }
-    group->pauseDownload();
+    group->pauseTransfer();
     foreach(Download* download, downloads) {
         QCOMPARE(Download::PAUSE, download->state());
     }
@@ -195,7 +195,7 @@ TestGroupDownload::testPauseDownloadWithFinished() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
-    group->pauseDownload();
+    group->pauseTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -228,7 +228,7 @@ TestGroupDownload::testPauseDownloadWithCancel() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->cancel();
-    group->pauseDownload();
+    group->pauseTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -246,7 +246,7 @@ TestGroupDownload::testResumeNoDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
         _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _downloadFactory, _fileManager));
-    group->cancelDownload();
+    group->cancelTransfer();
 }
 
 void
@@ -270,7 +270,7 @@ TestGroupDownload::testResumeAllDownloads() {
         download->start();
         download->pause();
     }
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(Download* download, downloads) {
         QCOMPARE(Download::RESUME, download->state());
@@ -303,7 +303,7 @@ TestGroupDownload::testResumeWithFinished() {
         downloads[index]->start();
         downloads[index]->pause();
     }
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -336,7 +336,7 @@ TestGroupDownload::testResumeWidhCancel() {
         downloads[index]->start();
         downloads[index]->pause();
     }
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -365,7 +365,7 @@ TestGroupDownload::testReusmeNoStarted() {
         _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(Download* download, downloads) {
         QCOMPARE(Download::IDLE, download->state());
@@ -382,7 +382,7 @@ TestGroupDownload::testStartNoDownloads() {
         _rootPath, downloads, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    group->startDownload();
+    group->startTransfer();
 }
 
 void
@@ -402,7 +402,7 @@ TestGroupDownload::testStartAllDownloads() {
         _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
 
     foreach(Download* download, downloads) {
         QCOMPARE(Download::START, download->state());
@@ -428,7 +428,7 @@ TestGroupDownload::testStartAlreadyStarted() {
         _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
 
     foreach(Download* download, downloads) {
         download->start();
@@ -458,7 +458,7 @@ TestGroupDownload::testStartResume() {
         _downloadFactory, _fileManager));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
 
     foreach(Download* download, downloads) {
         download->start();
@@ -491,7 +491,7 @@ TestGroupDownload::testStartFinished() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
-    group->startDownload();
+    group->startTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -520,7 +520,7 @@ TestGroupDownload::testStartCancel() {
 
     QList<Download*> downloads = _downloadFactory->downloads();
     downloads[0]->cancel();
-    group->startDownload();
+    group->startTransfer();
 
     foreach(Download* download, downloads) {
         Download::State state = download->state();
@@ -550,7 +550,7 @@ TestGroupDownload::testSingleDownloadFinished() {
     QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
 
@@ -577,7 +577,7 @@ TestGroupDownload::testAllDownloadsFinished() {
     QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
     foreach(Download* download, downloads) {
         reinterpret_cast<FakeDownload*>(download)->emitFinished(deleteFile);
     }
@@ -605,7 +605,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
 
     reinterpret_cast<FakeDownload*>(downloads[0])->emitError("error");
 
@@ -633,7 +633,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
-    group->startDownload();
+    group->startTransfer();
     for (int index = 1; index < downloads.count(); index++) {
         reinterpret_cast<FakeDownload*>(downloads[index])->emitFinished("path");
     }
@@ -848,7 +848,7 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
     QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
     QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
 
-    group->startDownload();
+    group->startTransfer();
     QCOMPARE(startedSpy.count(), 1);
     QCOMPARE(finishedSpy.count(), 1);
 }

@@ -79,9 +79,9 @@ DownloadManager::init() {
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
-    connect(_downloadsQueue, &Queue::downloadRemoved,
+    connect(_downloadsQueue, &Queue::transferRemoved,
         this, &DownloadManager::onDownloadsChanged);
-    connect(_downloadsQueue, &Queue::downloadAdded,
+    connect(_downloadsQueue, &Queue::transferAdded,
         this, &DownloadManager::onDownloadsChanged);
 }
 
@@ -120,7 +120,7 @@ DownloadManager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
     if (!_db->store(download)) {
-        LOG(WARNING) << download->downloadId()
+        LOG(WARNING) << download->transferId()
             << "could not be stored in the db";
     }
     _db->connectToDownload(download);
@@ -231,7 +231,7 @@ DownloadManager::defaultThrottle() {
 void
 DownloadManager::setDefaultThrottle(qulonglong speed) {
     _throttle = speed;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
         downloads[path]->setThrottle(speed);
     }
@@ -240,9 +240,9 @@ DownloadManager::setDefaultThrottle(qulonglong speed) {
 void
 DownloadManager::allowGSMDownload(bool allowed) {
     _allowMobileData = allowed;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
-        downloads[path]->allowGSMDownload(allowed);
+        downloads[path]->allowGSMData(allowed);
     }
 }
 
@@ -263,14 +263,17 @@ QList<QDBusObjectPath>
 DownloadManager::getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value) {
     QList<QDBusObjectPath> paths;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
-        QVariantMap metadata = downloads[path]->metadata();
-        if (metadata.contains(name)) {
-            QVariant data = metadata[name];
-            if (data.canConvert(QMetaType::QString)
-                    && data.toString() == value)
-                paths << QDBusObjectPath(path);
+        auto down = qobject_cast<Download*>(downloads[path]);
+        if (down != nullptr) {
+            QVariantMap metadata = down->metadata();
+            if (metadata.contains(name)) {
+                QVariant data = metadata[name];
+                if (data.canConvert(QMetaType::QString)
+                        && data.toString() == value)
+                    paths << QDBusObjectPath(path);
+            }
         }
     }
     return paths;

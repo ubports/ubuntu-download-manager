@@ -29,7 +29,7 @@ FakeDownload::FakeDownload(const QString& id,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, metadata,
                 headers, parent),
-        _canDownload(true) {
+        _canTransfer(true) {
 }
 
 FakeDownload::FakeDownload(const QString& id,
@@ -44,22 +44,22 @@ FakeDownload::FakeDownload(const QString& id,
                            QObject* parent)
         : FileDownload(id, path, isConfined, rootPath, url, hash, algo,
                 metadata, headers, parent),
-        _canDownload(true) {
+        _canTransfer(true) {
 }
 
 bool
-FakeDownload::canDownload() {
+FakeDownload::canTransfer() {
     if (_recording) {
         MethodData methodData;
-        methodData.setMethodName("canDownload");
+        methodData.setMethodName("canTransfer");
         _called.append(methodData);
     }
-    return _canDownload;
+    return _canTransfer;
 }
 
 void
-FakeDownload::setCanDownload(bool canDownload) {
-    _canDownload = canDownload;
+FakeDownload::setCanTransfer(bool canTransfer) {
+    _canTransfer = canTransfer;
 }
 
 void
@@ -87,37 +87,37 @@ FakeDownload::throttle() {
 }
 
 void
-FakeDownload::cancelDownload() {
+FakeDownload::cancelTransfer() {
     if (_recording) {
         MethodData methodData;
-        methodData.setMethodName("cancelDownload");
+        methodData.setMethodName("cancelTransfer");
         _called.append(methodData);
     }
 }
 
 void
-FakeDownload::pauseDownload() {
+FakeDownload::pauseTransfer() {
     if (_recording) {
         MethodData methodData;
-        methodData.setMethodName("pauseDownload");
+        methodData.setMethodName("pauseTransfer");
         _called.append(methodData);
     }
 }
 
 void
-FakeDownload::resumeDownload() {
+FakeDownload::resumeTransfer() {
     if (_recording) {
         MethodData methodData;
-        methodData.setMethodName("resumeDownload");
+        methodData.setMethodName("resumeTransfer");
         _called.append(methodData);
     }
 }
 
 void
-FakeDownload::startDownload() {
+FakeDownload::startTransfer() {
     if (_recording) {
         MethodData methodData;
-        methodData.setMethodName("startDownload");
+        methodData.setMethodName("startTransfer");
         _called.append(methodData);
     }
 }

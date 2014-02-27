@@ -52,8 +52,8 @@ class Transfer : public QObject {
     void setState(Transfer::State state);
     virtual bool canTransfer();
     virtual bool isValid() const;
+    virtual QString lastError() const;
     bool addToQueue() const;
-    void setAddToQueue(bool addToQueue);
 
     // methods to be overridden by the children
     virtual bool pausable() = 0;
@@ -66,8 +66,8 @@ class Transfer : public QObject {
 
     virtual void setThrottle(qulonglong speed);
     virtual qulonglong throttle();
-    virtual void allowGSMDownload(bool allowed);
-    virtual bool isGSMDownloadAllowed();
+    virtual void allowGSMData(bool allowed);
+    virtual bool isGSMDataAllowed();
 
     virtual void cancel();
     virtual void pause();
@@ -84,6 +84,11 @@ class Transfer : public QObject {
     // internal signals
     void stateChanged();
     void throttleChanged();
+
+ protected:
+    void setIsValid(bool isValid);
+    void setAddToQueue(bool addToQueue);
+    void setLastError(const QString& lastError);
 
  private:
     bool _isValid = true;

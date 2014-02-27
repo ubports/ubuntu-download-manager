@@ -62,7 +62,7 @@ TestDownloadFactory::testCreateDownload() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
 
@@ -83,7 +83,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 
     // no need to worry about the pointer because it will be
@@ -128,7 +128,7 @@ TestDownloadFactory::testCreateGroupDownload() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
 
@@ -150,7 +150,7 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
     QCOMPARE(1, calledMethods.count());
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path->value());
 }
 
@@ -172,7 +172,7 @@ TestDownloadFactory::testCreateDownloadWithNullUuid() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
 
@@ -196,7 +196,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QCOMPARE(1, calledMethods.count());
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path->value());
 
     // not to worry, QSCopedPointer will take care of the pointer
@@ -225,7 +225,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndNullUuid() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 
     // not to worry the QScopedPointer will take care of the pointer
@@ -253,7 +253,7 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
     QCOMPARE(1, calledMethods.count());
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path->value());
 }
 
@@ -276,7 +276,7 @@ TestDownloadFactory::testCreateGroupDownloadWithNullUuid() {
         calledMethods[0].params().outParams()[0]);
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
 
@@ -293,7 +293,7 @@ TestDownloadFactory::testCreateDownloadForGroup() {
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
 
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
 
@@ -310,6 +310,6 @@ TestDownloadFactory::testCreateDownloadForGroupWithHash() {
     StringWrapper* path = reinterpret_cast<StringWrapper*>(
         calledMethods[0].params().outParams()[1]);
 
-    QCOMPARE(download->downloadId(), id->value());
+    QCOMPARE(download->transferId(), id->value());
     QCOMPARE(download->path(), path->value());
 }
