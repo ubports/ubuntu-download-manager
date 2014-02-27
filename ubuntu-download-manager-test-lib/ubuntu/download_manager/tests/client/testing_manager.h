@@ -23,6 +23,7 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/downloads/manager.h>  // comes from the priv lib, just for testing!!!!
 
+using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class TestingManager : public DownloadManager {

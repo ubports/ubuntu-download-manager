@@ -51,14 +51,14 @@ class FakeDownload : public FileDownload, public Fake {
                  const QMap<QString, QString> &headers,
                  QObject* parent = 0);
 
-    bool canDownload() override;
-    void setCanDownload(bool canDownload);
+    bool canTransfer() override;
+    void setCanTransfer(bool canTransfer);
     void setThrottle(qulonglong speed) override;
     qulonglong throttle() override;
-    void cancelDownload() override;
-    void pauseDownload() override;
-    void resumeDownload() override;
-    void startDownload() override;
+    void cancelTransfer() override;
+    void pauseTransfer() override;
+    void resumeTransfer() override;
+    void startTransfer() override;
 
     // useful methods to emit signals
     void emitFinished(const QString& path);
@@ -71,7 +71,7 @@ class FakeDownload : public FileDownload, public Fake {
     using Download::setAddToQueue;
 
  private:
-    bool _canDownload;
+    bool _canTransfer;
 };
 
 #endif  // FAKE_DOWNLOAD_H

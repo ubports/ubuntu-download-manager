@@ -24,7 +24,7 @@ FakeDownloadQueue::FakeDownloadQueue(QObject *parent)
 }
 
 void
-FakeDownloadQueue::add(Download* download) {
+FakeDownloadQueue::add(Transfer* download) {
     if (_recording) {
         QList<QObject*> inParams;
         inParams.append(download);
@@ -51,10 +51,10 @@ FakeDownloadQueue::setSize(int size) {
 
 void
 FakeDownloadQueue::emitDownloadAdded(const QString& path) {
-    emit downloadAdded(path);
+    emit transferAdded(path);
 }
 
 void
 FakeDownloadQueue::emitDownloadRemoved(const QString& path) {
-    emit downloadRemoved(path);
+    emit transferRemoved(path);
 }

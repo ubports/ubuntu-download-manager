@@ -48,6 +48,8 @@ class FakeTransfer : public Transfer, public Fake {
     void startTransfer();
     bool pausable();
 
+    using Transfer::setAddToQueue;
+
  private:
     bool _canTransfer;
 };

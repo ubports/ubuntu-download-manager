@@ -33,18 +33,10 @@ Download::Download(const QString& id,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
-    : QObject(parent),
-      _id(id),
-      _throttle(0),
-      _allowGSMDownload(true),
-      _state(Download::IDLE),
-      _dbusPath(path),
-      _isConfined(isConfined),
+    : Transfer(id, path, isConfined, parent),
       _rootPath(rootPath),
       _metadata(metadata),
       _headers(headers) {
-    _networkInfo = SystemNetworkInfo::instance();
-    setObjectName(id);
 }
 
 Download::~Download() {
@@ -54,78 +46,8 @@ Download::~Download() {
 }
 
 void
-Download::setState(Download::State state) {
-    if (_state != state) {
-        _state = state;
-        emit stateChanged();
-    }
-}
-
-void
 Download::setAdaptor(QObject* adaptor) {
     _adaptor = adaptor;
-}
-
-bool
-Download::canDownload() {
-    TRACE;
-    QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
-    switch (mode) {
-        case QNetworkInfo::UnknownMode:
-            qWarning() << "Network Mode unknown!";
-            return _allowGSMDownload;
-            break;
-        case QNetworkInfo::GsmMode:
-        case QNetworkInfo::CdmaMode:
-        case QNetworkInfo::WcdmaMode:
-        case QNetworkInfo::WimaxMode:
-        case QNetworkInfo::TdscdmaMode:
-        case QNetworkInfo::LteMode:
-            return _allowGSMDownload;
-        case QNetworkInfo::WlanMode:
-        case QNetworkInfo::EthernetMode:
-        case QNetworkInfo::BluetoothMode:
-            return true;
-        default:
-            return false;
-    }
-}
-
-void
-Download::setIsValid(bool isValid) {
-    _isValid = isValid;
-}
-
-void
-Download::setAddToQueue(bool addToQueue) {
-    _addToQueue = addToQueue;
-}
-
-void
-Download::setLastError(const QString& lastError) {
-    _lastError = lastError;
-}
-
-void
-Download::setThrottle(qulonglong speed) {
-    if (speed != _throttle) {
-        _throttle = speed;
-        emit throttleChanged();
-    }
-}
-
-void
-Download::allowGSMDownload(bool allowed) {
-    if (_allowGSMDownload != allowed) {
-        _allowGSMDownload = allowed;
-        // emit the signals so that they q knows what to do
-        emit stateChanged();
-    }
-}
-
-bool
-Download::isGSMDownloadAllowed() {
-    return _allowGSMDownload;
 }
 
 void

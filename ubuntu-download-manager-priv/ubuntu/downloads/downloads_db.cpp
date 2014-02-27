@@ -245,7 +245,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
 
     QSqlQuery query;
     query.prepare(PRESENT_SINGLE_DOWNLOAD);
-    query.bindValue(":uuid", download->downloadId());
+    query.bindValue(":uuid", download->transferId());
 
     query.exec();
     int rows = 0;
@@ -260,7 +260,7 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
         query.prepare(INSERT_SINGLE_DOWNLOAD);
     }
 
-    query.bindValue(":uuid", download->downloadId());
+    query.bindValue(":uuid", download->transferId());
     query.bindValue(":url", download->url().toString());
     query.bindValue(":dbus_path", download->path());
     query.bindValue(":local_path", download->filePath());
@@ -311,7 +311,7 @@ DownloadsDb::onDownloadChanged() {
         if (state == Download::FINISH
                 || state == Download::CANCEL
                 || state == Download::ERROR) {
-            LOG(INFO) << "Disconnecting from" << down->downloadId();
+            LOG(INFO) << "Disconnecting from" << down->transferId();
             disconnectFromDownload(down);
         }
     }

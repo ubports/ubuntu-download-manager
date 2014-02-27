@@ -102,7 +102,7 @@ FileDownload::~FileDownload() {
 }
 
 void
-FileDownload::cancelDownload() {
+FileDownload::cancelTransfer() {
     TRACE << _url;
 
     if (_reply != nullptr) {
@@ -121,7 +121,7 @@ FileDownload::cancelDownload() {
 }
 
 void
-FileDownload::pauseDownload() {
+FileDownload::pauseTransfer() {
     TRACE << _url;
 
     if (_reply == nullptr) {
@@ -153,7 +153,7 @@ FileDownload::pauseDownload() {
 }
 
 void
-FileDownload::resumeDownload() {
+FileDownload::resumeTransfer() {
     DOWN_LOG(INFO) << __PRETTY_FUNCTION__ << _url;
 
     if (_reply != nullptr) {
@@ -184,7 +184,7 @@ FileDownload::resumeDownload() {
 }
 
 void
-FileDownload::startDownload() {
+FileDownload::startTransfer() {
     TRACE << _url;
 
     if (_reply != nullptr) {
@@ -490,14 +490,14 @@ FileDownload::onOnlineStateChanged(bool online) {
     if (_connected && _downloading) {
         Download::State currentState = state();
         if (currentState == Download::START || currentState == Download::RESUME) {
-            resumeDownload();
+            resumeTransfer();
         }
     }
 
     // if no longer online yet we have a reply (that is, we are trying
     // to get data from the missing connection) we pause
     if (!_connected && _reply != nullptr) {
-        pauseDownload();
+        pauseTransfer();
         // set it to be downloading even when pause download sets it
         // to false
         _downloading = true;

@@ -136,7 +136,7 @@ TestDownloadManager::testCreateDownload() {
     FileDownload* download = reinterpret_cast<FileDownload*>(
         calledMethods[0].params().inParams()[0]);
     QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
-        download->downloadId());
+        download->transferId());
     QCOMPARE(QUrl(url), download->url());
 
     QVariantMap downloadMetadata = download->metadata();
@@ -224,7 +224,7 @@ TestDownloadManager::testCreateDownloadWithHash() {
     FileDownload* download = reinterpret_cast<FileDownload*>(
         calledMethods[0].params().inParams()[0]);
     QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
-        download->downloadId());
+        download->transferId());
     QCOMPARE(QUrl(url), download->url());
 
     QVariantMap downloadMetadata = download->metadata();

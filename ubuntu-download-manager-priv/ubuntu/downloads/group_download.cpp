@@ -151,7 +151,7 @@ GroupDownload::cancelAllDownloads() {
         if (state != Download::FINISH && state != Download::ERROR
                 && state != Download::CANCEL) {
             download->cancel();
-            download->cancelDownload();
+            download->cancelTransfer();
         }
     }
 
@@ -163,46 +163,46 @@ GroupDownload::cancelAllDownloads() {
 }
 
 void
-GroupDownload::cancelDownload() {
+GroupDownload::cancelTransfer() {
     TRACE;
     cancelAllDownloads();
     emit canceled(true);
 }
 
 void
-GroupDownload::pauseDownload() {
+GroupDownload::pauseTransfer() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
             GROUP_LOG(INFO) << "Pausing download of "
                 << download->url();
             download->pause();
-            download->pauseDownload();
+            download->pauseTransfer();
         }
     }
     emit paused(true);
 }
 
 void
-GroupDownload::resumeDownload() {
+GroupDownload::resumeTransfer() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::PAUSE) {
             download->resume();
-            download->resumeDownload();
+            download->resumeTransfer();
         }
     }
     emit resumed(true);
 }
 
 void
-GroupDownload::startDownload() {
+GroupDownload::startTransfer() {
     if (_downloads.count() > 0) {
         foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::IDLE) {
                 download->start();
-                download->startDownload();
+                download->startTransfer();
             }
         }
         emit started(true);
