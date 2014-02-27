@@ -95,3 +95,13 @@ Description: Ubuntu Download Manager - daemon
  Ubuntu Download Manager performs downloads from a centralized location.
  .
  This package includes the daemon.
+
+Package: ubuntu-download-manager-plugin
+Section: net
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libubuntu-download-manager-client-dev (= ${binary:Version}),
+Description: Ubuntu Download Manager Plugin
+ This package contains a QML Plugin to handle downloads from a pure QML
+ application, without the need to write any C++ code.
