@@ -24,8 +24,8 @@
 #include <QFileInfo>
 #include <QSslError>
 #include <ubuntu/transfers/system/hash_algorithm.h>
-#include "ubuntu/transfers/system/logger.h"
-#include "ubuntu/transfers/system/network_reply.h"
+#include <ubuntu/transfers/system/logger.h>
+#include <ubuntu/transfers/system/network_reply.h>
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload{" + parent()->objectName() + "} ":"") << "Download ID{" << objectName() << "}"
@@ -412,7 +412,7 @@ FileDownload::onDownloadCompleted() {
             return;
         }
     } else {
-        setState(Download::FINISH);
+        setState(Transfer::FINISH);
         DOWN_LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     }
@@ -467,7 +467,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
-        setState(Download::FINISH);
+        setState(Transfer::FINISH);
         DOWN_LOG(INFO) << "EMIT finished" << filePath();
         emit finished(filePath());
     } else {
@@ -645,7 +645,7 @@ FileDownload::cleanUpCurrentData() {
     }
 
     if (!success)
-        qWarning() << "Error " << error <<
+        DOWN_LOG(WARNING) << "Error " << error <<
             "removing file with path" << _filePath;
 }
 

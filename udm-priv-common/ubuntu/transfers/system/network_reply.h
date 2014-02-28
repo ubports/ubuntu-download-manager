@@ -49,6 +49,7 @@ class NetworkReply : public QObject {
  signals:
     // signals forwarded from the real reply object
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+    void uploadProgress(qint64 bytesSent, qint64 bytesTotal);
     void error(QNetworkReply::NetworkError code);
     void finished();
     void sslErrors(const QList<QSslError>& errors);

@@ -32,6 +32,8 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
     if (_reply != nullptr) {
         connect(_reply, &QNetworkReply::downloadProgress,
             this, &NetworkReply::downloadProgress);
+        connect(_reply, &QNetworkReply::uploadProgress,
+            this, &NetworkReply::uploadProgress);
         connect(_reply, &QNetworkReply::finished,
             this, &NetworkReply::finished);
         connect(_reply, &QNetworkReply::sslErrors,
