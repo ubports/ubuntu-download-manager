@@ -17,35 +17,36 @@
  */
 
 #include <ubuntu/transfers/system/apn_request_factory.h>
-#include "mms_file_download.h"
+#include "mms_file_upload.h"
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace UploadManager {
 
 namespace Daemon {
 
-MmsFileDownload::MmsFileDownload(const QString& id,
+MmsFileUpload::MmsFileUpload(const QString& id,
                     const QString& path,
                     bool isConfined,
-                    const QString& rootPath,
                     const QUrl& url,
+                    const QString& filePath,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
                     const QNetworkProxy& proxy,
                     QObject* parent)
-    : FileDownload(id, path, isConfined, rootPath, url,
+    : FileUpload(id, path, isConfined, url, filePath,
                    metadata, headers, parent){
     _requestFactory = new ApnRequestFactory(proxy);
     setAddToQueue(false);
 }
 
-MmsFileDownload::~MmsFileDownload() {
+MmsFileUpload::~MmsFileUpload() {
     delete _requestFactory;
 }
 
 }  // Daemon
 
-}  // DownloadManager
+}  // UploadManager
 
 }  // Ubuntu
+
