@@ -104,7 +104,7 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         ubuntu-download-manager-client,
+         libubuntu-download-manager-client0,
          qtdeclarative5-dev
 Description: Ubuntu Download Manager Plugin
  This package contains a QML Plugin to handle downloads from a pure QML
