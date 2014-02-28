@@ -64,6 +64,16 @@ AppArmor::getDBusPath(QString& id, QString& dbusPath) {
     dbusPath = UuidUtils::getDBusString(uuid);
 }
 
+
+QString
+AppArmor::getSecurePath(const QString& connName,
+                        QString& dbusPath,
+                        bool& isConfined) {
+    QString id = UuidUtils::getDBusString(_uuidFactory->createUuid());
+    getSecurePath(connName, id, dbusPath, isConfined);
+    return id;
+}
+
 QString
 AppArmor::getSecurePath(const QString& connName,
                     QString& dbusPath,
@@ -72,6 +82,15 @@ AppArmor::getSecurePath(const QString& connName,
     QString id = UuidUtils::getDBusString(_uuidFactory->createUuid());
     getSecurePath(connName, id, dbusPath, localPath, isConfined);
     return id;
+}
+
+void
+AppArmor::getSecurePath(const QString& connName,
+                        const QString& id,
+                        QString& dbusPath,
+                        bool& isConfined) {
+    QString ignorePath;
+    getSecurePath(connName, id, dbusPath, ignorePath, isConfined);
 }
 
 QString

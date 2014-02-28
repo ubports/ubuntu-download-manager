@@ -46,8 +46,15 @@ class AppArmor : public QObject {
 
     virtual QString getSecurePath(const QString& connName,
                                 QString& dbusPath,
+                                bool& isConfined);
+    virtual QString getSecurePath(const QString& connName,
+                                QString& dbusPath,
                                 QString& localPath,
                                 bool& isConfined);
+    virtual void getSecurePath(const QString& connName,
+                               const QString& id,
+                               QString& dbusPath,
+                               bool& isConfined);
     virtual void getSecurePath(const QString& connName,
                                const QString& id,
                                QString& dbusPath,

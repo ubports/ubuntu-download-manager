@@ -56,6 +56,8 @@ class FileUpload : public Transfer {
                QObject* parent = 0);
     virtual ~FileUpload();
 
+    QObject* adaptor() const;
+    void setAdaptor(QObject* adaptor);
     virtual bool pausable() override;
     virtual void cancelTransfer() override;
     virtual void pauseTransfer() override;

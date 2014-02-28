@@ -19,6 +19,13 @@
 #ifndef UPLOADER_LIB_UPLOAD_FACTORY_H
 #define UPLOADER_LIB_UPLOAD_FACTORY_H
 
+#include <QObject>
+#include <ubuntu/upload_manager/metatypes.h>
+#include <ubuntu/transfers/system/apparmor.h>
+#include <ubuntu/transfers/system/system_network_info.h>
+#include <ubuntu/transfers/system/uuid_factory.h>
+#include "file_upload.h"
+
 namespace Ubuntu {
 
 namespace UploadManager {
@@ -35,18 +42,29 @@ class Factory : public QObject {
     virtual ~Factory();
 
     virtual FileUpload* createUpload(const QString& dbusOwner,
-                                       const QUrl& url,
-                                       const QVariantMap& metadata,
-                                       const QMap<QString, QString>& headers);
+                                     const QUrl& url,
+                                     const QString& filePath,
+                                     const QVariantMap& metadata,
+                                     const QMap<QString, QString>& headers);
 
     virtual FileUpload* createMmsUpload(const QString& dbusOwner,
-                                       const QUrl& url,
-                                       const QVariantMap& metadata,
-                                       const QMap<QString, QString>& headers);
+                                        const QUrl& url,
+                                        const QString& filePath,
+                                        const QString& hostname,
+                                        int port,
+                                        const QString& username,
+                                        const QString& password);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
+ private:
+
+    void getUploadPath(const QString& dbusOwner,
+                       const QVariantMap& metadata,
+                       QString& id,
+                       QString& dbusPath,
+                       bool& isConfined);
 
  private:
     AppArmor* _apparmor;
