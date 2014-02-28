@@ -19,7 +19,7 @@
 #ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
-#include "ubuntu/transfers/base_daemon.h"
+#include <ubuntu/transfers/base_daemon.h>
 
 namespace Ubuntu {
 

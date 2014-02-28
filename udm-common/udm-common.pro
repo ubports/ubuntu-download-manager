@@ -13,6 +13,7 @@ SOURCES += \
     ubuntu/transfers/errors/http_error_struct.cpp \
     ubuntu/transfers/errors/network_error_struct.cpp \
     ubuntu/transfers/errors/process_error_struct.cpp \
+    ubuntu/transfers/system/logger.cpp \
     ubuntu/transfers/system/dbus_connection.cpp \
     ubuntu/transfers/system/hash_algorithm.cpp
 
@@ -21,6 +22,7 @@ HEADERS += \
     ubuntu/transfers/errors/http_error_struct.h \
     ubuntu/transfers/errors/network_error_struct.h \
     ubuntu/transfers/errors/process_error_struct.h \
+    ubuntu/transfers/system/logger.h \
     ubuntu/transfers/system/dbus_connection.h \
     ubuntu/transfers/system/hash_algorithm.h
 

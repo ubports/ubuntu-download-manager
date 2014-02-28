@@ -20,20 +20,24 @@
 
 namespace Ubuntu {
 
-using namespace General;
+using namespace Transfers;
 
 namespace UploadManager {
 
 namespace Daemon {
 
-const QString UploadManager::SERVICE_PATH;
+const QString UploadManager::SERVICE_PATH =
+    "com.canonical.applications.Uploader";
 
 UploadManager::UploadManager(Application* app,
                              DBusConnection* connection,
                              bool stoppable,
-                             QObject *parent) {
+                             QObject *parent)
+    : BaseManager(app, stoppable, parent) {
+    Q_UNUSED(connection);
 }
 
+/*
 UploadManager::UploadManager(Application* app,
                              DBusConnection* connection,
                              Factory* downloadFactory,
@@ -41,20 +45,28 @@ UploadManager::UploadManager(Application* app,
                              bool stoppable,
                              QObject *parent) {
 }
+*/
 
 UploadManager::~UploadManager() {
 }
 
 QList<QSslCertificate>
 UploadManager::acceptedCertificates() {
+    // TODO: Most be implemented
+    QList<QSslCertificate> certs;
+    return certs;
 }
 
 void
 UploadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
+    // TODO: Most be implemented
+    Q_UNUSED(certs);
 }
 
 void
 UploadManager::allowMobileUpload(bool allowed) {
+    // TODO: Most be implemented
+    Q_UNUSED(allowed);
 }
 
 QDBusObjectPath
@@ -64,31 +76,56 @@ UploadManager::createMmsUpload(const QString& url,
                                int port,
                                const QString& username,
                                const QString& password) {
+    // TODO: Most be implemented
+    Q_UNUSED(url);
+    Q_UNUSED(file);
+    Q_UNUSED(hostname);
+    Q_UNUSED(port);
+    Q_UNUSED(username);
+    Q_UNUSED(password);
+    return QDBusObjectPath();
 }
 
 QDBusObjectPath
 UploadManager::createUpload(UploadStruct upload) {
+    // TODO: Most be implemented
+    Q_UNUSED(upload);
+    return QDBusObjectPath();
 }
 
 qulonglong
 UploadManager::defaultThrottle() {
+    // TODO: Most be implemented
+    return 0;
 }
 
 QList<QDBusObjectPath>
 UploadManager::getAllUploads() {
+    // TODO: Most be implemented
+    QList<QDBusObjectPath> uploads;
+    return uploads;
 }
 
 QList<QDBusObjectPath>
 UploadManager::getAllUploadsWithMetadata(const QString& name,
                                          const QString& value) {
+    // TODO: Most be implemented
+    Q_UNUSED(name);
+    Q_UNUSED(value);
+    QList<QDBusObjectPath> uploads;
+    return uploads;
 }
 
 bool
 UploadManager::isMobileUploadAllowed() {
+    // TODO: Most be implemented
+    return false;
 }
 
 void
 UploadManager::setDefaultThrottle(qulonglong speed) {
+    // TODO: Most be implemented
+    Q_UNUSED(speed);
 }
 
 }  // Daemon

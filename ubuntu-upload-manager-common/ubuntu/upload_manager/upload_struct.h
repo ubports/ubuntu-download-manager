@@ -46,7 +46,6 @@ class UPLOAD_MANAGER_EXPORT UploadStruct {
                  const QMap<QString, QString>& headers);
     UploadStruct(const UploadStruct& other);
     UploadStruct& operator=(const UploadStruct& other);
-    ~UploadStruct();
 
     friend QDBusArgument &operator<<(QDBusArgument &argument,
         const UploadStruct& upload);

@@ -15,9 +15,9 @@ SUBDIRS += \
     ubuntu-download-manager-tests \
     ubuntu-download-manager-test-daemon \
     ubuntu-download-manager-client-tests \
-    ubuntu-upload-manager \
     ubuntu-upload-manager-common \
     ubuntu-upload-manager-priv \
+    ubuntu-upload-manager \
     udm-priv-common-tests
 
 udm-priv-common.depends = udm-common

@@ -28,12 +28,22 @@ INSTALLS += dbus_system_conf
 
 include( ../common-installs-config.pri )
 
-LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-priv
+LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common
 
-INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
-DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
+INCLUDEPATH += $$PWD/../udm-common
+DEPENDPATH += $$PWD/../udm-common
 
-LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
+LIBS += -L$$OUT_PWD/../udm-priv-common/ -ludm-priv-common
 
-INCLUDEPATH += $$PWD/../ubuntu-download-manager-common
-DEPENDPATH += $$PWD/../ubuntu-download-manager-common
+INCLUDEPATH += $$PWD/../udm-priv-common
+DEPENDPATH += $$PWD/../udm-priv-common
+
+LIBS += -L$$OUT_PWD/../ubuntu-upload-manager-priv/ -lubuntu-upload-manager-priv
+
+INCLUDEPATH += $$PWD/../ubuntu-upload-manager-priv
+DEPENDPATH += $$PWD/../ubuntu-upload-manager-priv
+
+LIBS += -L$$OUT_PWD/../ubuntu-upload-manager-common/ -lubuntu-upload-manager-common
+
+INCLUDEPATH += $$PWD/../ubuntu-upload-manager-common
+DEPENDPATH += $$PWD/../ubuntu-upload-manager-common

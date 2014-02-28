@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,18 +16,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QTimer>
-#include <QCoreApplication>
-#include <ubuntu/uploads/daemon.h>
+#include "logger.h"
 
-using namespace Ubuntu::UploadManager::Daemon;
-
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
-
-    auto daemon = new UploadDaemon();
-    // use a singleShot timer so that we start after exec so that exit works
-    QTimer::singleShot(0, daemon, SLOT(start()));
-
-    return a.exec();
+std::ostream& operator<<(std::ostream &out, StructList list) {
+    out << "(";
+    foreach(const GroupDownloadStruct& group, list) {
+        out << "{ url:" << group.getUrl() << " hash:" << group.getHash()
+            << " local file:" << group.getLocalFile() << "}";
+    }
+    out << ")";
+    return out;
 }

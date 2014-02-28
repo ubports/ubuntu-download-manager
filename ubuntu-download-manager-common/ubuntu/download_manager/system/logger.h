@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,18 +16,23 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QTimer>
-#include <QCoreApplication>
-#include <ubuntu/uploads/daemon.h>
+#ifndef DOWNLOADER_COMMON_LIB_LOGGING_H
+#define DOWNLOADER_COMMON_LIB_LOGGING_H
 
-using namespace Ubuntu::UploadManager::Daemon;
+#include <QList>
+#include <ubuntu/transfers/system/logger.h>
+#include <ubuntu/transfers/errors/auth_error_struct.h>
+#include <ubuntu/transfers/errors/http_error_struct.h>
+#include <ubuntu/transfers/errors/network_error_struct.h>
+#include <ubuntu/transfers/errors/process_error_struct.h>
+#include "ubuntu/download_manager/group_download_struct.h"
 
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::Transfers::Errors;
 
-    auto daemon = new UploadDaemon();
-    // use a singleShot timer so that we start after exec so that exit works
-    QTimer::singleShot(0, daemon, SLOT(start()));
+typedef QList<GroupDownloadStruct> StructList;
 
-    return a.exec();
-}
+std::ostream& operator<<(std::ostream &out, StructList list);
+
+#endif
+

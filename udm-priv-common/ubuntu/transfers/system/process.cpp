@@ -17,8 +17,8 @@
  */
 
 #include <QProcess>
+#include <ubuntu/transfers/system/logger.h>
 #include "process.h"
-#include "logger.h"
 
 namespace Ubuntu {
 

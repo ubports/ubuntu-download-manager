@@ -22,7 +22,6 @@ SOURCES += \
     ubuntu/transfers/system/request_factory.cpp \
     ubuntu/transfers/system/process_factory.cpp \
     ubuntu/transfers/system/process.cpp \
-    ubuntu/transfers/system/logger.cpp \
     ubuntu/transfers/system/file_manager.cpp \
     ubuntu/transfers/system/application.cpp \
     ubuntu/transfers/system/apparmor.cpp \
@@ -45,7 +44,6 @@ HEADERS += \
     ubuntu/transfers/system/request_factory.h \
     ubuntu/transfers/system/process_factory.h \
     ubuntu/transfers/system/process.h \
-    ubuntu/transfers/system/logger.h \
     ubuntu/transfers/system/file_manager.h \
     ubuntu/transfers/system/application.h \
     ubuntu/transfers/system/apparmor.h \

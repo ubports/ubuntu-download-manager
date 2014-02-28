@@ -24,7 +24,6 @@
 #include <QString>
 #include <QTextStream>
 #include <QtGlobal>
-#include <ubuntu/download_manager/metatypes.h>
 #include <glog/logging.h>
 #include <iostream>
 #include <sstream>
@@ -36,6 +35,8 @@ class QUrl;
 
 #define TRACE DLOG(INFO) << __PRETTY_FUNCTION__
 
+typedef QMap<QString, QString> StringMap;
+
 std::ostream& operator<<(std::ostream &out, const QString& var);
 std::ostream& operator<<(std::ostream &out, const QByteArray& var);
 std::ostream& operator<<(std::ostream &out, const QStringList& var);
@@ -44,7 +45,6 @@ std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors);
 std::ostream& operator<<(std::ostream &out, const QDBusError& error);
 std::ostream& operator<<(std::ostream &out, const QVariantMap& map);
 std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map);
-std::ostream& operator<<(std::ostream &out, StructList list);
 
 namespace Ubuntu {
 

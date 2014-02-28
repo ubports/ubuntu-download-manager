@@ -23,14 +23,15 @@
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
 #include <QSslCertificate>
-#include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/system/dbus_connection.h>
-#include <ubuntu/general/base_manager.h>
-#include <ubuntu/system/application.h>
+#include <ubuntu/upload_manager/metatypes.h>
+#include <ubuntu/transfers/system/application.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include <ubuntu/transfers/queue.h>
+#include <ubuntu/transfers/base_manager.h>
 
 namespace Ubuntu {
 
-using namespace General;
+using namespace Transfers;
 
 namespace UploadManager {
 
@@ -44,12 +45,13 @@ class UploadManager : public BaseManager {
                   DBusConnection* connection,
                   bool stoppable = false,
                   QObject *parent = 0);
-    UploadManager(Application* app,
+/*    UploadManager(Application* app,
                   DBusConnection* connection,
                   Factory* downloadFactory,
                   Queue* queue,
                   bool stoppable = false,
                   QObject *parent = 0);
+*/
     virtual ~UploadManager();
 
     virtual QList<QSslCertificate> acceptedCertificates();
