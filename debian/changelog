@@ -1,3 +1,11 @@
+ubuntu-download-manager (0.3+14.04.20140301-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * This fix ensures that the temp file is renamed to the final file
+    before the post-command is executed. (LP: #1286553)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 01 Mar 2014 18:07:30 +0000
+
 ubuntu-download-manager (0.3+14.04.20140224-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]
