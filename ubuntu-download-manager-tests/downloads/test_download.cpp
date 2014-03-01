@@ -1459,6 +1459,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QStringList processArgs = listWrapper->value();
     QCOMPARE(processCommand, command);
     QVERIFY(processArgs.contains(download->filePath()));
+    QVERIFY(QFile::exists(download->filePath()));
+    QVERIFY(!QFile::exists(download->filePath() + ".tmp"));
     QCOMPARE(processingSpy.count(), 1);
 }
 

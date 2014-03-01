@@ -389,6 +389,16 @@ FileDownload::onDownloadCompleted() {
         } else {
             // first item of the string list is the command
             // the rest is the arguments
+            DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
+                << "' to '" << _filePath << "'";
+
+            auto fileMan = FileManager::instance();
+            if (fileMan->exists(_tempFilePath)) {
+                LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
+                    << _filePath << "'";
+                fileMan->rename(_tempFilePath, _filePath);
+            }
+
             QString command = commandData.at(0);
             commandData.removeAt(0);
             QStringList args;
