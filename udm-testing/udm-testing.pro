@@ -17,6 +17,7 @@ SOURCES += \
      ubuntu/transfers/tests/system/application.cpp \
      ubuntu/transfers/tests/system/dbus_connection.cpp \
      ubuntu/transfers/tests/system/file_manager.cpp \
+     ubuntu/transfers/tests/system/filename_mutex.cpp \
      ubuntu/transfers/tests/system/network_reply.cpp \
      ubuntu/transfers/tests/system/process.cpp \
      ubuntu/transfers/tests/system/process_factory.cpp \
@@ -35,6 +36,7 @@ HEADERS += \
      ubuntu/transfers/tests/system/application.h \
      ubuntu/transfers/tests/system/dbus_connection.h \
      ubuntu/transfers/tests/system/file_manager.h \
+     ubuntu/transfers/tests/system/filename_mutex.h \
      ubuntu/transfers/tests/system/network_reply.h \
      ubuntu/transfers/tests/system/process.h \
      ubuntu/transfers/tests/system/process_factory.h \

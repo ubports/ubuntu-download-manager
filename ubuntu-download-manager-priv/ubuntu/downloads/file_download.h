@@ -24,14 +24,14 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/transfers/errors/auth_error_struct.h>
 #include <ubuntu/transfers/errors/http_error_struct.h>
 #include <ubuntu/transfers/errors/network_error_struct.h>
 #include <ubuntu/transfers/errors/process_error_struct.h>
 #include <ubuntu/transfers/system/file_manager.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
 #include "download.h"
-
-#define LOCAL_PATH_KEY "local-path"
 
 namespace Ubuntu {
 
@@ -123,8 +123,8 @@ class FileDownload : public Download {
     void onProcessFinished(int exitCode,
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
-    QString getSaveFileName();
-    QString uniqueFilePath(QString path);
+    void initFileNames();
+    void emitFinished();
 
  private:
     bool _downloading = false;
@@ -132,10 +132,12 @@ class FileDownload : public Download {
     qulonglong _totalSize = 0;
     QUrl _url;
     QString _filePath;
+    QString _tempFilePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
+    FileNameMutex* _fileNameMutex = nullptr;
     QList<QUrl> _visitedUrls;
 };
 
