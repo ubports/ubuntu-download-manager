@@ -105,6 +105,11 @@ FileManager::exists(const QString& path) {
     return QFile::exists(path);
 }
 
+bool
+FileManager::rename(const QString& oldName, const QString& newName) {
+    return QFile::rename(oldName, newName);
+}
+
 FileManager* FileManager::instance() {
     if(_instance == nullptr) {
         _mutex.lock();

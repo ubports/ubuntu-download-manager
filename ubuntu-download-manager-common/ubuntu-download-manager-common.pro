@@ -16,6 +16,7 @@ SOURCES += \
     ubuntu/download_manager/network_error_struct.cpp \
     ubuntu/download_manager/process_error_struct.cpp \
     ubuntu/download_manager/auth_error_struct.cpp \
+    ubuntu/download_manager/metadata.cpp \
     ubuntu/transfers/system/dbus_connection.cpp \
     ubuntu/transfers/system/hash_algorithm.cpp \
     ubuntu/upload_manager/upload_struct.cpp
@@ -29,6 +30,7 @@ public_headers = \
     ubuntu/download_manager/network_error_struct.h \
     ubuntu/download_manager/process_error_struct.h \
     ubuntu/download_manager/auth_error_struct.h \
+    ubuntu/download_manager/metadata.h \
     ubuntu/upload_manager/upload_struct.h \
     ubuntu/upload_manager/metatypes.h
 
