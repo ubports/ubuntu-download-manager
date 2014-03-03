@@ -26,6 +26,7 @@
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/network_reply.h"
+#include "ubuntu/transfers/system/filename_mutex.h"
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload{" + parent()->objectName() + "} ":"") << "Download ID{" << objectName() << "}"
@@ -34,18 +35,15 @@
 namespace {
 
     const QString DATA_FILE_NAME = "data.download";
-    const QString METADATA_FILE_NAME = "metadata";
-    const QString METADATA_COMMAND_KEY = "post-download-command";
-    const QString METADATA_COMMAND_FILE_KEY = "$file";
     const QString NETWORK_ERROR = "NETWORK ERROR";
     const QString HASH_ERROR = "HASH ERROR";
     const QString COMMAND_ERROR = "COMMAND ERROR";
     const QString SSL_ERROR = "SSL ERROR";
     const QString FILE_SYSTEM_ERROR = "FILE SYSTEM ERROR: %1";
+    const QString TEMP_EXTENSION = ".tmp";
     const QString AUTH_ERROR = "AUTHENTICATION ERROR";
     const QString PROXY_AUTH_ERROR = "PROXY_AUTHENTICATION ERROR";
     const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
-
 }
 
 namespace Ubuntu {
@@ -116,6 +114,9 @@ FileDownload::cancelTransfer() {
 
     // remove current data and metadata
     cleanUpCurrentData();
+    // unlock the file name so that other downloads can use it it if is
+    // no used in the file system
+    _fileNameMutex->unlockFileName(_filePath);
     _downloading = false;
     emit canceled(true);
 }
@@ -197,7 +198,7 @@ FileDownload::startTransfer() {
 
     // create file that will be used to maintain the state of the
     // download when resumed.
-    _currentData = FileManager::instance()->createFile(_filePath);
+    _currentData = FileManager::instance()->createFile(_tempFilePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
@@ -326,11 +327,13 @@ FileDownload::onRedirect(QUrl redirect) {
     _reply->deleteLater();
     _reply = nullptr;
 
-    // clean the local file
+    // clean the local file without unlocking the file the reason for
+    // this is that the file pat is going to be reused to store the
+    // data from the redirect
     cleanUpCurrentData();
 
     // perform again the request but do not emit started signal
-    _currentData = FileManager::instance()->createFile(_filePath);
+    _currentData = FileManager::instance()->createFile(_tempFilePath);
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
@@ -369,7 +372,7 @@ FileDownload::onDownloadCompleted() {
     // means we are done here else we execute the command AND raise the
     // finish signals once the command was done (or an error occurred in
     // the command execution.
-    if (metadata().contains(METADATA_COMMAND_KEY)) {
+    if (metadata().contains(Metadata::COMMAND_KEY)) {
         // just emit processing if we DO NOT have a hash because else we
         // already emitted it.
         if (_hash.isEmpty()) {
@@ -377,7 +380,7 @@ FileDownload::onDownloadCompleted() {
         }
         // toStringList will return an empty list if it cannot be converted
         QStringList commandData =
-            metadata()[METADATA_COMMAND_KEY].toStringList();
+            metadata()[Metadata::COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
             DOWN_LOG(ERROR) << "COMMAND DATA MISSING";
             emitError(COMMAND_ERROR);
@@ -390,7 +393,7 @@ FileDownload::onDownloadCompleted() {
             QStringList args;
 
             foreach(const QString& arg, commandData) {
-                if (arg == METADATA_COMMAND_FILE_KEY)
+                if (arg == Metadata::COMMAND_FILE_KEY)
                     args << filePath();
                 else
                     args << arg;
@@ -412,9 +415,7 @@ FileDownload::onDownloadCompleted() {
             return;
         }
     } else {
-        setState(Download::FINISH);
-        DOWN_LOG(INFO) << "EMIT finished" << filePath();
-        emit finished(filePath());
+        emitFinished();
     }
 
     // clean the reply
@@ -467,9 +468,20 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
-        setState(Download::FINISH);
-        DOWN_LOG(INFO) << "EMIT finished" << filePath();
-        emit finished(filePath());
+        emitFinished();
+        // remove the file because that is the contract that we have with
+        // the clients
+        auto fileMan = FileManager::instance();
+
+        if (fileMan->exists(_tempFilePath)) {
+            LOG(INFO) << "Removing '" << _tempFilePath << "'";
+            fileMan->remove(_tempFilePath);
+        }
+
+        if (fileMan->exists(_filePath)) {
+            LOG(INFO) << "Removing '" << _filePath << "'";
+            fileMan->remove(_filePath);
+        }
     } else {
         auto standardOut = p->readAllStandardOutput();
         auto standardErr = p->readAllStandardError();
@@ -507,6 +519,7 @@ FileDownload::onOnlineStateChanged(bool online) {
 void
 FileDownload::init() {
     _requestFactory = RequestFactory::instance();
+    _fileNameMutex = FileNameMutex::instance();
     SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
     _connected = networkInfo->isOnline();
     _downloading = false;
@@ -515,7 +528,7 @@ FileDownload::init() {
     connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
         this, &FileDownload::onOnlineStateChanged);
 
-    _filePath = getSaveFileName();
+    initFileNames();
 
     // ensure that the download is valid
     if (!_url.isValid()) {
@@ -563,66 +576,52 @@ FileDownload::flushFile() {
     return flushed;
 }
 
-QString
-FileDownload::getSaveFileName() {
+void
+FileDownload::initFileNames() {
+    // the mutex will ensure that we do not have race conditions about
+    // the file names in the download manager
     QString path = _url.path();
     QString basename = QFileInfo(path).fileName();
 
     if (basename.isEmpty())
         basename = DATA_FILE_NAME;
 
-    QVariantMap metadataMap = metadata();
-    QString finalPath;
+    auto metadataMap = metadata();
 
-    if (!isConfined() && metadataMap.contains(LOCAL_PATH_KEY)) {
-        finalPath = metadataMap[LOCAL_PATH_KEY].toString();
+    if (!isConfined() && metadataMap.contains(Metadata::LOCAL_PATH_KEY)) {
+        _filePath = metadataMap[Metadata::LOCAL_PATH_KEY].toString();
+        _tempFilePath = _fileNameMutex->lockFileName(
+            _filePath + TEMP_EXTENSION);
 
         // in this case and because the app is not confined we are
         // going to check if the file exists, if it does we will
         // raise an error
-        if (QFile::exists(finalPath)) {
+        if (QFile::exists(_filePath)) {
             setIsValid(false);
             setLastError(QString("File already exists at: '%1'").arg(
-                finalPath));
+                _filePath));
         }
     } else {
-        finalPath = rootPath() + QDir::separator() + basename;
-        if (QFile::exists(finalPath)) {
-            finalPath = uniqueFilePath(finalPath);
-        }
-
+        auto desiredPath = rootPath() + QDir::separator() + basename;
+        _filePath = _fileNameMutex->lockFileName(desiredPath);
+        _tempFilePath = _filePath + TEMP_EXTENSION;
     }
-
-    return finalPath;
 }
 
-QString
-FileDownload::uniqueFilePath(QString path) {
-    QFileInfo fileInfo(path);
+void
+FileDownload::emitFinished() {
+    auto fileMan = FileManager::instance();
 
-    // Split the file into 2 parts - dot+extension, and everything else. For
-    // example, "path/file.tar.gz" becomes "path/file"+".tar.gz", while
-    // "path/file" (note lack of extension) becomes "path/file"+"".
-    auto secondPart = fileInfo.completeSuffix();
-    auto firstPart = path;
+    LOG(INFO) << "EMIT finished" << filePath();
+    setState(Download::FINISH);
 
-    if (!secondPart.isEmpty()) {
-        secondPart = "." + secondPart;
-        firstPart = path.left(path.size() - secondPart.size());
+    if (fileMan->exists(_tempFilePath)) {
+        LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
+            << _filePath << "'";
+        fileMan->rename(_tempFilePath, _filePath);
     }
-
-    // Try with an ever-increasing number suffix, until we've reached a file
-    // that does not yet exist.
-    for (int ii = 1; ; ii++) {
-        // Construct the new file name by adding the unique number between the
-        // first and second part.
-        auto finalPath = QString("%1 (%2)%3").arg(firstPart).arg(ii).arg(secondPart);
-        // If no file exists with the new name, return it.
-        if (!QFile::exists(finalPath)) {
-            return finalPath;
-        }
-    }  // for
-    return path;
+    _fileNameMutex->unlockFileName(_filePath);
+    emit finished(_filePath);
 }
 
 void
@@ -638,7 +637,7 @@ FileDownload::cleanUpCurrentData() {
         _currentData->deleteLater();
         _currentData = nullptr;
     } else {
-        QScopedPointer<QFile> tempFile(new QFile(_filePath));
+        QScopedPointer<QFile> tempFile(new QFile(_tempFilePath));
         success = tempFile->remove();
         if (!success)
             error = tempFile->error();
@@ -674,6 +673,8 @@ FileDownload::emitError(const QString& error) {
     _reply->deleteLater();
     _reply = nullptr;
     cleanUpCurrentData();
+    // let other downloads use the same file name
+    _fileNameMutex->unlockFileName(_filePath);
     Download::emitError(error);
 }
 

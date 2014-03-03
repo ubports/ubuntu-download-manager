@@ -84,7 +84,7 @@ FakeFileManager::remove(const QString& path) {
         MethodData methodData("remove", params);
         _called.append(methodData);
     }
-    return true;
+    return QFile::remove(path);
 }
 
 }  // Ubuntu
