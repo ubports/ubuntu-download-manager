@@ -613,15 +613,16 @@ void
 FileDownload::emitFinished() {
     auto fileMan = FileManager::instance();
 
-    DOWN_LOG(INFO) << "EMIT finished" << filePath();
-    setState(Download::FINISH);
-
     if (fileMan->exists(_tempFilePath)) {
         DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
         fileMan->rename(_tempFilePath, _filePath);
     }
+
+    setState(Download::FINISH);
     unlockFilePath();
+
+    DOWN_LOG(INFO) << "EMIT finished" << filePath();
     emit finished(_filePath);
 }
 
