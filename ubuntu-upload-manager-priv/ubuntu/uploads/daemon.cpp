@@ -36,10 +36,10 @@ UploadDaemon::UploadDaemon(QObject *parent)
 }
 
 UploadDaemon::UploadDaemon(ManagerFactory* managerFactory,
-                               System::Application* app,
-                               System::DBusConnection* conn,
-                               System::Timer* timer,
-                               QObject *parent)
+                           System::Application* app,
+                           System::DBusConnection* conn,
+                           System::Timer* timer,
+                           QObject *parent)
     : BaseDaemon(managerFactory,
                  new UploadAdaptorFactory(),
                  app, conn, timer, parent) {
