@@ -35,7 +35,8 @@ SOURCES += ubuntu/download_manager/tests/base_testcase.cpp \
            ubuntu/download_manager/tests/client/testing_interface.cpp \
            ubuntu/download_manager/tests/client/testing_file_download.cpp \
            ubuntu/download_manager/tests/server/apn_request_factory.cpp \
-    ubuntu/download_manager/tests/server/group_download.cpp
+           ubuntu/download_manager/tests/server/filename_mutex.cpp \
+           ubuntu/download_manager/tests/server/group_download.cpp
 
 HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/fake.h\
@@ -64,6 +65,7 @@ HEADERS += ubuntu/download_manager/tests/base_testcase.h \
            ubuntu/download_manager/tests/client/testing_interface.h \
            ubuntu/download_manager/tests/client/testing_file_download.h \
            ubuntu/download_manager/tests/server/apn_request_factory.h \
+           ubuntu/download_manager/tests/server/filename_mutex.h \
            ubuntu/download_manager/tests/server/group_download.h
 
 LIBS += -L$$OUT_PWD/../udm-common/ -ludm-common

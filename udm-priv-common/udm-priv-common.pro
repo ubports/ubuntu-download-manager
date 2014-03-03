@@ -22,6 +22,7 @@ SOURCES += \
     ubuntu/transfers/system/process.cpp \
     ubuntu/transfers/system/logger.cpp \
     ubuntu/transfers/system/file_manager.cpp \
+    ubuntu/transfers/system/filename_mutex.cpp \
     ubuntu/transfers/system/application.cpp \
     ubuntu/transfers/system/apparmor.cpp \
     ubuntu/transfers/system/network_reply.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     ubuntu/transfers/system/process.h \
     ubuntu/transfers/system/logger.h \
     ubuntu/transfers/system/file_manager.h \
+    ubuntu/transfers/system/filename_mutex.h \
     ubuntu/transfers/system/application.h \
     ubuntu/transfers/system/apparmor.h \
     ubuntu/transfers/system/network_reply.h \
