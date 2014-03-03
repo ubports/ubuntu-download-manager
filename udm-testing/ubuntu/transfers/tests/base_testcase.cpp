@@ -52,7 +52,7 @@ BaseTestCase::testDirectory() {
     pathComponents << dataPath << objectName();
     QString path = pathComponents.join(QDir::separator());
 
-    if (!QDir().exists(path))
+    if (!QDir().exists(path)) 
         QDir().mkpath(path);
 
     return path;

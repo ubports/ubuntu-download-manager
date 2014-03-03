@@ -27,7 +27,8 @@ SOURCES += \
     downloads/state_machines/test_file_download_sm.cpp \
     system/test_apn_request_factory.cpp \
     downloads/test_mms_download.cpp \
-    downloads/test_base_download.cpp
+    downloads/test_base_download.cpp \
+    system/test_filename_mutex.cpp
 
 HEADERS += \
     downloads/test_download.h \
@@ -46,7 +47,8 @@ HEADERS += \
     downloads/state_machines/test_file_download_sm.h \
     system/test_apn_request_factory.h \
     downloads/test_mms_download.h \
-    downloads/test_base_download.h
+    downloads/test_base_download.h \
+    system/test_filename_mutex.h
 
 
 exists ($$OUT_PWD/data){
