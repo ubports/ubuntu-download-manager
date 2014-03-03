@@ -18,6 +18,7 @@
 
 #include <QScopedPointer>
 #include <QSignalSpy>
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
@@ -667,18 +668,18 @@ TestGroupDownload::testLocalPathSingleDownload() {
 
     // assert that each metadata has the local file set
     QVariantMap downMeta = downloads[0]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[0].getLocalFile());
 
     downMeta = downloads[1]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[1].getLocalFile());
 
     downMeta = downloads[2]->metadata();
-    QVERIFY(downMeta.contains(LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[LOCAL_PATH_KEY].toString(),
+    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
+    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
         downloadsStruct[2].getLocalFile());
 }
 

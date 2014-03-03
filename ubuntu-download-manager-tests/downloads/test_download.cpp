@@ -52,6 +52,8 @@ TestDownload::init() {
     ProcessFactory::setInstance(_processFactory);
     _fileManager = new FakeFileManager();
     FileManager::setInstance(_fileManager);
+    _fileNameMutex = new FakeFileNameMutex();
+    FileNameMutex::setInstance(_fileNameMutex);
 }
 
 void
@@ -62,6 +64,7 @@ TestDownload::cleanup() {
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
     FileManager::deleteInstance();
+    FileNameMutex::deleteInstance();
 }
 
 void
@@ -713,7 +716,9 @@ TestDownload::testStartDownload() {
     QCOMPARE(spy.count(), 1);
 
     // assert that the files does exist in the system
-    QFileInfo info = QFileInfo(download->filePath());
+    QFileInfo info(download->filePath());
+    QVERIFY(!info.exists());
+    info = QFileInfo(download->filePath() + ".tmp");
     QVERIFY(info.exists());
 }
 
@@ -737,6 +742,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
 
     // assert that the files does exist in the system
     QFileInfo info = QFileInfo(download->filePath());
+    QVERIFY(!info.exists());
+    info = QFileInfo(download->filePath() + ".tmp");
     QVERIFY(info.exists());
 }
 
@@ -1641,8 +1648,9 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     _processFactory->record();
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
 
     // write something in the expected file
     QString fileName = download->filePath();
@@ -1670,6 +1678,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(0, QProcess::NormalExit);
+    QTRY_COMPARE(1, finishedSpy.count());
     // assert that the file does not longer exist in the system
     QVERIFY(!QFile::exists(fileName));
 }
@@ -1903,7 +1912,7 @@ TestDownload::testDownloadPresentSeveralFiles_data() {
 
     QTest::newRow("One") << 1;
     QTest::newRow("Some") << 3;
-    QTest::newRow("Several") << 10; 
+    QTest::newRow("Several") << 10;
     QTest::newRow("Plenti") << 100;
 }
 
@@ -1923,11 +1932,14 @@ TestDownload::testDownloadPresentSeveralFiles() {
 
     QFileInfo fileInfo(filePath);
     auto suffix = "." + fileInfo.completeSuffix();
+    qDebug() << "SUFIX" << suffix;
     auto prefix = filePath.left(filePath.size() - suffix.size());
+    qDebug() << "PREFIX" << prefix;
 
     // write the rest of the files
     for(int index=1; index < count; index++) {
         auto otherPath = QString("%1 (%2)%3").arg(prefix).arg(index).arg(suffix);
+        qDebug() << "Writing a new file" << otherPath;
         QScopedPointer<QFile> otherFile(new QFile(otherPath));
         otherFile->open(QIODevice::ReadWrite | QFile::Append);
         otherFile->write("data data data!");
@@ -2221,4 +2233,185 @@ TestDownload::testSeveralRedirects() {
     QTRY_COMPARE(errorSpy.count(), 0);
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(redirectCount, urls.count());
+}
+
+void
+TestDownload::testRedirectDoesNotUnlockPath() {
+    _fileNameMutex->record();
+
+    QUrl redirectUrl("http://redirect.example.com");
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = qobject_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attr for a redirect to a new url
+    // makes the process to be executed
+    reply->setAttribute(QNetworkRequest::RedirectionTargetAttribute,
+        redirectUrl);
+    QSignalSpy replySpy(_reqFactory, SIGNAL(requestCreated(NetworkReply*)));
+
+    // use a spy to wait for the second reply
+    reply->emitFinished();
+
+    // ensure that a second request is performed
+    QTRY_COMPARE(1, replySpy.count());
+
+    reply = qobject_cast<FakeNetworkReply*>(
+        replySpy.takeFirst().at(0).value<NetworkReply*>());
+
+    download->pause();
+
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+    QSignalSpy networkErrorSpy(download.data(),
+        SIGNAL(networkError(NetworkErrorStruct)));
+    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
+
+    reply->emitFinished();
+
+    QTRY_COMPARE(networkErrorSpy.count(), 0);
+    QTRY_COMPARE(errorSpy.count(), 0);
+    QTRY_COMPARE(finishedSpy.count(), 1);
+
+    // ensure that we only called lock and unlock once and not several times
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+}
+
+void
+TestDownload::testCancelUnlocksPath() {
+    _fileNameMutex->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    QSignalSpy spy(download.data(),
+        SIGNAL(canceled(bool)));  // NOLINT(readability/function)
+
+    download->start();  // change state
+    download->startDownload();
+    download->cancel();  // change state
+    download->cancelDownload();  // method under test
+
+    // assert that the filename was correctly managed
+    auto calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+}
+
+void
+TestDownload::testFinishUnlocksPath() {
+    _fileNameMutex->record();
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
+        _rootPath, _url, _metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finish signal and expect it to be raised
+    emit reply->finished();
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(download->state(), Download::FINISH);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+}
+
+void
+TestDownload::testProcessFinishUnlocksPath() {
+    _fileNameMutex->record();
+    _processFactory->record();
+    _reqFactory->record();
+
+    QString command = "cd";
+    QVariantMap metadata;
+    metadata["post-download-command"] = command;
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    process->emitFinished(0, QProcess::NormalExit);
+    QTRY_COMPARE(spy.count(), 1);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+}
+
+void
+TestDownload::testErrorUnlocksPath() {
+    // fake an error and make sure that unlock is called
+    _fileNameMutex->record();
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, 404);
+    reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, "");
+
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ContentAccessDenied);
+    QCOMPARE(errorSpy.count(), 1);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
 }
