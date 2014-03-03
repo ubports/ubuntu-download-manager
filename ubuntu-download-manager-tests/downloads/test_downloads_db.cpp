@@ -47,6 +47,8 @@ TestDownloadsDb::TestDownloadsDb(QObject *parent)
 void
 TestDownloadsDb::init() {
     BaseTestCase::init();
+    _fileNameMutex = new FakeFileNameMutex();
+    FileNameMutex::setInstance(_fileNameMutex);
     _db = DownloadsDb::instance();
 }
 
@@ -62,6 +64,7 @@ TestDownloadsDb::cleanup() {
     QFile::remove(dbFile);
     SystemNetworkInfo::deleteInstance();
     FileManager::deleteInstance();
+    FileNameMutex::deleteInstance();
 }
 
 void
@@ -244,8 +247,8 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
-    QScopedPointer<FakeDownload> secondDownload(new FakeDownload(id, newPath, true, "",
-        url, hash, hashAlgoString, metadata, headers));
+    QScopedPointer<FakeDownload> secondDownload(new FakeDownload(id,
+        newPath, true, "", url, hash, hashAlgoString, metadata, headers));
 
     _db->storeSingleDownload(secondDownload.data());
 
@@ -262,9 +265,6 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
 
         QString dbDbusPath = query.value(1).toString();
         QCOMPARE(newPath, dbDbusPath);
-
-        QString dbLocalPath = query.value(2).toString();
-        QCOMPARE(dbLocalPath, download->filePath());
 
         QString dbHash = query.value(3).toString();
         QCOMPARE(hash, dbHash);

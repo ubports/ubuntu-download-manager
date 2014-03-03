@@ -41,7 +41,8 @@ SOURCES += \
     ubuntu/system/network_reply.cpp \
     ubuntu/system/dbus_proxy.cpp \
     ubuntu/system/apn_request_factory.cpp \
-    ubuntu/system/apn_proxy.cpp
+    ubuntu/system/apn_proxy.cpp \
+    ubuntu/system/filename_mutex.cpp
 
 HEADERS +=\
     ubuntu/udm/daemon.h \
@@ -74,7 +75,8 @@ HEADERS +=\
     ubuntu/system/network_reply.h \
     ubuntu/system/dbus_proxy.h \
     ubuntu/system/apn_request_factory.h \
-    ubuntu/system/apn_proxy.h
+    ubuntu/system/apn_proxy.h \
+    ubuntu/system/filename_mutex.h
 
 include(../common-installs-config.pri)
 

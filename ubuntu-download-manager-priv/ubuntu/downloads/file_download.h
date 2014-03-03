@@ -28,10 +28,9 @@
 #include <ubuntu/download_manager/http_error_struct.h>
 #include <ubuntu/download_manager/network_error_struct.h>
 #include <ubuntu/download_manager/process_error_struct.h>
+#include "ubuntu/system/filename_mutex.h"
 #include "ubuntu/system/file_manager.h"
 #include "download.h"
-
-#define LOCAL_PATH_KEY "local-path"
 
 namespace Ubuntu {
 
@@ -121,8 +120,8 @@ class FileDownload : public Download {
     void onProcessFinished(int exitCode,
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
-    QString getSaveFileName();
-    QString uniqueFilePath(QString path);
+    void initFileNames();
+    void emitFinished();
 
  private:
     bool _downloading = false;
@@ -130,10 +129,12 @@ class FileDownload : public Download {
     qulonglong _totalSize = 0;
     QUrl _url;
     QString _filePath;
+    QString _tempFilePath;
     QString _hash;
     QCryptographicHash::Algorithm _algo;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
+    FileNameMutex* _fileNameMutex = nullptr;
     QList<QUrl> _visitedUrls;
 };
 
