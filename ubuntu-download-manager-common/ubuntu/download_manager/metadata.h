@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,41 +16,41 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
-#define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
+#ifndef DOWNLOADER_LIB_METADATA_H
+#define DOWNLOADER_LIB_METADATA_H
 
-#include <ubuntu/transfers/system/dbus_connection.h>
-#include "ubuntu/transfers/system/application.h"
-#include "ubuntu/transfers/system/timer.h"
-#include "ubuntu/transfers/base_daemon.h"
+#include <QMap>
+#include <QVariant>
 
 namespace Ubuntu {
 
-using namespace Transfers;
-
 namespace DownloadManager {
 
-namespace Daemon {
-
-class DownloadDaemon : public BaseDaemon {
-    Q_OBJECT
+class Metadata : public QVariantMap {
 
  public:
-    DownloadDaemon(QObject *parent = 0);
-    DownloadDaemon(ManagerFactory* managerFactory,
-                   System::Application* app,
-                   System::DBusConnection* conn,
-                   System::Timer* timer,
-                   QObject *parent = 0);
 
-    virtual void start();
-    virtual void start(const QString& path) override;
+    static const QString COMMAND_KEY;
+    static const QString COMMAND_FILE_KEY;
+    static const QString LOCAL_PATH_KEY;
+    static const QString OBJECT_PATH_KEY;
+
+    // accessors to simplify the use of the metadata
+    QString command() const;
+    void setCommand(const QString& command);
+    bool hasCommand() const;
+
+    QString localPath() const;
+    void setLocalPath(const QString& localPath);
+    bool hasLocalPath() const;
+
+    QString objectPath() const;
+    void setObjectPath(const QString& path);
+    bool hasObjectPath() const;
 };
-
-}  // Daemon
 
 }  // DownloadManager
 
 }  // Ubuntu
 
-#endif
+#endif // METADATA_H
