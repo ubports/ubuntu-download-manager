@@ -24,6 +24,7 @@
 #include <ubuntu/downloads/downloads_db.h>
 #include <ubuntu/transfers/tests/base_testcase.h>
 #include <ubuntu/transfers/tests/test_runner.h>
+#include <ubuntu/transfers/tests/system/filename_mutex.h>
 
 using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::Transfers::System;
@@ -70,6 +71,7 @@ class TestDownloadsDb : public BaseTestCase {
 
  private:
     DownloadsDb* _db;
+    FakeFileNameMutex* _fileNameMutex;
 };
 
 DECLARE_TEST(TestDownloadsDb)
