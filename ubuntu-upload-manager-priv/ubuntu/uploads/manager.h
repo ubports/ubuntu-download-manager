@@ -67,6 +67,10 @@ class UploadManager : public BaseManager {
                                     int port,
                                     const QString& username,
                                     const QString& password);
+    QDBusObjectPath createUpload(const QString& url,
+                                 const QString& filePath,
+                                 const QVariantMap& metadata,
+                                 StringMap headers);
     QDBusObjectPath createUpload(UploadStruct upload);
     qulonglong defaultThrottle();
     QList<QDBusObjectPath> getAllUploads();
@@ -78,11 +82,17 @@ class UploadManager : public BaseManager {
 
  signals:
     void uploadCreated(const QDBusObjectPath& path);
+    void sizeChanged(int size);
 
  private:
     typedef std::function<FileUpload*(QString)> UploadCreationFunc;
-    QDBusObjectPath createDownload(UploadCreationFunc createDownloadFunc);
+
+    QDBusObjectPath createUpload(UploadCreationFunc createUploadFunc);
     void onUploadsChanged(QString);
+    QDBusObjectPath registerUpload(FileUpload* upload);
+
+    void init();
+
 
  private:
     Application* _app = nullptr;
