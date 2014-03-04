@@ -2459,9 +2459,9 @@ TestDownload::testCancelUnlocksPathFromMetadata() {
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     download->cancel();  // change state
-    download->cancelDownload();  // method under test
+    download->cancelTransfer();  // method under test
 
     // assert that the filename was correctly managed
     auto calledMethods = _fileNameMutex->calledMethods();
@@ -2491,7 +2491,7 @@ TestDownload::testFinishUnlocksPathFromMetadata() {
     QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -2534,7 +2534,7 @@ TestDownload::testProcessFinishUnlocksPathFromMetadata() {
     QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -2581,7 +2581,7 @@ TestDownload::testErrorUnlocksPathFromMetadata() {
     QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
