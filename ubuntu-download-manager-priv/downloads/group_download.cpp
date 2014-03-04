@@ -366,7 +366,7 @@ GroupDownload::onFinished(const QString& file) {
 #ifndef NDEBUG
         foreach(const QString& file, _finishedDownloads) {
            auto parentDir = QFileInfo(file).dir();
-           DLOG(INFO) << "File is dir '" << parentDir.absolutePath() << "' :";
+           DLOG(INFO) << "Files for path dir '" << parentDir.absolutePath() << "' :";
            auto children = parentDir.entryList();
            foreach(const QString& child, children) {
                DLOG(INFO) << "\t" << child;
