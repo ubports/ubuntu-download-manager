@@ -24,7 +24,7 @@
 #include "file_download.h"
 #include "group_download.h"
 
-#define GROUP_LOG(LEVEL) LOG(LEVEL) << "Group Download{" << objectName() << "}"
+#define GROUP_LOG(LEVEL) LOG(LEVEL) << "Group Download {" << objectName() << " } "
 
 namespace Ubuntu {
 
@@ -167,6 +167,7 @@ void
 GroupDownload::cancelTransfer() {
     TRACE;
     cancelAllDownloads();
+    GROUP_LOG(INFO) << "EMIT canceled";
     emit canceled(true);
 }
 
@@ -181,6 +182,7 @@ GroupDownload::pauseTransfer() {
             download->pauseTransfer();
         }
     }
+    GROUP_LOG(INFO) << "EMIT paused";
     emit paused(true);
 }
 
@@ -193,6 +195,7 @@ GroupDownload::resumeTransfer() {
             download->resumeTransfer();
         }
     }
+    GROUP_LOG(INFO) << "EMIT resumed";
     emit resumed(true);
 }
 
@@ -206,9 +209,12 @@ GroupDownload::startTransfer() {
                 download->startTransfer();
             }
         }
+        GROUP_LOG(INFO) << "EMIT started";
         emit started(true);
     } else {
+        GROUP_LOG(INFO) << "EMIT started";
         emit started(true);
+        GROUP_LOG(INFO) << "EMIT finished " << _finishedDownloads.join(";");
         emit finished(_finishedDownloads);
     }
 }
@@ -257,6 +263,8 @@ GroupDownload::onError(const QString& error) {
     // files that we managed to download
     cancelAllDownloads();
     QString errorMsg = down->url().toString() + ":" + error;
+
+    GROUP_LOG(INFO) << "EMIT error " << errorMsg;
     emitError(errorMsg);
 }
 
@@ -351,6 +359,7 @@ GroupDownload::onFinished(const QString& file) {
     // that downloads we are done :)
     if (_downloads.count() == _finishedDownloads.count()) {
         setState(Download::FINISH);
+        GROUP_LOG(INFO) << "EMIT finished " << _finishedDownloads.join(";");
         emit finished(_finishedDownloads);
     }
 }
