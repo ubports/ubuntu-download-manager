@@ -69,7 +69,7 @@ QString
 AppArmor::getSecurePath(const QString& connName,
                         QString& dbusPath,
                         bool& isConfined) {
-    QString id = UuidUtils::getDBusString(_uuidFactory->createUuid());
+    const QString& id = UuidUtils::getDBusString(_uuidFactory->createUuid());
     getSecurePath(connName, id, dbusPath, isConfined);
     return id;
 }

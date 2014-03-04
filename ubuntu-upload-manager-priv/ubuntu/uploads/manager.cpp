@@ -211,6 +211,7 @@ UploadManager::onUploadsChanged(QString path) {
 
 QDBusObjectPath
 UploadManager::registerUpload(FileUpload* upload) {
+    LOG(INFO) << "Registering upload to path " << upload->path();
     upload->setThrottle(_throttle);
     upload->allowMobileUpload(_allowMobileData);
     _queue->add(upload);
