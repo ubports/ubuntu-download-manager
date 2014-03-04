@@ -368,7 +368,7 @@ GroupDownload::onFinished(const QString& file) {
            auto parentDir = QFileInfo(file).dir();
            DLOG(INFO) << "File is dir '" << parentDir.absolutePath() << "' :";
            auto children = parentDir.entryList();
-           foreach(const QString& child, childre) {
+           foreach(const QString& child, children) {
                DLOG(INFO) << "\t" << child;
            }
         }
