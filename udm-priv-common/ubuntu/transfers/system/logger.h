@@ -24,7 +24,6 @@
 #include <QString>
 #include <QTextStream>
 #include <QtGlobal>
-#include <ubuntu/download_manager/metatypes.h>
 #include <glog/logging.h>
 #include <iostream>
 #include <sstream>
@@ -44,7 +43,6 @@ std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors);
 std::ostream& operator<<(std::ostream &out, const QDBusError& error);
 std::ostream& operator<<(std::ostream &out, const QVariantMap& map);
 std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map);
-std::ostream& operator<<(std::ostream &out, StructList list);
 
 namespace Ubuntu {
 
