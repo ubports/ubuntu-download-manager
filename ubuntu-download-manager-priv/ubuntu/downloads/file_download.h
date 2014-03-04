@@ -123,6 +123,7 @@ class FileDownload : public Download {
     void onOnlineStateChanged(bool);
     void initFileNames();
     void emitFinished();
+    void unlockFilePath();
 
  private:
     bool _downloading = false;

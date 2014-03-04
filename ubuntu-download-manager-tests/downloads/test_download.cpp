@@ -2283,8 +2283,14 @@ TestDownload::testRedirectDoesNotUnlockPath() {
     QCOMPARE(2, calledMethods.count());
     auto methodName = calledMethods[0].methodName();
     QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
     methodName = calledMethods[1].methodName();
     QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
 }
 
 void
@@ -2305,8 +2311,14 @@ TestDownload::testCancelUnlocksPath() {
     QCOMPARE(2, calledMethods.count());
     auto methodName = calledMethods[0].methodName();
     QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
     methodName = calledMethods[1].methodName();
     QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
 }
 
 void
@@ -2334,8 +2346,14 @@ TestDownload::testFinishUnlocksPath() {
     QCOMPARE(2, calledMethods.count());
     auto methodName = calledMethods[0].methodName();
     QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
     methodName = calledMethods[1].methodName();
     QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
 }
 
 void
@@ -2376,8 +2394,14 @@ TestDownload::testProcessFinishUnlocksPath() {
     QCOMPARE(2, calledMethods.count());
     auto methodName = calledMethods[0].methodName();
     QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
     methodName = calledMethods[1].methodName();
     QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
 }
 
 void
@@ -2410,6 +2434,177 @@ TestDownload::testErrorUnlocksPath() {
     QCOMPARE(2, calledMethods.count());
     auto methodName = calledMethods[0].methodName();
     QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
     methodName = calledMethods[1].methodName();
     QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath(), path);
+}
+
+void
+TestDownload::testCancelUnlocksPathFromMetadata() {
+    QVariantMap metadata;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    _fileNameMutex->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy spy(download.data(),
+        SIGNAL(canceled(bool)));  // NOLINT(readability/function)
+
+    download->start();  // change state
+    download->startDownload();
+    download->cancel();  // change state
+    download->cancelDownload();  // method under test
+
+    // assert that the filename was correctly managed
+    auto calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+}
+
+void
+TestDownload::testFinishUnlocksPathFromMetadata() {
+    QVariantMap metadata;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    _fileNameMutex->record();
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+	_isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // emit the finish signal and expect it to be raised
+    emit reply->finished();
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(download->state(), Download::FINISH);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+}
+
+void
+TestDownload::testProcessFinishUnlocksPathFromMetadata() {
+    _fileNameMutex->record();
+    _processFactory->record();
+    _reqFactory->record();
+
+    QString command = "cd";
+    QVariantMap metadata;
+    metadata["post-download-command"] = command;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // makes the process to be executed
+    reply->emitFinished();
+
+    calledMethods = _processFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeProcess* process = reinterpret_cast<FakeProcess*>(
+        calledMethods[0].params().outParams()[0]);
+
+    process->emitFinished(0, QProcess::NormalExit);
+    QTRY_COMPARE(spy.count(), 1);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp" , path);
+}
+
+void
+TestDownload::testErrorUnlocksPathFromMetadata() {
+    QVariantMap metadata;
+    QString localPath = "/home/my/local/path";
+    metadata["local-path"] = localPath;
+
+    // fake an error and make sure that unlock is called
+    _fileNameMutex->record();
+    _reqFactory->record();
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, metadata, _headers));
+    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
+
+    download->start();  // change state
+    download->startDownload();
+
+    // we need to set the data before we pause!!!
+    QList<MethodData> calledMethods = _reqFactory->calledMethods();
+    QCOMPARE(1, calledMethods.count());
+    FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
+        calledMethods[0].params().outParams()[0]);
+
+    // set the attrs in the reply so that we do raise two signals
+    reply->setAttribute(QNetworkRequest::HttpStatusCodeAttribute, 404);
+    reply->setAttribute(QNetworkRequest::HttpReasonPhraseAttribute, "");
+
+    // emit the error and esure that the signals are raised
+    reply->emitHttpError(QNetworkReply::ContentAccessDenied);
+    QCOMPARE(errorSpy.count(), 1);
+
+    calledMethods = _fileNameMutex->calledMethods();
+    QCOMPARE(2, calledMethods.count());
+    auto methodName = calledMethods[0].methodName();
+    QCOMPARE(QString("lockFileName"), methodName);
+    auto path = qobject_cast<StringWrapper*>(
+        calledMethods[0].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
+    methodName = calledMethods[1].methodName();
+    QCOMPARE(QString("unlockFileName"), methodName);
+    path = qobject_cast<StringWrapper*>(
+        calledMethods[1].params().inParams()[0])->value();
+    QCOMPARE(download->filePath() + ".tmp", path);
 }
