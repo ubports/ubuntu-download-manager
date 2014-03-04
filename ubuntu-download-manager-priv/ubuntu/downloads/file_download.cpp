@@ -30,7 +30,7 @@
 #include "ubuntu/system/filename_mutex.h"
 #include "file_download.h"
 
-#define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload{" + parent()->objectName() + "} ":"") << "Download ID{" << objectName() << "}"
+#define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
 
 
 namespace {
@@ -117,7 +117,7 @@ FileDownload::cancelDownload() {
     cleanUpCurrentData();
     // unlock the file name so that other downloads can use it it if is
     // no used in the file system
-    _fileNameMutex->unlockFileName(_filePath);
+    unlockFilePath();
     _downloading = false;
     emit canceled(true);
 }
@@ -613,16 +613,26 @@ void
 FileDownload::emitFinished() {
     auto fileMan = FileManager::instance();
 
-    LOG(INFO) << "EMIT finished" << filePath();
-    setState(Download::FINISH);
-
     if (fileMan->exists(_tempFilePath)) {
-        LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
+        DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
         fileMan->rename(_tempFilePath, _filePath);
     }
-    _fileNameMutex->unlockFileName(_filePath);
+
+    setState(Download::FINISH);
+    unlockFilePath();
+
+    DOWN_LOG(INFO) << "EMIT finished" << filePath();
     emit finished(_filePath);
+}
+
+void
+FileDownload::unlockFilePath() {
+    if (!isConfined() && metadata().contains(Metadata::LOCAL_PATH_KEY)) {
+        _fileNameMutex->unlockFileName(_tempFilePath);
+	} else { 
+        _fileNameMutex->unlockFileName(_filePath);
+    }
 }
 
 void
@@ -675,7 +685,7 @@ FileDownload::emitError(const QString& error) {
     _reply = nullptr;
     cleanUpCurrentData();
     // let other downloads use the same file name
-    _fileNameMutex->unlockFileName(_filePath);
+    unlockFilePath();
     Download::emitError(error);
 }
 
