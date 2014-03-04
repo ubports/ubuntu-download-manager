@@ -83,16 +83,6 @@ std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
     return out;
 }
 
-std::ostream& operator<<(std::ostream &out, StructList list) {
-    out << "(";
-    foreach(const GroupDownloadStruct& group, list) {
-        out << "{ url:" << group.getUrl() << " hash:" << group.getHash()
-            << " local file:" << group.getLocalFile() << "}";
-    }
-    out << ")";
-    return out;
-}
-
 namespace {
     const QString LOG_NAME = "ubuntu-download-manager.log";
 }

@@ -12,7 +12,8 @@ DEFINES += LIBUBUNTUDOWNLOADMANAGERCOMMON_LIBRARY
 SOURCES += \
     ubuntu/download_manager/metadata.cpp \
     ubuntu/download_manager/download_struct.cpp \
-    ubuntu/download_manager/group_download_struct.cpp
+    ubuntu/download_manager/group_download_struct.cpp \
+    ubuntu/download_manager/system/logger.cpp
 
 public_headers = \
     ubuntu/download_manager/common.h \
@@ -23,7 +24,8 @@ public_headers = \
     ubuntu/download_manager/http_error_struct.h \
     ubuntu/download_manager/network_error_struct.h \
     ubuntu/download_manager/process_error_struct.h \
-    ubuntu/download_manager/auth_error_struct.h
+    ubuntu/download_manager/auth_error_struct.h \
+    ubuntu/download_manager/system/logger.h
 
 
 HEADERS +=\

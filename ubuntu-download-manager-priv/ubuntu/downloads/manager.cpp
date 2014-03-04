@@ -18,6 +18,7 @@
 
 #include <functional>
 #include <QRegExp>
+#include <ubuntu/download_manager/system/logger.h>
 #include "ubuntu/transfers/system/apparmor.h"
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/request_factory.h"
