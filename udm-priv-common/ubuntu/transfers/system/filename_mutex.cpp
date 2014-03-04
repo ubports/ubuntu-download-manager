@@ -82,7 +82,7 @@ FileNameMutex::unlockFileName(const QString& filename) {
     _mutex.lock();
     auto removed = _paths.remove(filename);
     if (!removed) {
-        LOG(WARNING) << "Tired to remove filename '" << filename
+        LOG(WARNING) << "Tried to remove filename '" << filename
             << "' when it was not owned by any object.";
     } else {
         LOG(INFO) << "Released path '" << filename << "'";
