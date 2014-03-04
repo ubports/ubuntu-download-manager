@@ -19,7 +19,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <ubuntu/download_manager/metadata.h>
-#include "logger.h"
+#include <ubuntu/transfers/system/logger.h>
 #include "filename_mutex.h"
 
 namespace Ubuntu {

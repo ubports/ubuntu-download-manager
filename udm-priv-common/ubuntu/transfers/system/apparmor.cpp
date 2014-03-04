@@ -25,8 +25,8 @@
 #include <QDir>
 #include <QRegExp>
 #include <QStandardPaths>
+#include <ubuntu/transfers/system/logger.h>
 #include "uuid_utils.h"
-#include "logger.h"
 #include "apparmor.h"
 
 namespace Ubuntu {

@@ -16,8 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <ubuntu/transfers/system/logger.h>
 #include "request_factory.h"
-#include "logger.h"
 
 namespace Ubuntu {
 
