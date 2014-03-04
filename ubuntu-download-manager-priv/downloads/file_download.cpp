@@ -616,7 +616,12 @@ FileDownload::emitFinished() {
     if (fileMan->exists(_tempFilePath)) {
         DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
-        fileMan->rename(_tempFilePath, _filePath);
+        QFile tempFile(_tempFilePath);
+	auto r = tempFile.rename(_filePath);
+	if (!r) {
+            DOWN_LOG(WARNING) << "Could not rename '" << _tempFilePath << "' to '"
+                << _filePath << "' due to " << tempFile.errorString();
+	}
     }
 
     setState(Download::FINISH);
