@@ -40,6 +40,7 @@ class UploadDaemon : public BaseDaemon {
                    System::Timer* timer,
                    QObject *parent = 0);
 
+ public slots:
     virtual void start();
     virtual void start(const QString& path) override;
 };
