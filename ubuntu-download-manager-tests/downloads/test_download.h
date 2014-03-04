@@ -169,6 +169,10 @@ class TestDownload: public BaseTestCase {
     void testFinishUnlocksPath();
     void testProcessFinishUnlocksPath();
     void testErrorUnlocksPath();
+    void testCancelUnlocksPathFromMetadata();
+    void testFinishUnlocksPathFromMetadata();
+    void testProcessFinishUnlocksPathFromMetadata();
+    void testErrorUnlocksPathFromMetadata();
 
  private:
     QString _id;
