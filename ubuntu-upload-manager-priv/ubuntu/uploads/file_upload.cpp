@@ -56,6 +56,7 @@ FileUpload::FileUpload(const QString& id,
     // we must make sure that the path is absolute
     QFileInfo info(filePath);
     if (!info.isAbsolute()) {
+        UP_LOG(INFO) << "Path is not absolute: " << filePath;
         setIsValid(false);
         setLastError(QString("Path is not absolute: '%1'").arg(filePath));
     }
