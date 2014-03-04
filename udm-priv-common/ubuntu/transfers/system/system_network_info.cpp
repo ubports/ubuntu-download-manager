@@ -18,7 +18,7 @@
 
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
-#include "logger.h"
+#include <ubuntu/transfers/system/logger.h>
 #include "system_network_info.h"
 
 namespace Ubuntu {
