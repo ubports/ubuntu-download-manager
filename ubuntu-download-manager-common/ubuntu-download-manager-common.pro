@@ -10,14 +10,12 @@ TEMPLATE = lib
 DEFINES += LIBUBUNTUDOWNLOADMANAGERCOMMON_LIBRARY
 
 SOURCES += \
-    ubuntu/download_manager/system/logger.cpp \
     ubuntu/download_manager/metadata.cpp \
     ubuntu/download_manager/download_struct.cpp \
     ubuntu/download_manager/group_download_struct.cpp \
     ubuntu/download_manager/system/logger.cpp
 
 public_headers = \
-    ubuntu/download_manager/system/logger.h \
     ubuntu/download_manager/common.h \
     ubuntu/download_manager/metatypes.h \
     ubuntu/download_manager/metadata.h \
