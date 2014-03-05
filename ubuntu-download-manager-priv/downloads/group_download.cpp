@@ -361,8 +361,6 @@ GroupDownload::onFinished(const QString& file) {
     // that downloads we are done :)
     if (_downloads.count() == _finishedDownloads.count()) {
         setState(Download::FINISH);
-        GROUP_LOG(INFO) << "EMIT finished " << _finishedDownloads.join(";");
-
 #ifndef NDEBUG
         foreach(const QString& file, _finishedDownloads) {
            auto parentDir = QFileInfo(file).dir();
@@ -373,7 +371,7 @@ GroupDownload::onFinished(const QString& file) {
            }
         }
 #endif
-
+        GROUP_LOG(INFO) << "EMIT finished " << _finishedDownloads.join(";");
         emit finished(_finishedDownloads);
     }
 }
