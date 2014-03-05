@@ -57,7 +57,6 @@ void SingleDownload::download(QString url)
         }
         DownloadStruct dstruct(url);
         m_manager->createDownload(dstruct);
-        m_url = url;
     } else {
         m_error.setMessage("Current download still in progress.");
         emit errorChanged();

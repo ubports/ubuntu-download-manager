@@ -77,7 +77,6 @@ private:
     DownloadError m_error;
     Download* m_download;
     Manager* m_manager;
-    QString m_url;
 
 };
 
