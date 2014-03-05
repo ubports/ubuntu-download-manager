@@ -1,3 +1,9 @@
+ubuntu-download-manager (0.3+14.04.20140305-0ubuntu1) trusty; urgency=low
+
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 05 Mar 2014 13:16:42 +0000
+
 ubuntu-download-manager (0.3+14.04.20140301-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]
