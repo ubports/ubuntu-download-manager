@@ -6,6 +6,69 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+/*!
+    \qmltype SingleDownload
+    \instantiates SingleDownload
+    \inqmlmodule UbuntuDownloadManager 0.1
+    \ingroup download
+    \brief Manage file downloads and tracking the progress.
+
+    SingleDownload provides facilities for downloading a single
+    file, track the process, react to error conditions, etc.
+
+    Example usage:
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+    import UbuntuDownloadManager 1.0
+
+    Rectangle {
+        width: units.gu(100)
+        height: units.gu(20)
+
+        TextField {
+            id: text
+            placeholderText: "File URL to download..."
+            height: 50
+            anchors {
+                left: parent.left
+                right: button.left
+                rightMargin: units.gu(2)
+            }
+        }
+
+        Button {
+            id: button
+            text: "Download"
+            height: 50
+            anchors.right: parent.right
+
+            onClicked: {
+                single.download(text.text);
+            }
+        }
+
+        ProgressBar {
+            minimumValue: 0
+            maximumValue: 100
+            value: single.progress
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+
+            SingleDownload {
+                id: single
+            }
+        }
+    }
+    \endqml
+
+    \sa {DownloadManager}
+*/
+
 SingleDownload::SingleDownload(QObject *parent) :
     QObject(parent),
     m_completed(false),
@@ -46,6 +109,11 @@ void SingleDownload::bindDownload(Download* download)
     }
 }
 
+/*!
+    \qmlmethod void SingleDownload::download(string url)
+
+    Starts the download for the given url and reports the different states through the properties.
+*/
 void SingleDownload::download(QString url)
 {
     if (!m_downloadInProgress) {
@@ -122,6 +190,52 @@ void SingleDownload::setDownloadCanceled(bool)
     m_downloading = false;
     m_downloadInProgress = false;
 }
+
+/*!
+    \qmlproperty string SingleDownload::errorMessage
+
+    The error message associated with the current download, if there is any.
+*/
+
+/*!
+    \qmlproperty bool SingleDownload::isCompleted
+
+    The current state of the download. True if the download already finished, False otherwise.
+*/
+
+/*!
+    \qmlproperty bool SingleDownload::downloadInProgress
+
+    This property represents if the download is active, no matter if it's paused or anything.
+    If a download is active, the value will be True. It will become False when the download
+    finished or get canceled.
+*/
+
+/*!
+    \qmlproperty bool SingleDownload::allowMobileDownload
+
+    This property sets if the download handled by this object will work under mobile data connection.
+*/
+
+/*!
+    \qmlproperty long SingleDownload::throttle
+
+    This property can be used to limit the bandwidth used for the download.
+*/
+
+/*!
+    \qmlproperty int SingleDownload::progress
+
+    This property reports the current progress in percentage of the download, from 0 to 100.
+*/
+
+/*!
+    \qmlproperty bool SingleDownload::downloading
+
+    This property represents the current state of the download.
+    False if paused or not downloading anything.
+    True if the file is currently being downloaded.
+*/
 
 }
 }

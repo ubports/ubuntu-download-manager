@@ -31,16 +31,20 @@ public:
     Q_INVOKABLE void download(QString url);
 
     void start();
+
+    // getters
     bool isCompleted() { return m_completed; }
     DownloadError& error() { return m_error; }
     QString errorMessage() { return m_error.message(); }
-    bool allowMobileDownload() { return m_download->isMobileDownloadAllowed(); }
-    void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }
     qulonglong throttle() { return m_download->throttle(); }
-    void setThrottle(qulonglong value) { m_download->setThrottle(value); emit throttleChanged(); }
+    bool allowMobileDownload() { return m_download->isMobileDownloadAllowed(); }
     int progress() { return m_progress; }
     bool downloading() { return m_downloading; }
     bool downloadInProgress() { return m_downloadInProgress; }
+
+    // setters
+    void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }
+    void setThrottle(qulonglong value) { m_download->setThrottle(value); emit throttleChanged(); }
 
 signals:
     void isCompletedChanged();
