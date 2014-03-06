@@ -1,3 +1,20 @@
+ubuntu-download-manager (0.3+14.04.20140301-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * This fix ensures that the temp file is renamed to the final file
+    before the post-command is executed. (LP: #1286553)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 01 Mar 2014 18:07:30 +0000
+
+ubuntu-download-manager (0.3+14.04.20140224-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Ensure that we do no have race issues between the diff downloads.
+    This is fixed in two ways: 1. Use a temp file. 2. USe a mutex to
+    decide the final path of the download. (LP: #1250612)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Feb 2014 23:20:09 +0000
+
 ubuntu-download-manager (0.3+14.04.20140220-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]
