@@ -79,6 +79,7 @@ namespace DownloadManager {
 
 UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
     QObject(parent),
+    m_autoStart(true),
     m_errorMessage(""),
     m_manager(nullptr)
 {
@@ -117,7 +118,9 @@ void UbuntuDownloadManager::downloadFileCreated(Download* download)
     singleDownload->bindDownload(download);
     m_downloads.append(QVariant::fromValue(singleDownload));
     emit downloadsChanged();
-    singleDownload->start();
+    if (m_autoStart) {
+        singleDownload->startDownload();
+    }
 }
 
 void UbuntuDownloadManager::downloadGroupCreated(GroupDownload* group)
@@ -161,6 +164,13 @@ void UbuntuDownloadManager::downloadCompleted()
         }
     }
 }
+
+/*!
+    \qmlproperty bool DownloadManager::autoStart
+
+    This property sets if the downloads should start automatically, or let the user
+    decide when to start them calling the "start()" method on each download.
+*/
 
 /*!
     \qmlproperty bool DownloadManager::cleanDownloads

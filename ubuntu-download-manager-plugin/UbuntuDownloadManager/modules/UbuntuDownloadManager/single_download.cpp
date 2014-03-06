@@ -71,6 +71,7 @@ namespace DownloadManager {
 
 SingleDownload::SingleDownload(QObject *parent) :
     QObject(parent),
+    m_autoStart(true),
     m_completed(false),
     m_downloading(false),
     m_downloadInProgress(false),
@@ -104,15 +105,15 @@ void SingleDownload::bindDownload(Download* download)
     connect(m_download, SIGNAL(started(bool)), this, SIGNAL(started(bool)));
     connect(m_download, SIGNAL(started(bool)), this, SLOT(setDownloadStarted(bool)));
 
-    if (m_manager != nullptr) {
-        start();
+    if (m_manager != nullptr && m_autoStart) {
+        startDownload();
     }
 }
 
 /*!
     \qmlmethod void SingleDownload::download(string url)
 
-    Starts the download for the given url and reports the different states through the properties.
+    Creates the download for the given url and reports the different states through the properties.
 */
 void SingleDownload::download(QString url)
 {
@@ -131,9 +132,23 @@ void SingleDownload::download(QString url)
     }
 }
 
+/*!
+    \qmlmethod void SingleDownload::start()
+
+    Starts the download, used when autoStart is False.
+*/
 void SingleDownload::start()
 {
-    m_download->start();
+    if (m_manager != nullptr) {
+        startDownload();
+    }
+}
+
+void SingleDownload::startDownload()
+{
+    if (m_download != nullptr) {
+        m_download->start();
+    }
 }
 
 void SingleDownload::pause()
@@ -190,6 +205,13 @@ void SingleDownload::setDownloadCanceled(bool)
     m_downloading = false;
     m_downloadInProgress = false;
 }
+
+/*!
+    \qmlproperty bool SingleDownload::autoStart
+
+    This property sets if the downloads should start automatically, or let the user
+    decide when to start them calling the "start()" method.
+*/
 
 /*!
     \qmlproperty string SingleDownload::errorMessage

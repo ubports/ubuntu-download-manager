@@ -16,6 +16,7 @@ namespace DownloadManager {
 class UbuntuDownloadManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool autoStart READ autoStart WRITE setAutoStart)
     Q_PROPERTY(bool cleanDownloads READ cleanDownloads WRITE setCleanDownloads)
     Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorChanged)
     Q_PROPERTY(QVariantList downloads READ downloads NOTIFY downloadsChanged)
@@ -28,8 +29,10 @@ public:
 
     QVariantList downloads() { return m_downloads; }
     QString errorMessage() { return m_errorMessage; }
+    bool autoStart() { return m_autoStart; }
     bool cleanDownloads() { return m_cleanDownloads; }
     void setCleanDownloads(bool value);
+    void setAutoStart(bool value) { m_autoStart = value; }
 
 signals:
     void errorChanged();
@@ -42,6 +45,7 @@ private slots:
     void downloadCompleted();
 
 private:
+    bool m_autoStart;
     bool m_cleanDownloads;
     QVariantList m_downloads;
     QString m_errorMessage;

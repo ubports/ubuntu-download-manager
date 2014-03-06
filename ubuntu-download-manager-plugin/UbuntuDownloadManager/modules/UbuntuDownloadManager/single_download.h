@@ -14,6 +14,7 @@ namespace DownloadManager {
 class SingleDownload : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool autoStart READ autoStart WRITE setAutoStart)
     Q_PROPERTY(QString errorMessage READ errorMessage NOTIFY errorChanged)
     Q_PROPERTY(bool isCompleted READ isCompleted NOTIFY isCompletedChanged)
     Q_PROPERTY(bool downloadInProgress READ downloadInProgress NOTIFY downloadInProgressChanged)
@@ -25,12 +26,13 @@ class SingleDownload : public QObject
 public:
     explicit SingleDownload(QObject *parent = 0);
 
+    Q_INVOKABLE void start();
     Q_INVOKABLE void pause();
     Q_INVOKABLE void resume();
     Q_INVOKABLE void cancel();
     Q_INVOKABLE void download(QString url);
 
-    void start();
+    void startDownload();
 
     // getters
     bool isCompleted() { return m_completed; }
@@ -41,10 +43,12 @@ public:
     int progress() { return m_progress; }
     bool downloading() { return m_downloading; }
     bool downloadInProgress() { return m_downloadInProgress; }
+    bool autoStart() { return m_autoStart; }
 
     // setters
     void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }
     void setThrottle(qulonglong value) { m_download->setThrottle(value); emit throttleChanged(); }
+    void setAutoStart(bool value) { m_autoStart = value; }
 
 signals:
     void isCompletedChanged();
@@ -74,6 +78,7 @@ public slots:
     void setDownloadCanceled(bool);
 
 private:
+    bool m_autoStart;
     bool m_completed;
     bool m_downloading;
     bool m_downloadInProgress;
