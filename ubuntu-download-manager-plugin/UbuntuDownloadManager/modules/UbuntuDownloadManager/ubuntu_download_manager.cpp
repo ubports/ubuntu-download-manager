@@ -29,7 +29,7 @@ namespace DownloadManager {
         width: units.gu(100)
         height: units.gu(80)
 
-        UbuntuDownloadManager {
+        DownloadManager {
             id: manager
         }
 
