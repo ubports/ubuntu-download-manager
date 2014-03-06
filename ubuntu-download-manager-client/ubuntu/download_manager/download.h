@@ -29,6 +29,24 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Error;
+
+/*!
+    \class Download
+    \brief The Download class allows to control a download that
+           was created in the download manager.
+    \since 0.3
+
+    The Download class represents a download request that was
+    created to  be performed by the download manager.
+
+    Due to the asynchronous nature of the API a download request
+    is not performed on the Download object creation but after
+    the client has requested it via the \l Download::start method.
+
+    \note The ownership of the Download is relayed to the caller and
+    therefore the client must call delete or deleteLater whenever it
+    considers to be appropriate.
+*/
 class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     Q_OBJECT
 
@@ -36,33 +54,203 @@ class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
     explicit Download(QObject* parent = 0)
         : QObject(parent) {}
 
+    /*!
+        \fn void Download::start()
+
+        Notifies the download manager that the download that is
+        represented by this download object is ready to be downloaded.
+
+        The normal use case is that the client of the API connects to
+        all the download signals that he is interested in and the calls the
+        start methods. This pattern ensures that if a download is performed
+        that all signals are connected else the client could see cases in
+        where no signals are received because the download finished before
+        he connected to the signals.
+    */
     virtual void start() = 0;
+
+    /*!
+        \fn void Download::pause()
+
+        Notifies the download manager that the download represented by this
+        download object must be paused.
+    */
     virtual void pause() = 0;
+
+    /*!
+        \fn void Download::resume()
+
+        Notifies the download manager that the download represented by this
+        download object must be resumed. There is no guarantee that nor errors
+        will be raised if a not paused download is resumed.
+    */
     virtual void resume() = 0;
+
+    /*!
+        \fn void Download::cancel()
+
+        Notifies the download manager that the download represented by this
+        download object must be canceled and all it resources must be cleaned.
+    */
     virtual void cancel() = 0;
 
+    /*!
+        \fn void Download::allowMobileDownload(bool allowed)
+
+        Notifies the download manager that the download represented by this
+        download object is allowed or not to use the phones mobile data whenever
+        the devices is connected to it. If the download is not allows to use
+        mobile data it will be automatically paused until a valid network
+        connection is present.
+    */
     virtual void allowMobileDownload(bool allowed) = 0;
+
+    /*!
+        \fn bool isMobileDownloadAllowed()
+
+        Returns if the download represented by this download object is allowed to
+        use the phones mobile data connection.
+    */
     virtual bool isMobileDownloadAllowed() = 0;
 
+    /*!
+        \fn void setThrottle(qulonglong speed)
+
+        Notifies the download manager that the download represented by this
+        download object has its download bandwidth limited to the value
+        provided by \a speed represented in bytes.
+    */
     virtual void setThrottle(qulonglong speed) = 0;
+
+    /*!
+        \fn qulonglong throttle()
+
+        Returns the bandwidth limit that was set for the download represented
+        by this object. If the result is 0 is that no limit was set.
+    */
     virtual qulonglong throttle() = 0;
 
+    /*!
+        \fn QString id() const
+
+        Returns the unique identifier that represents the download within
+        the download manager.
+    */
     virtual QString id() const = 0;
+
+    /*!
+        \fn QVariantMap metadata()
+
+        Returns the metadata used upon creation of the download represented
+        by the object.
+    */
     virtual QVariantMap metadata() = 0;
+
+    /*!
+        \fn qulonglong progress()
+
+        Returns the size of all the data downloaded so far in bytes.
+    */
     virtual qulonglong progress() = 0;
+
+    /*!
+        \fn qulonglong totalSize()
+
+        Returns the totals size estimated for the download. The result can
+        be 0 when the download manager was not able to deduce the download
+        size due to a wrong configuration of the server.
+    */
     virtual qulonglong totalSize() = 0;
 
+    /*!
+        \fn bool isError() const
+
+        Returns if the download represented by the object has had an error.
+    */
     virtual bool isError() const = 0;
+
+    /*!
+        \fn Error* error() const
+
+        Returns the last error encountered by the download object.
+    */
     virtual Error* error() const = 0;
 
  signals:
+
+    /*!
+        \fn void Download::canceled(bool success)
+
+        This signal is emitted whenever a download cancellation was requested
+        and notifies if the cancellation was successful or not via \a success.
+    */
     void canceled(bool success);
+
+    /*!
+        \fn void Download::error(Error* error)
+
+        This signal is emitted whenever and error occurred during a download.
+        To get more information about the cause of the error the client can check
+        the type of the error via \l Error::type() and cast \a error to the
+        appropriate subclass.
+    */
     void error(Error* error);
+
+    /*!
+        \fn void Download::finished(const QString& path)
+
+        This signal is emitted whenever a download has successfully completed.
+        \a path is the absolute local file path where the downloaded file can
+        be found.
+    */
     void finished(const QString& path);
+
+    /*!
+        \fn void Download::paused(bool success)
+
+        This signal is emitted whenever a download paused was requested and
+        notifies if the pause was successful or not via \a success.
+    */
     void paused(bool success);
+
+    /*!
+        \fn void Download::processing(const QString& path)
+
+        This signal is emitted whenever a post processing action is being
+        performed on the download file indicated by \a path.
+    */
     void processing(const QString &path);
+
+    /*!
+        \fn void Download::progress(qulonglong received, qulonglong total)
+
+        This signal is emitted to indicate the progress of the download  where
+        \a received is the number of bytes received and \a total is the total
+        size of the download.
+
+        \note If the download manager is not able to estimate the size of
+        a download, which is something that can happen when the server does
+        not correctly send the size back, \a received and \a total will have
+        the same value. The fact that the values are the same \tt DOES NOT
+        mean that a download was completed for that the signals
+        \l Download::finished(const QString& path) should be used.
+    */
     void progress(qulonglong received, qulonglong total);
+
+    /*!
+        \fn void Download::resumed(bool success)
+
+        This signal is emitted whenever a download resume was requested and
+        notifies if the resume was successful via \a success.
+    */
     void resumed(bool success);
+
+    /*!
+        \fn void Download::started(bool success)
+
+        This signal is emitted whenever a download start was requested and
+        notifies if the start action was successful via \a success.
+    */
     void started(bool success);
 
 };
