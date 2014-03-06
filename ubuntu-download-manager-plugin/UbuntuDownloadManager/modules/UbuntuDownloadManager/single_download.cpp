@@ -21,7 +21,7 @@ namespace DownloadManager {
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
-    import UbuntuDownloadManager 1.0
+    import UbuntuDownloadManager 0.1
 
     Rectangle {
         width: units.gu(100)
@@ -139,9 +139,7 @@ void SingleDownload::download(QString url)
 */
 void SingleDownload::start()
 {
-    if (m_manager != nullptr) {
-        startDownload();
-    }
+    startDownload();
 }
 
 void SingleDownload::startDownload()

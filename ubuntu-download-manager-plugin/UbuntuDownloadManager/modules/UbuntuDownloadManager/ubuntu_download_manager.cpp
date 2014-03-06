@@ -23,7 +23,7 @@ namespace DownloadManager {
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
-    import UbuntuDownloadManager 1.0
+    import UbuntuDownloadManager 0.1
 
     Rectangle {
         width: units.gu(100)
@@ -113,7 +113,7 @@ void UbuntuDownloadManager::downloadFileCreated(Download* download)
     SingleDownload* singleDownload = new SingleDownload(this);
     QObject::connect(singleDownload, SIGNAL(errorFound(DownloadError&)),
                      this, SLOT(registerError(DownloadError&)));
-    QObject::connect(singleDownload, SIGNAL(finished(const QString& path)),
+    QObject::connect(singleDownload, SIGNAL(finished(QString)),
                      this, SLOT(downloadCompleted()));
     singleDownload->bindDownload(download);
     m_downloads.append(QVariant::fromValue(singleDownload));
