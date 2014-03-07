@@ -284,3 +284,5 @@ TestDownload::testProcessErrorRaised() {
     QCOMPARE(standardOutput, processError->standardOut());
     QCOMPARE(standardError, processError->standardError());
 }
+
+QTEST_MAIN(TestDownload)
