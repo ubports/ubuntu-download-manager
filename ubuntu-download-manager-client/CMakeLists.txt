@@ -1,0 +1,56 @@
+set(TARGET ubuntu-download-manager-client)
+
+set(SOURCES
+        ubuntu/download_manager/download_impl.cpp
+        ubuntu/download_manager/download_interface.cpp
+        ubuntu/download_manager/download_pendingcall_watcher.cpp
+        ubuntu/download_manager/error.cpp
+        ubuntu/download_manager/group_download.cpp
+        ubuntu/download_manager/manager.cpp
+        ubuntu/download_manager/manager_impl.cpp
+        ubuntu/download_manager/manager_interface.cpp
+        ubuntu/download_manager/manager_pendingcall_watcher.cpp
+        ubuntu/download_manager/pending_call_watcher.cpp
+)
+
+set(PUBLIC_HEADERS
+        ubuntu/download_manager/download.h
+        ubuntu/download_manager/error.h
+        ubuntu/download_manager/manager.h
+)
+
+set(PRIVATE_HEADERS
+        ubuntu/download_manager/download_impl.h
+        ubuntu/download_manager/download_interface.h
+        ubuntu/download_manager/download_pendingcall_watcher.h
+        ubuntu/download_manager/group_download.h
+        ubuntu/download_manager/manager_impl.h
+        ubuntu/download_manager/manager_interface.h
+        ubuntu/download_manager/manager_pendingcall_watcher.h
+        ubuntu/download_manager/pending_call_watcher.h
+)
+
+include_directories(${Qt5DBus_INCLUDE_DIRS})
+include_directories(${Qt5Network_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR}/udm-common)
+include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+add_library(${TARGET} SHARED 
+	${SOURCES}
+	${PUBLIC_HEADERS}
+	${PRIVATE_HEADERS}
+)
+
+target_link_libraries(${TARGET}
+	${Qt5DBus_LIBRARIES}
+	udm-common
+        ubuntu-download-manager-common
+)
+
+#configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
+install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/download_manager)
