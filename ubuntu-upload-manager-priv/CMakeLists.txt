@@ -4,6 +4,7 @@ set(SOURCES
         ubuntu/uploads/daemon.cpp
         ubuntu/uploads/file_upload.cpp
         ubuntu/uploads/manager.cpp
+        ubuntu/uploads/mms_file_upload.cpp
         ubuntu/uploads/upload_adaptor.cpp
         ubuntu/uploads/upload_adaptor_factory.cpp
         ubuntu/uploads/upload_manager_adaptor.cpp
@@ -14,6 +15,7 @@ set(HEADERS
         ubuntu/uploads/daemon.h
         ubuntu/uploads/file_upload.h
         ubuntu/uploads/manager.h
+        ubuntu/uploads/mms_file_upload.h
         ubuntu/uploads/upload_adaptor.h
         ubuntu/uploads/upload_adaptor_factory.h
         ubuntu/uploads/upload_manager_adaptor.h
