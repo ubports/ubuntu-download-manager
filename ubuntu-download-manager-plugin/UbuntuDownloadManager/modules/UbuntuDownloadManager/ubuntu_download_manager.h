@@ -28,9 +28,9 @@ public:
     Q_INVOKABLE void download(QString url);
 
     QVariantList downloads() { return m_downloads; }
-    QString errorMessage() { return m_errorMessage; }
-    bool autoStart() { return m_autoStart; }
-    bool cleanDownloads() { return m_cleanDownloads; }
+    QString errorMessage() const { return m_errorMessage; }
+    bool autoStart() const { return m_autoStart; }
+    bool cleanDownloads() const { return m_cleanDownloads; }
     void setCleanDownloads(bool value);
     void setAutoStart(bool value) { m_autoStart = value; }
 

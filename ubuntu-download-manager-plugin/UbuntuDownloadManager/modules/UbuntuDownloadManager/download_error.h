@@ -17,8 +17,8 @@ class DownloadError : public QObject
 public:
     explicit DownloadError(QObject *parent = 0);
 
-    QString type() { return m_type; }
-    QString message() { return m_message; }
+    QString type() const { return m_type; }
+    QString message() const { return m_message; }
 
     void setType(QString type) { m_type = type; emit typeChanged(); }
     void setMessage(QString message) { m_message = message; emit messageChanged(); }

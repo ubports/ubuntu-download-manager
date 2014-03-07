@@ -35,15 +35,15 @@ public:
     void startDownload();
 
     // getters
-    bool isCompleted() { return m_completed; }
+    bool isCompleted() const { return m_completed; }
     DownloadError& error() { return m_error; }
-    QString errorMessage() { return m_error.message(); }
-    qulonglong throttle() { return m_download->throttle(); }
-    bool allowMobileDownload() { return m_download->isMobileDownloadAllowed(); }
-    int progress() { return m_progress; }
-    bool downloading() { return m_downloading; }
-    bool downloadInProgress() { return m_downloadInProgress; }
-    bool autoStart() { return m_autoStart; }
+    QString errorMessage() const { return m_error.message(); }
+    qulonglong throttle() const { return m_download->throttle(); }
+    bool allowMobileDownload() const { return m_download->isMobileDownloadAllowed(); }
+    int progress() const { return m_progress; }
+    bool downloading() const { return m_downloading; }
+    bool downloadInProgress() const { return m_downloadInProgress; }
+    bool autoStart() const { return m_autoStart; }
 
     // setters
     void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }

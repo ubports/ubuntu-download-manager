@@ -86,24 +86,19 @@ void SingleDownload::bindDownload(Download* download)
 {
     m_download = download;
 
-    connect(m_download, SIGNAL(error(Error*)), this,
-            SLOT(registerError(Error*)));
-    connect(m_download, SIGNAL(finished(const QString &)), this,
-            SIGNAL(finished(const QString &)));
-    connect(m_download, SIGNAL(finished(const QString &)), this,
-            SLOT(setCompleted()));
-    connect(m_download, SIGNAL(progress(qulonglong, qulonglong)), this,
-            SIGNAL(progressReceived(qulonglong, qulonglong)));
-    connect(m_download, SIGNAL(progress(qulonglong, qulonglong)), this,
-            SLOT(setProgress(qulonglong, qulonglong)));
-    connect(m_download, SIGNAL(canceled(bool)), this, SIGNAL(canceled(bool)));
-    connect(m_download, SIGNAL(canceled(bool)), this, SLOT(setDownloadCanceled(bool)));
-    connect(m_download, SIGNAL(paused(bool)), this, SIGNAL(paused(bool)));
-    connect(m_download, SIGNAL(paused(bool)), this, SLOT(setDownloadPaused(bool)));
-    connect(m_download, SIGNAL(resumed(bool)), this, SIGNAL(resumed(bool)));
-    connect(m_download, SIGNAL(resumed(bool)), this, SLOT(setDownloadStarted(bool)));
-    connect(m_download, SIGNAL(started(bool)), this, SIGNAL(started(bool)));
-    connect(m_download, SIGNAL(started(bool)), this, SLOT(setDownloadStarted(bool)));
+    connect(m_download, static_cast<void(Download::*)(Error*)>(&Download::error), this, &SingleDownload::registerError);
+    connect(m_download, &Download::finished, this, &SingleDownload::finished);
+    connect(m_download, &Download::finished, this, &SingleDownload::setCompleted);
+    connect(m_download, static_cast<void(Download::*)(qulonglong, qulonglong)>(&Download::progress), this, &SingleDownload::progressReceived);
+    connect(m_download, static_cast<void(Download::*)(qulonglong, qulonglong)>(&Download::progress), this, &SingleDownload::setProgress);
+    connect(m_download, &Download::canceled, this, &SingleDownload::canceled);
+    connect(m_download, &Download::canceled, this, &SingleDownload::setDownloadCanceled);
+    connect(m_download, &Download::paused, this, &SingleDownload::paused);
+    connect(m_download, &Download::paused, this, &SingleDownload::setDownloadPaused);
+    connect(m_download, &Download::resumed, this, &SingleDownload::resumed);
+    connect(m_download, &Download::resumed, this, &SingleDownload::setDownloadStarted);
+    connect(m_download, &Download::started, this, &SingleDownload::started);
+    connect(m_download, &Download::started, this, &SingleDownload::setDownloadStarted);
 
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
@@ -121,8 +116,7 @@ void SingleDownload::download(QString url)
         if (m_manager == nullptr) {
             m_manager = Manager::createSessionManager("", this);
 
-            QObject::connect(m_manager, SIGNAL(downloadCreated(Download*)),
-                             this, SLOT(bindDownload(Download*)));
+            connect(m_manager, &Manager::downloadCreated, this, &SingleDownload::bindDownload);
         }
         DownloadStruct dstruct(url);
         m_manager->createDownload(dstruct);

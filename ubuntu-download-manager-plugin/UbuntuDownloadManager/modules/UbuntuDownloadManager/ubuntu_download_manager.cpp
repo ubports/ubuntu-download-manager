@@ -85,8 +85,8 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
 {
     m_manager = Manager::createSessionManager("", this);
 
-    QObject::connect(m_manager, SIGNAL(downloadCreated(Download*)),
-                     this, SLOT(downloadFileCreated(Download*)));
+    connect(m_manager, &Manager::downloadCreated,
+            this, &UbuntuDownloadManager::downloadFileCreated);
 }
 
 UbuntuDownloadManager::~UbuntuDownloadManager()
@@ -111,10 +111,10 @@ void UbuntuDownloadManager::download(QString url)
 void UbuntuDownloadManager::downloadFileCreated(Download* download)
 {
     SingleDownload* singleDownload = new SingleDownload(this);
-    QObject::connect(singleDownload, SIGNAL(errorFound(DownloadError&)),
-                     this, SLOT(registerError(DownloadError&)));
-    QObject::connect(singleDownload, SIGNAL(finished(QString)),
-                     this, SLOT(downloadCompleted()));
+    connect(singleDownload, &SingleDownload::errorFound,
+            this, &UbuntuDownloadManager::registerError);
+    connect(singleDownload, &SingleDownload::finished,
+            this, &UbuntuDownloadManager::downloadCompleted);
     singleDownload->bindDownload(download);
     m_downloads.append(QVariant::fromValue(singleDownload));
     emit downloadsChanged();
@@ -139,8 +139,8 @@ void UbuntuDownloadManager::setCleanDownloads(bool value)
     m_cleanDownloads = value;
     if (m_cleanDownloads) {
         QVariantList newList;
-        for (int i = 0; i < m_downloads.size(); ++i) {
-            SingleDownload *download = qobject_cast<SingleDownload*>(m_downloads.at(i).value<SingleDownload*>());
+        foreach(QVariant var, m_downloads) {
+            SingleDownload *download = qobject_cast<SingleDownload*>(var.value<SingleDownload*>());
             if (download != nullptr && !download->isCompleted()) {
                 newList.append(QVariant::fromValue(download));
             } else {
