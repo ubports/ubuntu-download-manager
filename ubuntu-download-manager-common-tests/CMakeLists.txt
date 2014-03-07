@@ -1,28 +1,19 @@
-set(TARGET ubuntu-download-manager-client-tests)
+set(TARGET ubuntu-download-common-tests)
 
 set(SOURCES
-        local_tree_testcase.cpp
-	main.cpp
-        test_download.cpp
-        test_download_manager_watch.cpp
-        test_download_watch.cpp
-        test_group_manager_watch.cpp
-        test_manager.cpp
+        main.cpp
+        test_metadata.cpp
 )
 
 set(HEADERS
-        local_tree_testcase.h
-        test_download.h
-        test_download_manager_watch.h
-        test_download_watch.h
-        test_group_manager_watch.h
-        test_manager.h
+        test_metadata.h
 )
 
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Test_INCLUDE_DIRS})
+include_directories(${Qt5Sql_INCLUDE_DIRS})
 include_directories(${DBUS_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
@@ -37,14 +28,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
-if(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
-add_custom_target(client-tests-data ALL
-        COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data
-)
-endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
-
-find_program(DBUS_RUNNER dbus-test-runner)
-
 add_executable(${TARGET}
 	${SOURCES}
         ${HEADERS}
@@ -53,6 +36,7 @@ add_executable(${TARGET}
 target_link_libraries(${TARGET}
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
+        ${Qt5Sql_LIBRARIES}
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
@@ -62,8 +46,5 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-priv
 	ubuntu-download-manager-test-lib
 )
-if(DBUS_RUNNER)
-        ADD_TEST(NAME ClientTests COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${TARGET} -c)
-else(DBUS_RUNNER)
-        message(WARNING "dbus-test-runner binary not found tests will be disabled")
-endif(DBUS_RUNNER)
+
+ADD_TEST(NAME DownloadManagerCommonTests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
