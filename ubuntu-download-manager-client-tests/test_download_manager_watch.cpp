@@ -88,3 +88,5 @@ TestDownloadManagerWatch::testErrCallbackIsExecuted() {
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
+
+QTEST_MAIN(TestDownloadManagerWatch)

@@ -55,6 +55,4 @@ class TestGroupManagerWatch : public LocalTreeTestCase {
     Manager* _manager = nullptr;
 };
 
-DECLARE_TEST(TestGroupManagerWatch)
-
 #endif // TEST_GROUP_WATCH_H
