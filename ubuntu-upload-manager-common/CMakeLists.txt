@@ -1,20 +1,16 @@
-set(TARGET ubuntu-download-manager-common)
+set(TARGET ubuntu-upload-manager-common)
 
 set(SOURCES
-	ubuntu/download_manager/download_struct.cpp
-	ubuntu/download_manager/group_download_struct.cpp
-	ubuntu/download_manager/system/logger.cpp
+        ubuntu/upload_manager/upload_struct.cpp
 )
 
 set(PUBLIC_HEADERS
-	ubuntu/download_manager/common.h
-	ubuntu/download_manager/download_struct.h
-	ubuntu/download_manager/group_download_struct.h
-	ubuntu/download_manager/metatypes.h
+        ubuntu/upload_manager/common.h
+        ubuntu/upload_manager/metatypes.h
+        ubuntu/upload_manager/upload_struct.h
 )
 
 set(PRIVATE_HEADERS
-	ubuntu/download_manager/system/logger.h
 )
 
 include_directories(${Qt5DBus_INCLUDE_DIRS})
@@ -38,4 +34,4 @@ target_link_libraries(${TARGET}
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/download_manager)
+install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/upload_manager)
