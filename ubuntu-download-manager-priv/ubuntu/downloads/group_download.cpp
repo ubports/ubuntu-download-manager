@@ -16,7 +16,7 @@
  * boston, ma 02110-1301, usa.
  */
 
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/uuid_factory.h"
