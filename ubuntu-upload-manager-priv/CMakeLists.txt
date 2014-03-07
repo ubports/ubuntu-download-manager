@@ -2,6 +2,7 @@ set(TARGET ubuntu-upload-manager-priv)
 
 set(SOURCES
         ubuntu/uploads/daemon.cpp
+        ubuntu/uploads/file_upload.cpp
         ubuntu/uploads/manager.cpp
         ubuntu/uploads/upload_adaptor.cpp
         ubuntu/uploads/upload_adaptor_factory.cpp
@@ -11,6 +12,7 @@ set(SOURCES
 
 set(HEADERS
         ubuntu/uploads/daemon.h
+        ubuntu/uploads/file_upload.h
         ubuntu/uploads/manager.h
         ubuntu/uploads/upload_adaptor.h
         ubuntu/uploads/upload_adaptor_factory.h
