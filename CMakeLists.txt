@@ -40,7 +40,8 @@ pkg_check_modules(GLOG REQUIRED libglog)
 pkg_check_modules(GLOG libglog)
 
 enable_testing()
-add_definitions("-fPIC -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -pedantic -Wextra -fPIC")
+add_definitions("-DNDEBUG")
 
 add_subdirectory(udm-common)
 add_subdirectory(udm-priv-common)
