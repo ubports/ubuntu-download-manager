@@ -1,23 +1,23 @@
-set(TARGET ubuntu-download-manager-client-tests)
-
-set(SOURCES
-        local_tree_testcase.cpp
-	main.cpp
-        test_download.cpp
-        test_download_manager_watch.cpp
-        test_download_watch.cpp
-        test_group_manager_watch.cpp
-        test_manager.cpp
+set(TESTS
+        test_download
+        test_download_manager_watch
+        test_download_watch
+        test_manager
 )
 
-set(HEADERS
-        local_tree_testcase.h
-        test_download.h
-        test_download_manager_watch.h
-        test_download_watch.h
-        test_group_manager_watch.h
-        test_manager.h
-)
+foreach(test ${TESTS})
+        # set the sources per test
+        set(${test}_SOURCES
+                local_tree_testcase.cpp
+                ${test}.cpp
+        )
+
+        set(${test}_HEADERS
+                local_tree_testcase.h
+                ${test}.h
+        )
+
+endforeach(test)
 
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
@@ -44,12 +44,7 @@ endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 
 find_program(DBUS_RUNNER dbus-test-runner)
 
-add_executable(${TARGET}
-	${SOURCES}
-        ${HEADERS}
-)
-
-target_link_libraries(${TARGET}
+set(LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
 	${Qt5Test_LIBRARIES}
@@ -60,8 +55,24 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-priv
 	ubuntu-download-manager-test-lib
 )
+
 if(DBUS_RUNNER)
-        ADD_TEST(NAME ClientTests COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${TARGET} -c)
+        foreach(test ${TESTS})
+                # set targets, linked libs and test
+                add_executable(${test}
+	                ${${test}_SOURCES}
+                        ${${test}_HEADERS}
+                )
+
+                target_link_libraries(${test}
+                        ${LIBS}
+                )
+
+                ADD_TEST(NAME ${test} COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${test} -c)
+
+        endforeach(test)
 else(DBUS_RUNNER)
         message(WARNING "dbus-test-runner binary not found tests will be disabled")
 endif(DBUS_RUNNER)
+
+

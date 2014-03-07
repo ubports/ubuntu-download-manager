@@ -52,6 +52,4 @@ class TestManager : public LocalTreeTestCase {
     Manager* _man;
 };
 
-DECLARE_TEST(TestManager)
-
 #endif // TEST_MANAGER_H
