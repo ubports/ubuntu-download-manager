@@ -63,6 +63,12 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
+if(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
+add_custom_target(download-daemon-tests-data ALL
+        COMMAND cp -r ${CMAKE_CURRENT_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data
+)
+endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
+
 add_executable(${TARGET}
 	${SOURCES}
         ${HEADERS}
@@ -80,3 +86,5 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-priv
 	ubuntu-download-manager-test-lib
 )
+
+ADD_TEST(NAME DownloadDaemonTests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
