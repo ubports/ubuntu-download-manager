@@ -60,3 +60,5 @@ TestDownloadWatch::testErrorRaised() {
     down->start();
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 10000);
 }
+
+QTEST_MAIN(TestDownloadWatch)

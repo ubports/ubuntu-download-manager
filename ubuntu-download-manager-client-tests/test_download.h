@@ -22,7 +22,6 @@
 #include <QObject>
 #include <ubuntu/download_manager/manager.h>
 #include <ubuntu/download_manager/download.h>
-#include <ubuntu/transfers/tests/test_runner.h>
 #include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
@@ -62,7 +61,5 @@ class TestDownload : public LocalTreeTestCase {
     Manager* _man = nullptr;
     Download* _down = nullptr;
 };
-
-DECLARE_TEST(TestDownload)
 
 #endif // TEST_DOWNLOAD_H
