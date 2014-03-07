@@ -1,47 +1,35 @@
-set(TARGET ubuntu-download-manager-tests)
-
-set(SOURCES
-        main.cpp
-        downloads/test_base_download.cpp
-        downloads/test_daemon.cpp
-        downloads/test_download.cpp
-        downloads/test_download_factory.cpp
-        downloads/test_download_manager.cpp
-        downloads/test_downloads_db.cpp
-        downloads/test_group_download.cpp
-        downloads/test_mms_download.cpp
-        downloads/state_machines/test_cancel_download_transition.cpp
-        downloads/state_machines/test_file_download_sm.cpp
-        downloads/state_machines/test_final_state.cpp
-        downloads/state_machines/test_network_error_transition.cpp
-        downloads/state_machines/test_resume_download_transition.cpp
-        downloads/state_machines/test_ssl_error_transition.cpp
-        downloads/state_machines/test_start_download_transition.cpp
-        downloads/state_machines/test_stop_request_transition.cpp
-        system/test_apn_request_factory.cpp
-        system/test_filename_mutex.cpp
+set(TESTS
+        test_apn_request_factory
+        test_base_download
+        test_cancel_download_transition
+        test_daemon
+        test_download
+        test_download_factory
+        test_download_manager
+        test_downloads_db
+        test_file_download_sm
+        test_filename_mutex
+        test_final_state
+        test_group_download
+        test_mms_download
+        test_network_error_transition
+        test_resume_download_transition
+        test_ssl_error_transition
+        test_start_download_transition
+        test_stop_request_transition
 )
 
-set(HEADERS
-        downloads/test_base_download.h
-        downloads/test_daemon.h
-        downloads/test_download.h
-        downloads/test_download_factory.h
-        downloads/test_download_manager.h
-        downloads/test_downloads_db.h
-        downloads/test_group_download.h
-        downloads/test_mms_download.h
-        downloads/state_machines/test_cancel_download_transition.h
-        downloads/state_machines/test_file_download_sm.h
-        downloads/state_machines/test_final_state.h
-        downloads/state_machines/test_network_error_transition.h
-        downloads/state_machines/test_resume_download_transition.h
-        downloads/state_machines/test_ssl_error_transition.h
-        downloads/state_machines/test_start_download_transition.h
-        downloads/state_machines/test_stop_request_transition.h
-        system/test_apn_request_factory.h
-        system/test_filename_mutex.h
-)
+foreach(test ${TESTS})
+        # set the sources per test
+        set(${test}_DAEMON_SOURCES
+                ${test}.cpp
+        )
+
+        set(${test}_DAEMON_HEADERS
+                ${test}.h
+        )
+
+endforeach(test)
 
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
@@ -68,12 +56,7 @@ add_custom_target(download-daemon-tests-data ALL
 )
 endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 
-add_executable(${TARGET}
-	${SOURCES}
-        ${HEADERS}
-)
-
-target_link_libraries(${TARGET}
+set(DAEMON_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
@@ -87,4 +70,19 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-test-lib
 )
 
-ADD_TEST(NAME DownloadDaemonTests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+
+foreach(test ${TESTS})
+        # set targets, linked libs and test
+        add_executable(${test}_daemon
+                ${${test}_DAEMON_SOURCES}
+                ${${test}_DAEMON_HEADERS}
+        )
+
+        target_link_libraries(${test}_daemon
+                ${DAEMON_TESTS_LIBS}
+        )
+
+
+        ADD_TEST(NAME daemon_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_daemon)
+endforeach(test)
+
