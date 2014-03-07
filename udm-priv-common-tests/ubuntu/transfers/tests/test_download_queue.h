@@ -24,7 +24,6 @@
 #include <ubuntu/transfers/tests/system/request_factory.h>
 #include <ubuntu/transfers/tests/system/process_factory.h>
 #include <ubuntu/transfers/tests/system/system_network_info.h>
-#include <ubuntu/transfers/tests/test_runner.h>
 #include <ubuntu/transfers/tests/base_testcase.h>
 #include "transfer.h"
 
@@ -77,7 +76,6 @@ class TestTransferQueue : public BaseTestCase {
     Queue* _q;
 };
 
-DECLARE_TEST(TestTransferQueue)
 
 }  // Tests
 

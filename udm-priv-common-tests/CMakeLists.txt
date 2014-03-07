@@ -41,4 +41,4 @@ target_link_libraries(${TARGET}
 	udm-testing
 )
 
-ADD_TEST(NAME UdmCommonTests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+add_test(name UdmCommonTests command ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
