@@ -19,7 +19,8 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 #include <QtDBus/QtDBus>
-#include <ubuntu/download_manager/metatypes.h>
+
+typedef QMap<QString, QString> StringMap;
 
 /*
  * Proxy class for interface org.freedesktop.DBus
