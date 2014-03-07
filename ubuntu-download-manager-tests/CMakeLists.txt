@@ -7,7 +7,6 @@ set(SOURCES
         downloads/test_download.cpp
         downloads/test_download_factory.cpp
         downloads/test_download_manager.cpp
-        downloads/test_download_queue.cpp
         downloads/test_downloads_db.cpp
         downloads/test_group_download.cpp
         downloads/test_mms_download.cpp
@@ -29,7 +28,6 @@ set(HEADERS
         downloads/test_download.h
         downloads/test_download_factory.h
         downloads/test_download_manager.h
-        downloads/test_download_queue.h
         downloads/test_downloads_db.h
         downloads/test_group_download.h
         downloads/test_mms_download.h
@@ -53,6 +51,7 @@ include_directories(${Qt5Sql_INCLUDE_DIRS})
 include_directories(${DBUS_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
+include_directories(${CMAKE_SOURCE_DIR}/udm-testing)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-client)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-priv)
@@ -81,6 +80,7 @@ target_link_libraries(${TARGET}
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
+	udm-testing
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 	ubuntu-download-manager-priv

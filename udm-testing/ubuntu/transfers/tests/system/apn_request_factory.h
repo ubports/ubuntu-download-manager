@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <ubuntu/transfers/system/apn_request_factory.h>
-#include <ubuntu/transfers/tests/fake.h>
+#include "ubuntu/transfers/tests/fake.h"
 
 
 namespace Ubuntu {

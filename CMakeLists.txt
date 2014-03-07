@@ -44,6 +44,8 @@ add_definitions("-fPIC -std=c++11")
 
 add_subdirectory(udm-common)
 add_subdirectory(udm-priv-common)
+add_subdirectory(udm-testing)
+add_subdirectory(udm-priv-common-tests)
 add_subdirectory(ubuntu-download-manager-common)
 add_subdirectory(ubuntu-download-manager-common-tests)
 add_subdirectory(ubuntu-download-manager-priv)
