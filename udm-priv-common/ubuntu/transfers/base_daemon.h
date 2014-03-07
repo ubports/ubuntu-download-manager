@@ -21,9 +21,10 @@
 
 #include <functional>
 #include <QObject>
-#include <QSslCertificate>
 #include <QSharedPointer>
 #include <ubuntu/transfers/system/dbus_connection.h>
+
+class QSslCertificate;
 
 namespace Ubuntu {
 

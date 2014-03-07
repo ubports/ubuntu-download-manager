@@ -3,7 +3,6 @@ set(TARGET ubuntu-download-manager-common)
 set(SOURCES
 	ubuntu/download_manager/download_struct.cpp
 	ubuntu/download_manager/group_download_struct.cpp
-	ubuntu/download_manager/metadata.cpp
 	ubuntu/download_manager/system/logger.cpp
 )
 
@@ -11,7 +10,6 @@ set(PUBLIC_HEADERS
 	ubuntu/download_manager/common.h
 	ubuntu/download_manager/download_struct.h
 	ubuntu/download_manager/group_download_struct.h
-	ubuntu/download_manager/metadata.h
 	ubuntu/download_manager/metatypes.h
 )
 

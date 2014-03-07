@@ -18,7 +18,7 @@
 
 #include <QScopedPointer>
 #include <QSignalSpy>
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
