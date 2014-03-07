@@ -134,3 +134,5 @@ TestManager::testCreateDownloadSignalsEmittedCallbacks() {
     auto down = managerSpy.takeFirst().at(0).value<Download*>();
     delete down;
 }
+
+QTEST_MAIN(TestManager)
