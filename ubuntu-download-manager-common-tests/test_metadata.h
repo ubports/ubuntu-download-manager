@@ -20,9 +20,9 @@
 #define TEST_METADATA_H
 
 #include <QObject>
-#include <ubuntu/transfers/tests/base_testcase.h>
-#include <ubuntu/transfers/tests/test_runner.h>
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/metadata.h>
 
 using namespace Ubuntu::Transfers::Tests;
 
