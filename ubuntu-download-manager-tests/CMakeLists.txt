@@ -1,4 +1,4 @@
-11set(TESTS
+set(TESTS
         test_apn_request_factory
         test_base_download
         test_cancel_download_transition
@@ -6,7 +6,6 @@
         test_download
         test_download_factory
         test_download_manager
-        test_download_queue
         test_downloads_db
         test_file_download_sm
         test_filename_mutex

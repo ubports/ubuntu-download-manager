@@ -1,14 +1,13 @@
 set(TARGET udm-priv-common-tests)
 
 set(SOURCES
-        main.cpp
-        ubuntu/transfers/tests/test_download_queue.cpp
-        ubuntu/transfers/tests/transfer.cpp
+        test_download_queue.cpp
+        transfer.cpp
 )
 
 set(HEADERS
-        ubuntu/transfers/tests/test_download_queue.h
-        ubuntu/transfers/tests/transfer.h
+        test_download_queue.h
+        transfer.h
 )
 
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
@@ -41,4 +40,4 @@ target_link_libraries(${TARGET}
 	udm-testing
 )
 
-add_test(name UdmCommonTests command ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+add_test(NAME udm-priv-common-tests COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

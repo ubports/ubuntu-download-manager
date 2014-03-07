@@ -569,4 +569,4 @@ TestTransferQueue::testCancelUnmanagedDecreasesNumber() {
 
 }  // Ubuntu
 
-QTEST_MAIN(TestDownloadQueue)
+QTEST_MAIN(Ubuntu::Transfers::Tests::TestTransferQueue)
