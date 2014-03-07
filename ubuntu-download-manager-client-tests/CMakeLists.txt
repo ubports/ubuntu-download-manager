@@ -7,12 +7,12 @@ set(TESTS
 
 foreach(test ${TESTS})
         # set the sources per test
-        set(${test}_SOURCES
+        set(${test}_CLIENT_SOURCES
                 local_tree_testcase.cpp
                 ${test}.cpp
         )
 
-        set(${test}_HEADERS
+        set(${test}_CLIENT_HEADERS
                 local_tree_testcase.h
                 ${test}.h
         )
@@ -45,7 +45,7 @@ endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 
 find_program(DBUS_RUNNER dbus-test-runner)
 
-set(LIBS
+set(CLIENT_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
 	${Qt5Test_LIBRARIES}
@@ -61,16 +61,16 @@ set(LIBS
 if(DBUS_RUNNER)
         foreach(test ${TESTS})
                 # set targets, linked libs and test
-                add_executable(${test}
-	                ${${test}_SOURCES}
-                        ${${test}_HEADERS}
+                add_executable(${test}_client
+                        ${${test}_CLIENT_SOURCES}
+                        ${${test}_CLIENT_HEADERS}
                 )
 
-                target_link_libraries(${test}
-                        ${LIBS}
+                target_link_libraries(${test}_client
+                        ${CLIENT_TESTS_LIBS}
                 )
 
-                ADD_TEST(NAME ${test} COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${test} -c)
+                ADD_TEST(NAME client_${test} COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${test}_client -c)
 
         endforeach(test)
 else(DBUS_RUNNER)
