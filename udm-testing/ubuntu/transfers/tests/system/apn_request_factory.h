@@ -32,19 +32,34 @@ using namespace System;
 
 namespace Tests {
 
-class FakeApnRequestFactory : public ApnRequestFactory {
-    Q_OBJECT
-
+class PublicApnRequestFactory : public ApnRequestFactory {
  public:
-    FakeApnRequestFactory(const QNetworkProxy& proxy,
+    PublicApnRequestFactory(const QNetworkProxy& proxy,
                           bool stoppable = false,
-                          QObject* parent=0);
+                          QObject* parent=0)
+       : ApnRequestFactory(proxy, stoppable, parent) { }
 
-    QString proxyHost();
-    int proxyPort();
-    QString proxyUsername();
-    QString proxyPassword();
-    QNetworkProxy::ProxyType proxyType();
+
+    QString proxyHost() {
+        return _nam->proxy().hostName();
+    }
+
+    int proxyPort() {
+        return _nam->proxy().port();
+    }
+
+    QString proxyUsername() {
+        return _nam->proxy().user();
+    }
+
+    QString proxyPassword() {
+        return _nam->proxy().password();
+    }
+
+    QNetworkProxy::ProxyType proxyType() {
+        return _nam->proxy().type();
+    }
+
 };
 
 }  // Ubuntu

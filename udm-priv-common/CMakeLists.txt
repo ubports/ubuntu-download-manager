@@ -67,6 +67,7 @@ target_link_libraries(${TARGET}
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
 	${Qt5Network_LIBRARIES}
+	${Qt5Sql_LIBRARIES}
 	${Qt5SystemInfo_LIBRARIES}
 	${Qt5Core_LIBRARIES}
 	${Qt5DBus_LIBRARIES}

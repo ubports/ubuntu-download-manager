@@ -21,7 +21,7 @@
 #include <QDebug>
 #include <QStringList>
 #include <QTimer>
-#include <ubuntu/download_manager/tests/client/testing_daemon.h>
+#include "testing_daemon.h"
 #define RETURN_ERRORS "-return-errors"
 #define DAEMON_PATH "-daemon-path"
 
