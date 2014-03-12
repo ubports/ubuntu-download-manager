@@ -4,7 +4,7 @@ set(DAEMON_TESTS
 	test_cancel_download_transition
         test_daemon
 	#        test_download
-        #test_download_factory
+        test_download_factory
 	#        test_download_manager
 	test_downloads_db
 	test_file_download_sm

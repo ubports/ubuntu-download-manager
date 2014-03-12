@@ -52,7 +52,7 @@ class AppArmor : public QObject {
     AppArmor(QSharedPointer<DBusConnection> connection, QObject *parent = 0);
     ~AppArmor();
 
-    virtual void getDBusPath(QString& id, QString& dbusPath);
+    virtual QPair<QString, QString> getDBusPath();
 
     virtual SecurityDetails* getSecurityDetails(const QString& connName);
     virtual SecurityDetails* getSecurityDetails(const QString& connName,

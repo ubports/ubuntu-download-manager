@@ -32,7 +32,7 @@ namespace Tests {
 
 class MockAppArmor : public AppArmor {
  public:
-    MOCK_METHOD2(getDBusPath, void(QString&, QString&));
+    MOCK_METHOD0(getDBusPath, QPair<QString, QString>());
     MOCK_METHOD1(getSecurityDetails,
         SecurityDetails*(const QString&));
     MOCK_METHOD2(getSecurityDetails,

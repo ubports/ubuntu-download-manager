@@ -145,11 +145,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QUrl& url,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers);
+    auto idAndPath = _apparmor->getDBusPath();
+    auto down = new FileDownload(idAndPath.first, idAndPath.second,
+        isConfined, rootPath, url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -163,11 +161,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QString& algo,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers);
+    auto idAndPath = _apparmor->getDBusPath();
+    auto down = new FileDownload(idAndPath.first, idAndPath.second,
+        isConfined, rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;

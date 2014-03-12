@@ -131,11 +131,12 @@ AppArmor::getSecurityDetails(const QString& connName,
     }  // no dbus error
 }
 
-void
-AppArmor::getDBusPath(QString& id, QString& dbusPath) {
+QPair<QString, QString>
+AppArmor::getDBusPath() {
     QUuid uuid = _uuidFactory->createUuid();
-    id = UuidUtils::getDBusString(uuid);
-    dbusPath = UuidUtils::getDBusString(uuid);
+    QString id = UuidUtils::getDBusString(uuid);
+    QString dbusPath = UuidUtils::getDBusString(uuid);
+    return QPair<QString, QString>(id, dbusPath);
 }
 
 QString

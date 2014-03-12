@@ -29,6 +29,7 @@
 #include "base_testcase.h"
 
 using namespace Ubuntu::Transfers::System;
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;
 
@@ -49,19 +50,13 @@ class TestDownloadFactory : public BaseTestCase {
     void testCreateMmsDownload();
     void testCreateGroupDownload();
     void testCreateDownloadWithValidUuid();
-    void testCreateDownloadWithNullUuid();
     void testCreateDownloadWithHashAndUuid();
-    void testCreateDownloadWithHashAndNullUuid();
     void testCreateGroupDownloadWithValidUuid();
-    void testCreateGroupDownloadWithNullUuid();
     void testCreateDownloadForGroup();
     void testCreateDownloadForGroupWithHash();
 
  private:
-    FakeAppArmor* _apparmor;
-    SystemNetworkInfo* _networkInfo;
-    ProcessFactory* _processFactory;
-    QSharedPointer<UuidFactory> _uuidFactory;
+    MockAppArmor* _apparmor;
     Factory* _downFactory;
 };
 
