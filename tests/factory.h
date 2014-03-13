@@ -28,6 +28,9 @@ using namespace Ubuntu::DownloadManager::Daemon;
 
 class MockDownloadFactory : public Factory {
  public:
+
+    MOCK_METHOD1(setAcceptedCertificates,
+        void(const QList<QSslCertificate>&));
     MOCK_METHOD4(createDownload,
         Download*(const QString&, const QUrl&, const QVariantMap&,
                   const QMap<QString, QString>&));

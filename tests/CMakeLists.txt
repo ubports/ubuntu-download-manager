@@ -5,7 +5,7 @@ set(DAEMON_TESTS
         test_daemon
 	#        test_download
         test_download_factory
-	#        test_download_manager
+	test_download_manager
 	test_downloads_db
 	test_file_download_sm
 	test_filename_mutex
@@ -31,11 +31,13 @@ foreach(test ${DAEMON_TESTS})
                 application.h
                 apparmor.h
                 base_testcase.h
+		database.h
                 dbus_connection.h
 		download.h
                 factory.h
                 file_manager.h
 		manager.h
+                matchers.h
                 process.h
                 process_factory.h
                 queue.h

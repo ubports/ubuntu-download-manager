@@ -61,6 +61,8 @@ class MockDownload : public FileDownload {
     MOCK_CONST_METHOD0(isValid, bool());
     MOCK_CONST_METHOD0(filePath, QString());
     MOCK_CONST_METHOD0(state, Download::State());
+    MOCK_CONST_METHOD0(path, QString());
+    MOCK_CONST_METHOD0(metadata, QVariantMap());
 
     // useful methods to emit signals
     using FileDownload::finished;

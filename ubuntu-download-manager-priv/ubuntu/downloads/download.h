@@ -64,7 +64,7 @@ class Download : public QObject {
         return _id;
     }
 
-    QString path() const {
+    virtual QString path() const {
         return _dbusPath;
     }
 

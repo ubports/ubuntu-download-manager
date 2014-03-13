@@ -20,29 +20,31 @@
 #include <ubuntu/downloads/factory.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <ubuntu/transfers/tests/system/process_factory.h>
-#include <ubuntu/transfers/tests/system/system_network_info.h>
+#include <ubuntu/transfers/system/process_factory.h>
+#include <ubuntu/transfers/system/system_network_info.h>
+#include <gmock/gmock.h>
+#include "download.h"
+#include "matchers.h"
 #include "test_download_manager.h"
 
-TestDownloadManager::TestDownloadManager(QObject *parent)
-    : BaseTestCase("TestDownloadManager", parent) {
-}
+using ::testing::_;
+using ::testing::Eq;
+using ::testing::ByRef;
+using ::testing::Mock;
+using ::testing::Return;
 
 void
 TestDownloadManager::init() {
     BaseTestCase::init();
-    _app = new FakeApplication();
-    _conn = new FakeDBusConnection();
-    _networkInfo = new FakeSystemNetworkInfo();
-    SystemNetworkInfo::setInstance(_networkInfo);
-    _q = new FakeDownloadQueue();
-    _uuidFactory = QSharedPointer<FakeUuidFactory>(new FakeUuidFactory());
-    _apparmor = new FakeAppArmor(_uuidFactory);
-    _requestFactory = new FakeRequestFactory();
+    _app = new MockApplication();
+    _database = new MockDatabase();
+    DownloadsDb::setInstance(_database);
+    _conn = new MockDBusConnection();
+    _q = new MockDownloadQueue();
+    _requestFactory = new MockRequestFactory();
     RequestFactory::setInstance(_requestFactory);
-    _downloadFactory = new FakeDownloadFactory(
-        _apparmor);
-    _man = new DownloadManager(_app, _conn, _downloadFactory, _q);
+    _factory = new MockDownloadFactory();
+    _man = new DownloadManager(_app, _conn, _factory, _q);
 }
 
 void
@@ -52,9 +54,20 @@ TestDownloadManager::cleanup() {
     SystemNetworkInfo::deleteInstance();
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
+    DownloadsDb::deleteInstance();
     delete _man;
     delete _conn;
     delete _app;
+}
+
+void
+TestDownloadManager::verifyMocks() {
+    QVERIFY(Mock::VerifyAndClearExpectations(_app));
+    QVERIFY(Mock::VerifyAndClearExpectations(_database));
+    QVERIFY(Mock::VerifyAndClearExpectations(_conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(_factory));
+    QVERIFY(Mock::VerifyAndClearExpectations(_q));
+    QVERIFY(Mock::VerifyAndClearExpectations(_requestFactory));
 }
 
 QCryptographicHash::Algorithm
@@ -117,45 +130,51 @@ TestDownloadManager::testCreateDownload() {
     QFETCH(QString, url);
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
-    _q->record();
-    _conn->record();
+    QString dbusPath = "/path/to/object";
+    QScopedPointer<MockDownload> down(new MockDownload("", "", "", "",
+        QUrl(url), metadata, headers));
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
-    DownloadStruct downStruct = DownloadStruct(url, metadata, headers);
+    DownloadStruct downStruct(url, metadata, headers);
+
+    // set the expectations of the factory since is the one that
+    // creates the downloads. The matchers will ensure that the
+    // correct value is used.
+    EXPECT_CALL(*_factory, createDownload(_, Eq(url), QVariantMapEq(metadata),
+        QStringMapEq(headers)))
+            .Times(1)
+            .WillRepeatedly(Return(down.data()));
+
+    // expected actions to be performed on the download
+    EXPECT_CALL(*down.data(), setThrottle(_man->defaultThrottle()))
+        .Times(1);
+
+    EXPECT_CALL(*down.data(), path())
+        .Times(2)
+        .WillRepeatedly(Return(dbusPath));
+
+    // expected actions performed by the db
+    EXPECT_CALL(*_database, store(down.data()))
+        .Times(1)
+        .WillRepeatedly(Return(true));
+
+    // expected calls performed by the q
+    EXPECT_CALL(*_q, add(down.data()))
+        .Times(1);
+
+    // expected calls performed by the conn
+    EXPECT_CALL(*_conn, registerObject(dbusPath, down.data(), _))
+        .Times(1)
+        .WillRepeatedly(Return(true));
+
     _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
-    // grab the created download and assert that
-    // it was created correctly with the data
-    QList<MethodData> calledMethods = _q->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-
-    FileDownload* download = reinterpret_cast<FileDownload*>(
-        calledMethods[0].params().inParams()[0]);
-    QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
-        download->downloadId());
-    QCOMPARE(QUrl(url), download->url());
-
-    QVariantMap downloadMetadata = download->metadata();
-
-    foreach(const QString& key, metadata.keys()) {
-        QVERIFY(downloadMetadata.contains(key));
-        QCOMPARE(metadata[key], downloadMetadata[key]);
-    }
-
-    QMap<QString, QString> downloadHeaders = download->headers();
-
-    foreach(const QString& key, headers.keys()) {
-        QVERIFY(downloadHeaders.contains(key));
-        QCOMPARE(headers[key], downloadHeaders[key]);
-    }
-
-    calledMethods = _conn->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("registerObject"), calledMethods[0].methodName());
+    QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
+    verifyMocks();
 }
 
 void
@@ -204,149 +223,117 @@ TestDownloadManager::testCreateDownloadWithHash() {
     QFETCH(QString, hash);
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
-    _q->record();
-    _conn->record();
+    QString dbusPath = "/path/to/object";
+    QScopedPointer<MockDownload> down(new MockDownload("", "", "", "",
+        QUrl(url), metadata, headers));
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
     QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata,
         headers);
+
+    // set the expectations of the factory since is the one that
+    // creates the downloads. The matchers will ensure that the
+    // correct value is used.
+    EXPECT_CALL(*_factory, createDownload(_, Eq(url), hash, algo,
+        QVariantMapEq(metadata), QStringMapEq(headers)))
+            .Times(1)
+            .WillRepeatedly(Return(down.data()));
+
+    // expected actions to be performed on the download
+    EXPECT_CALL(*down.data(), setThrottle(_man->defaultThrottle()))
+        .Times(1);
+
+    EXPECT_CALL(*down.data(), path())
+        .Times(2)
+        .WillRepeatedly(Return(dbusPath));
+
+    // expected actions performed by the db
+    EXPECT_CALL(*_database, store(down.data()))
+        .Times(1)
+        .WillRepeatedly(Return(true));
+
+    // expected calls performed by the q
+    EXPECT_CALL(*_q, add(down.data()))
+        .Times(1);
+
+    // expected calls performed by the conn
+    EXPECT_CALL(*_conn, registerObject(dbusPath, down.data(), _))
+        .Times(1)
+        .WillRepeatedly(Return(true));
+
     _man->createDownload(downStruct);
 
     QCOMPARE(spy.count(), 1);
 
-    // grab the created download and assert that it was created
-    // correctly with the data
-    QList<MethodData> calledMethods = _q->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-
-    FileDownload* download = reinterpret_cast<FileDownload*>(
-        calledMethods[0].params().inParams()[0]);
-    QCOMPARE(UuidUtils::getDBusString(_uuidFactory->data()),
-        download->downloadId());
-    QCOMPARE(QUrl(url), download->url());
-
-    QVariantMap downloadMetadata = download->metadata();
-
-    QCOMPARE(hash, download->hash());
-    QCOMPARE(algoFromString(algo), download->hashAlgorithm());
-
-    foreach(const QString& key, metadata.keys()) {
-        QVERIFY(downloadMetadata.contains(key));
-        QCOMPARE(metadata[key], downloadMetadata[key]);
-    }
-
-    StringMap downloadHeaders = download->headers();
-
-    foreach(const QString& key, headers.keys()) {
-        QVERIFY(downloadHeaders.contains(key));
-        QCOMPARE(headers[key], downloadHeaders[key]);
-    }
-
-    calledMethods = _conn->calledMethods();
-    QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("registerObject"), calledMethods[0].methodName());
+    QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
+    verifyMocks();
 }
 
 void
 TestDownloadManager::testGetAllDownloads() {
-    FakeDownloadQueue* q = new FakeDownloadQueue();
-    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
-        apparmor);
+    // assert that we return the downloads from the q
+    QStringList expectedPaths;
+    expectedPaths.append("/first/path/object");
+    expectedPaths.append("/second/path/object");
+    expectedPaths.append("/third/path/object");
 
-    // add a number of downloads and assert that all the paths are returned
-    q->record();
-    _conn->record();
+    EXPECT_CALL(*_q, paths())
+        .Times(1)
+        .WillRepeatedly(Return(expectedPaths));
 
-    // do not use the fake uuid factory, else we only get one object path
-    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
-
-    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
-
-    QString firstUrl("http://www.ubuntu.com"),
-            secondUrl("http://www.ubuntu.com/phone"),
-            thirdUrl("http://www");
-    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
-    StringMap firstHeaders, secondHeaders, thirdHeaders;
-
-    man->createDownload(
-        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    man->createDownload(
-        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    man->createDownload(
-        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
-
-    QCOMPARE(spy.count(), 3);
-
-    // get the diff create downloads and theri paths so
-    // that we can assert that they are returned
-    QList<MethodData> calledMethods = q->calledMethods();
-    QCOMPARE(3, calledMethods.count());
-    QList<QString> paths;
-    for (int index = 0; index < calledMethods.count(); index++) {
-        FileDownload* download = reinterpret_cast<FileDownload*>(
-            calledMethods[index].params().inParams()[0]);
-        paths << download->path();
+    auto result = _man->getAllDownloads();
+    foreach(auto path, result) {
+        QVERIFY(expectedPaths.contains(path.path()));
     }
 
-    QList<QDBusObjectPath> allDownloads = man->getAllDownloads();
-    QCOMPARE(paths.count(), allDownloads.count());
+    verifyMocks();
 }
 
 void
 TestDownloadManager::testAllDownloadsWithMetadata() {
-    FakeDownloadQueue* q = new FakeDownloadQueue();
-    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
-        apparmor);
+    auto key = QString("filter");
+    auto value = QString("coconut");
+    auto validPath = QString("/valid/metadata/path");
 
-    // add a number of downloads and assert that all the paths are returned
-    q->record();
-    _conn->record();
+    QVariantMap filteredMetadata;
+    filteredMetadata[key] = value;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
 
-    // do not use the fake uuid factory, else we only get one object path
-    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
+    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), metadata, headers));
+    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), metadata, headers));
+    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), metadata, headers));
+    QHash<QString, Download*> downs;
+    downs[validPath] = first.data();
+    downs["/second/object/path"] = second.data();
+    downs["/third/object/path"] = third.data();
 
-    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
+    EXPECT_CALL(*first.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(filteredMetadata));
 
-    QString firstUrl("http://www.ubuntu.com"),
-            secondUrl("http://www.ubuntu.com/phone"),
-            thirdUrl("http://www");
-    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
-    StringMap firstHeaders, secondHeaders, thirdHeaders;
+    EXPECT_CALL(*second.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(metadata));
 
-    firstMetadata["type"] = "first";
-    secondMetadata["type"] = "second";
-    thirdMetadata["type"] = "first";
+    EXPECT_CALL(*third.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(metadata));
 
-    man->createDownload(
-        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    man->createDownload(
-        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    man->createDownload(
-        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
+    EXPECT_CALL(*_q, downloads())
+        .Times(1)
+        .WillRepeatedly(Return(downs));
 
-    QCOMPARE(spy.count(), 3);
+    auto result = _man->getAllDownloadsWithMetadata(key, value);
+    QCOMPARE(1, result.count());
+    QCOMPARE(result[0].path(), validPath);
 
-    // get the diff create downloads and theri paths so that we
-    // can assert that they are returned
-    QList<MethodData> calledMethods = q->calledMethods();
-    QCOMPARE(3, calledMethods.count());
-    QList<QString> downloads;
-    for (int index = 0; index < calledMethods.count(); index++) {
-        FileDownload* download = reinterpret_cast<FileDownload*>(
-            calledMethods[index].params().inParams()[0]);
-        downloads << download->path();
-    }
-
-    QList<QDBusObjectPath> filtered = man->getAllDownloadsWithMetadata(
-        "type", "first");
-
-    QCOMPARE(2, filtered.count());
+    verifyMocks();
 }
 
 void
@@ -362,8 +349,15 @@ TestDownloadManager::testSetThrottleNotDownloads_data() {
 void
 TestDownloadManager::testSetThrottleNotDownloads() {
     QFETCH(qulonglong, speed);
+
+    // return no downloads
+    EXPECT_CALL(*_q, downloads())
+        .Times(1)
+        .WillRepeatedly(Return(QHash<QString, Download*>()));
+
     _man->setDefaultThrottle(speed);
     QCOMPARE(_man->defaultThrottle(), speed);
+    verifyMocks();
 }
 
 void
@@ -379,41 +373,37 @@ TestDownloadManager::testSetThrottleWithDownloads_data() {
 void
 TestDownloadManager::testSetThrottleWithDownloads() {
     QFETCH(qulonglong, speed);
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), metadata, headers));
+    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), metadata, headers));
+    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), metadata, headers));
+    QHash<QString, Download*> downs;
+    downs["/first/object/path"] = first.data();
+    downs["/second/object/path"] = second.data();
+    downs["/third/object/path"] = third.data();
 
-    // do not use the fake uuid factory, else we only get one object path
-    FakeDownloadQueue* q = new FakeDownloadQueue();
-    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
-        apparmor);
+    // set expectations
+    EXPECT_CALL(*_q, downloads())
+        .Times(1)
+        .WillRepeatedly(Return(downs));
 
-    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
-
-    QString firstUrl("http://www.ubuntu.com"),
-            secondUrl("http://www.ubuntu.com/phone"),
-            thirdUrl("http://www");
-    QVariantMap firstMetadata, secondMetadata, thirdMetadata;
-    StringMap firstHeaders, secondHeaders, thirdHeaders;
-
-    firstMetadata["type"] = "first";
-    secondMetadata["type"] = "second";
-    thirdMetadata["type"] = "first";
-
-    man->createDownload(
-        DownloadStruct(firstUrl, firstMetadata, firstHeaders));
-    man->createDownload(
-        DownloadStruct(secondUrl, secondMetadata, secondHeaders));
-    man->createDownload(
-        DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
-
-    man->setDefaultThrottle(speed);
-
-    QList<MethodData> calledMethods = q->calledMethods();
-    for (int index = 0; index < calledMethods.count(); index++) {
-        FileDownload* download = reinterpret_cast<FileDownload*>(
-            calledMethods[index].params().inParams()[0]);
-        QCOMPARE(download->throttle(), speed);
+    foreach(auto key, downs.keys()) {
+        auto mock = static_cast<MockDownload*>(downs[key]);
+        EXPECT_CALL(*mock, setThrottle(speed))
+            .Times(1);
     }
+
+    _man->setDefaultThrottle(speed);
+
+    foreach(auto key, downs.keys()) {
+         QVERIFY(Mock::VerifyAndClearExpectations(downs[key]));
+    }
+
+    verifyMocks();
 }
 
 void
@@ -431,12 +421,17 @@ TestDownloadManager::testSizeChangedEmittedOnAddition() {
     QFETCH(int, size);
     QSignalSpy spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
-    _q->setSize(size);
-    _q->emitDownloadAdded("");
+
+    EXPECT_CALL(*_q, size())
+        .Times(1)
+        .WillRepeatedly(Return(size));
+
+    _q->downloadAdded("");
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
+    verifyMocks();
 }
 
 void
@@ -454,55 +449,59 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QFETCH(int, size);
     QSignalSpy spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
-    _q->setSize(size);
-    _q->emitDownloadRemoved("");
+
+    EXPECT_CALL(*_q, size())
+        .Times(1)
+        .WillRepeatedly(Return(size));
+
+    _q->downloadRemoved("");
 
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
+    verifyMocks();
 }
 
 void
 TestDownloadManager::testSetSelfSignedCerts() {
     // assert that the factory does get the certs
-    _requestFactory->record();
     QList<QSslCertificate> certs;
+
+    EXPECT_CALL(*_factory, setAcceptedCertificates(_))
+        .Times(1);
     _man->setAcceptedCertificates(certs);
 
-    QList<MethodData> calledMethods = _requestFactory->calledMethods();
-    qDebug() << calledMethods;
-    QCOMPARE(1, calledMethods.count());
-    QCOMPARE(QString("setAcceptedCertificates"), calledMethods[0].methodName());
+    verifyMocks();
 }
 
 void
 TestDownloadManager::testStoppable() {
-    FakeDownloadQueue* q = new FakeDownloadQueue();
-    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
-        apparmor);
-    _app->record();
+    auto q = new MockDownloadQueue();
+    auto factory = new MockDownloadFactory();
 
-    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q, true));
+    QScopedPointer<DownloadManager> man(
+        new DownloadManager(_app, _conn, factory, q, true));
+
+    EXPECT_CALL(*_app, exit(0))
+        .Times(1);
+
     man->exit();
-    QList<MethodData> calledMethods = _app->calledMethods();
-    QCOMPARE(1, calledMethods.count());
+    verifyMocks();
 }
 
 void
 TestDownloadManager::testNotStoppable() {
-    FakeDownloadQueue* q = new FakeDownloadQueue();
-    FakeAppArmor* apparmor = new FakeAppArmor(QSharedPointer<UuidFactory>(
-        new UuidFactory()));
-    FakeDownloadFactory* downloadFactory = new FakeDownloadFactory(
-        apparmor);
-    _app->record();
+    auto q = new MockDownloadQueue();
+    auto factory = new MockDownloadFactory();
 
-    QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q, false));
+    QScopedPointer<DownloadManager> man(
+        new DownloadManager(_app, _conn, factory, q, false));
+
+    EXPECT_CALL(*_app, exit(0))
+        .Times(0);  // never exit!
+
     man->exit();
-    QList<MethodData> calledMethods = _app->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 QTEST_MAIN(TestDownloadManager)

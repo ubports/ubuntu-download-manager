@@ -21,18 +21,21 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QTest>
 #include <ubuntu/downloads/manager.h>
 #include <ubuntu/downloads/file_download.h>
-#include <ubuntu/transfers/tests/base_testcase.h>
-#include <ubuntu/transfers/tests/system/application.h>
-#include <ubuntu/transfers/tests/system/apparmor.h>
-#include <ubuntu/transfers/tests/system/dbus_connection.h>
-#include <ubuntu/transfers/tests/system/request_factory.h>
-#include <ubuntu/transfers/tests/system/uuid_factory.h>
-#include <ubuntu/transfers/tests/system/system_network_info.h>
-#include <ubuntu/download_manager/tests/server/queue.h>
-#include <ubuntu/download_manager/tests/server/factory.h>
+#include "apparmor.h"
+#include "application.h"
+#include "base_testcase.h"
+#include "database.h"
+#include "dbus_connection.h"
+#include "factory.h"
+#include "queue.h"
+#include "request_factory.h"
+#include "system_network_info.h"
+#include "uuid_factory.h"
 
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;
 
@@ -40,7 +43,8 @@ class TestDownloadManager : public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownloadManager(QObject *parent = 0);
+    explicit TestDownloadManager(QObject *parent = 0)
+        : BaseTestCase("TestDownloadManager", parent) {}
 
  private slots:  // NOLINT(whitespace/indent)
 
@@ -69,18 +73,17 @@ class TestDownloadManager : public BaseTestCase {
     void testNotStoppable();
 
  private:
+    void verifyMocks();
     QCryptographicHash::Algorithm algoFromString(const QString& data);
 
  private:
-    FakeApplication* _app;
-    FakeSystemNetworkInfo* _networkInfo;
-    FakeRequestFactory* _requestFactory;
-    FakeDownloadFactory* _downloadFactory;
-    FakeDBusConnection* _conn;
-    FakeDownloadQueue* _q;
-    QSharedPointer<FakeUuidFactory> _uuidFactory;
-    FakeAppArmor* _apparmor;
+    MockApplication* _app;
+    MockDatabase* _database;
+    MockDBusConnection* _conn;
+    MockDownloadFactory* _factory;
+    MockDownloadQueue* _q;
     DownloadManager* _man;
+    MockRequestFactory* _requestFactory;
 };
 
 #endif  // TEST_DOWNLOADER_H
