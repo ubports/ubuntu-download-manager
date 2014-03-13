@@ -10,7 +10,7 @@ set(DAEMON_TESTS
 	test_file_download_sm
 	test_filename_mutex
 	test_final_state
-        #test_group_download
+        test_group_download
         test_metadata
 	test_mms_download
 	test_network_error_transition
