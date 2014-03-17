@@ -125,6 +125,8 @@ Logger::setupLogging(const QString logDir) {
     if (!_init) {
         _init = true;
         google::InitGoogleLogging(toStdString(appName).c_str());
+        google::SetLogDestination(google::ERROR, toStdString(path).c_str());
+        google::SetLogDestination(google::WARNING, toStdString(path).c_str());
         google::SetLogDestination(google::INFO, toStdString(path).c_str());
     }
 }
