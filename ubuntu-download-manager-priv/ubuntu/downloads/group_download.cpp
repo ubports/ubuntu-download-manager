@@ -108,6 +108,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
             if (!HashAlgorithm::isValidAlgo(algo)) {
                 setIsValid(false);
                 setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+                break;
             }
 
             singleDownload = qobject_cast<FileDownload*>(

@@ -20,7 +20,9 @@
 #define MATCHERS_H
 
 #include <QMap>
+#include <QPair>
 #include <QString>
+#include <QVariant>
 #include <QVariantMap>
 #include <gmock/gmock.h>
 
@@ -40,16 +42,25 @@ namespace {
 }
 
 
-MATCHER_P(QVariantMapEq, value, "") {
+MATCHER_P(QVariantMapEq, value, "Returns if the variant maps are equal.") {
     auto argMap = static_cast<QVariantMap>(arg);
     auto valueMap = static_cast<QVariantMap>(value);
     return compareMaps<QVariantMap>(argMap, valueMap);
 }
 
-MATCHER_P(QStringMapEq, value, "") {
+MATCHER_P(QStringMapEq, value, "Returns if the string maps are equal.") {
     auto argMap = static_cast<QMap<QString, QString> >(arg);
     auto valueMap = static_cast<QMap<QString, QString> >(value);
     return compareMaps<QMap<QString, QString> >(argMap, valueMap);
+}
+
+MATCHER_P(QVariantMapContains, value, "Returns if the map has the given vkey/value pair") {
+    auto argMap = static_cast<QVariantMap>(arg);
+    auto valuePair = static_cast<QPair<QString, QVariant> >(value);
+    if (!argMap.contains(valuePair.first)) {
+        return false;
+    }
+    return argMap[valuePair.first] == valuePair.second;
 }
 
 #endif

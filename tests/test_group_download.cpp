@@ -23,6 +23,7 @@
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include "download.h"
+#include "matchers.h"
 #include "test_group_download.h"
 
 using ::testing::_;
@@ -215,21 +216,32 @@ TestGroupDownload::testCancelDownloadWithCancel() {
         .WillOnce(Return(second))
         .WillOnce(Return(third));
 
-    auto index = 0;
-    foreach(MockDownload* down, downs) {
-        EXPECT_CALL(*down, isValid())
+    for(auto index = 1; index < downs.count(); index++) {
+        EXPECT_CALL(*downs[index], isValid())
             .Times(1)
             .WillRepeatedly(Return(true));
-        EXPECT_CALL(*down, filePath())
+        EXPECT_CALL(*downs[index], filePath())
             .Times(1)
             .WillRepeatedly(Return(QString("local_file %1").arg(index)));
-        EXPECT_CALL(*down, state())
+        EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, cancelDownload())
+        EXPECT_CALL(*downs[index], cancelDownload())
             .Times(1);
-        index++;
     }
+
+    // set the expectation for the first download which is a little diff
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("local_file")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::CANCEL));
+    EXPECT_CALL(*downs[0], cancelDownload())
+        .Times(0);
 
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
@@ -238,8 +250,6 @@ TestGroupDownload::testCancelDownloadWithCancel() {
 
     // cancel a download and the expectations will make sue that we are
     // only calling cancelDownload once
-    first->setAddToQueue(false);  // so that we call cancelDownload directly
-    first->cancel();
     group->cancelDownload();
 
     foreach(MockDownload* down, downs) {
@@ -299,7 +309,8 @@ TestGroupDownload::testPauseAllDownloads() {
         EXPECT_CALL(*down, startDownload())
             .Times(1);
         EXPECT_CALL(*down, state())
-            .Times(1)
+            .Times(2)
+            .WillOnce(Return(Download::IDLE))
             .WillOnce(Return(Download::START));
         EXPECT_CALL(*down, pauseDownload())
             .Times(1);
@@ -360,7 +371,8 @@ TestGroupDownload::testPauseDownloadWithFinished() {
     EXPECT_CALL(*first, startDownload())
         .Times(1);
     EXPECT_CALL(*first, state())
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(Download::IDLE))
         .WillOnce(Return(Download::FINISH));
 
     // set the expectations for all other downloads.
@@ -375,7 +387,8 @@ TestGroupDownload::testPauseDownloadWithFinished() {
         EXPECT_CALL(*down, startDownload())
             .Times(1);
         EXPECT_CALL(*down, state())
-            .Times(1)
+            .Times(2)
+            .WillOnce(Return(Download::IDLE))
             .WillOnce(Return(Download::START));
         EXPECT_CALL(*down, pauseDownload())
             .Times(1);
@@ -425,34 +438,47 @@ TestGroupDownload::testPauseDownloadWithCancel() {
     // set the expectations
 
     EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
-        .Times(AnyNumber())
+        .Times(3)
         .WillOnce(Return(first))
         .WillOnce(Return(second))
         .WillOnce(Return(third));
 
     // set the expectations for all other downloads.
-    auto index = 0;
-    foreach(MockDownload* down, downs) {
-        EXPECT_CALL(*down, isValid())
+    for(auto index = 1; index < downs.count(); index ++) {
+        EXPECT_CALL(*downs[index], isValid())
             .Times(1)
             .WillRepeatedly(Return(true));
-        EXPECT_CALL(*down, filePath())
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
             .Times(1)
-            .WillRepeatedly(Return(QString("local_file %1").arg(index)));
-        EXPECT_CALL(*down, startDownload())
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], startDownload())
             .Times(1);
-        EXPECT_CALL(*down, pauseDownload())
+        EXPECT_CALL(*downs[index], state())
+            .Times(2)
+            .WillOnce(Return(Download::IDLE))
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*downs[index], pauseDownload())
             .Times(0);
-        EXPECT_CALL(*down, cancelDownload())
+        EXPECT_CALL(*downs[index], cancelDownload())
             .Times(1);
-        index++;
     }
 
     // we are going to tell first to be canceled manually
-    EXPECT_CALL(*first, state())
+    EXPECT_CALL(*downs[0], isValid())
         .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("local_file")));
+    EXPECT_CALL(*downs[0], startDownload())
+        .Times(1);
+    EXPECT_CALL(*downs[0], state())
+        .Times(2)
+        .WillOnce(Return(Download::IDLE))
         .WillOnce(Return(Download::CANCEL));
-
+    EXPECT_CALL(*downs[0], pauseDownload())
+        .Times(0);
     EXPECT_CALL(*_fileManager, remove(path))
         .Times(0);
 
@@ -462,9 +488,7 @@ TestGroupDownload::testPauseDownloadWithCancel() {
         _factory, _fileManager));
 
     group->startDownload();
-    first->cancelDownload();
     first->canceled(true);
-    group->pauseDownload();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -483,40 +507,46 @@ TestGroupDownload::testResumeNoDownloads() {
     verifyMocks();
 }
 
-/*
 void
 TestGroupDownload::testResumeAllDownloads() {
-    _fileManager->record();
-    QList<GroupDownloadStruct> downloadsStruct;
-    QString deleteFile = "local_file";
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        deleteFile, ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
-        _isConfined, _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    // set the expectations
 
-    QList<Download*> downloads = _factory->downloads();
-    foreach(Download* download, downloads) {
-        download->start();
-        download->pause();
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::PAUSE));
+        EXPECT_CALL(*down, resumeDownload())
+            .Times(1);
+        index++;
     }
-    group->resumeDownload();
 
-    foreach(Download* download, downloads) {
-        QCOMPARE(Download::RESUME, download->state());
-    }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
-}
-
-void
-TestGroupDownload::testResumeWithFinished() {
-    _fileManager->record();
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -528,30 +558,137 @@ TestGroupDownload::testResumeWithFinished() {
 
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
         _isConfined, _rootPath, downloadsStruct, _algo,
-        _isGSMDownloadAllowed, _metadata, _headers, _factory,
-        _fileManager));
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
-    qDebug() << "Downloads" << downloads;
-    reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
-    for (int index = 1; index < downloads.count(); index++) {
-        downloads[index]->start();
-        downloads[index]->pause();
-    }
     group->resumeDownload();
 
-    foreach(Download* download, downloads) {
-        Download::State state = download->state();
-        if (state != Download::FINISH)
-            QCOMPARE(Download::RESUME, download->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
+}
+
+void
+TestGroupDownload::testResumeWithFinished() {
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    for(auto index = 1; index < downs.count(); index++) {
+        EXPECT_CALL(*downs[index], isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], state())
+            .Times(1)
+            .WillOnce(Return(Download::PAUSE));
+        EXPECT_CALL(*downs[index], resumeDownload())
+            .Times(1);
+    }
+
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("path")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::FINISH));
+    EXPECT_CALL(*downs[0], resumeDownload())
+        .Times(0);
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    QString deleteFile = "local_file";
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        deleteFile, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
+        "other_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
+        "other_reddit_local_file", ""));
+
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
+
+    group->resumeDownload();
+
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testResumeWidhCancel() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    for(auto index = 1; index < downs.count(); index++) {
+        EXPECT_CALL(*downs[index], isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], state())
+            .Times(1)
+            .WillOnce(Return(Download::PAUSE));
+        EXPECT_CALL(*downs[index], resumeDownload())
+            .Times(1);
+    }
+
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("path")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::CANCEL));
+    EXPECT_CALL(*downs[0], resumeDownload())
+        .Times(0);
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -561,30 +698,59 @@ TestGroupDownload::testResumeWidhCancel() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
-    (downloads[0])->cancel();
-    for (int index = 1; index < downloads.count(); index++) {
-        downloads[index]->start();
-        downloads[index]->pause();
-    }
     group->resumeDownload();
 
-    foreach(Download* download, downloads) {
-        Download::State state = download->state();
-        if (state != Download::CANCEL)
-            QCOMPARE(Download::RESUME, download->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 void
-TestGroupDownload::testReusmeNoStarted() {
-    _fileManager->record();
+TestGroupDownload::testResumeNoStarted() {
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::IDLE));
+        EXPECT_CALL(*down, resumeDownload())
+            .Times(0);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -594,19 +760,17 @@ TestGroupDownload::testReusmeNoStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
-        _rootPath, downloadsStruct, _algo, _isGSMDownloadAllowed,
-        _metadata, _headers, _factory,
-        _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
     group->resumeDownload();
 
-    foreach(Download* download, downloads) {
-        QCOMPARE(Download::IDLE, download->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 void
@@ -622,7 +786,44 @@ TestGroupDownload::testStartNoDownloads() {
 
 void
 TestGroupDownload::testStartAllDownloads() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::IDLE));
+        EXPECT_CALL(*down, startDownload())
+            .Times(1);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -632,23 +833,59 @@ TestGroupDownload::testStartAllDownloads() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
     group->startDownload();
 
-    foreach(Download* download, downloads) {
-        QCOMPARE(Download::START, download->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testStartAlreadyStarted() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*down, startDownload())
+            .Times(0);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -658,59 +895,68 @@ TestGroupDownload::testStartAlreadyStarted() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
     group->startDownload();
 
-    foreach(Download* download, downloads) {
-        download->start();
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-
-    foreach(Download* download, downloads) {
-        QCOMPARE(Download::START, download->state());
-    }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
-}
-
-void
-TestGroupDownload::testStartResume() {
-    _fileManager->record();
-    QList<GroupDownloadStruct> downloadsStruct;
-    QString deleteFile = "local_file";
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        deleteFile, ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
-
-    QList<Download*> downloads = _factory->downloads();
-    group->startDownload();
-
-    foreach(Download* download, downloads) {
-        download->start();
-        download->pause();
-        download->resume();
-    }
-
-    foreach(Download* download, downloads) {
-        QCOMPARE(Download::RESUME, download->state());
-    }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testStartFinished() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    for(auto index = 1; index < downs.count(); index++) {
+        EXPECT_CALL(*downs[index], isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], state())
+            .Times(1)
+            .WillOnce(Return(Download::IDLE));
+        EXPECT_CALL(*downs[index], startDownload())
+            .Times(1);
+    }
+
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("path")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::FINISH));
+    EXPECT_CALL(*downs[0], startDownload())
+        .Times(0);
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -720,56 +966,68 @@ TestGroupDownload::testStartFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    QList<Download*> downloads = _factory->downloads();
-    reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
     group->startDownload();
 
-    foreach(Download* download, downloads) {
-        Download::State state = download->state();
-        if (state != Download::FINISH)
-            QCOMPARE(Download::START, download->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testStartCancel() {
-    _fileManager->record();
-    QList<GroupDownloadStruct> downloadsStruct;
-    QString deleteFile = "local_file";
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        deleteFile, ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
+    // set the expectations
 
-    QList<Download*> downloads = _factory->downloads();
-    downloads[0]->cancel();
-    group->startDownload();
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
 
-    foreach(Download* download, downloads) {
-        Download::State state = download->state();
-        if (state != Download::CANCEL)
-            QCOMPARE(Download::START, download->state());
+    for(auto index = 1; index < downs.count(); index++) {
+        EXPECT_CALL(*downs[index], isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], state())
+            .Times(1)
+            .WillOnce(Return(Download::IDLE));
+        EXPECT_CALL(*downs[index], startDownload())
+            .Times(1);
     }
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
-    QCOMPARE(Download::CANCEL, downloads[0]->state());
-}
 
-void
-TestGroupDownload::testSingleDownloadFinished() {
-    _fileManager->record();
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("path")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::CANCEL));
+    EXPECT_CALL(*downs[0], startDownload())
+        .Times(0);
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -779,24 +1037,54 @@ TestGroupDownload::testSingleDownloadFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
-    QList<Download*> downloads = _factory->downloads();
     group->startDownload();
 
-    reinterpret_cast<FakeDownload*>(downloads[0])->emitFinished(deleteFile);
-
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
-    QCOMPARE(spy.count(), 0);
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testAllDownloadsFinished() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
     QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
@@ -806,115 +1094,236 @@ TestGroupDownload::testAllDownloadsFinished() {
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
+
     QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
 
-    QList<Download*> downloads = _factory->downloads();
-    group->startDownload();
-    foreach(Download* download, downloads) {
-        reinterpret_cast<FakeDownload*>(download)->emitFinished(deleteFile);
+    // emit signals for each download
+    QStringList expectedPaths;
+    index = 0;
+    foreach(MockDownload* down, downs) {
+        auto path = QString("local_path %1").arg(index);
+        expectedPaths.append(path);
+        down->finished(path);
+        index++;
     }
 
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
     QCOMPARE(spy.count(), 1);
+
+    // ensure that we have the correct paths
+    auto arguments = spy.takeFirst();
+    auto emittedPaths = arguments.at(0).value<QStringList>();
+    foreach(auto path, expectedPaths) {
+        QVERIFY(emittedPaths.contains(path));
+    }
+
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testSingleDownloadErrorNoFinished() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
     QList<GroupDownloadStruct> downloadsStruct;
-    QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        deleteFile, ""));
+        "my_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    for(auto index = 1; index < downs.count(); index ++) {
+        EXPECT_CALL(*downs[index], isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*downs[index], filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*downs[index], state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*downs[index], cancelDownload())
+            .Times(1);
+    }
+
+    // we are going to tell first to be canceled manually
+    EXPECT_CALL(*downs[0], isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*downs[0], filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("local_file")));
+    EXPECT_CALL(*downs[0], state())
+        .Times(1)
+        .WillOnce(Return(Download::ERROR));
+
+    EXPECT_CALL(*_fileManager, remove(path))
+        .Times(0);
+
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
+
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    first->error("testing");
 
-    QList<Download*> downloads = _factory->downloads();
-    group->startDownload();
+    QCOMPARE(1, spy.count());
 
-    reinterpret_cast<FakeDownload*>(downloads[0])->emitError("error");
-
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(0, calledMethods.count());
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(Download::ERROR, group->state());
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testSingleDownloadErrorWithFinished() {
-    _fileManager->record();
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    auto finishedPath = QString("finishedPath");
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
     QList<GroupDownloadStruct> downloadsStruct;
-    QString deleteFile = "local_file";
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        deleteFile, ""));
+        "my_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
         "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // we are going to tell first to be canceled manually
+    EXPECT_CALL(*first, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*first, filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("local_file")));
+    EXPECT_CALL(*first, state())
+        .Times(1)
+        .WillOnce(Return(Download::ERROR));
+
+    // set the expectations for all not finished downloads
+    EXPECT_CALL(*second, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*second, filePath())
+        .Times(1)
+        .WillRepeatedly(Return(QString("local_file 2")));
+    EXPECT_CALL(*second, state())
+        .Times(1)
+        .WillOnce(Return(Download::START));
+    EXPECT_CALL(*second, cancelDownload())
+        .Times(1);
+
+    // we are going to tell the last download to finish
+    EXPECT_CALL(*third, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*third, filePath())
+        .Times(1)
+        .WillRepeatedly(Return(finishedPath));
+    EXPECT_CALL(*third, state())
+        .Times(1)
+        .WillOnce(Return(Download::FINISH));
+    EXPECT_CALL(*third, cancelDownload())
+        .Times(0);
+
+    EXPECT_CALL(*_fileManager, remove(finishedPath))
+        .Times(1);
+
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
+
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    third->finished(finishedPath);
+    first->error("testing");
 
-    QList<Download*> downloads = _factory->downloads();
-    group->startDownload();
-    for (int index = 1; index < downloads.count(); index++) {
-        reinterpret_cast<FakeDownload*>(downloads[index])->emitFinished("path");
+    QCOMPARE(1, spy.count());
+
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
     }
-
-    reinterpret_cast<FakeDownload*>(downloads[0])->emitError("error");
-
-    QList<MethodData> calledMethods = _fileManager->calledMethods();
-    QCOMPARE(2, calledMethods.count());
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(Download::ERROR, group->state());
+    verifyMocks();
 }
 
 void
 TestGroupDownload::testLocalPathSingleDownload() {
-    // assert that the local path of the download was set in the metadata
+    auto localFile = QString("local_file");
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+
+    // set the expectations
+    QPair<QString, QVariant> expected;
+    expected.first = Metadata::LOCAL_PATH_KEY;
+    expected.second = QVariant(localFile);
+    EXPECT_CALL(*_factory,
+        createDownloadForGroup(_, _, _, QVariantMapContains(expected), _))
+            .Times(1)
+            .WillOnce(Return(first));
+
+    // set the expectations for all other downloads.
+    EXPECT_CALL(*first, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*first, filePath())
+        .Times(1)
+        .WillRepeatedly(Return(localFile));
+
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+        localFile, ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    Q_UNUSED(group);
-
-    QList<Download*> downloads = _factory->downloads();
-
-    // assert that each metadata has the local file set
-    QVariantMap downMeta = downloads[0]->metadata();
-    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
-        downloadsStruct[0].getLocalFile());
-
-    downMeta = downloads[1]->metadata();
-    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
-        downloadsStruct[1].getLocalFile());
-
-    downMeta = downloads[2]->metadata();
-    QVERIFY(downMeta.contains(Metadata::LOCAL_PATH_KEY));
-    QCOMPARE(downMeta[Metadata::LOCAL_PATH_KEY].toString(),
-        downloadsStruct[2].getLocalFile());
+    QVERIFY(Mock::VerifyAndClearExpectations(first));
+    verifyMocks();
 }
 
 void
@@ -929,74 +1338,85 @@ void
 TestGroupDownload::testConfinedSingleDownload() {
     // assert that the created downloads are confined
     QFETCH(bool, confined);
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+
+    // set the expectations
+    EXPECT_CALL(*_factory,
+        createDownloadForGroup(confined, _, _, _, _))
+            .Times(1)
+            .WillOnce(Return(first));
+
+    // set the expectations for all other downloads.
+    EXPECT_CALL(*first, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*first, filePath())
+        .Times(1)
+        .WillRepeatedly(Return("localFile"));
 
     QList<GroupDownloadStruct> downloadsStruct;
     downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+        "localFile", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, confined, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        confined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    Q_UNUSED(group);
-
-    foreach(Download* download, _factory->downloads()) {
-        QCOMPARE(confined, download->isConfined());
-    }
+    QVERIFY(Mock::VerifyAndClearExpectations(first));
+    verifyMocks();
 }
 
 void
-TestGroupDownload::testInvalidUrl() {
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+TestGroupDownload::testInvalidDownload() {
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
+    // set the expectations
+    EXPECT_CALL(*_factory,
+        createDownloadForGroup(_, _, _, _, _))
+            .Times(1)
+            .WillOnce(Return(first));
+
+    // set the expectations for all other downloads.
+    EXPECT_CALL(*first, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(false));
+    EXPECT_CALL(*first, filePath())
+        .Times(1)
+        .WillRepeatedly(Return("localFile"));
+
+    QList<GroupDownloadStruct> downloadsStruct;
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "localFile", ""));
+
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
+    QVERIFY(Mock::VerifyAndClearExpectations(first));
+    verifyMocks();
     QVERIFY(!group->isValid());
 }
 
 void
-TestGroupDownload::testValidUrl() {
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
-
-    QVERIFY(group->isValid());
-}
-
-void
 TestGroupDownload::testInvalidHashAlgorithm() {
+    // set the expectations
+    EXPECT_CALL(*_factory,
+        createDownloadForGroup(_, _, _, _, _))
+            .Times(0);
+
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", "asasas"));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", "sasas"));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", "sasaas"));
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "localFile", "signature-goes-here"));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "wrong", _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false,
+        _rootPath, downloadsStruct, "wrong", _isGSMDownloadAllowed, 
+        _metadata, _headers, _factory, _fileManager));
 
+    verifyMocks();
     QVERIFY(!group->isValid());
 }
 
@@ -1016,60 +1436,34 @@ TestGroupDownload::testValidHashAlgorithm_data() {
 void
 TestGroupDownload::testValidHashAlgorithm() {
     QFETCH(QString, algo);
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", "asasas"));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "other_local_file", "asasas"));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", "sasa"));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, algo, _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
 
-    QVERIFY(group->isValid());
-}
+    // set the expectations
+    EXPECT_CALL(*_factory,
+        createDownloadForGroup(_, _, _, _, _))
+            .Times(1)
+            .WillOnce(Return(first));
 
-void
-TestGroupDownload::testInvalidFilePresent() {
-    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
-    QScopedPointer<QFile> file(new QFile(filePath));
-    file->open(QIODevice::ReadWrite | QFile::Append);
-    file->write("data data data!");
-    file->close();
+    // set the expectations for all other downloads.
+    EXPECT_CALL(*first, isValid())
+        .Times(1)
+        .WillRepeatedly(Return(true));
+    EXPECT_CALL(*first, filePath())
+        .Times(1)
+        .WillRepeatedly(Return("localFile"));
 
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        filePath, ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "localFile", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false,
+        _rootPath, downloadsStruct, algo, _isGSMDownloadAllowed, 
+        _metadata, _headers, _factory, _fileManager));
 
-    QVERIFY(!group->isValid());
-}
-
-void
-TestGroupDownload::testValidFileNotPresent() {
-    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
-
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        "local_file", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        filePath, ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
-        _factory, _fileManager));
-
+    QVERIFY(Mock::VerifyAndClearExpectations(first));
+    verifyMocks();
     QVERIFY(group->isValid());
 }
 
@@ -1090,134 +1484,313 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
 
 void
 TestGroupDownload::testDuplicatedLocalPath() {
-    QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(2)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second));
+
+    // set the expectations for all other downloads.
+    auto path = QString("local_file");
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(AnyNumber())
+            .WillRepeatedly(Return(true));
+        // ensure that the local path is the same
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+    }
 
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct("http://one.ubuntu.com",
-        filePath, ""));
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        "local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        filePath, ""));
+        "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, false, _rootPath,
-        downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
     QVERIFY(!group->isValid());
 }
 
 void
-TestGroupDownload::testAuthErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
-}
-
-void
 TestGroupDownload::testAuthErrorEmitted() {
-    QFETCH(QString, url);
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*down, cancelDownload())
+            .Times(1);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
+    QString deleteFile = "local_file";
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        deleteFile, ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
+        "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
-    QSignalSpy spy(group.data(), SIGNAL(authError(QString, AuthErrorStruct)));
-    group->emitAuthError(url, AuthErrorStruct());
-    QCOMPARE(1, spy.count());
-}
 
-void
-TestGroupDownload::testHttpErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
+    QSignalSpy spy(group.data(),
+        SIGNAL(authError(QString, AuthErrorStruct)));
+    first->authError(AuthErrorStruct());
+    first->error("Error!");
 
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
+    QTRY_COMPARE(1, spy.count());
 }
 
 void
 TestGroupDownload::testHttpErrorEmitted() {
-    QFETCH(QString, url);
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*down, cancelDownload())
+            .Times(1);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
+    QString deleteFile = "local_file";
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        deleteFile, ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
+        "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
     QSignalSpy spy(group.data(), SIGNAL(httpError(QString, HttpErrorStruct)));
-    group->emitHttpError(url, HttpErrorStruct());
-    QCOMPARE(1, spy.count());
-}
+    first->httpError(HttpErrorStruct());
+    first->error("Error");
 
-void
-TestGroupDownload::testNetworkErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
+    QTRY_COMPARE(1, spy.count());
 }
 
 void
 TestGroupDownload::testNetworkErrorEmitted() {
-    QFETCH(QString, url);
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*down, cancelDownload())
+            .Times(1);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
+    QString deleteFile = "local_file";
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        deleteFile, ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
+        "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
     QSignalSpy spy(group.data(), SIGNAL(networkError(QString, NetworkErrorStruct)));
-    group->emitNetworkError(url, NetworkErrorStruct());
-    QCOMPARE(1, spy.count());
-}
+    first->networkError(NetworkErrorStruct());
+    first->error("Error");
 
-void
-TestGroupDownload::testProcessErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
+    QTRY_COMPARE(1, spy.count());
 }
 
 void
 TestGroupDownload::testProcessErrorEmitted() {
-    QFETCH(QString, url);
+    auto first = new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), _metadata, _headers);
+    auto path = QString("downloadedPath");
+    auto second = new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), _metadata, _headers);
+    auto third = new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), _metadata, _headers);
+    QList<MockDownload*> downs;
+    downs.append(first);
+    downs.append(second);
+    downs.append(third);
+
+    // set the expectations
+
+    EXPECT_CALL(*_factory, createDownloadForGroup(_, _, _, _, _))
+        .Times(3)
+        .WillOnce(Return(first))
+        .WillOnce(Return(second))
+        .WillOnce(Return(third));
+
+    // set the expectations for all other downloads.
+    auto index = 0;
+    foreach(auto down, downs) {
+        EXPECT_CALL(*down, isValid())
+            .Times(1)
+            .WillRepeatedly(Return(true));
+        auto path = QString("local_file %1").arg(index);
+        EXPECT_CALL(*down, filePath())
+            .Times(1)
+            .WillRepeatedly(Return(path));
+        EXPECT_CALL(*down, state())
+            .Times(1)
+            .WillOnce(Return(Download::START));
+        EXPECT_CALL(*down, cancelDownload())
+            .Times(1);
+        index++;
+    }
+
     QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
+    QString deleteFile = "local_file";
+    downloadsStruct.append(GroupDownloadStruct("http://one.ubunt.com",
+        deleteFile, ""));
     downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
+        "other_local_file", ""));
     downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
         "other_reddit_local_file", ""));
 
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _factory, _fileManager));
+    QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
+        _isConfined, _rootPath, downloadsStruct, _algo,
+        _isGSMDownloadAllowed, _metadata, _headers,
+        _factory, _fileManager));
 
     QSignalSpy spy(group.data(), SIGNAL(processError(QString, ProcessErrorStruct)));
-    group->emitProcessError(url, ProcessErrorStruct());
-    QCOMPARE(1, spy.count());
+    first->processError(ProcessErrorStruct());
+    first->error("Error");
+
+    foreach(MockDownload* down, downs) {
+        QVERIFY(Mock::VerifyAndClearExpectations(down));
+    }
+    verifyMocks();
+    QTRY_COMPARE(1, spy.count());
 }
-*/
 
 QTEST_MAIN(TestGroupDownload)

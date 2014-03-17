@@ -57,17 +57,15 @@ private:
     void testPauseDownloadWithFinished();
     void testPauseDownloadWithCancel();
     void testResumeNoDownloads();
-    /*void testResumeAllDownloads();
+    void testResumeAllDownloads();
     void testResumeWithFinished();
     void testResumeWidhCancel();
-    void testReusmeNoStarted();
+    void testResumeNoStarted();
     void testStartNoDownloads();
     void testStartAllDownloads();
     void testStartAlreadyStarted();
-    void testStartResume();
     void testStartFinished();
     void testStartCancel();
-    void testSingleDownloadFinished();
     void testAllDownloadsFinished();
     void testSingleDownloadErrorNoFinished();
     void testSingleDownloadErrorWithFinished();
@@ -76,13 +74,10 @@ private:
     void testConfinedSingleDownload();
 
     // isValid tests
-    void testInvalidUrl();
-    void testValidUrl();
+    void testInvalidDownload();
     void testInvalidHashAlgorithm();
     void testValidHashAlgorithm_data();
     void testValidHashAlgorithm();
-    void testInvalidFilePresent();
-    void testValidFileNotPresent();
 
     // empty group tests
     void testEmptyGroupRaisesFinish();
@@ -91,15 +86,10 @@ private:
     void testDuplicatedLocalPath();
 
     // tests that ensure that the signals are raised
-    void testAuthErrorEmitted_data();
     void testAuthErrorEmitted();
-    void testHttpErrorEmitted_data();
     void testHttpErrorEmitted();
-    void testNetworkErrorEmitted_data();
     void testNetworkErrorEmitted();
-    void testProcessErrorEmitted_data();
     void testProcessErrorEmitted();
-    */
 
  private:
     QString _id;
