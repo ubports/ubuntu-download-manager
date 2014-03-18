@@ -23,6 +23,7 @@
 package udm
 
 import (
+	"errors"
 	"launchpad.net/go-dbus/v1"
 	"runtime"
 )
@@ -77,7 +78,7 @@ type Download interface {
 	Resumed() chan bool
 	Canceled() chan bool
 	Finished() chan string
-	Error() chan string
+	Error() chan error
 }
 
 // Manager is the single point of entry of the API. Allows to interact with the
@@ -102,7 +103,7 @@ type FileDownload struct {
 	canceled_w *dbus.SignalWatch
 	finished   chan string
 	finished_w *dbus.SignalWatch
-	errors     chan string
+	errors     chan error
 	error_w    *dbus.SignalWatch
 	progress   chan Progress
 	progress_w *dbus.SignalWatch
@@ -166,7 +167,7 @@ func newFileDownload(conn *dbus.Connection, path dbus.ObjectPath) (*FileDownload
 		return nil, err
 	}
 
-	errors_ch := make(chan string)
+	errors_ch := make(chan error)
 	errors_w, err := connectToSignal(conn, path, "error")
 	if err != nil {
 		return nil, err
@@ -453,14 +454,14 @@ func (down *FileDownload) connectToError() {
 		for msg := range down.error_w.C {
 			var reason string
 			msg.Args(&reason)
-			down.errors <- reason
+			down.errors <- errors.New(reason)
 		}
 		close(down.errors)
 	}()
 }
 
 // Error returns the channel that will be used to communicate the error signals.
-func (down *FileDownload) Error() chan string {
+func (down *FileDownload) Error() chan error {
 	return down.errors
 }
 
