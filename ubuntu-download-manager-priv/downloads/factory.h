@@ -65,9 +65,7 @@ class Factory : public QObject {
     virtual Download* createMmsDownload(const QString& dbusOwner,
                                         const QUrl& url,
                                         const QString& hostname,
-                                        int port,
-                                        const QString& username,
-                                        const QString& password);
+                                        int port);
 
     // create downloads from a group download
 
