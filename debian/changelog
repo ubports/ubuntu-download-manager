@@ -1,3 +1,18 @@
+ubuntu-download-manager (0.3+14.04.20140319-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Simplify the API by removing the need of the username and the
+    password. The go bindings (only user of the API) has been updated
+    accordingly. (LP: #1294075)
+  * Use errors instead of strings in golang. (LP: #1294089)
+  * Make sure that the resources are cleaned in the correct order by
+    using the deleteLater call. (LP: #1294070)
+
+  [ Colin Watson ]
+  * Fix library installation directory for arm64/powerpc/ppc64el.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Mar 2014 11:58:04 +0000
+
 ubuntu-download-manager (0.3+14.04.20140317-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]
