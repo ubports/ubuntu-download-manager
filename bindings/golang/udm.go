@@ -536,9 +536,9 @@ func (man *DownloadManager) CreateDownload(url string, hash string, algo hashTyp
 // CreateMmsDownload creates an mms download that will be performed right away. An
 // mms download only uses mobile that and an apn proxy to download a multime media
 // message.
-func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port int32, username string, password string) (down Download, err error) {
+func (man *DownloadManager) CreateMmsDownload(url string, hostname string, port int32) (down Download, err error) {
 	var path dbus.ObjectPath
-	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createMmsDownload", url, hostname, port, username, password)
+	reply, err := man.proxy.Call(DOWNLOAD_MANAGER_INTERFACE, "createMmsDownload", url, hostname, port)
 	if err != nil || reply.Type == dbus.TypeError {
 		return nil, err
 	}
