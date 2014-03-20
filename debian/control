@@ -99,7 +99,7 @@ Description: Ubuntu Download Manager - daemon
  .
  This package includes the daemon.
 
-Package: ubuntu-download-manager-plugin
+Package: qtdeclarative5-ubuntu-download-manager0.1
 Section: net
 Architecture: any
 Depends: ${misc:Depends},
