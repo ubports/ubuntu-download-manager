@@ -24,8 +24,10 @@ SOURCES += backend.cpp \
     download_error.cpp \
     single_download.cpp
 
+API_VERSION = 0.1
+
 # Install path for the plugin
-installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
+installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /).$$API_VERSION
 
 target.path = $$installPath
 INSTALLS += target
