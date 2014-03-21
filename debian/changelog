@@ -1,3 +1,22 @@
+ubuntu-download-manager (0.3+14.04.20140321-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Improved the documentation of the project. The registerMetaType
+    function was removed because it is not needed and not used in any
+    part of the code. const have been added in those methods that simply
+    are used as getters. The descturtors that can be trusted to the
+    compiler have been removed to reduce clutter in the code. (LP:
+    #1278784)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Diego Sarmentero ]
+  * Add QML Plugin to manage downloads from applications without C++
+    backend needed. .
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 05:25:34 +0000
+
 ubuntu-download-manager (0.3+14.04.20140319-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]
