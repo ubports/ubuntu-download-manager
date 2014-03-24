@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QSslError>
 #include <ubuntu/transfers/system/hash_algorithm.h>
+#include <ubuntu/transfers/system/cryptographic_hash.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/network_reply.h"
 #include "ubuntu/transfers/system/filename_mutex.h"
@@ -124,7 +125,7 @@ FileDownload::cancelDownload() {
 void
 FileDownload::pauseDownload() {
     TRACE << _url;
-
+    qDebug() << "PAUSE";
     if (_reply == nullptr) {
         // cannot pause because is not running
         DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
@@ -149,6 +150,7 @@ FileDownload::pauseDownload() {
         _reply = nullptr;
         DOWN_LOG(INFO) << "EMIT paused(true)";
         _downloading = false;
+        qDebug() << "EMITTTTT";
         emit paused(true);
     }
 }
@@ -355,10 +357,12 @@ FileDownload::onDownloadCompleted() {
     if (!_hash.isEmpty()) {
         emit processing(filePath());
         _currentData->reset();
-        QCryptographicHash hash(_algo);
+        auto hashFactory = CryptographicHashFactory::instance();
+        QScopedPointer<CryptographicHash> hash(
+            hashFactory->createCryptographicHash(_algo, this));
         // addData is smart enough to not load the entire file in memory
-        hash.addData(_currentData->device());
-        QString fileSig = QString(hash.result().toHex());
+        hash->addData(_currentData->device());
+        QString fileSig = QString(hash->result().toHex());
 
         if (fileSig != _hash) {
             DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;

@@ -3,7 +3,7 @@ set(DAEMON_TESTS
         test_base_download
 	test_cancel_download_transition
         test_daemon
-	#        test_download
+	test_download
         test_download_factory
 	test_download_manager
 	test_downloads_db
@@ -31,6 +31,7 @@ foreach(test ${DAEMON_TESTS})
                 application.h
                 apparmor.h
                 base_testcase.h
+                cryptographic_hash.h
 		database.h
                 dbus_connection.h
 		download.h
@@ -38,6 +39,7 @@ foreach(test ${DAEMON_TESTS})
                 file_manager.h
 		manager.h
                 matchers.h
+		network_reply.h
                 process.h
                 process_factory.h
                 queue.h

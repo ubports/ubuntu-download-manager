@@ -20,6 +20,7 @@
 #define MATCHERS_H
 
 #include <QMap>
+#include <QNetworkRequest>
 #include <QPair>
 #include <QString>
 #include <QVariant>
@@ -61,6 +62,60 @@ MATCHER_P(QVariantMapContains, value, "Returns if the map has the given vkey/val
         return false;
     }
     return argMap[valuePair.first] == valuePair.second;
+}
+
+MATCHER_P(RequestHeadersEq, value, "Request has the header.") {
+    auto request = static_cast<QNetworkRequest>(arg);
+    auto headers = static_cast<QMap<QString, QString> >(value);
+
+    foreach(auto headerKey, headers.keys()) {
+        auto key = headerKey.toUtf8();
+        // assert that they are the same
+        if (request.hasRawHeader(key)) {
+            if (request.rawHeader(key) != headers[headerKey]) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    return true;
+}
+
+MATCHER_P(RequestDoesNotHaveHeader, value, "Returns if the request does not have a given header.") {
+    auto request = static_cast<QNetworkRequest>(arg);
+    auto header = static_cast<QString>(value);
+    return !request.hasRawHeader(header.toUtf8());
+}
+
+MATCHER_P(RequestHasHeader, value, "Returns if the request does not have a given header.") {
+    auto request = static_cast<QNetworkRequest>(arg);
+    auto headerPair = static_cast<QPair<QString, QString> >(value);
+    auto header = headerPair.first.toUtf8();
+
+    if (request.hasRawHeader(header)) {
+        // values must be the same
+        return request.rawHeader(header) == headerPair.second.toUtf8();
+    } else {
+        return false;
+    }
+}
+
+MATCHER_P(StringListEq, value, "Returns if the string lists are eq.") {
+    auto list = static_cast<QStringList>(arg);
+    auto expectedList = static_cast<QStringList>(value);
+
+    // compare the lists
+    if (list.count() != expectedList.count()) {
+        return false;
+    } else {
+        foreach(auto str, expectedList) {
+            if (!list.contains(str)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 #endif

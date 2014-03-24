@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,10 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_PROCESS_H
-#define FAKE_PROCESS_H
+#ifndef FAKE_CRYPTOGRAPHIC_HASH_H
+#define FAKE_CRYPTOGRAPHIC_HASH_H
 
-#include <ubuntu/transfers/system/process.h>
+#include <ubuntu/transfers/system/cryptographic_hash.h>
 #include <gmock/gmock.h>
 
 namespace Ubuntu {
@@ -30,20 +30,21 @@ using namespace System;
 
 namespace Tests {
 
-class MockProcess : public Process {
+class MockCryptographicHash : public CryptographicHash {
  public:
-    explicit MockProcess(QObject *parent = 0)
-        : Process(parent) {}
+    explicit MockCryptographicHash(QObject* parent = 0)
+        : CryptographicHash(QCryptographicHash::Md5, parent) {}
+    MOCK_METHOD1(addData, bool(QIODevice*));
+    MOCK_CONST_METHOD0(result, QByteArray());
+};
 
-    MOCK_METHOD3(start,
-        void(const QString&, const QStringList&, QProcess::OpenMode));
-    MOCK_CONST_METHOD0(arguments, QStringList());
-    MOCK_CONST_METHOD0(program, QString());
-    MOCK_METHOD0(readAllStandardOutput, QByteArray());
-    MOCK_METHOD0(readAllStandardError, QByteArray());
+class MockCryptographicHashFactory : public CryptographicHashFactory {
+ public:
+    explicit MockCryptographicHashFactory(QObject* parent = 0)
+        : CryptographicHashFactory(parent) {}
 
-    using Process::finished;
-    using Process::error;
+    MOCK_METHOD2(createCryptographicHash,
+            CryptographicHash*(QCryptographicHash::Algorithm, QObject*));
 };
 
 }  // Ubuntu
@@ -51,5 +52,4 @@ class MockProcess : public Process {
 }  // Transfers
 
 }  // Tests
-
-#endif  // FAKE_PROCESS_H
+#endif

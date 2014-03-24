@@ -36,8 +36,17 @@ class MockFile : public File {
     explicit MockFile(const QString& name)
         : File(name) {}
 
-    MOCK_METHOD0(error, QFile::FileError());
+    MOCK_METHOD0(close, void());
+    MOCK_CONST_METHOD0(error, QFile::FileError());
+    MOCK_CONST_METHOD0(fileName, QString());
     MOCK_METHOD0(flush, bool());
+    MOCK_METHOD1(open, bool(QIODevice::OpenMode));
+    MOCK_METHOD0(readAll, QByteArray());
+    MOCK_METHOD0(remove, bool());
+    MOCK_METHOD0(reset, bool());
+    MOCK_CONST_METHOD0(size, qint64());
+    MOCK_METHOD1(write, qint64(const QByteArray&));
+    MOCK_METHOD0(device, QIODevice*());
 };
 
 class MockFileManager : public FileManager {

@@ -21,16 +21,16 @@
 
 #include <QDir>
 #include <QObject>
+#include <QTest>
 #include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/transfers/tests/system/file_manager.h>
-#include <ubuntu/transfers/tests/system/filename_mutex.h>
-#include <ubuntu/transfers/tests/system/system_network_info.h>
-#include <ubuntu/transfers/tests/system/request_factory.h>
-#include <ubuntu/transfers/tests/system/process_factory.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <ubuntu/transfers/tests/base_testcase.h>
-#include <ubuntu/transfers/tests/test_runner.h>
+#include "base_testcase.h"
+#include "cryptographic_hash.h"
+#include "file_manager.h"
+#include "system_network_info.h"
+#include "process_factory.h"
+#include "request_factory.h"
 
 using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::Transfers::Tests;
@@ -39,7 +39,11 @@ class TestDownload: public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownload(QObject *parent = 0);
+    explicit TestDownload(QObject *parent = 0)
+        : BaseTestCase("TestDownload", parent) {}
+
+ private:
+    void verifyMocks();
 
  private slots:  // NOLINT(whitespace/indent)
 
@@ -57,11 +61,9 @@ class TestDownload: public BaseTestCase {
     void testUrl_data();
     void testProgress_data();
     void testProgressNotKnownSize_data();
-    void testOnSuccessHash_data();
     void testSetRawHeadersStart_data();
-    void testSetRawHeadersResume_data();
     void testSetRawHeadersWithRangeStart_data();
-    void testSetRawHeadersWithRangeResume_data();
+    void testSetRawHeadersResume_data();
     void testSetThrottleNoReply_data();
     void testSetThrottle_data();
     void testSetGSMDownloadSame_data();
@@ -114,21 +116,17 @@ class TestDownload: public BaseTestCase {
     void testSetRawHeadersStart();
     void testSetRawHeadersWithRangeStart();
     void testSetRawHeadersResume();
-    void testSetRawHeadersWithRangeResume();
 
     // process related tests
     void testProcessExecutedNoParams();
     void testProcessExecutedWithParams();
     void testProcessExecutedWithParamsFile();
-    void testProcessFinishedNoError();
     void testProcessFinishedWithError();
     void testProcessError_data();
     void testProcessError();
     void testProcessFinishedCrash();
-    void testFileRemoveAfterSuccessfulProcess();
 
     // test related to bug #1224678
-    void testSetRawHeaderAcceptEncoding_data();
     void testSetRawHeaderAcceptEncoding();
 
     // local path generation tests
@@ -149,7 +147,7 @@ class TestDownload: public BaseTestCase {
     void testValidFileNotPresent();
 
     // filename tests
-    void testDownloadPresent();
+ /*   void testDownloadPresent();
     void testDownloadPresentSeveralFiles_data();
     void testDownloadPresentSeveralFiles();
 
@@ -177,6 +175,7 @@ class TestDownload: public BaseTestCase {
     void testFinishUnlocksPathFromMetadata();
     void testProcessFinishUnlocksPathFromMetadata();
     void testErrorUnlocksPathFromMetadata();
+*/
 
  private:
     QString _id;
@@ -187,11 +186,11 @@ class TestDownload: public BaseTestCase {
     QString _path;
     QUrl _url;
     QString _algo;
-    FakeSystemNetworkInfo* _networkInfo;
-    FakeRequestFactory* _reqFactory;
-    FakeProcessFactory* _processFactory;
-    FakeFileManager* _fileManager;
-    FakeFileNameMutex* _fileNameMutex;
+    MockSystemNetworkInfo* _networkInfo;
+    MockRequestFactory* _reqFactory;
+    MockProcessFactory* _processFactory;
+    MockFileManager* _fileManager;
+    MockCryptographicHashFactory* _cryptoFactory;
 };
 
 Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)
