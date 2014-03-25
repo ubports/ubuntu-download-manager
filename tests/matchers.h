@@ -118,5 +118,11 @@ MATCHER_P(StringListEq, value, "Returns if the string lists are eq.") {
     }
 }
 
+MATCHER_P(QStringEndsWith, value, "Returns if the string has the given postfix.") {
+    auto str = static_cast<QString>(arg);
+    auto post = static_cast<QString>(value);
+    return str.endsWith(post);
+}
+
 #endif
 

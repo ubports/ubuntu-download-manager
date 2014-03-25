@@ -37,6 +37,7 @@ foreach(test ${DAEMON_TESTS})
 		download.h
                 factory.h
                 file_manager.h
+                filename_mutex.h
 		manager.h
                 matchers.h
 		network_reply.h

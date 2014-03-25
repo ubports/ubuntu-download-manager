@@ -147,7 +147,7 @@ class TestDownload: public BaseTestCase {
     void testValidFileNotPresent();
 
     // filename tests
- /*   void testDownloadPresent();
+    void testDownloadPresent();
     void testDownloadPresentSeveralFiles_data();
     void testDownloadPresentSeveralFiles();
 
@@ -162,8 +162,6 @@ class TestDownload: public BaseTestCase {
     // test different redirects
     void testRedirectCycle();
     void testSingleRedirect();
-    void testSeveralRedirects_data();
-    void testSeveralRedirects();
 
     // test lock of files
     void testRedirectDoesNotUnlockPath();
@@ -171,11 +169,7 @@ class TestDownload: public BaseTestCase {
     void testFinishUnlocksPath();
     void testProcessFinishUnlocksPath();
     void testErrorUnlocksPath();
-    void testCancelUnlocksPathFromMetadata();
-    void testFinishUnlocksPathFromMetadata();
-    void testProcessFinishUnlocksPathFromMetadata();
-    void testErrorUnlocksPathFromMetadata();
-*/
+    void testLockCustomLocalPath();
 
  private:
     QString _id;

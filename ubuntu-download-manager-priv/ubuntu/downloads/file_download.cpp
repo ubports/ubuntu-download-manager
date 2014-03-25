@@ -125,7 +125,6 @@ FileDownload::cancelDownload() {
 void
 FileDownload::pauseDownload() {
     TRACE << _url;
-    qDebug() << "PAUSE";
     if (_reply == nullptr) {
         // cannot pause because is not running
         DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
@@ -150,7 +149,6 @@ FileDownload::pauseDownload() {
         _reply = nullptr;
         DOWN_LOG(INFO) << "EMIT paused(true)";
         _downloading = false;
-        qDebug() << "EMITTTTT";
         emit paused(true);
     }
 }
@@ -342,7 +340,6 @@ FileDownload::onRedirect(QUrl redirect) {
         emitError(FILE_SYSTEM_ERROR);
         return;
     }
-
     _reply = _requestFactory->get(buildRequest());
     _reply->setReadBufferSize(throttle());
 
@@ -432,14 +429,17 @@ FileDownload::onFinished() {
     TRACE << _url;
     // the reply has finished but the resource might have been moved
     // and we must do a new request
-    auto redirect = _reply->attribute(
-        QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    auto redirectVar = _reply->attribute(
+        QNetworkRequest::RedirectionTargetAttribute);
 
-    if(!redirect.isEmpty() && redirect != _url) {
-        onRedirect(redirect);
-    } else {
-        onDownloadCompleted();
+    if(redirectVar.isValid()) {
+        auto redirect = redirectVar.toUrl();
+        if(!redirect.isEmpty() && redirect != _url) {
+            onRedirect(redirect);
+            return;
+        }
     }
+    onDownloadCompleted();
 }
 
 void
@@ -633,7 +633,7 @@ void
 FileDownload::unlockFilePath() {
     if (!isConfined() && metadata().contains(Metadata::LOCAL_PATH_KEY)) {
         _fileNameMutex->unlockFileName(_tempFilePath);
-	} else { 
+	} else {
         _fileNameMutex->unlockFileName(_filePath);
     }
 }
