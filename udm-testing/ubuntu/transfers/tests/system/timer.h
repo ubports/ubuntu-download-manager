@@ -22,6 +22,7 @@
 #include <QObject>
 #include <ubuntu/transfers/system/timer.h>
 #include <ubuntu/transfers/tests/fake.h>
+#include <gmock/gmock.h>
 
 namespace Ubuntu {
 
@@ -31,21 +32,13 @@ using namespace System;
 
 namespace Tests {
 
-class FakeTimer : public Timer, public Fake {
-    Q_OBJECT
-
+class MockTimer : public Timer {
  public:
-    explicit FakeTimer(QObject *parent = 0);
+    MOCK_METHOD0(isActive, bool());
+    MOCK_METHOD1(start, void(int));
+    MOCK_METHOD0(stop, void());
 
-    bool isActive() override;
-    void setIsActive(bool active);
-    void start(int msec) override;
-    void stop() override;
-
-    void emitTimeout();
-
- private:
-    bool _isActive;
+    using Timer::timeout;
 };
 
 }  // Ubuntu
