@@ -9,6 +9,7 @@ set(SOURCES
 	ubuntu/transfers/system/apn_request_factory.cpp
 	ubuntu/transfers/system/apparmor.cpp
 	ubuntu/transfers/system/application.cpp
+        ubuntu/transfers/system/cryptographic_hash.cpp
 	ubuntu/transfers/system/dbus_proxy.cpp
 	ubuntu/transfers/system/file_manager.cpp
 	ubuntu/transfers/system/filename_mutex.cpp
@@ -33,6 +34,7 @@ set(HEADERS
 	ubuntu/transfers/system/apn_request_factory.h
 	ubuntu/transfers/system/apparmor.h
 	ubuntu/transfers/system/application.h
+        ubuntu/transfers/system/cryptographic_hash.h
 	ubuntu/transfers/system/dbus_proxy.h
 	ubuntu/transfers/system/file_manager.h
 	ubuntu/transfers/system/filename_mutex.h
@@ -67,6 +69,7 @@ target_link_libraries(${TARGET}
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
 	${Qt5Network_LIBRARIES}
+	${Qt5Sql_LIBRARIES}
 	${Qt5SystemInfo_LIBRARIES}
 	${Qt5Core_LIBRARIES}
 	${Qt5DBus_LIBRARIES}

@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QSslError>
 #include <ubuntu/transfers/system/hash_algorithm.h>
+#include <ubuntu/transfers/system/cryptographic_hash.h>
 #include <ubuntu/transfers/system/logger.h>
 #include <ubuntu/transfers/system/network_reply.h>
 #include <ubuntu/transfers/system/filename_mutex.h>
@@ -124,7 +125,6 @@ FileDownload::cancelTransfer() {
 void
 FileDownload::pauseTransfer() {
     TRACE << _url;
-
     if (_reply == nullptr) {
         // cannot pause because is not running
         DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
@@ -340,7 +340,6 @@ FileDownload::onRedirect(QUrl redirect) {
         emitError(FILE_SYSTEM_ERROR);
         return;
     }
-
     _reply = _requestFactory->get(buildRequest());
     _reply->setReadBufferSize(throttle());
 
@@ -355,10 +354,12 @@ FileDownload::onDownloadCompleted() {
     if (!_hash.isEmpty()) {
         emit processing(filePath());
         _currentData->reset();
-        QCryptographicHash hash(_algo);
+        auto hashFactory = CryptographicHashFactory::instance();
+        QScopedPointer<CryptographicHash> hash(
+            hashFactory->createCryptographicHash(_algo, this));
         // addData is smart enough to not load the entire file in memory
-        hash.addData(_currentData->device());
-        QString fileSig = QString(hash.result().toHex());
+        hash->addData(_currentData->device());
+        QString fileSig = QString(hash->result().toHex());
 
         if (fileSig != _hash) {
             DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
@@ -428,14 +429,17 @@ FileDownload::onFinished() {
     TRACE << _url;
     // the reply has finished but the resource might have been moved
     // and we must do a new request
-    auto redirect = _reply->attribute(
-        QNetworkRequest::RedirectionTargetAttribute).toUrl();
+    auto redirectVar = _reply->attribute(
+        QNetworkRequest::RedirectionTargetAttribute);
 
-    if(!redirect.isEmpty() && redirect != _url) {
-        onRedirect(redirect);
-    } else {
-        onDownloadCompleted();
+    if(redirectVar.isValid()) {
+        auto redirect = redirectVar.toUrl();
+        if(!redirect.isEmpty() && redirect != _url) {
+            onRedirect(redirect);
+            return;
+        }
     }
+    onDownloadCompleted();
 }
 
 void
@@ -630,7 +634,7 @@ void
 FileDownload::unlockFilePath() {
     if (!isConfined() && metadata().contains(Metadata::LOCAL_PATH_KEY)) {
         _fileNameMutex->unlockFileName(_tempFilePath);
-	} else { 
+	} else {
         _fileNameMutex->unlockFileName(_filePath);
     }
 }
