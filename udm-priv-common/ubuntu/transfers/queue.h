@@ -41,9 +41,9 @@ class Queue : public QObject {
     virtual void add(Transfer* transfer);
 
     // accessors for useful info
-    QString currentTransfer();
-    QStringList paths();
-    QHash<QString, Transfer*> transfers();
+    virtual QString currentTransfer();
+    virtual QStringList paths();
+    virtual QHash<QString, Transfer*> transfers();
     virtual int size();
 
  signals:

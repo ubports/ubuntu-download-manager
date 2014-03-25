@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <ubuntu/transfers/system/application.h>
-#include <ubuntu/transfers/tests/fake.h>
+#include <gmock/gmock.h>
 
 namespace Ubuntu {
 
@@ -31,18 +31,12 @@ using namespace System;
 
 namespace Tests {
 
-class FakeApplication : public Application, public Fake {
-    Q_OBJECT
-
+class MockApplication : public Application {
  public:
-    explicit FakeApplication(QObject *parent = 0);
+    explicit MockApplication(QObject *parent = 0);
 
-    void exit(int returnCode = 0) override;
-
-    QStringList arguments() override;
-    void setArguments(QStringList args);
- private:
-    QStringList _args;
+    MOCK_METHOD1(exit, void(int));
+    MOCK_METHOD0(arguments, QStringList());
 };
 
 }  // Ubuntu
