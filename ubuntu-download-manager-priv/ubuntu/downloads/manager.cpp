@@ -126,8 +126,11 @@ DownloadManager::registerDownload(Download* download) {
     }
     _db->connectToDownload(download);
     _downloadsQueue->add(download);
-    _conn->registerObject(download->path(), download);
-    QDBusObjectPath objectPath = QDBusObjectPath(download->path());
+    auto path = download->path();
+    qDebug() << "ADDED TO Q";
+    _conn->registerObject(path, download);
+    qDebug() << "REGISTER OBJ";
+    QDBusObjectPath objectPath = QDBusObjectPath(path);
 
     // emit that the download was created. Usefull in case other
     // processes are interested in them

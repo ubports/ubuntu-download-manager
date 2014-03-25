@@ -1,6 +1,8 @@
 project(ubuntu-download-manager)
 cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -pthread")
+
 
 # Standard install paths
 include(GNUInstallDirs)
@@ -22,6 +24,9 @@ IF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
   ENABLE_COVERAGE_REPORT(TARGETS ${DIALER_APP})
 ENDIF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
 
+find_package(Gtest REQUIRED)
+include_directories(${GMOCK_INCLUDE_DIR} ${GTEST_INCLUDE_DIR})
+
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
@@ -40,22 +45,20 @@ pkg_check_modules(GLOG REQUIRED libglog)
 pkg_check_modules(GLOG libglog)
 
 enable_testing()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Werror -Wall -pedantic -Wextra -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pedantic -Wextra")
 add_definitions("-DNDEBUG")
 
 add_subdirectory(udm-common)
 add_subdirectory(udm-priv-common)
-add_subdirectory(udm-testing)
-add_subdirectory(udm-priv-common-tests)
+#add_subdirectory(udm-testing)
 add_subdirectory(ubuntu-download-manager-common)
-add_subdirectory(ubuntu-download-manager-common-tests)
+#add_subdirectory(ubuntu-download-manager-common-tests)
 add_subdirectory(ubuntu-download-manager-priv)
 add_subdirectory(ubuntu-download-manager)
 add_subdirectory(ubuntu-download-manager-client)
-add_subdirectory(ubuntu-download-manager-test-lib)
-add_subdirectory(ubuntu-download-manager-client-tests)
+#add_subdirectory(ubuntu-download-manager-client-tests)
 add_subdirectory(ubuntu-download-manager-test-daemon)
-add_subdirectory(ubuntu-download-manager-tests)
 add_subdirectory(ubuntu-upload-manager-common)
 add_subdirectory(ubuntu-upload-manager-priv)
 add_subdirectory(ubuntu-upload-manager)
+add_subdirectory(tests)

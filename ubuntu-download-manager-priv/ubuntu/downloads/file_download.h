@@ -66,19 +66,19 @@ class FileDownload : public Download {
     virtual ~FileDownload();
 
     // gets for internal state
-    QUrl url() const {
+    virtual QUrl url() const {
         return _url;
     }
 
-    QString filePath() const {
+    virtual QString filePath() const {
         return _filePath;
     }
 
-    QString hash() const {
+    virtual QString hash() const {
         return _hash;
     }
 
-    QCryptographicHash::Algorithm hashAlgorithm() const {
+    virtual QCryptographicHash::Algorithm hashAlgorithm() const {
         return _algo;
     }
 
