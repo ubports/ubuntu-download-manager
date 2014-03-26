@@ -199,7 +199,7 @@ FileUpload::cleanUpCurrentData() {
     bool success = true;
     QFile::FileError error = QFile::NoError;
     if (_currentData != nullptr) {
-        success = _currentData->close();
+        success = _currentData->remove();
 
         if (!success)
             error = _currentData->error();
