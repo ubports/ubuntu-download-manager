@@ -26,7 +26,7 @@
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
-class TestingFileDownload : public FileDownload, public QDBusContext {
+class TestingFileDownload : public FileDownload {
     Q_OBJECT
 
  public:

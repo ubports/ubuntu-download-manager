@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
+#include <QtDBus/QDBusContext>
 #include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
@@ -38,7 +39,7 @@ namespace DownloadManager {
 
 namespace Daemon {
 
-class FileDownload : public Download {
+class FileDownload : public Download, public QDBusContext {
     Q_OBJECT
 
  public:
@@ -89,6 +90,7 @@ class FileDownload : public Download {
     qulonglong progress() override;
     qulonglong totalSize() override;
     virtual void setThrottle(qulonglong speed) override;
+    virtual void setLocalPath(const QString& path);
 
  signals:
     void finished(const QString& path);

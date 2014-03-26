@@ -62,6 +62,7 @@ FileDownload::FileDownload(const QString& id,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+      QDBusContext(),
       _totalSize(0),
       _url(url),
       _hash(""),
@@ -80,6 +81,7 @@ FileDownload::FileDownload(const QString& id,
                    const QMap<QString, QString> &headers,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+      QDBusContext(),
       _totalSize(0),
       _url(url),
       _hash(hash) {
@@ -234,6 +236,20 @@ FileDownload::setThrottle(qulonglong speed) {
     Download::setThrottle(speed);
     if (_reply != nullptr)
         _reply->setReadBufferSize(speed);
+}
+
+void
+FileDownload::setLocalPath(const QString& path) {
+    if (state() == Download::IDLE) {
+        _fileNameMutex->unlockFileName(_filePath);
+        _filePath = _fileNameMutex->lockFileName(path);
+        _tempFilePath = _filePath + TEMP_EXTENSION;
+    } else {
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::NotSupported,
+                "The path cannot be changed in a started download.");
+        }
+    }
 }
 
 void
