@@ -21,6 +21,7 @@
 
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/transfers/tests/fake.h>
+#include <gmock/gmock.h>
 
 namespace Ubuntu {
 
@@ -30,57 +31,18 @@ using namespace System;
 
 namespace Tests {
 
-class RegisterOptionsWrapper : public QObject {
-    Q_OBJECT
-
- public:
-    explicit RegisterOptionsWrapper(QDBusConnection::RegisterOptions options,
-                                    QObject* parent = 0);
-
-    QDBusConnection::RegisterOptions value();
-    void setValue(QDBusConnection::RegisterOptions value);
-
- private:
-    QDBusConnection::RegisterOptions _value;
-};
-
-class UnregisterOptionsWrapper : public QObject {
+class MockDBusConnection : public DBusConnection {
     Q_OBJECT
  public:
-    explicit UnregisterOptionsWrapper(QDBusConnection::UnregisterMode options,
-                                      QObject* parent = 0);
-
-    QDBusConnection::UnregisterMode value();
-    void setValue(QDBusConnection::UnregisterMode value);
-
- private:
-    QDBusConnection::UnregisterMode _value;
-};
-
-class FakeDBusConnection : public DBusConnection, public Fake {
-    Q_OBJECT
- public:
-    explicit FakeDBusConnection(QObject *parent = 0);
+    explicit MockDBusConnection(QObject *parent = 0);
 
     // faked methods
 
-    bool registerService(const QString& serviceName) override;
-    bool registerObject(const QString& path,
-                        QObject* object,
-                        QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors) override;  // NOLINT(whitespace/line_length)
-    void unregisterObject(const QString& path,
-                          QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode) override;  // NOLINT(whitespace/line_length)
-
-    // getters and setters of expected results
-    bool registerServiceResult();
-    void setRegisterServiceResult(bool result);
-
-    bool registerObjectResult();
-    void setRegisterObjectResult(bool result);
-
- private:
-    bool _registerServiceResult;
-    bool _registerObjectResult;
+    MOCK_METHOD1(registerService, bool(const QString&));
+    MOCK_METHOD3(registerObject,
+        bool(const QString&, QObject*, QDBusConnection::RegisterOptions));
+    MOCK_METHOD2(unregisterObject,
+        void(const QString&, QDBusConnection::UnregisterMode));
 };
 
 }  // Ubuntu

@@ -3,6 +3,7 @@ set(TARGET ubuntu-upload-manager-priv)
 set(SOURCES
         ubuntu/uploads/daemon.cpp
         ubuntu/uploads/factory.cpp
+	ubuntu/uploads/manager.cpp
         ubuntu/uploads/file_upload.cpp
         ubuntu/uploads/manager.cpp
         ubuntu/uploads/mms_file_upload.cpp
@@ -15,6 +16,7 @@ set(SOURCES
 set(HEADERS
         ubuntu/uploads/daemon.h
         ubuntu/uploads/factory.h
+	ubuntu/uploads/manager.h
         ubuntu/uploads/file_upload.h
         ubuntu/uploads/manager.h
         ubuntu/uploads/mms_file_upload.h

@@ -34,6 +34,16 @@ namespace Transfers {
 
 namespace System {
 
+struct SecurityDetails {
+ public:
+    SecurityDetails() = default;
+    SecurityDetails(const QString& requiredId) { id = requiredId; }
+    QString id;
+    QString dbusPath;
+    QString localPath;
+    bool isConfined = false;
+};
+
 class AppArmor : public QObject {
     Q_OBJECT
 
@@ -42,25 +52,15 @@ class AppArmor : public QObject {
     AppArmor(QSharedPointer<DBusConnection> connection, QObject *parent = 0);
     ~AppArmor();
 
-    virtual void getDBusPath(QString& id, QString& dbusPath);
+    virtual QPair<QString, QString> getDBusPath();
 
-    virtual QString getSecurePath(const QString& connName,
-                                QString& dbusPath,
-                                bool& isConfined);
-    virtual QString getSecurePath(const QString& connName,
-                                QString& dbusPath,
-                                QString& localPath,
-                                bool& isConfined);
-    virtual void getSecurePath(const QString& connName,
-                               const QString& id,
-                               QString& dbusPath,
-                               bool& isConfined);
-    virtual void getSecurePath(const QString& connName,
-                               const QString& id,
-                               QString& dbusPath,
-                               QString& localPath,
-                               bool& isConfined);
+    virtual SecurityDetails* getSecurityDetails(const QString& connName);
+    virtual SecurityDetails* getSecurityDetails(const QString& connName,
+                                                const QString& id);
+
  private:
+    void getSecurityDetails(const QString& connName,
+                            SecurityDetails* details);
     QString getLocalPath(const QString& appId);
 
  private:
