@@ -1,12 +1,8 @@
 set(TARGET udm-testing)
 
 set(SOURCES
-        ubuntu/transfers/tests/base_testcase.cpp
         ubuntu/transfers/tests/fake.cpp
         ubuntu/transfers/tests/system/apn_request_factory.cpp
-        ubuntu/transfers/tests/system/apparmor.cpp
-        ubuntu/transfers/tests/system/application.cpp
-        ubuntu/transfers/tests/system/dbus_connection.cpp
         ubuntu/transfers/tests/system/file_manager.cpp
         ubuntu/transfers/tests/system/filename_mutex.cpp
         ubuntu/transfers/tests/system/network_reply.cpp
@@ -15,13 +11,11 @@ set(SOURCES
         ubuntu/transfers/tests/system/qnetwork_reply.cpp
         ubuntu/transfers/tests/system/request_factory.cpp
         ubuntu/transfers/tests/system/system_network_info.cpp
-        ubuntu/transfers/tests/system/timer.cpp
         ubuntu/transfers/tests/system/uuid_factory.cpp
 )
 
 
 set(HEADERS
-        ubuntu/transfers/tests/base_testcase.h
         ubuntu/transfers/tests/fake.h
         ubuntu/transfers/tests/test_runner.h
         ubuntu/transfers/tests/system/apn_request_factory.h
@@ -43,13 +37,14 @@ set(HEADERS
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5Test_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
+include_directories(${Qt5Network_INCLUDE_DIRS})
+include_directories(${GTEST_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
-include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-add_library(${TARGET} SHARED
+add_library(${TARGET} STATIC
 	${SOURCES}
 	${HEADERS}
 )
@@ -58,6 +53,7 @@ target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
         ${Qt5SystemInfo_LIBRARIES}
 	${Qt5Test_LIBRARIES}
+        ${GTEST_BOTH_LIBRARIES}
         udm-common
         udm-priv-common
 )

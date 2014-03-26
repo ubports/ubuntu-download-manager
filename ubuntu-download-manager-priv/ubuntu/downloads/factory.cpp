@@ -30,6 +30,8 @@
 
 namespace Ubuntu {
 
+using namespace Transfers;
+
 namespace DownloadManager {
 
 namespace Daemon {
@@ -49,30 +51,24 @@ Factory::~Factory() {
     delete _apparmor;
 }
 
-void
-Factory::getDownloadPath(const QString& dbusOwner,
-                         const QVariantMap& metadata,
-                         QString& id,
-                         QString& dbusPath,
-                         QString& rootPath,
-                         bool& isConfined) {
+SecurityDetails*
+Factory::getSecurityDetails(const QString& dbusOwner,
+                            const QVariantMap& metadata) {
     TRACE << dbusOwner;
+    QString id;
     if (metadata.contains(Metadata::OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
         id = metadata[Metadata::OBJECT_PATH_KEY].toString();
         if (id.isEmpty()) {
             LOG(ERROR) << "Id sent by client is ''";
-            id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
-                isConfined);
+            return _apparmor->getSecurityDetails(dbusOwner);
         } else {
             LOG(INFO) << "Using the id from the client:" << id;
-            _apparmor->getSecurePath(dbusOwner, id, dbusPath, rootPath,
-                isConfined);
+            return _apparmor->getSecurityDetails(dbusOwner, id);
         }
     } else {
         LOG(INFO) << "Factory assigns the Download Uuid.";
-        id = _apparmor->getSecurePath(dbusOwner, dbusPath, rootPath,
-            isConfined);
+        return _apparmor->getSecurityDetails(dbusOwner);
     }
 }
 
@@ -81,15 +77,11 @@ Factory::createDownload(const QString& dbusOwner,
                         const QUrl& url,
                         const QVariantMap& metadata,
                         const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    QString rootPath;
-    bool isConfined = false;
-    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
-        isConfined);
-    Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers);
-    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto down = new FileDownload(details->id, details->dbusPath,
+        details->isConfined, details->localPath, url, metadata, headers);
+    auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }
@@ -101,15 +93,12 @@ Factory::createDownload(const QString& dbusOwner,
                         const QString& algo,
                         const QVariantMap& metadata,
                         const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    QString rootPath;
-    bool isConfined = false;
-    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
-        isConfined);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers);
-    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto down = new FileDownload(details->id, details->dbusPath,
+        details->isConfined, details->localPath, url, hash, algo,
+        metadata, headers);
+    auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }
@@ -121,15 +110,12 @@ Factory::createDownload(const QString& dbusOwner,
                         bool allowed3G,
                         const QVariantMap& metadata,
                         StringMap headers) {
-    QString id;
-    QString dbusPath;
-    QString rootPath;
-    bool isConfined = false;
-    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
-        isConfined);
-    Download* down = new GroupDownload(id, dbusPath, isConfined, rootPath,
-        downloads, algo, allowed3G, metadata, headers, this);
-    GroupDownloadAdaptor* adaptor = new GroupDownloadAdaptor(down);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto down = new GroupDownload(details->id, details->dbusPath,
+        details->isConfined, details->localPath, downloads, algo,
+        allowed3G, metadata, headers, this);
+    auto adaptor = new GroupDownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }
@@ -143,17 +129,14 @@ Factory::createMmsDownload(const QString& dbusOwner,
                            const QString& password) {
     QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
         port, username, password);
-    QString id;
-    QString dbusPath;
-    QString rootPath;
-    bool isConfined = false;
     QVariantMap metadata;
     QMap<QString, QString> headers;
-    getDownloadPath(dbusOwner, metadata, id, dbusPath, rootPath,
-        isConfined);
-    Download* down = new MmsFileDownload(id, dbusPath, isConfined,
-        rootPath, url, metadata, headers, proxy);
-    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto down = new MmsFileDownload(details->id, details->dbusPath,
+        details->isConfined, details->localPath, url, metadata,
+        headers, proxy);
+    auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
 }
@@ -164,11 +147,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QUrl& url,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined, rootPath,
-        url, metadata, headers);
+    auto idAndPath = _apparmor->getDBusPath();
+    auto down = new FileDownload(idAndPath.first, idAndPath.second,
+        isConfined, rootPath, url, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -182,11 +163,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QString& algo,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    _apparmor->getDBusPath(id, dbusPath);
-    Download* down = new FileDownload(id, dbusPath, isConfined,
-        rootPath, url, hash, algo, metadata, headers);
+    auto idAndPath = _apparmor->getDBusPath();
+    auto down = new FileDownload(idAndPath.first, idAndPath.second,
+        isConfined, rootPath, url, hash, algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;

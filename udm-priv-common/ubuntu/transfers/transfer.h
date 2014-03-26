@@ -45,15 +45,15 @@ class Transfer : public QObject {
              bool isConfined,
              QObject* parent = 0);
 
-    QString transferId() const;
-    QString path() const;
-    bool isConfined() const;
+    virtual QString transferId() const;
+    virtual QString path() const;
+    virtual bool isConfined() const;
     virtual Transfer::State state() const;
-    void setState(Transfer::State state);
+    virtual void setState(Transfer::State state);
     virtual bool canTransfer();
     virtual bool isValid() const;
     virtual QString lastError() const;
-    bool addToQueue() const;
+    virtual bool addToQueue() const;
 
     // methods to be overridden by the children
     virtual bool pausable() = 0;

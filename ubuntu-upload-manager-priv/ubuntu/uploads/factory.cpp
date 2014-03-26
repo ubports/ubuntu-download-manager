@@ -18,16 +18,15 @@
 
 #include <QNetworkProxy>
 #include <QPair>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/logger.h>
 #include "upload_adaptor.h"
 #include "mms_file_upload.h"
 #include "factory.h"
 
-namespace {
-    const QString OBJECT_PATH_KEY = "objectpath";
-}
-
 namespace Ubuntu {
+
+using namespace Transfers;
 
 namespace UploadManager {
 
@@ -48,26 +47,24 @@ Factory::~Factory() {
     delete _apparmor;
 }
 
-void
-Factory::getUploadPath(const QString& dbusOwner,
-                       const QVariantMap& metadata,
-                       QString& id,
-                       QString& dbusPath,
-                       bool& isConfined) {
+SecurityDetails*
+Factory::getSecurityDetails(const QString& dbusOwner,
+                            const QVariantMap& metadata) {
     TRACE << dbusOwner;
-    if (metadata.contains(OBJECT_PATH_KEY)) {
+    QString id;
+    if (metadata.contains(Metadata::OBJECT_PATH_KEY)) {
         // create a uuid using the string value form the metadata
-        id = metadata[OBJECT_PATH_KEY].toString();
+        id = metadata[Metadata::OBJECT_PATH_KEY].toString();
         if (id.isEmpty()) {
             LOG(ERROR) << "Id sent by client is ''";
-            id = _apparmor->getSecurePath(dbusOwner, dbusPath, isConfined);
+            return _apparmor->getSecurityDetails(dbusOwner);
         } else {
             LOG(INFO) << "Using the id from the client:" << id;
-            _apparmor->getSecurePath(dbusOwner, id, dbusPath, isConfined);
+            return _apparmor->getSecurityDetails(dbusOwner, id);
         }
     } else {
         LOG(INFO) << "Factory assigns the Download Uuid.";
-        id = _apparmor->getSecurePath(dbusOwner, dbusPath, isConfined);
+        return _apparmor->getSecurityDetails(dbusOwner);
     }
 }
 
@@ -77,12 +74,10 @@ Factory::createUpload(const QString& dbusOwner,
                       const QString& filePath,
                       const QVariantMap& metadata,
                       const QMap<QString, QString>& headers) {
-    QString id;
-    QString dbusPath;
-    bool isConfined = false;
-    getUploadPath(dbusOwner, metadata, id, dbusPath, isConfined);
-    auto upload = new FileUpload(id, dbusPath, isConfined, url,
-        filePath, metadata, headers);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto upload = new FileUpload(details->id, details->dbusPath,
+            details->isConfined, url, filePath, metadata, headers);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);
     return upload;
@@ -98,14 +93,12 @@ Factory::createMmsUpload(const QString& dbusOwner,
                          const QString& password) {
     QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
         port, username, password);
-    QString id;
-    QString dbusPath;
-    bool isConfined = false;
     QVariantMap metadata;
     QMap<QString, QString> headers;
-    getUploadPath(dbusOwner, metadata, id, dbusPath, isConfined);
-    auto upload = new MmsFileUpload(id, dbusPath, isConfined,
-        url, filePath, metadata, headers, proxy);
+    QScopedPointer<SecurityDetails> details(
+        getSecurityDetails(dbusOwner, metadata));
+    auto upload = new MmsFileUpload(details->id, details->dbusPath,
+        details->isConfined, url, filePath, metadata, headers, proxy);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);
     return upload;

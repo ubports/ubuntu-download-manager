@@ -60,11 +60,8 @@ class Factory : public QObject {
     virtual void setAcceptedCertificates(const QList<QSslCertificate>& certs);
  private:
 
-    void getUploadPath(const QString& dbusOwner,
-                       const QVariantMap& metadata,
-                       QString& id,
-                       QString& dbusPath,
-                       bool& isConfined);
+    SecurityDetails* getSecurityDetails(const QString& dbusOwner,
+                                        const QVariantMap& metadata);
 
  private:
     AppArmor* _apparmor;
