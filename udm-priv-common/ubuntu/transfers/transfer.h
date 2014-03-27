@@ -54,13 +54,14 @@ class Transfer : public QObject {
     virtual bool isValid() const;
     virtual QString lastError() const;
     virtual bool addToQueue() const;
+    virtual void setAddToQueue(bool addToQueue);
 
     // methods to be overridden by the children
-    virtual bool pausable() = 0;
-    virtual void cancelTransfer() = 0;
-    virtual void pauseTransfer() = 0;
-    virtual void resumeTransfer() = 0;
-    virtual void startTransfer() = 0;
+    virtual bool pausable() { return false; }
+    virtual void cancelTransfer() {}
+    virtual void pauseTransfer() {}
+    virtual void resumeTransfer() {}
+    virtual void startTransfer() {}
 
  public slots:  // NOLINT(whitespace/indent)
 
@@ -87,7 +88,6 @@ class Transfer : public QObject {
 
  protected:
     void setIsValid(bool isValid);
-    void setAddToQueue(bool addToQueue);
     void setLastError(const QString& lastError);
 
  private:
