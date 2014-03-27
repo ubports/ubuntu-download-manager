@@ -2,6 +2,8 @@ Source: ubuntu-download-manager
 Section: net
 Priority: optional
 Build-Depends: debhelper (>= 9),
+               dbus-test-runner,
+               google-mock,
                qt5-qmake,
                qt5-default,
                qtbase5-dev,
@@ -10,7 +12,6 @@ Build-Depends: debhelper (>= 9),
                libqt5sql5-sqlite,
                libnih-dbus-dev,
                libgoogle-glog-dev,
-               dbus-test-runner,
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
