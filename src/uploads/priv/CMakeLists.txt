@@ -37,7 +37,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
 include_directories(${CMAKE_SOURCE_DIR}/src/uploads/common)
 
-add_library(${TARGET} SHARED
+add_library(${TARGET} STATIC
 	${HEADERS}
 	${SOURCES}
 )
