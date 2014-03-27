@@ -19,9 +19,9 @@ set(PRIVATE_HEADERS
 
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
-include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 
 add_library(${TARGET} SHARED 
 	${SOURCES}
