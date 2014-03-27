@@ -1,0 +1,12 @@
+prefix=$$INSTALL_PREFIX
+exec_prefix=${prefix}
+libdir=$$INSTALL_LIBDIR
+includedir=${prefix}/include/ubuntu/transfers
+
+Name: udm-common
+Description: Common Ubuntu Upload Download Manager lib
+Version: $$PROJECT_VERSION
+Libs: -L${libdir} -ludm-common
+Requires: Qt5Core Qt5DBus
+Cflags:  -I${includedir}
+
