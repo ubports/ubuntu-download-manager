@@ -38,7 +38,7 @@ target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
 )
 
-#configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc)
+configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
