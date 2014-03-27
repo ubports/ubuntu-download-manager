@@ -18,6 +18,7 @@ set(DAEMON_TESTS
 	test_ssl_error_transition
 	test_start_download_transition
 	test_stop_request_transition
+        test_transfers_queue
 )
 
 foreach(test ${DAEMON_TESTS})
@@ -48,6 +49,7 @@ foreach(test ${DAEMON_TESTS})
                 sm_file_download.h
                 system_network_info.h
                 timer.h
+                transfer.h
                 uuid_factory.h
                 ${test}.h
         )

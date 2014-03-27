@@ -95,6 +95,7 @@ Queue::onManagedTransferStateChanged() {
     // get the appdownload that emited the signal and
     // decide what to do with it
     auto transfer = qobject_cast<Transfer*>(sender());
+    qDebug() << "State changed" << transfer;
     switch (transfer->state()) {
         case Transfer::START:
             // only start the transfer in the update method
@@ -108,8 +109,11 @@ Queue::onManagedTransferStateChanged() {
             break;
         case Transfer::RESUME:
             // only resume the transfer in the update method
-            if (_current.isEmpty())
+            qDebug() << "State changed to resume.";
+            if (_current.isEmpty()) {
+                qDebug() << "There is no current download present.";
                 updateCurrentTransfer();
+            }
             break;
         case Transfer::CANCEL:
             // cancel and remove the transfer
@@ -189,6 +193,7 @@ Queue::updateCurrentTransfer() {
                 && (state == Transfer::START
                     || state == Transfer::RESUME)) {
             _current = path;
+            qDebug() << _current;
             if (state == Transfer::START)
                 transfer->startTransfer();
             else
