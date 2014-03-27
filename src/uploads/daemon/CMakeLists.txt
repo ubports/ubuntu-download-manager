@@ -31,7 +31,7 @@ target_link_libraries(${TARGET}
 install(FILES ${TARGET}.service DESTINATION
    	${CMAKE_INSTALL_DATADIR}/dbus-1/services)
 install(FILES "com.canonical.applications.Uploader.service" DESTINATION
-   	${CMAKE_INSTALL_SYSCONDIF}/dbus-1/system-services)
+   	/etc/dbus-1/system-services)
 install(FILES "com.canonical.applications.Uploader.conf" DESTINATION
-   	${CMAKE_INSTALL_DATADIR}/dbus-1/system.d)
+   	/etc/dbus-1/system.d)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_BINDIR})
