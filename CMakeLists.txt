@@ -22,6 +22,10 @@ IF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
   ENABLE_COVERAGE_REPORT(TARGETS ${DIALER_APP})
 ENDIF(CMAKE_BUILD_TYPE MATCHES [cC][oO][vV][eE][rR][aA][gG][eE])
 
+set(UDM_VERSION_MAJOR 0)
+set(UDM_VERSION_MINOR 3)
+set(UDM_VERSION_PATCH 0)
+
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
