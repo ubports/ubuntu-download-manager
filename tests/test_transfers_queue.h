@@ -21,23 +21,25 @@
 
 #include <QObject>
 #include <ubuntu/transfers/queue.h>
-#include <ubuntu/transfers/tests/system/request_factory.h>
-#include <ubuntu/transfers/tests/system/process_factory.h>
-#include <ubuntu/transfers/tests/system/system_network_info.h>
-#include <ubuntu/transfers/tests/base_testcase.h>
+#include "request_factory.h"
+#include "process_factory.h"
+#include "system_network_info.h"
+#include "base_testcase.h"
 #include "transfer.h"
 
-namespace Ubuntu {
-
-namespace Transfers {
-
-namespace Tests {
+using namespace Ubuntu::Transfers;
+using namespace Ubuntu::Transfers::Tests;
+using namespace Ubuntu::Transfers::System;
 
 class TestTransferQueue : public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestTransferQueue(QObject *parent = 0);
+    explicit TestTransferQueue(QObject *parent = 0)
+        : BaseTestCase("TestTransferQueue", parent) {}
+
+ private:
+    void verifyMocks();
 
  private slots:  // NOLINT(whitespace/indent)
 
@@ -70,17 +72,10 @@ class TestTransferQueue : public BaseTestCase {
  private:
     bool _isConfined;
     QString _rootPath;
-    FakeSystemNetworkInfo* _networkInfo;
-    FakeTransfer* _first;
-    FakeTransfer* _second;
+    MockSystemNetworkInfo* _networkInfo;
+    MockTransfer* _first;
+    MockTransfer* _second;
     Queue* _q;
 };
-
-
-}  // Tests
-
-}  // Transfers
-
-}  // Ubuntu
 
 #endif  // TEST_DOWNLOAD_QUEUE_H
