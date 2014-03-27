@@ -1,11 +1,11 @@
-prefix=$$INSTALL_PREFIX
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=$$INSTALL_LIBDIR
+libdir=${exec_prefix}/lib
 includedir=${prefix}/include/ubuntu/upload_manager
 
 Name: ubuntu-upload-manager-common
 Description: Common Ubuntu Upload Manager lib
-Version: $$PROJECT_VERSION
+Version: @UDM_VERSION_MAJOR@.@UDM_VERSION_MINOR@.@UDM_VERSION_PATCH@
 Libs: -L${libdir} -lubuntu-upload-manager-common
 Requires: Qt5Core Qt5DBus
 Cflags:  -I${includedir}
