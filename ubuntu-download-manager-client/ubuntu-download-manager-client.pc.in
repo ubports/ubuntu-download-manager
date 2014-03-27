@@ -9,4 +9,3 @@ Version: $$PROJECT_VERSION
 Libs: -L${libdir} -lubuntu-download-manager-client
 Requires: Qt5Core Qt5DBus
 Cflags:  -I${includedir}
-
