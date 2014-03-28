@@ -128,27 +128,27 @@ const QDBusArgument &operator>>(const QDBusArgument &argument,
 }
 
 int
-ProcessErrorStruct::getCode() {
+ProcessErrorStruct::getCode() const {
     return _code;
 }
 
 int
-ProcessErrorStruct::getExitCode() {
+ProcessErrorStruct::getExitCode() const {
     return _exitCode;
 }
 
 QString
-ProcessErrorStruct::getPhrase() {
+ProcessErrorStruct::getPhrase() const {
     return _phrase;
 }
 
 QString
-ProcessErrorStruct::getStandardOutput() {
+ProcessErrorStruct::getStandardOutput() const {
     return _stdout;
 }
 
 QString
-ProcessErrorStruct::getStandardError() {
+ProcessErrorStruct::getStandardError() const {
     return _stderr;
 }
 
