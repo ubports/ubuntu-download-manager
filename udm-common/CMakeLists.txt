@@ -36,6 +36,14 @@ add_library(${TARGET} SHARED
 	${PRIVATE_HEADERS}
 )
 
+set_target_properties(
+	${TARGET}
+
+	PROPERTIES
+	VERSION ${UDM_VERSION_MAJOR}.${UDM_VERSION_MINOR}.${UDM_VERSION_PATCH}
+	SOVERSION ${UDM_VERSION_MAJOR}
+)
+
 target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
 	${Qt5Network_LIBRARIES}

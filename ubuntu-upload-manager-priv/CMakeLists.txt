@@ -38,6 +38,14 @@ add_library(${TARGET} STATIC
 	${SOURCES}
 )
 
+set_target_properties(
+	${TARGET}
+
+	PROPERTIES
+	VERSION ${UDM_VERSION_MAJOR}.${UDM_VERSION_MINOR}.${UDM_VERSION_PATCH}
+	SOVERSION ${UDM_VERSION_MAJOR}
+)
+
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
