@@ -32,12 +32,27 @@ Description: Upload Download Manager - shared common library
  This package includes the common shared library between the client lib and the
  service lib.
 
+Package: libudm-common-dev
+Section: libdevel
+Architecture: any
+Depends: libudm-common0 (= ${binary:Version}),
+         qtbase5-dev,
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: QT library for Ubuntu Download Manager - development files
+ This package contains the common headers shared between the client library and
+ the daemon library.
+
 Package: libudm-priv0
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libudm-common0 (= ${binary:Version}),
+Breaks: libubuntu-download-manager-priv1
+Replaces: libubuntu-download-manager-priv1
+Breaks: ubuntu-download-manager-priv1
+Replaces: ubuntu-download-manager-priv1
 Description: Upload Download Manager - shared private library
  Upload Download Manager performs downloads from a centralized location.
  .
@@ -71,21 +86,6 @@ Description: QT library for Ubuntu Download Manager - development files
  This package contains the common headers shared between the client library and
  the daemon library.
 
-Package: libubuntu-download-manager-priv0
-Section: libs
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libudm-priv0 (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
-Breaks: ubuntu-download-manager-priv1
-Replaces: ubuntu-download-manager-priv1
-Description: Ubuntu Download Manager - shared private library
- Ubuntu Download Manager performs downloads from a centralized location.
- .
- This package includes the private shared library.
-
 Package: libubuntu-download-manager-client0
 Section: libs
 Architecture: any
@@ -115,19 +115,6 @@ Description: QT library for Ubuntu Download Manager - development files
  This package contains the header that can be used to allow an application use
  the Ubuntu Download Manager client library.
 
-Package: ubuntu-download-manager
-Section: net
-Architecture: any
-Depends: ${misc:Depends},
-         ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libudm-priv0 (= ${binary:Version}),
-         libubuntu-download-manager-priv0 (= ${binary:Version}),
-Description: Ubuntu Download Manager - daemon
- Ubuntu Download Manager performs downloads from a centralized location.
- .
- This package includes the daemon.
-
 Package: libubuntu-upload-manager-common0
 Section: libs
 Architecture: any
@@ -152,18 +139,18 @@ Description: QT library for Ubuntu Upload Manager - development files
  This package contains the common headers shared between the client library and
  the daemon library.
 
-Package: libubuntu-upload-manager-priv0
-Section: libs
+Package: ubuntu-download-manager
+Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libudm-common0 (= ${binary:Version}),
          libudm-priv0 (= ${binary:Version}),
-         libubuntu-upload-manager-common0 (= ${binary:Version}),
-Description: Ubuntu Upload Manager - shared private library
- Ubuntu Upload Manager performs downloads from a centralized location.
+         libubuntu-download-manager-common0 (= ${binary:Version}),
+Description: Ubuntu Download Manager - daemon
+ Ubuntu Download Manager performs downloads from a centralized location.
  .
- This package includes the private shared library.
+ This package includes the daemon.
 
 Package: ubuntu-upload-manager
 Section: net
@@ -172,7 +159,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libudm-common0 (= ${binary:Version}),
          libudm-priv0 (= ${binary:Version}),
-         libubuntu-upload-manager-priv0 (= ${binary:Version}),
+         libubuntu-upload-manager-common0 (= ${binary:Version}),
 Description: Ubuntu Upload Manager - daemon
  Ubuntu Upload Manager performs uploads from a centralized location.
  .
