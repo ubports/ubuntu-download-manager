@@ -51,8 +51,6 @@ Depends: ${misc:Depends},
          libudm-common0 (= ${binary:Version}),
 Breaks: libubuntu-download-manager-priv1
 Replaces: libubuntu-download-manager-priv1
-Breaks: ubuntu-download-manager-priv1
-Replaces: ubuntu-download-manager-priv1
 Description: Upload Download Manager - shared private library
  Upload Download Manager performs downloads from a centralized location.
  .
