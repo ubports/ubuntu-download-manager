@@ -51,6 +51,7 @@ class ManagerImpl : public Manager {
 
  public:
     virtual ~ManagerImpl();
+    virtual Download* getDownloadForId(const QString& id);
     virtual void createDownload(DownloadStruct downStruct);
     virtual void createDownload(DownloadStruct downStruct,
                                 DownloadCb cb,

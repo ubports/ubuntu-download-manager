@@ -47,7 +47,7 @@ class DownloadImpl : public Download {
     Q_OBJECT
 
     // allow the manager to create downloads
-    friend class ManagerPrivate;
+    friend class ManagerImpl;
     friend class DownloadPendingCallWatcher;
     friend class DownloadManagerPendingCallWatcher;
 
