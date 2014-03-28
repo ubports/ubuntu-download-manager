@@ -68,12 +68,12 @@ const QDBusArgument &operator>>(const QDBusArgument &argument,
 }
 
 int
-HttpErrorStruct::getCode() {
+HttpErrorStruct::getCode() const {
     return _code;
 }
 
 QString
-HttpErrorStruct::getPhrase() {
+HttpErrorStruct::getPhrase() const {
     return _phrase;
 }
 
