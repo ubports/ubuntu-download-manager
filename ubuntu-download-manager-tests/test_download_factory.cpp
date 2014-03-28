@@ -101,13 +101,11 @@ TestDownloadFactory::testCreateMmsDownload() {
     QString algo = "Md5";
     QString hostname = "http://hostname.com";
     int port = 88;
-    QString username = "username";
-    QString password = "password";
 
 
     // same as above but assert hash and hash algo
     QScopedPointer<Download> download(_downFactory->createMmsDownload(
-        "", QUrl("http://example.com"), hostname, port, username, password));
+        "", QUrl("http://example.com"), hostname, port));
     auto mms = qobject_cast<MmsFileDownload*>(download.data());
     QVERIFY(mms != nullptr);
 }
