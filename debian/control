@@ -11,6 +11,9 @@ Build-Depends: debhelper (>= 9),
                libnih-dbus-dev,
                libgoogle-glog-dev,
                dbus-test-runner,
+               qtdeclarative5-dev,
+               qtdeclarative5-dev-tools,
+               qtdeclarative5-test-plugin
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
@@ -106,3 +109,13 @@ Description: Ubuntu Upload Manager - daemon
  Ubuntu Upload Manager performs uploads from a centralized location.
  .
  This package includes the daemon.
+
+Package: qtdeclarative5-ubuntu-download-manager0.1
+Section: net
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libubuntu-download-manager-client0 (= ${binary:Version})
+Description: Ubuntu Download Manager Plugin
+ This package contains a QML Plugin to handle downloads from a pure QML
+ application, without the need to write any C++ code.

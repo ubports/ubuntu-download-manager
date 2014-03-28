@@ -13,6 +13,7 @@ SUBDIRS += \
     ubuntu-download-manager-common-tests \
     ubuntu-download-manager-test-daemon \
     ubuntu-download-manager-client-tests \
+    ubuntu-download-manager-plugin \
     ubuntu-upload-manager \
     ubuntu-upload-manager-common
 

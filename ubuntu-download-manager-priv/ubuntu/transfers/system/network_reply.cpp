@@ -42,7 +42,7 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
 }
 
 NetworkReply::~NetworkReply() {
-    delete _reply;
+    _reply->deleteLater();
 }
 
 QByteArray

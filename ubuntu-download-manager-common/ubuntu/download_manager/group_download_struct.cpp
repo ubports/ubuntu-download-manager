@@ -53,10 +53,6 @@ GroupDownloadStruct& GroupDownloadStruct::operator=(
     return *this;
 }
 
-GroupDownloadStruct::~GroupDownloadStruct() {
-}
-
-
 QDBusArgument &operator<<(QDBusArgument& argument,
                           const GroupDownloadStruct& group) {
     argument.beginStructure();
@@ -77,11 +73,6 @@ const QDBusArgument &operator>>(const QDBusArgument& argument,
     argument.endStructure();
 
     return argument;
-}
-
-void GroupDownloadStruct::registerMetaType() {
-    qRegisterMetaType<GroupDownloadStruct>("GroupDownloadStruct");
-    qDBusRegisterMetaType<GroupDownloadStruct>();
 }
 
 QString

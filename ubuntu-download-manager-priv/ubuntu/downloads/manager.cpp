@@ -187,17 +187,14 @@ DownloadManager::createDownload(DownloadStruct download) {
 
 QDBusObjectPath
 DownloadManager::createMmsDownload(const QString& url,
-                                   const QString& hostname,
-                                   int port,
-                                   const QString& username,
-                                   const QString& password) {
+                           const QString& hostname,
+                           int port) {
     LOG(INFO) << "Create MMS download == {url:" << url << " hostname: "
-        << hostname << " port:" << port << " username:" << username
-        << " pwd: " << password << "}";
+        << hostname << " port:" << port << "}";
     DownloadCreationFunc createDownloadFunc =
-        [this, url, hostname, port, username, password](QString owner) {
+        [this, url, hostname, port](QString owner) {
         auto download = _downloadFactory->createMmsDownload(owner, url,
-            hostname, port, username, password);
+            hostname, port);
         return download;
     };
     return createDownload(createDownloadFunc);
