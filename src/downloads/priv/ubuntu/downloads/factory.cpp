@@ -124,11 +124,9 @@ Download*
 Factory::createMmsDownload(const QString& dbusOwner,
                            const QUrl& url,
                            const QString& hostname,
-                           int port,
-                           const QString& username,
-                           const QString& password) {
+                           int port) {
     QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
-        port, username, password);
+        port);
     QVariantMap metadata;
     QMap<QString, QString> headers;
     QScopedPointer<SecurityDetails> details(
