@@ -28,28 +28,81 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+/*!
+    \class NetworkErrorStruct 
+    \brief The NetworkErrorStruct represents the dbus structure that is used
+           to communicate network errors that happened in the download
+           manager to the different clients.
+    \since 0.3
+*/
 class DOWNLOAD_MANAGER_EXPORT NetworkErrorStruct {
     Q_PROPERTY(int code READ getCode)
     Q_PROPERTY(QString phrase READ getPhrase)
 
  public:
+
+    /*!
+        Creates a new structure with the default values.
+    */
     NetworkErrorStruct();
+
+    /*!
+        Creates an network error of the given type.
+    */
     NetworkErrorStruct(int error);
+
+    /*!
+        Creates a network error with the given type and a human readable
+        message.
+    */
     NetworkErrorStruct(int code, QString phrase);
+
+    /*!
+        Copy constructor.
+    */
     NetworkErrorStruct(const NetworkErrorStruct& other);
+
+    /*!
+        Assign operator.
+    */
     NetworkErrorStruct& operator=(const NetworkErrorStruct& other);
 
+    /*!
+        \internal
+    */
     friend QDBusArgument &operator<<(QDBusArgument &argument,
         const NetworkErrorStruct& error);
+
+    /*!
+        \internal
+    */
     friend const QDBusArgument &operator>>(const QDBusArgument &argument,
         NetworkErrorStruct& error);
 
-    // property getters
-    int getCode();
-    QString getPhrase();
+    /*!
+        \fn int getCode() const
+
+        Returns the type of network error.
+    */
+    int getCode() const;
+
+    /*!
+        \fn QString getPhrase const()
+
+        Returns a human readable message about the network error.
+    */
+    QString getPhrase() const;
 
  private:
+
+    /*!
+        \internal
+    */
     int _code;
+
+    /*!
+        \internal
+    */
     QString _phrase;
 };
 

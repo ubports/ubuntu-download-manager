@@ -152,12 +152,12 @@ const QDBusArgument &operator>>(const QDBusArgument &argument,
 }
 
 int
-NetworkErrorStruct::getCode() {
+NetworkErrorStruct::getCode() const {
     return _code;
 }
 
 QString
-NetworkErrorStruct::getPhrase() {
+NetworkErrorStruct::getPhrase() const {
     return _phrase;
 }
 
