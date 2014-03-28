@@ -16,6 +16,8 @@
  * boston, ma 02110-1301, usa.
  */
 
+#include <QDir>
+#include <QFileInfo>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
@@ -368,6 +370,16 @@ GroupDownload::onFinished(const QString& file) {
     // that downloads we are done :)
     if (_downloads.count() == _finishedDownloads.count()) {
         setState(Download::FINISH);
+#ifndef NDEBUG
+        foreach(const QString& file, _finishedDownloads) {
+           auto parentDir = QFileInfo(file).dir();
+           DLOG(INFO) << "Files for path dir '" << parentDir.absolutePath() << "' :";
+           auto children = parentDir.entryList();
+           foreach(const QString& child, children) {
+               DLOG(INFO) << "\t" << child;
+           }
+        }
+#endif
         GROUP_LOG(INFO) << "EMIT finished " << _finishedDownloads.join(";");
         emit finished(_finishedDownloads);
     }
