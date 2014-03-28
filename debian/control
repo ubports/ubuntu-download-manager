@@ -1,7 +1,8 @@
 Source: ubuntu-download-manager
 Section: net
 Priority: optional
-Build-Depends: debhelper (>= 9),
+Build-Depends: cmake,
+               debhelper (>= 9),
                dbus-test-runner,
                google-mock,
                qt5-qmake,
