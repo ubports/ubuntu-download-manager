@@ -79,9 +79,6 @@ DownloadStruct& DownloadStruct::operator=(const DownloadStruct& other) {
     return *this;
 }
 
-DownloadStruct::~DownloadStruct() {
-}
-
 QDBusArgument &operator<<(QDBusArgument &argument,
                           const DownloadStruct& download) {
     argument.beginStructure();

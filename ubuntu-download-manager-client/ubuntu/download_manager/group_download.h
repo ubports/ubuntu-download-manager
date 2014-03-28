@@ -30,7 +30,7 @@ namespace DownloadManager {
 class Error;
 class ManagerPrivate;
 class GroupDownloadPrivate;
-class DOWNLOAD_MANAGER_EXPORT GroupDownload : public QObject {
+class GroupDownload : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(GroupDownload)
 
