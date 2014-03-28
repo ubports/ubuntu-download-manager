@@ -41,7 +41,7 @@ MmsFileDownload::MmsFileDownload(const QString& id,
 }
 
 MmsFileDownload::~MmsFileDownload() {
-    delete _requestFactory;
+    _requestFactory->deleteLater();
 }
 
 }  // Daemon
