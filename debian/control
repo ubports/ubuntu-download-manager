@@ -171,6 +171,8 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         libudm-common0 (= ${binary:Version}),
+         libubuntu-download-manager-common0 (= ${binary:Version}),
          libubuntu-download-manager-client0 (= ${binary:Version})
 Description: Ubuntu Download Manager Plugin
  This package contains a QML Plugin to handle downloads from a pure QML
