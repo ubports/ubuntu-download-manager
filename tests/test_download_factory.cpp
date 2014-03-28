@@ -121,7 +121,7 @@ TestDownloadFactory::testCreateMmsDownload() {
 
     // same as above but assert hash and hash algo
     QScopedPointer<Download> download(_downFactory->createMmsDownload(
-        "", QUrl("http://example.com"), hostname, port, username, password));
+        "", QUrl("http://example.com"), hostname, port));
     auto mms = qobject_cast<MmsFileDownload*>(download.data());
     QVERIFY(mms != nullptr);
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
