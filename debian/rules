@@ -8,11 +8,33 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-download-manager-client-dev -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-download-manager-client0 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-download-manager-common-dev -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-download-manager-common0 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-upload-manager-common-dev -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibubuntu-upload-manager-common0 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibudm-common-dev -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibudm-common0 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -plibudm-priv0 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -pqtdeclarative5-ubuntu-download-manager0.1 -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -pubuntu-download-manager -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+	dh_auto_configure -pubuntu-upload-manager -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 dh_auto_install:
 	rm -f debian/tmp/usr/lib/*.so
-	dh_install --fail-missing
+	dh_install -plibubuntu-download-manager-client-dev --fail-missing
+	dh_install -plibubuntu-download-manager-client0 --fail-missing
+	dh_install -plibubuntu-download-manager-common-dev --fail-missing
+	dh_install -plibubuntu-download-manager-common0 --fail-missing
+	dh_install -plibubuntu-upload-manager-common-dev --fail-missing
+	dh_install -plibubuntu-upload-manager-common0 --fail-missing
+	dh_install -plibudm-common-dev --fail-missing
+	dh_install -plibudm-common0 --fail-missing
+	dh_install -plibudm-priv0 --fail-missing
+	dh_install -pqtdeclarative5-ubuntu-download-manager0.1 --fail-missing
+	dh_install -pubuntu-download-manager --fail-missing
+	dh_install -pubuntu-upload-manager --fail-missing
 
 %:
-	dh  $@
+	dh $@
