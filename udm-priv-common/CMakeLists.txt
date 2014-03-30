@@ -76,3 +76,5 @@ target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
 	udm-common
 )
+
+install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
