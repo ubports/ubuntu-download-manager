@@ -2,8 +2,10 @@
 # -*- makefile -*-
 
 # Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
+export DH_OPTIONS
+export DH_GOPKG := launchpad.net/ubuntu-download-manager
 
 export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
@@ -22,6 +24,7 @@ override_dh_auto_configure:
 	dh_auto_configure -pubuntu-upload-manager -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 dh_auto_install:
+	dh_auto_install --with=golang -O--buildsystem=golang --fail-missing
 	rm -f debian/tmp/usr/lib/*.so
 	dh_install -plibubuntu-download-manager-client-dev --fail-missing
 	dh_install -plibubuntu-download-manager-client0 --fail-missing
@@ -37,4 +40,4 @@ dh_auto_install:
 	dh_install -pubuntu-upload-manager --fail-missing
 
 %:
-	dh $@
+	dh $@ 
