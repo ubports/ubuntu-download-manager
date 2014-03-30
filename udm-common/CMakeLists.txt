@@ -11,8 +11,11 @@ set(SOURCES
 	ubuntu/transfers/system/logger.cpp
 )
 
-set(PUBLIC_HEADERS
+set(TRANSFERS_PUBLIC_HEADERS
 	ubuntu/transfers/metadata.h
+)
+
+set(ERRORS_PUBLIC_HEADERS
 	ubuntu/transfers/errors/auth_error_struct.h
 	ubuntu/transfers/errors/http_error_struct.h
 	ubuntu/transfers/errors/network_error_struct.h
@@ -30,7 +33,8 @@ include_directories(${Qt5Network_INCLUDE_DIRS})
 
 add_library(${TARGET} SHARED
 	${SOURCES}
-	${PUBLIC_HEADERS}
+	${TRANSFERS_PUBLIC_HEADERS}
+	${ERRORS_PUBLIC_HEADERS}
 	${PRIVATE_HEADERS}
 )
 
@@ -50,4 +54,5 @@ configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/transfers/errors)
+install(FILES ${TRANSFERS_PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/transfers)
+install(FILES ${ERRORS_PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/transfers/errors)
