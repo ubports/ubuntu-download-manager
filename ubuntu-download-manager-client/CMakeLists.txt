@@ -16,6 +16,7 @@ set(SOURCES
 set(PUBLIC_HEADERS
         ubuntu/download_manager/download.h
         ubuntu/download_manager/error.h
+        ubuntu/download_manager/group_download.h
         ubuntu/download_manager/manager.h
 )
 
@@ -23,7 +24,6 @@ set(PRIVATE_HEADERS
         ubuntu/download_manager/download_impl.h
         ubuntu/download_manager/download_interface.h
         ubuntu/download_manager/download_pendingcall_watcher.h
-        ubuntu/download_manager/group_download.h
         ubuntu/download_manager/manager_impl.h
         ubuntu/download_manager/manager_interface.h
         ubuntu/download_manager/manager_pendingcall_watcher.h

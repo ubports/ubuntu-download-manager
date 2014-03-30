@@ -1,7 +1,7 @@
-usr/local/include/ubuntu/transfers/metadata.h
-usr/local/include/ubuntu/transfers/errors/auth_error_struct.h
-usr/local/include/ubuntu/transfers/errors/http_error_struct.h
-usr/local/include/ubuntu/transfers/errors/network_error_struct.h
-usr/local/include/ubuntu/transfers/errors/process_error_struct.h
-usr/lib/*/pkgconfig/ubudm-common.pc
+usr/include/ubuntu/transfers/metadata.h
+usr/include/ubuntu/transfers/errors/auth_error_struct.h
+usr/include/ubuntu/transfers/errors/http_error_struct.h
+usr/include/ubuntu/transfers/errors/network_error_struct.h
+usr/include/ubuntu/transfers/errors/process_error_struct.h
+usr/share/pkgconfig/udm-common.pc
 usr/lib/*/libudm-common.so
