@@ -230,17 +230,11 @@ DaemonTestCase::startHttpServer() {
     if (_httpServer->state() == QProcess::Running) {
         qDebug() << "Http server running on" << _port;
     } else {
-        if (_httpServerRetry != _httpServerRetryMax) {
-            _httpServerRetry++;
-            _port += 10;
-            delete _httpServer;
-            _httpServer = nullptr;
-            startHttpServer();
-        } else {
-            delete _httpServer;
-            _httpServer = nullptr;
-            QFAIL("Http server could not be started.");
-        }
+        _httpServerRetry++;
+        _port += 10;
+        delete _httpServer;
+        _httpServer = nullptr;
+        startHttpServer();
     }
 }
 
