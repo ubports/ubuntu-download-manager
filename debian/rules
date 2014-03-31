@@ -5,7 +5,9 @@
 export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 export DH_OPTIONS
+
 export DH_GOPKG := launchpad.net/ubuntu-download-manager
+
 
 export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
@@ -24,20 +26,20 @@ override_dh_auto_configure:
 	dh_auto_configure -pubuntu-upload-manager -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
 dh_auto_install:
-	dh_auto_install --with=golang -O--buildsystem=golang --fail-missing
 	rm -f debian/tmp/usr/lib/*.so
-	dh_install -plibubuntu-download-manager-client-dev --fail-missing
-	dh_install -plibubuntu-download-manager-client0 --fail-missing
-	dh_install -plibubuntu-download-manager-common-dev --fail-missing
-	dh_install -plibubuntu-download-manager-common0 --fail-missing
-	dh_install -plibubuntu-upload-manager-common-dev --fail-missing
-	dh_install -plibubuntu-upload-manager-common0 --fail-missing
-	dh_install -plibudm-common-dev --fail-missing
-	dh_install -plibudm-common0 --fail-missing
-	dh_install -plibudm-priv0 --fail-missing
-	dh_install -pqtdeclarative5-ubuntu-download-manager0.1 --fail-missing
-	dh_install -pubuntu-download-manager --fail-missing
-	dh_install -pubuntu-upload-manager --fail-missing
+	dh_auto_install -O--buildsystem=golang --buildsystem=golang
+	dh_install -plibubuntu-download-manager-client-dev
+	dh_install -plibubuntu-download-manager-client0
+	dh_install -plibubuntu-download-manager-common-dev
+	dh_install -plibubuntu-download-manager-common0
+	dh_install -plibubuntu-upload-manager-common-dev
+	dh_install -plibubuntu-upload-manager-common0
+	dh_install -plibudm-common-dev
+	dh_install -plibudm-common0
+	dh_install -plibudm-priv0
+	dh_install -pqtdeclarative5-ubuntu-download-manager0.1
+	dh_install -pubuntu-download-manager
+	dh_install -pubuntu-upload-manager
 
 %:
-	dh $@ 
+	dh $@ --with=golang --fail-missing
