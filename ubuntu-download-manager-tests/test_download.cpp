@@ -765,8 +765,8 @@ TestDownload::testOnSuccessNoHash() {
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(processingSpy.count(), 0);
+    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 0);
     QCOMPARE(download->state(), Download::FINISH);
 }
 
@@ -806,9 +806,9 @@ TestDownload::testOnSuccessHashError() {
     emit reply->finished();
 
     // the has is a random string so we should get an error signal
-    QCOMPARE(errorSpy.count(), 1);
-    QCOMPARE(stateSpy.count(), 1);
-    QCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE(errorSpy.count(), 1);
+    QTRY_COMPARE(stateSpy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::ERROR);
 }
 
@@ -869,8 +869,8 @@ TestDownload::testOnSuccessHash() {
     emit reply->finished();
 
     // the hash should be correct and we should get the finish signal
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::FINISH);
 }
 
@@ -933,7 +933,7 @@ TestDownload::testOnSslError() {
 
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
 }
 
 void
