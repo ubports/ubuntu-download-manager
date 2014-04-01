@@ -17,6 +17,7 @@
  */
 
 #include <QDebug>
+#include "download_impl.h"
 #include "manager_impl.h"
 
 namespace {
@@ -72,6 +73,12 @@ ManagerImpl::init() {
     qDBusRegisterMetaType<HttpErrorStruct>();
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
+}
+
+Download*
+ManagerImpl::getDownloadForId(const QString& id) {
+    auto down = new DownloadImpl(_conn, _servicePath, QDBusObjectPath(id));
+    return down;
 }
 
 void
