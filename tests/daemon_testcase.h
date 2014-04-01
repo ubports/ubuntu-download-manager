@@ -64,7 +64,6 @@ class DaemonTestCase : public BaseTestCase {
 
  private:
     int _httpServerRetry = 0;
-    int _httpServerRetryMax = 10;
     int _port = 8080;
     QString _daemonPath = "";
     QString _daemonExec = "";
