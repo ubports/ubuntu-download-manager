@@ -93,7 +93,7 @@ class FileDownload : public Download, public QDBusContext {
     qulonglong progress() override;
     qulonglong totalSize() override;
     virtual void setThrottle(qulonglong speed) override;
-    virtual void setLocalPath(const QString& path);
+    virtual void setDestinationDir(const QString& path);
 
  signals:
     void finished(const QString& path);
@@ -134,6 +134,7 @@ class FileDownload : public Download, public QDBusContext {
     bool _connected = false;
     qulonglong _totalSize = 0;
     QUrl _url;
+    QString _basename;
     QString _filePath;
     QString _tempFilePath;
     QString _hash;

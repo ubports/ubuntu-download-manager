@@ -22,7 +22,7 @@
         <arg name="speed" type="t" direction="out"/>
     </method>
 
-    <method name="setLocalPath">
+    <method name="setDestinationDir">
         <arg name="path" type="s" direction="in"/>
     </method>
 

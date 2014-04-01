@@ -114,13 +114,13 @@ class Download : public QObject {
     virtual bool isMobileDownloadAllowed() = 0;
 
     /*!
-        \fn void setLocalPath(const QString& path);
+        \fn void setDestinationDir(const QString& path);
 
         Notifies the download manager that the local path of the download
         must be a different one. This call can only be performed if the
         download was not started else it will result in an error.
     */
-    virtual void setLocalPath(const QString& path) = 0;
+    virtual void setDestinationDir(const QString& path) = 0;
 
     /*!
         \fn void setThrottle(qulonglong speed)

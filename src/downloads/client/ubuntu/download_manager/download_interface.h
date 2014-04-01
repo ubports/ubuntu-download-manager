@@ -80,11 +80,11 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QLatin1String("resume"), argumentList);
     }
 
-    inline QDBusPendingReply<> setLocalPath(const QString &path)
+    inline QDBusPendingReply<> setDestinationDir(const QString &path)
     {
         QList<QVariant> argumentList;
         argumentList << QVariant::fromValue(path);
-        return asyncCallWithArgumentList(QLatin1String("setLocalPath"), argumentList);
+        return asyncCallWithArgumentList(QLatin1String("setDestinationDir"), argumentList);
     }
 
     inline QDBusPendingReply<> setThrottle(qulonglong speed)

@@ -58,7 +58,7 @@ class DownloadImpl : public Download {
     void allowMobileDownload(bool allowed);
     bool isMobileDownloadAllowed();
 
-    void setLocalPath(const QString& path);
+    void setDestinationDir(const QString& path);
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 
