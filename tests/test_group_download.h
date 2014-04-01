@@ -85,11 +85,6 @@ private:
     // ensure that local paths are just used once
     void testDuplicatedLocalPath();
 
-    // tests that ensure that the signals are raised
-    void testAuthErrorEmitted();
-    void testHttpErrorEmitted();
-    void testNetworkErrorEmitted();
-    void testProcessErrorEmitted();
 
  private:
     QString _id;
