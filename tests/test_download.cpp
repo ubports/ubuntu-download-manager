@@ -1316,7 +1316,7 @@ TestDownload::testOnSuccessHashError() {
 
     // the has is a random string so we should get an error signal
     QTRY_COMPARE(errorSpy.count(), 1);
-    Q_TRYCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::ERROR);
 
     delete download;
