@@ -249,11 +249,11 @@ TestDownload::testProcessErrorRaised_data() {
     QTest::addColumn<QString>("standardError");
 
     QTest::newRow("Failed To Start") << 0 << "Failed To Start"
-        << -1 << "" << ""; 
+        << -1 << "" << "";
     QTest::newRow("Crashed") << 1 << "Crashed" << -1 << "Calculating.."
-        << "NULL pointer"; 
+        << "NULL pointer";
     QTest::newRow("Timedout") << 2 << "Timedout" << -1 << "stdout"
-        << ""; 
+        << "";
 }
 
 void
@@ -283,6 +283,26 @@ TestDownload::testProcessErrorRaised() {
     QCOMPARE(exitCode, processError->exitCode());
     QCOMPARE(standardOutput, processError->standardOut());
     QCOMPARE(standardError, processError->standardError());
+}
+
+void
+TestDownload::testSetLocalDirectory() {
+}
+
+void
+TestDownload::testSetLocalDirectoryNotAbsolute() {
+}
+
+void
+TestDownload::testSetLocalDirectoryNotPresent() {
+}
+
+void
+TestDownload::testSetLocalDirectoryNotDir() {
+}
+
+void
+TestDownload::testSetLocalDirectoryStarted() {
 }
 
 QTEST_MAIN(TestDownload)
