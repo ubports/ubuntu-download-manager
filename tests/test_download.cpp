@@ -295,8 +295,8 @@ TestDownload::testProgress() {
     reply->downloadProgress(received, qulonglong(total));
 
     // assert that the total is set and that the signals is emitted
+    QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(download->totalSize(), qulonglong(total));
-    QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
     // assert that the size is not the received but the file size
@@ -381,7 +381,7 @@ TestDownload::testProgressNotKnownSize() {
 
     emit reply->downloadProgress(received, total);
 
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
     qulonglong size = (qulonglong)fileData.size();
