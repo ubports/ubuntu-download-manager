@@ -47,7 +47,7 @@ TestDownload::init() {
     _isConfined = false;
     _rootPath = testDirectory();
     _path = "random path to dbus";
-    _url = QUrl("http://ubuntu.com");
+    _url = QUrl("http://ubuntu.com/data.txt");
     _algo = "Sha256";
     _networkInfo = new MockSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);

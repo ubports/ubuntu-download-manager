@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDirectory>
+#include <QDir>
 #include <QNetworkReply>
 #include <QSignalSpy>
 #include <ubuntu/download_manager/error.h>
@@ -312,7 +312,7 @@ TestDownload::testSetLocalDirectoryNotPresent() {
 
 void
 TestDownload::testSetLocalDirectoryNotDir() {
-    auto path = testDirectory() + QDirectory::separator() + "test";
+    auto path = testDirectory() + QDir::separator() + "test";
     QFile file(path);
     file.open(QIODevice::ReadWrite | QFile::Append);
     file.write(QByteArray(100, 'w'));
