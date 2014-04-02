@@ -2,6 +2,7 @@
 set(TARGET UbuntuDownloadManager)
 
 set(plugin_SRCS
+    backend.cpp
     ubuntu_download_manager.cpp
     download_error.cpp
     single_download.cpp
