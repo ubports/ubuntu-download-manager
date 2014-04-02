@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDirectory>
 #include <QNetworkReply>
 #include <QSignalSpy>
 #include <ubuntu/download_manager/error.h>
@@ -287,22 +288,49 @@ TestDownload::testProcessErrorRaised() {
 
 void
 TestDownload::testSetLocalDirectory() {
+    auto path = testDirectory();
+    _down->setDestinationDir(path);
+    QVERIFY(!_down->isError());
+    QVERIFY(_down->error() == nullptr);
 }
 
 void
 TestDownload::testSetLocalDirectoryNotAbsolute() {
+    _down->setDestinationDir("./test");
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
 }
 
 void
 TestDownload::testSetLocalDirectoryNotPresent() {
+    _down->setDestinationDir("/etc/test");
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
 }
 
 void
 TestDownload::testSetLocalDirectoryNotDir() {
+    auto path = testDirectory() + QDirectory::separator() + "test";
+    QFile file(path);
+    file.open(QIODevice::ReadWrite | QFile::Append);
+    file.write(QByteArray(100, 'w'));
+    file.close();
+    _down->setDestinationDir(path);
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
 }
 
 void
 TestDownload::testSetLocalDirectoryStarted() {
+    auto path = testDirectory();
+    _down->start();
+    _down->setDestinationDir(path);
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
 }
 
 QTEST_MAIN(TestDownload)
