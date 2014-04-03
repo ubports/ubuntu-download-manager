@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDir>
 #include <QNetworkRequest>
 #include <QSignalSpy>
 #include <QSslError>
@@ -3585,6 +3586,91 @@ TestDownload::testLockCustomLocalPath() {
 
     QVERIFY(Mock::VerifyAndClearExpectations(mutex));
     FileNameMutex::deleteInstance();
+}
+
+void
+TestDownload::testSetLocalDirectory() {
+    auto path = testDirectory() + QDir::separator() + "test";
+    QDir().mkpath(path);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    auto original = download->filePath();
+    download->setDestinationDir(path);
+    QVERIFY(original != download->filePath());
+    QVERIFY(download->filePath().startsWith(path));
+    verifyMocks();
+}
+
+void
+TestDownload::testSetLocalDirectoryNotAbsolute() {
+    auto path = QString("./path");
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    
+    auto original = download->filePath();
+    download->setDestinationDir(path);
+    QCOMPARE(original, download->filePath());
+    verifyMocks();
+}
+
+void
+TestDownload::testSetLocalDirectoryNotPresent() {
+    auto path = QString("/not/present/path");
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    
+    auto original = download->filePath();
+    download->setDestinationDir(path);
+    QCOMPARE(original, download->filePath());
+    verifyMocks();
+}
+
+void
+TestDownload::testSetLocalDirectoryNotDir() {
+    auto path = testDirectory() + QDir::separator() + "test";
+    QFile file(path);
+    file.open(QIODevice::ReadWrite | QFile::Append);
+    file.write(QByteArray(100, 'w'));
+    file.close();
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    
+    auto original = download->filePath();
+    download->setDestinationDir(path);
+    QCOMPARE(original, download->filePath());
+    verifyMocks();
+}
+
+void
+TestDownload::testSetLocalDirectoryStarted() {
+    auto path = testDirectory() + QDir::separator() + "test";
+    QDir().mkpath(path);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    
+    auto original = download->filePath();
+    download->start();  // change state
+    download->setDestinationDir(path);
+    QCOMPARE(original, download->filePath());
+    verifyMocks();
 }
 
 QTEST_MAIN(TestDownload)
