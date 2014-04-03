@@ -58,5 +58,16 @@ enable_testing()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -pedantic -Wextra")
 add_definitions("-DNDEBUG")
 
+if(NOT CMAKE_BUILD_TYPE)
+	message(STATUS "Setting build type to 'RelWithDebInfo' as none was specif    ied.")
+	set(CMAKE_BUILD_TYPE RelWithDebInfo)
+endif()
+
+string(TOLOWER "${CMAKE_BUILD_TYPE}" cmake_build_type_lower)
+
+if(cmake_build_type_lower MATCHES relwithdebinfo) # workaround for http://pub    lic.kitware.com/Bug/view.php?id=14696
+	add_definitions(-DQT_NO_DEBUG)
+endif()
+
 add_subdirectory(src)
 add_subdirectory(tests)
