@@ -295,7 +295,7 @@ TestDownload::testProgress() {
     reply->downloadProgress(received, qulonglong(total));
 
     // assert that the total is set and that the signals is emitted
-    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QCOMPARE(download->totalSize(), qulonglong(total));
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -381,7 +381,7 @@ TestDownload::testProgressNotKnownSize() {
 
     emit reply->downloadProgress(received, total);
 
-    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
 
     QList<QVariant> arguments = spy.takeFirst();
     qulonglong size = (qulonglong)fileData.size();
@@ -462,7 +462,7 @@ TestDownload::testTotalSize() {
     emit reply->downloadProgress(received, total);
     emit reply->downloadProgress(received, 2*total);
 
-    QCOMPARE(download->totalSize(), total);
+    QTRY_COMPARE_WITH_TIMEOUT(download->totalSize(), total, 20000);
     QCOMPARE(spy.count(), 2);
 
     delete download;
@@ -1236,8 +1236,8 @@ TestDownload::testOnSuccessNoHash() {
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
-    QTRY_COMPARE(spy.count(), 1);
-    QTRY_COMPARE(processingSpy.count(), 0);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 0, 20000);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -1315,8 +1315,9 @@ TestDownload::testOnSuccessHashError() {
     emit reply->finished();
 
     // the has is a random string so we should get an error signal
-    QTRY_COMPARE(errorSpy.count(), 1);
-    QTRY_COMPARE(processingSpy.count(), 1);
+
+    QTRY_COMPARE_WITH_TIMEOUT(errorSpy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::ERROR);
 
     delete download;
@@ -1397,8 +1398,8 @@ TestDownload::testOnSuccessHash() {
     emit reply->finished();
 
     // the hash should be correct and we should get the finish signal
-    QTRY_COMPARE(spy.count(), 1);
-    QTRY_COMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -1527,7 +1528,7 @@ TestDownload::testOnSslError() {
 
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
-    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
 
     delete download;
 
@@ -2082,8 +2083,8 @@ TestDownload::testProcessExecutedNoParams() {
     emit reply->finished();
     emit process->finished(0, QProcess::NormalExit);
 
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -2186,8 +2187,8 @@ TestDownload::testProcessExecutedWithParams() {
     emit reply->finished();
     emit process->finished(0, QProcess::NormalExit);
 
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -2300,8 +2301,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
     emit reply->finished();
     emit process->finished(0, QProcess::NormalExit);
 
-    QCOMPARE(spy.count(), 1);
-    QCOMPARE(processingSpy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::FINISH);
 
     delete download;
@@ -3141,7 +3142,8 @@ TestDownload::testFileSystemErrorProgress() {
     reply->downloadProgress(0, 13);  // emit progress so that we try to write
 
     // assert that the error signal is emitted
-    QCOMPARE(spy.count(), 1);
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    
     auto arguments = spy.takeFirst();
     // assert that the size is not the received but the file size
     QCOMPARE(arguments.at(0).toString(),
