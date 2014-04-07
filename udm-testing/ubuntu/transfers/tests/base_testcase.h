@@ -32,7 +32,7 @@ namespace Transfers {
 namespace Tests {
 
 // util methods used to minimize the issues with signals in diff platforms
-static inline bool waitForSignal(QObject* obj, const char* signal, int timeout = 10000) {
+static inline bool waitForSignal(QObject* obj, const char* signal, int timeout = -1) {
     QEventLoop loop;
     QObject::connect(obj, signal, &loop, SLOT(quit()));
     QTimer timer;
@@ -54,7 +54,7 @@ class SignalBarrier : public QSignalSpy {
     bool ensureSignalEmitted() {
         bool result = count() > 0;
         if (!result) {
-            result = wait();
+            result = wait(-1);
         }
         return result;
     }
