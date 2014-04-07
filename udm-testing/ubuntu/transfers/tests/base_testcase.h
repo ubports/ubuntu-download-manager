@@ -19,7 +19,10 @@
 #ifndef BASE_TESTCASE_H
 #define BASE_TESTCASE_H
 
+#include <QEventLoop>
+#include <QSignalSpy>
 #include <QTest>
+#include <QTimer>
 #include <QObject>
 
 namespace Ubuntu {
@@ -27,6 +30,35 @@ namespace Ubuntu {
 namespace Transfers {
 
 namespace Tests {
+
+// util methods used to minimize the issues with signals in diff platforms
+static inline bool waitForSignal(QObject* obj, const char* signal, int timeout = 10000) {
+    QEventLoop loop;
+    QObject::connect(obj, signal, &loop, SLOT(quit()));
+    QTimer timer;
+    QSignalSpy timeoutSpy(&timer, SIGNAL(timeout()));
+    if (timeout > 0) {
+        QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
+        timer.setSingleShot(true);
+        timer.start(timeout);
+    }
+    loop.exec();
+    return timeoutSpy.isEmpty();
+}
+
+class SignalBarrier : public QSignalSpy {
+ public:
+    SignalBarrier(const QObject* obj, const char* aSignal)
+        : QSignalSpy(obj, aSignal) {}
+
+    bool ensureSignalEmitted() {
+        bool result = count() > 0;
+        if (!result) {
+            result = wait();
+        }
+        return result;
+    }
+};
 
 class BaseTestCase : public QObject {
     Q_OBJECT
