@@ -2075,11 +2075,14 @@ TestDownload::testProcessExecutedNoParams() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
-    QSignalSpy spy(download, SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier spy(download, SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startTransfer();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
@@ -2179,11 +2182,14 @@ TestDownload::testProcessExecutedWithParams() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
-    QSignalSpy spy(download, SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier spy(download, SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startTransfer();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
@@ -2293,8 +2299,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
     EXPECT_CALL(*process.data(), start(command, StringListEq(fixedArgs), _))
         .Times(1);
 
-    QSignalSpy spy(download, SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier spy(download, SIGNAL(finished(QString)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startTransfer();
@@ -2303,6 +2309,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     emit reply->finished();
     emit process->finished(0, QProcess::NormalExit);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
     QCOMPARE(download->state(), Download::FINISH);
@@ -2379,18 +2386,21 @@ TestDownload::testProcessFinishedWithError() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
-    QSignalSpy spy(download, SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
-    QSignalSpy processErrorSpy(download,
+    SignalBarrier spy(download, SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier processErrorSpy(download,
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
     download->startTransfer();
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     emit process->finished(-1, QProcess::NormalExit);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(processErrorSpy.count(), 1);
@@ -2494,18 +2504,22 @@ TestDownload::testProcessError() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
-    QSignalSpy spy(download, SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
-    QSignalSpy processErrorSpy(download,
+    SignalBarrier spy(download, SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier processErrorSpy(download,
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
     download->startTransfer();
 
+    QVERIFY(startedSpy.ensureSignalEmitted());
+
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     emit process->error(static_cast<QProcess::ProcessError>(code));
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(processErrorSpy.count(), 1);
@@ -2583,18 +2597,22 @@ TestDownload::testProcessFinishedCrash() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
-    QSignalSpy spy(download, SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
-    QSignalSpy processErrorSpy(download,
+    SignalBarrier spy(download, SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier processErrorSpy(download,
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
     download->startTransfer();
 
+    QVERIFY(startedSpy.ensureSignalEmitted());
+
     // emit the finish signal and expect it to be raised
     emit reply->finished();
     emit process->finished(0, QProcess::CrashExit);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(processErrorSpy.count(), 1);
@@ -2709,8 +2727,12 @@ TestDownload::testSslErrorsIgnored() {
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+
     download->start();  // change state
     download->startTransfer();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     QSignalSpy stateSpy(download, SIGNAL(stateChanged()));
     reply->sslErrors(errors);
@@ -2767,14 +2789,17 @@ TestDownload::testSslErrorsNotIgnored() {
 
     auto download = new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();  // change state
     download->startTransfer();
 
-    QSignalSpy stateSpy(download, SIGNAL(stateChanged()));
+    SignalBarrier stateSpy(download, SIGNAL(stateChanged()));
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     reply->sslErrors(errors);
 
+    QVERIFY(stateSpy.ensureSignalEmitted());
     QCOMPARE(1, stateSpy.count());
     QCOMPARE(Download::ERROR, download->state());
 
@@ -3070,7 +3095,7 @@ TestDownload::testProcessingJustOnce() {
         _path, _isConfined, _rootPath, _url, hashString, _algo, metadata,
         _headers);
 
-    QSignalSpy processingSpy(download, SIGNAL(processing(QString)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startTransfer();
@@ -3078,6 +3103,7 @@ TestDownload::testProcessingJustOnce() {
     // makes the process to be executed
     reply->finished();
 
+    QVERIFY(processingSpy.ensureSignalEmitted());
     QCOMPARE(processingSpy.count(), 1);
 
     delete download;
