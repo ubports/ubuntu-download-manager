@@ -205,9 +205,10 @@ TestDownload::testProgress() {
     QFETCH(qulonglong, total);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    SignalBarrier spy(download.data(),
+        SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
     download->start();  // change state
@@ -220,7 +221,8 @@ TestDownload::testProgress() {
     emit reply->downloadProgress(received, total);
 
     // assert that the total is set and that the signals is emitted
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(download->totalSize(), total);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -248,9 +250,10 @@ TestDownload::testProgressNotKnownSize() {
     QFETCH(int, total);
 
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    SignalBarrier spy(download.data(),
+        SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
     download->start();  // change state
@@ -262,7 +265,8 @@ TestDownload::testProgressNotKnownSize() {
     reply->setData(fileData);
     emit reply->downloadProgress(received, total);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
     qulonglong size = (qulonglong)fileData.size();
@@ -279,9 +283,10 @@ TestDownload::testTotalSize() {
     // assert that the total size is just set once
     // by emitting two signals with diff sizes
     _reqFactory->record();
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(progress(qulonglong, qulonglong)));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
+    SignalBarrier spy(download.data(),
+        SIGNAL(progress(qulonglong, qulonglong)));
 
     // start the download so that we do have access to the reply
     download->start();  // change state
@@ -294,8 +299,9 @@ TestDownload::testTotalSize() {
     emit reply->downloadProgress(received, total);
     emit reply->downloadProgress(received, 2*total);
 
-    QTRY_COMPARE_WITH_TIMEOUT(download->totalSize(), total, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
+    QTRY_COMPARE(download->totalSize(), total);
 }
 
 void
