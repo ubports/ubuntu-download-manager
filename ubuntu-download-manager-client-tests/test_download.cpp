@@ -158,9 +158,10 @@ TestDownload::testAuthErrorRaised() {
     AuthErrorStruct err(code, msg);
     returnAuthError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
@@ -192,9 +193,10 @@ TestDownload::testHttpErrorRaised() {
     HttpErrorStruct err(code, msg);
     returnHttpError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
