@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_download_manager_watch.h"
 
 TestDownloadManagerWatch::TestDownloadManagerWatch(QObject *parent)
@@ -61,10 +60,11 @@ TestDownloadManagerWatch::testCallbackIsExecuted() {
     udm::DownloadCb errCb = std::bind(&TestDownloadManagerWatch::onErrorCb,
         this, std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
 }
@@ -81,10 +81,11 @@ TestDownloadManagerWatch::testErrCallbackIsExecuted() {
     udm::DownloadCb errCb = std::bind(&TestDownloadManagerWatch::onErrorCb,
         this, std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier spy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(down, cb, errCb);
 
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 50000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
