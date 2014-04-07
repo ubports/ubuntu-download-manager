@@ -17,7 +17,6 @@
  */
 
 #include <QDebug>
-#include <QSignalSpy>
 #include <ubuntu/download_manager/download.h>
 #include "test_client_manager.h"
 
@@ -112,8 +111,9 @@ TestManager::testCreateDownloadSignalsEmitted() {
 
     DownloadStruct downStruct(url, metadata, headers);
 
-    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     _man->createDownload(downStruct);
+    QVERIFY(managerSpy.ensureSignalEmitted());
     QTRY_COMPARE(1, managerSpy.count());
     auto down = managerSpy.takeFirst().at(0).value<Download*>();
     delete down;
@@ -128,8 +128,9 @@ TestManager::testCreateDownloadSignalsEmittedCallbacks() {
     DownloadCb cb = [](Download*){};
     DownloadStruct downStruct(url, metadata, headers);
 
-    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     _man->createDownload(downStruct, cb, cb);
+    QVERIFY(managerSpy.ensureSignalEmitted());
     QTRY_COMPARE(1, managerSpy.count());
     auto down = managerSpy.takeFirst().at(0).value<Download*>();
     delete down;
