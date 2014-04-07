@@ -1311,10 +1311,13 @@ TestDownload::testProcessExecutedNoParams() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1374,10 +1377,13 @@ TestDownload::testProcessExecutedWithParams() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1387,7 +1393,9 @@ TestDownload::testProcessExecutedWithParams() {
 
     // makes the process to be executed
     reply->emitFinished();
-    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
+
+    QVERIFY(processingSpy.ensureSignalEmitted());
+    QTRY_COMPARE(processingSpy.count(), 1);
 
     calledMethods = _processFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1437,7 +1445,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1450,7 +1458,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
 
     // makes the process to be executed
     reply->emitFinished();
-    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
+    QVERIFY(processingSpy.ensureSignalEmitted());
+    QTRY_COMPARE(processingSpy.count(), 1);
 
     calledMethods = _processFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1481,11 +1490,14 @@ TestDownload::testProcessFinishedNoError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier spy(download.data(), SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1503,6 +1515,7 @@ TestDownload::testProcessFinishedNoError() {
 
     // emit the finished signal with 0 and ensure that finished is emitted
     process->emitFinished(0, QProcess::NormalExit);
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
 }
@@ -1518,13 +1531,16 @@ TestDownload::testProcessFinishedWithError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy processErrorSpy(download.data(),
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier processErrorSpy(download.data(),
         SIGNAL(processError(ProcessErrorStruct)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1542,6 +1558,7 @@ TestDownload::testProcessFinishedWithError() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(1, QProcess::NormalExit);
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(processErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
@@ -1576,14 +1593,16 @@ TestDownload::testProcessError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy processErrorSpy(download.data(),
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier processErrorSpy(download.data(),
         SIGNAL(processError(ProcessErrorStruct)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
 
+    QVERIFY(startedSpy.ensureSignalEmitted());
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1602,6 +1621,7 @@ TestDownload::testProcessError() {
 
     // emit error signal
     process->emitError((QProcess::ProcessError)code);
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(processingSpy.count(), 1);
     QCOMPARE(processErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
@@ -1618,11 +1638,14 @@ TestDownload::testProcessFinishedCrash() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier spy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1640,6 +1663,7 @@ TestDownload::testProcessFinishedCrash() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(1, QProcess::CrashExit);
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
 }
@@ -1656,7 +1680,8 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, metadata, _headers));
-    QSignalSpy finishedSpy(download.data(), SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier finishedSpy(download.data(), SIGNAL(finished(QString)));
 
     // write something in the expected file
     QString fileName = download->filePath();
@@ -1668,6 +1693,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
     download->start();  // change state
     download->startDownload();
 
+    QVERIFY(startedSpy.ensureSignalEmitted());
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -1684,6 +1710,7 @@ TestDownload::testFileRemoveAfterSuccessfulProcess() {
 
     // emit the finished signal with a result > 0 and ensure error is emitted
     process->emitFinished(0, QProcess::NormalExit);
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(1, finishedSpy.count());
     // assert that the file does not longer exist in the system
     QVERIFY(!QFile::exists(fileName));
@@ -1740,11 +1767,13 @@ TestDownload::testSslErrorsIgnored() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
 
     download->start();  // change state
     download->startDownload();
 
-    QSignalSpy stateSpy(download.data(), SIGNAL(stateChanged()));
+    QVERIFY(startedSpy.ensureSignalEmitted());
+    SignalBarrier stateSpy(download.data(), SIGNAL(stateChanged()));
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1769,11 +1798,13 @@ TestDownload::testSslErrorsNotIgnored() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
 
     download->start();  // change state
     download->startDownload();
 
-    QSignalSpy stateSpy(download.data(), SIGNAL(stateChanged()));
+    QVERIFY(startedSpy.ensureSignalEmitted());
+    SignalBarrier stateSpy(download.data(), SIGNAL(stateChanged()));
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1787,6 +1818,7 @@ TestDownload::testSslErrorsNotIgnored() {
     // assert last method called is ignoreSslErors
     QCOMPARE(QString("canIgnoreSslErrors"),
         calledMethods[calledMethods.count() -1].methodName());
+    QVERIFY(stateSpy.ensureSignalEmitted());
     QCOMPARE(1, stateSpy.count());  // we did not set it to error
     QCOMPARE(Download::ERROR, download->state());
 }
@@ -1976,7 +2008,7 @@ TestDownload::testProcessingJustOnce() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, hash, _algo, metadata, _headers));
 
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
@@ -1991,6 +2023,7 @@ TestDownload::testProcessingJustOnce() {
     // makes the process to be executed
     reply->emitFinished();
 
+    QVERIFY(processingSpy.ensureSignalEmitted());
     QCOMPARE(processingSpy.count(), 1);
 }
 
