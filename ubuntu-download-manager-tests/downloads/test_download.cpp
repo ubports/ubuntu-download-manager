@@ -17,7 +17,6 @@
  */
 
 #include <QNetworkRequest>
-#include <QSignalSpy>
 #include <QSslError>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -345,13 +344,17 @@ TestDownload::testSetThrottle() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(throttleChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(throttleChanged()));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
     download->setThrottle(speed);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     FakeNetworkReply* reply = reinterpret_cast<FakeNetworkReply*>(
@@ -380,7 +383,7 @@ TestDownload::testSetGSMDownloadSame() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(value);
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
 
     download->allowGSMDownload(value);
     QCOMPARE(spy.count(), 0);
@@ -403,9 +406,10 @@ TestDownload::testSetGSMDownloadDiff() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(oldValue);
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
 
     download->allowGSMDownload(newValue);
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 }
 
@@ -502,9 +506,10 @@ void
 TestDownload::testCancel() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->cancel();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(download->state(), Download::CANCEL);
 }
@@ -513,9 +518,10 @@ void
 TestDownload::testPause() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->pause();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(download->state(), Download::PAUSE);
 }
@@ -524,9 +530,10 @@ void
 TestDownload::testResume() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->resume();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(download->state(), Download::RESUME);
 }
@@ -535,9 +542,10 @@ void
 TestDownload::testStart() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(stateChanged()));
+    SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(download->state(), Download::START);
 }
@@ -549,13 +557,19 @@ TestDownload::testCancelDownload() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
+    SignalBarrier startedSpy(download.data(),
+        SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
+
     download->cancel();  // change state
     download->cancelDownload();  // method under test
+    QVERIFY(spy.ensureSignalEmitted());
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -580,11 +594,13 @@ TestDownload::testCancelDownloadNotStarted() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->cancel();  // change state
     download->cancelDownload();  // method under test
+
+    QVERIFY(spy.ensureSignalEmitted());
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(0, calledMethods.count());
@@ -600,11 +616,15 @@ TestDownload::testPauseDownload() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
+    SignalBarrier startedSpy(download.data(),
+        SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -615,6 +635,8 @@ TestDownload::testPauseDownload() {
 
     download->pause();  // change state
     download->pauseDownload();  // method under test
+
+    QVERIFY(spy.ensureSignalEmitted());
 
     // assert that the reply was aborted and deleted via deleteLater
     calledMethods = reply->calledMethods();
@@ -635,12 +657,13 @@ void
 TestDownload::testPauseDownloadNotStarted() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->pause();
     download->pauseDownload();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -651,14 +674,23 @@ void
 TestDownload::testResumeRunning() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(resumed(bool)));  // NOLINT(readability/function)
+    SignalBarrier startedSpy(download.data(),
+        SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();
     download->startDownload();
+    QVERIFY(startedSpy.ensureSignalEmitted());
+
+    qDebug() << "STARTED";
+
     download->resume();
     download->resumeDownload();
 
+    QVERIFY(spy.ensureSignalEmitted());
+
+    qDebug() << "RESUMED";
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -670,10 +702,14 @@ TestDownload::testResumeDownload() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
+    SignalBarrier spy(download.data(), SIGNAL(paused(bool)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier resumedSpy(download.data(), SIGNAL(resumed(bool)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -685,10 +721,14 @@ TestDownload::testResumeDownload() {
     download->pause();  // change state
     download->pauseDownload();  // method under test
 
+    QVERIFY(spy.ensureSignalEmitted());
+
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
     download->resumeDownload();
+
+    QVERIFY(resumedSpy.ensureSignalEmitted());
 
     // get the info for the second created request
     calledMethods = _reqFactory->calledMethods();
@@ -708,11 +748,13 @@ TestDownload::testStartDownload() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(spy.ensureSignalEmitted());
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -731,12 +773,14 @@ TestDownload::testStartDownloadAlreadyStarted() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(),
+    SignalBarrier spy(download.data(),
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
     download->startDownload();
     download->startDownload();  // second redundant call under test
+
+    QVERIFY(spy.ensureSignalEmitted());
 
     // assert that method was indeed called
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -756,11 +800,14 @@ TestDownload::testOnSuccessNoHash() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier spy(download.data(), SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
     QCOMPARE(1, calledMethods.count());
@@ -769,8 +816,9 @@ TestDownload::testOnSuccessNoHash() {
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
-    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 0, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 0);
     QCOMPARE(download->state(), Download::FINISH);
 }
 
@@ -779,11 +827,16 @@ TestDownload::testOnSuccessHashError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, "imposible-hash-is-not-hex", _algo, _metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier pausedSpy(download.data(), SIGNAL(paused(bool)));
+    SignalBarrier resumedSpy(download.data(), SIGNAL(resumed(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -795,10 +848,14 @@ TestDownload::testOnSuccessHashError() {
     download->pause();
     download->pauseDownload();   // write the data in the internal storage
 
+    QVERIFY(pausedSpy.ensureSignalEmitted());
+
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
     download->resumeDownload();
+
+    QVERIFY(resumedSpy.ensureSignalEmitted());
 
     calledMethods = _reqFactory->calledMethods();
     reply = reinterpret_cast<FakeNetworkReply*>(
@@ -810,9 +867,9 @@ TestDownload::testOnSuccessHashError() {
     emit reply->finished();
 
     // the has is a random string so we should get an error signal
-    QTRY_COMPARE_WITH_TIMEOUT(errorSpy.count(), 1, 20000);
-    QTRY_COMPARE_WITH_TIMEOUT(stateSpy.count(), 1, 20000);
-    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
+    QTRY_COMPARE(errorSpy.count(), 1);
+    QTRY_COMPARE(stateSpy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::ERROR);
 }
 
@@ -846,11 +903,16 @@ TestDownload::testOnSuccessHash() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, hash, _algo, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(finished(QString)));
-    QSignalSpy processingSpy(download.data(), SIGNAL(processing(QString)));
+    SignalBarrier spy(download.data(), SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier pausedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier resumedSpy(download.data(), SIGNAL(resumed(bool)));
+    SignalBarrier processingSpy(download.data(), SIGNAL(processing(QString)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -861,11 +923,15 @@ TestDownload::testOnSuccessHash() {
 
     download->pause();
     download->pauseDownload();   // write the data in the internal storage
+    
+    QVERIFY(pausedSpy.ensureSignalEmitted());
 
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
     download->resumeDownload();
+
+    QVERIFY(resumedSpy.ensureSignalEmitted());
 
     calledMethods = _reqFactory->calledMethods();
     reply = reinterpret_cast<FakeNetworkReply*>(
@@ -873,8 +939,9 @@ TestDownload::testOnSuccessHash() {
     emit reply->finished();
 
     // the hash should be correct and we should get the finish signal
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
-    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
+    QTRY_COMPARE(processingSpy.count(), 1);
     QCOMPARE(download->state(), Download::FINISH);
 }
 
@@ -897,11 +964,14 @@ TestDownload::testOnHttpError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier httpErrorSpy(download.data(), SIGNAL(httpError(HttpErrorStruct)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -915,6 +985,7 @@ TestDownload::testOnHttpError() {
 
     // emit the error and ensure that the signals are raised
     reply->emitHttpError(QNetworkReply::ContentAccessDenied);
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(httpErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
 }
@@ -924,10 +995,13 @@ TestDownload::testOnSslError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy spy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier spy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -937,7 +1011,8 @@ TestDownload::testOnSslError() {
 
     QList<QSslError> errors;
     emit reply->sslErrors(errors);
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
 }
 
 void
@@ -958,12 +1033,15 @@ TestDownload::testOnNetworkError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy networkErrorSpy(download.data(),
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -976,6 +1054,7 @@ TestDownload::testOnNetworkError() {
 
     // emit the error and ensure that the signals are raised
     reply->emitHttpError((QNetworkReply::NetworkError)code);
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(networkErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
 }
@@ -985,14 +1064,17 @@ TestDownload::testOnAuthError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy authErrorSpy(download.data(),
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier authErrorSpy(download.data(),
         SIGNAL(authError(AuthErrorStruct)));
-    QSignalSpy networkErrorSpy(download.data(),
+    SignalBarrier networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1002,6 +1084,8 @@ TestDownload::testOnAuthError() {
 
     // emit the error and ensure that the signals are raised
     reply->emitHttpError(QNetworkReply::AuthenticationRequiredError);
+
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(networkErrorSpy.count(), 0);
     QCOMPARE(authErrorSpy.count(), 1);
     auto error = authErrorSpy.takeFirst().at(0).value<AuthErrorStruct>();
@@ -1014,14 +1098,17 @@ TestDownload::testOnProxyAuthError() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, _headers));
-    QSignalSpy errorSpy(download.data(), SIGNAL(error(QString)));
-    QSignalSpy authErrorSpy(download.data(),
+    SignalBarrier errorSpy(download.data(), SIGNAL(error(QString)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier authErrorSpy(download.data(),
         SIGNAL(authError(AuthErrorStruct)));
-    QSignalSpy networkErrorSpy(download.data(),
+    SignalBarrier networkErrorSpy(download.data(),
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1031,6 +1118,7 @@ TestDownload::testOnProxyAuthError() {
 
     // emit the error and ensure that the signals are raised
     reply->emitHttpError(QNetworkReply::ProxyAuthenticationRequiredError);
+    QVERIFY(errorSpy.ensureSignalEmitted());
     QCOMPARE(networkErrorSpy.count(), 0);
     QCOMPARE(authErrorSpy.count(), 1);
     QCOMPARE(errorSpy.count(), 1);
@@ -1168,10 +1256,15 @@ TestDownload::testSetRawHeadersResume() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, headers));
-    QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
+    SignalBarrier spy(download.data(), SIGNAL(paused(bool)));
+    SignalBarrier startedSpy(download.data(), SIGNAL(started(bool)));
+    SignalBarrier pausedSpy(download.data(), SIGNAL(paused(bool)));
+    SignalBarrier resumedSpy(download.data(), SIGNAL(resumed(bool)));
 
     download->start();  // change state
     download->startDownload();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
 
     // we need to set the data before we pause!!!
     QList<MethodData> calledMethods = _reqFactory->calledMethods();
@@ -1183,10 +1276,14 @@ TestDownload::testSetRawHeadersResume() {
     download->pause();  // change state
     download->pauseDownload();  // method under test
 
+    QVERIFY(pausedSpy.ensureSignalEmitted());
+
     // clear the called methods from the reqFactory
     _reqFactory->clear();
     download->resume();
     download->resumeDownload();
+
+    QVERIFY(resumedSpy.ensureSignalEmitted());
 
     // get the info for the second created request
     calledMethods = _reqFactory->calledMethods();
@@ -1245,7 +1342,7 @@ TestDownload::testSetRawHeadersWithRangeResume() {
     _reqFactory->record();
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
         _rootPath, _url, _metadata, headers));
-    QSignalSpy spy(download.data(), SIGNAL(paused(bool result)));
+    QSignalSpy spy(download.data(), SIGNAL(paused(bool)));
 
     download->start();  // change state
     download->startDownload();
