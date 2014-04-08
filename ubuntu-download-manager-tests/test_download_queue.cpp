@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include "test_download_queue.h"
 
@@ -53,9 +52,10 @@ TestDownloadQueue::cleanup() {
 void
 TestDownloadQueue::testAddDownload() {
     // test that when a download added the add signals is raised
-    QSignalSpy spy(_q, SIGNAL(downloadAdded(QString)));
+    SignalBarrier spy(_q, SIGNAL(downloadAdded(QString)));
     _q->add(_first);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -66,13 +66,14 @@ void
 TestDownloadQueue::testStartDownloadWithNoCurrent() {
     // add a download, set the state to start and assert that it will be started
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
 
     _first->start();  // emit signal
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -91,12 +92,13 @@ TestDownloadQueue::testStartDownloadWithCurrent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _first->start();  // emit signal
     _q->add(_second);
     _second->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);  // just raised by the first change of state
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -117,13 +119,14 @@ TestDownloadQueue::testStartDownloadWithNoCurrentCannotDownload() {
     // tell the fake that it cannot download (GSM enabled)
     _first->setCanDownload(false);
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not download just yet
     QVERIFY(_q->currentDownload().isEmpty());
 
     _first->start();  // emit signal
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -141,7 +144,7 @@ TestDownloadQueue::testPauseDownloadNoOtherReady() {
     // chage current to "" and emit the required
     // signals and execute the required methods
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
@@ -150,6 +153,7 @@ TestDownloadQueue::testPauseDownloadNoOtherReady() {
     _first->pause();
     QVERIFY(_q->currentDownload().isEmpty());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -172,7 +176,7 @@ TestDownloadQueue::testPauseDownloadOtherReady() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -184,6 +188,7 @@ TestDownloadQueue::testPauseDownloadOtherReady() {
     _first->pause();
     QCOMPARE(_q->currentDownload(), _second->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -210,7 +215,7 @@ TestDownloadQueue::testResumeDownloadNoOtherPresent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -223,6 +228,7 @@ TestDownloadQueue::testResumeDownloadNoOtherPresent() {
 
     QCOMPARE(_q->currentDownload(), _first->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -254,7 +260,7 @@ TestDownloadQueue::testResumeDownloadOtherPresent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -268,6 +274,7 @@ TestDownloadQueue::testResumeDownloadOtherPresent() {
 
     QCOMPARE(_q->currentDownload(), _second->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -299,7 +306,7 @@ TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -313,6 +320,7 @@ TestDownloadQueue::testResumeDownloadNoOtherPresentCannotDownload() {
 
     QCOMPARE(_q->currentDownload(), QString(""));
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -339,7 +347,7 @@ void
 TestDownloadQueue::testCancelDownloadNoOtherReady() {
     // cancel the download and expect it to be done
     _first->record();
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
@@ -348,6 +356,7 @@ TestDownloadQueue::testCancelDownloadNoOtherReady() {
     _first->cancel();
     QVERIFY(_q->currentDownload().isEmpty());
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -368,7 +377,7 @@ TestDownloadQueue::testCancelDownloadOtherReady() {
     _first->record();
     _second->record();
 
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -380,6 +389,7 @@ TestDownloadQueue::testCancelDownloadOtherReady() {
     _first->cancel();
     QCOMPARE(_q->currentDownload(), _second->path());
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -406,7 +416,7 @@ TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload() {
     _second->setCanDownload(false);
     _second->record();
 
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -418,6 +428,7 @@ TestDownloadQueue::testCancelDownloadOtherReadyCannotDownload() {
     _first->cancel();
     QCOMPARE(_q->currentDownload(), QString(""));
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -440,12 +451,13 @@ void
 TestDownloadQueue::testCancelDownloadNotStarted() {
     // cancel not started and ensure that it is removed
     _first->record();
-    QSignalSpy removedSpy(_q, SIGNAL(downloadRemoved(QString)));
+    SignalBarrier removedSpy(_q, SIGNAL(downloadRemoved(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentDownload().isEmpty());
 
     _first->cancel();
+    QVERIFY(removedSpy.ensureSignalEmitted());
     QVERIFY(_q->currentDownload().isEmpty());
 }
 
@@ -519,7 +531,7 @@ TestDownloadQueue::testNewUnmanagedIncreasesNumber() {
 
 void
 TestDownloadQueue::testErrorUnmanagedDecreasesNumber() {
-    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    SignalBarrier spy(_q, SIGNAL(downloadRemoved(QString)));
     _first->setAddToQueue(false);
 
     _q->add(_first);
@@ -527,13 +539,14 @@ TestDownloadQueue::testErrorUnmanagedDecreasesNumber() {
     QCOMPARE(1, _q->size());
     _first->emitError("Error");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(0, _q->size());
 }
 
 void
 TestDownloadQueue::testFinishUnmanagedDecreasesNumber() {
-    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    SignalBarrier spy(_q, SIGNAL(downloadRemoved(QString)));
     _first->setAddToQueue(false);
 
     _q->add(_first);
@@ -541,13 +554,14 @@ TestDownloadQueue::testFinishUnmanagedDecreasesNumber() {
     QCOMPARE(1, _q->size());
     _first->emitFinished("path");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(0, _q->size());
 }
 
 void
 TestDownloadQueue::testCancelUnmanagedDecreasesNumber() {
-    QSignalSpy spy(_q, SIGNAL(downloadRemoved(QString)));
+    SignalBarrier spy(_q, SIGNAL(downloadRemoved(QString)));
     _first->setAddToQueue(false);
 
     _q->add(_first);
@@ -555,6 +569,7 @@ TestDownloadQueue::testCancelUnmanagedDecreasesNumber() {
     QCOMPARE(1, _q->size());
     _first->cancel();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(0, _q->size());
 }
