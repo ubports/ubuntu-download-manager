@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include "test_transfers_queue.h"
 
@@ -69,9 +68,10 @@ TestTransferQueue::testAddTransfer() {
         .WillRepeatedly(Return(QString("path")));
 
     // test that when a transfer added the add signals is raised
-    QSignalSpy spy(_q, SIGNAL(transferAdded(QString)));
+    SignalBarrier spy(_q, SIGNAL(transferAdded(QString)));
     _q->add(_first);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     verifyMocks();
 }
@@ -100,13 +100,14 @@ TestTransferQueue::testStartTransferWithNoCurrent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
     QVERIFY(_q->currentTransfer().isEmpty());
 
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -158,7 +159,7 @@ TestTransferQueue::testStartTransferWithCurrent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -167,6 +168,7 @@ TestTransferQueue::testStartTransferWithCurrent() {
 
     _first->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -198,13 +200,14 @@ TestTransferQueue::testStartTransferWithNoCurrentCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
     QVERIFY(_q->currentTransfer().isEmpty());
 
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -243,7 +246,7 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
@@ -251,6 +254,7 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
 
     _first->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -314,7 +318,7 @@ TestTransferQueue::testPauseTransferOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -324,6 +328,7 @@ TestTransferQueue::testPauseTransferOtherReady() {
     _first->stateChanged();
     _second->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -383,7 +388,7 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -392,6 +397,7 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
 
     _first->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -456,7 +462,7 @@ TestTransferQueue::testResumeTransferOtherPresent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -466,6 +472,7 @@ TestTransferQueue::testResumeTransferOtherPresent() {
     _first->stateChanged();
     _second->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -523,7 +530,7 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -533,6 +540,7 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
     _first->stateChanged();
     _second->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -572,7 +580,7 @@ TestTransferQueue::testCancelTransferNoOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
@@ -580,6 +588,7 @@ TestTransferQueue::testCancelTransferNoOtherReady() {
 
     _first->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -643,7 +652,7 @@ TestTransferQueue::testCancelTransferOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -653,6 +662,7 @@ TestTransferQueue::testCancelTransferOtherReady() {
     _first->stateChanged();
     _second->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -716,7 +726,7 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -726,6 +736,7 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
     _first->stateChanged();
     _second->stateChanged();
     _first->stateChanged();
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -757,7 +768,7 @@ TestTransferQueue::testCancelTransferNotStarted() {
         .Times(1);
 
     // cancel not started and ensure that it is removed
-    QSignalSpy removedSpy(_q, SIGNAL(transferRemoved(QString)));
+    SignalBarrier removedSpy(_q, SIGNAL(transferRemoved(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentTransfer().isEmpty());
@@ -1024,12 +1035,13 @@ TestTransferQueue::testCancelUnmanagedDecreasesNumber() {
         .Times(1)
         .WillOnce(Return(Transfer::CANCEL));
 
-    QSignalSpy spy(_q, SIGNAL(transferRemoved(QString)));
+    SignalBarrier spy(_q, SIGNAL(transferRemoved(QString)));
 
     _q->add(_first);
     QCOMPARE(1, _q->size());
     _first->stateChanged();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(0, _q->size());
     verifyMocks();
