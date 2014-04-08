@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_stop_request_transition.h"
 
 using ::testing::Mock;
@@ -49,8 +48,8 @@ TestStopRequestTransition::cleanup() {
 
 void
 TestStopRequestTransition::testOnTransition() {
-    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
 
     // set expectations
     EXPECT_CALL(*_down, pauseRequestDownload())
@@ -61,6 +60,7 @@ TestStopRequestTransition::testOnTransition() {
 
     _stateMachine.start();
     // ensure that we started
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // raise the signal and assert that the correct method was called with the
@@ -68,6 +68,7 @@ TestStopRequestTransition::testOnTransition() {
     _down->paused();
 
     // ensure that we finished
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QVERIFY(Mock::VerifyAndClearExpectations(_down));
 }

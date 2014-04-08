@@ -17,7 +17,6 @@
  */
 
 #include <QNetworkReply>
-#include <QSignalSpy>
 #include "test_network_error_transition.h"
 
 using ::testing::Mock;
@@ -105,8 +104,8 @@ TestNetworkErrorTransition::testOnTransition_data() {
 
 void
 TestNetworkErrorTransition::testOnTransition() {
-    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
     QFETCH(QNetworkReply::NetworkError, code);
 
     EXPECT_CALL(*_down, emitNetworkError(code))
@@ -115,6 +114,7 @@ TestNetworkErrorTransition::testOnTransition() {
     _stateMachine.start();
 
     // ensure that we started
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // raise the signal and assert that the correct method was called with the
@@ -122,6 +122,7 @@ TestNetworkErrorTransition::testOnTransition() {
     _down->error(code);
 
     // ensure that we finished
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
 
     QVERIFY(Mock::VerifyAndClearExpectations(_down));
