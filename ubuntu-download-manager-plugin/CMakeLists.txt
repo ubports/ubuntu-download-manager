@@ -29,9 +29,10 @@ add_library(${TARGET} SHARED
 qt5_use_modules(${TARGET} Core Qml Quick)
 
 target_link_libraries(${TARGET}
-    udm-common
-    ubuntu-download-manager-common
-    ubuntu-download-manager-client
+	${GLOG_LIBRARIES}
+	udm-common
+	ubuntu-download-manager-common
+	ubuntu-download-manager-client
 )
 
 set(PLUGIN_DIR ${QT_INSTALL_QML}/${TARGET})

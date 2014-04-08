@@ -18,6 +18,7 @@
 
 #include <functional>
 #include <QRegExp>
+#include <glog/logging.h>
 #include <ubuntu/download_manager/system/logger.h>
 #include "ubuntu/transfers/system/apparmor.h"
 #include "ubuntu/transfers/system/logger.h"
@@ -80,10 +81,12 @@ DownloadManager::init() {
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
-    connect(_downloadsQueue, &Queue::transferRemoved,
-        this, &DownloadManager::onDownloadsChanged);
-    connect(_downloadsQueue, &Queue::transferAdded,
-        this, &DownloadManager::onDownloadsChanged);
+    CHECK(connect(_downloadsQueue, &Queue::transferRemoved,
+        this, &DownloadManager::onDownloadsChanged))
+            << "Could not connect to signal";
+    CHECK(connect(_downloadsQueue, &Queue::transferAdded,
+        this, &DownloadManager::onDownloadsChanged))
+            << "Could not connect to signal";
 }
 
 void

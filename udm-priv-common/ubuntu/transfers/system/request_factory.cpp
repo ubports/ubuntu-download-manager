@@ -17,6 +17,7 @@
  */
 
 #include <ubuntu/transfers/system/logger.h>
+#include <glog/logging.h>
 #include "request_factory.h"
 
 namespace Ubuntu {
@@ -50,12 +51,15 @@ RequestFactory::get(const QNetworkRequest& request) {
         // the connections for too long
         _replies.append(reply);
 
-        connect(reply, &NetworkReply::error,
-            this, &RequestFactory::onError);
-        connect(reply, &NetworkReply::finished,
-            this, &RequestFactory::onFinished);
-        connect(reply, &NetworkReply::sslErrors,
-            this, &RequestFactory::onSslErrors);
+        CHECK(connect(reply, &NetworkReply::error,
+            this, &RequestFactory::onError))
+                << "Could not connect to signal";
+        CHECK(connect(reply, &NetworkReply::finished,
+            this, &RequestFactory::onFinished))
+                << "Could not connect to signal";
+        CHECK(connect(reply, &NetworkReply::sslErrors,
+            this, &RequestFactory::onSslErrors))
+                << "Could not connect to signal";
     }
     return reply;
 }
