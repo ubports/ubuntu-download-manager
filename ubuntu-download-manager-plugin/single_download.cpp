@@ -1,4 +1,5 @@
 #include "single_download.h"
+#include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <QDebug>
 
@@ -86,19 +87,43 @@ void SingleDownload::bindDownload(Download* download)
 {
     m_download = download;
 
-    connect(m_download, static_cast<void(Download::*)(Error*)>(&Download::error), this, &SingleDownload::registerError);
-    connect(m_download, &Download::finished, this, &SingleDownload::finished);
-    connect(m_download, &Download::finished, this, &SingleDownload::setCompleted);
-    connect(m_download, static_cast<void(Download::*)(qulonglong, qulonglong)>(&Download::progress), this, &SingleDownload::progressReceived);
-    connect(m_download, static_cast<void(Download::*)(qulonglong, qulonglong)>(&Download::progress), this, &SingleDownload::setProgress);
-    connect(m_download, &Download::canceled, this, &SingleDownload::canceled);
-    connect(m_download, &Download::canceled, this, &SingleDownload::setDownloadCanceled);
-    connect(m_download, &Download::paused, this, &SingleDownload::paused);
-    connect(m_download, &Download::paused, this, &SingleDownload::setDownloadPaused);
-    connect(m_download, &Download::resumed, this, &SingleDownload::resumed);
-    connect(m_download, &Download::resumed, this, &SingleDownload::setDownloadStarted);
-    connect(m_download, &Download::started, this, &SingleDownload::started);
-    connect(m_download, &Download::started, this, &SingleDownload::setDownloadStarted);
+    CHECK(connect(m_download,
+        static_cast<void(Download::*)(Error*)>(&Download::error),
+        this, &SingleDownload::registerError))
+            << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::finished, this,
+        &SingleDownload::finished)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::finished, this,
+        &SingleDownload::setCompleted)) << "Could not connect to signal";
+    CHECK(connect(m_download,
+         static_cast<void(Download::*)(qulonglong, qulonglong)>(
+             &Download::progress), this,
+         &SingleDownload::progressReceived))
+            << "Could not connect to signal";
+    CHECK(connect(m_download,
+         static_cast<void(Download::*)(qulonglong, qulonglong)>(
+             &Download::progress), this,
+         &SingleDownload::setProgress)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::canceled, this,
+         &SingleDownload::canceled)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::canceled, this,
+         &SingleDownload::setDownloadCanceled))
+            << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::paused, this,
+         &SingleDownload::paused)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::paused, this,
+         &SingleDownload::setDownloadPaused))
+            << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::resumed, this,
+         &SingleDownload::resumed)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::resumed, this,
+         &SingleDownload::setDownloadStarted))
+            << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::started, this,
+         &SingleDownload::started)) << "Could not connect to signal";
+    CHECK(connect(m_download, &Download::started, this,
+         &SingleDownload::setDownloadStarted))
+            << "Could not connect to signal";
 
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
@@ -116,7 +141,9 @@ void SingleDownload::download(QString url)
         if (m_manager == nullptr) {
             m_manager = Manager::createSessionManager("", this);
 
-            connect(m_manager, &Manager::downloadCreated, this, &SingleDownload::bindDownload);
+            CHECK(connect(m_manager, &Manager::downloadCreated, this,
+                &SingleDownload::bindDownload))
+                    << "Could not connect to signal";
         }
         DownloadStruct dstruct(url);
         m_manager->createDownload(dstruct);
