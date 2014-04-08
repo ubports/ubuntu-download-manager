@@ -53,6 +53,7 @@ set_target_properties(
 
 target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
+	${GLOG_LIBRARIES}
 	udm-common
         ubuntu-download-manager-common
 )

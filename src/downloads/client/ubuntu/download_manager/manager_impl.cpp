@@ -17,6 +17,7 @@
  */
 
 #include <QDebug>
+#include <glog/logging.h>
 #include "manager_impl.h"
 
 namespace {
@@ -82,8 +83,9 @@ ManagerImpl::createDownload(DownloadStruct downStruct) {
 
     auto watcher = new DownloadManagerPendingCallWatcher(_conn,
             _servicePath, call, cb, cb, this);
-    connect(watcher, &DownloadManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone);
+    CHECK(connect(watcher,
+        &DownloadManagerPendingCallWatcher::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 
 void
@@ -94,8 +96,9 @@ ManagerImpl::createDownload(DownloadStruct downStruct,
         _dbusInterface->createDownload(downStruct);
     auto watcher = new DownloadManagerPendingCallWatcher(_conn,
             _servicePath, call, cb, errCb, this);
-    connect(watcher, &DownloadManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone);
+    CHECK(connect(watcher,
+        &DownloadManagerPendingCallWatcher::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 
 void
@@ -112,8 +115,8 @@ ManagerImpl::createDownload(StructList downs,
 
     auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
             call, cb, cb, this);
-    connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone);
+    CHECK(connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 
 void
@@ -129,8 +132,8 @@ ManagerImpl::createDownload(StructList downs,
             algorithm, allowed3G, metadata, headers);
     auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
             call, cb, errCb, this);
-    connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone);
+    CHECK(connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 
 bool
