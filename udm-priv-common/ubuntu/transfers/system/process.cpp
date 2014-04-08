@@ -17,6 +17,7 @@
  */
 
 #include <QProcess>
+#include <glog/logging.h>
 #include <ubuntu/transfers/system/logger.h>
 #include "process.h"
 
@@ -31,18 +32,22 @@ Process::Process(QObject* parent)
     _process->setProcessChannelMode(QProcess::SeparateChannels);
 
     // connect so that we foward the signals
-    connect(_process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>
-        (&QProcess::finished),
-            this, &Process::finished);
-    connect(_process, static_cast<void(QProcess::*)(QProcess::ProcessError)>
-            (&QProcess::error),
-                this, &Process::error);
+    CHECK(connect(_process, 
+        static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>
+            (&QProcess::finished), this, &Process::finished))
+                << "Could not connect to signal";
+    CHECK(connect(_process,
+        static_cast<void(QProcess::*)(QProcess::ProcessError)>
+            (&QProcess::error), this, &Process::error))
+                << "Could not connect to signal";
 
     // connect so that we can log the stdout and stderr of the process
-    connect(_process, &QProcess::readyReadStandardError,
-        this, &Process::onReadyReadStandardError);
-    connect(_process, &QProcess::readyReadStandardOutput,
-        this, &Process::onReadyReadStandardOutput);
+    CHECK(connect(_process, &QProcess::readyReadStandardError,
+        this, &Process::onReadyReadStandardError))
+            << "Could not connect to signal";
+    CHECK(connect(_process, &QProcess::readyReadStandardOutput,
+        this, &Process::onReadyReadStandardOutput))
+            << "Could not connect to signal";
 }
 
 void

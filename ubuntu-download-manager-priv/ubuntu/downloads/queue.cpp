@@ -17,6 +17,7 @@
  */
 
 #include <QSignalMapper>
+#include <glog/logging.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/system_network_info.h"
 #include "queue.h"
@@ -30,9 +31,10 @@ namespace Daemon {
 Queue::Queue(QObject* parent)
     : QObject(parent),
       _current("") {
-    connect(SystemNetworkInfo::instance(),
+    CHECK(connect(SystemNetworkInfo::instance(),
         &SystemNetworkInfo::currentNetworkModeChanged,
-        this, &Queue::onCurrentNetworkModeChanged);
+        this, &Queue::onCurrentNetworkModeChanged))
+            << "Could not connect to signal";
 }
 
 void
@@ -45,11 +47,13 @@ Queue::add(Download* download) {
     _downloads[path] = download;
 
     if (download->addToQueue()) {
-        connect(download, &Download::stateChanged,
-            this, &Queue::onManagedDownloadStateChanged);
+        CHECK(connect(download, &Download::stateChanged,
+            this, &Queue::onManagedDownloadStateChanged))
+                << "Could not connect to signal";
     } else {
-        connect(download, &Download::stateChanged,
-            this, &Queue::onUnmanagedDownloadStateChanged);
+        CHECK(connect(download, &Download::stateChanged,
+            this, &Queue::onUnmanagedDownloadStateChanged))
+                << "Could not connect to signal";
     }
 
     emit downloadAdded(path);

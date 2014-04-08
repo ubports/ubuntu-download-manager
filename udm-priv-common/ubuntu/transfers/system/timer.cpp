@@ -17,6 +17,7 @@
  */
 
 #include <QTimer>
+#include <glog/logging.h>
 #include "timer.h"
 
 
@@ -29,7 +30,8 @@ Timer::Timer(QObject* parent)
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
 
-    connect(_timer, &QTimer::timeout, this, &Timer::timeout);
+    CHECK(connect(_timer, &QTimer::timeout, this, &Timer::timeout))
+        << "Could not connect to signal";
 }
 
 bool
