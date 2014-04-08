@@ -17,6 +17,7 @@
  */
 
 #include <QSignalMapper>
+#include <glog/logging.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/system_network_info.h"
 #include "queue.h"
@@ -28,9 +29,10 @@ namespace Transfers {
 Queue::Queue(QObject* parent)
     : QObject(parent),
       _current("") {
-    connect(SystemNetworkInfo::instance(),
+    CHECK(connect(SystemNetworkInfo::instance(),
         &SystemNetworkInfo::currentNetworkModeChanged,
-        this, &Queue::onCurrentNetworkModeChanged);
+        this, &Queue::onCurrentNetworkModeChanged))
+            << "Could not connect to signal";
 }
 
 void
@@ -43,11 +45,13 @@ Queue::add(Transfer* transfer) {
     _transfers[path] = transfer;
 
     if (transfer->addToQueue()) {
-        connect(transfer, &Transfer::stateChanged,
-            this, &Queue::onManagedTransferStateChanged);
+        CHECK(connect(transfer, &Transfer::stateChanged,
+            this, &Queue::onManagedTransferStateChanged))
+                << "Could not connect to signal";
     } else {
-        connect(transfer, &Transfer::stateChanged,
-            this, &Queue::onUnmanagedTransferStateChanged);
+        CHECK(connect(transfer, &Transfer::stateChanged,
+            this, &Queue::onUnmanagedTransferStateChanged))
+                << "Could not connect to signal";
     }
 
     emit transferAdded(path);

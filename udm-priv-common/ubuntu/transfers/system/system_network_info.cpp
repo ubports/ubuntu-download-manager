@@ -18,6 +18,7 @@
 
 #include <QNetworkConfigurationManager>
 #include <QNetworkSession>
+#include <glog/logging.h>
 #include <ubuntu/transfers/system/logger.h>
 #include "system_network_info.h"
 
@@ -37,56 +38,78 @@ SystemNetworkInfo::SystemNetworkInfo(QObject* parent)
 
 #ifdef DEBUG
     // in debug do log the changes else just fwd them
-    connect(_info, &QNetworkInfo::cellIdChanged, this,
-        &SystemNetworkInfo::onCellIdChanged);
-    connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged, this,
-        &SystemNetworkInfo::onCurrentCellDataTechnologyChanged);
-    connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, this,
-        &SystemNetworkInfo::onCurrentMobileCountryCodeChanged);
-    connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, this,
-        &SystemNetworkInfo::onCurrentMobileNetworkCodeChanged);
-    connect(_info, &QNetworkInfo::currentNetworkModeChanged, this,
-        &SystemNetworkInfo::onCurrentNetworkModeChanged);
-    connect(_info, &QNetworkInfo::locationAreaCodeChanged, this,
-        &SystemNetworkInfo::onLocationAreaCodeChanged);
-    connect(_info, &QNetworkInfo::networkInterfaceCountChanged, this,
-        &SystemNetworkInfo::onNetworkInterfaceCountChanged);
-    connect(_info, &QNetworkInfo::networkNameChanged, this,
-        &SystemNetworkInfo::onNetworkNameChanged);
-    connect(_info, &QNetworkInfo::networkSignalStrengthChanged, this,
-        &SystemNetworkInfo::onNetworkSignalStrengthChanged);
-    connect(_info, &QNetworkInfo::networkStatusChanged, this,
-        &SystemNetworkInfo::onNetworkStatusChanged);
+    CHECK(connect(_info, &QNetworkInfo::cellIdChanged, this,
+        &SystemNetworkInfo::onCellIdChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged,
+        this, &SystemNetworkInfo::onCurrentCellDataTechnologyChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, this,
+        &SystemNetworkInfo::onCurrentMobileCountryCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, this,
+        &SystemNetworkInfo::onCurrentMobileNetworkCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentNetworkModeChanged, this,
+        &SystemNetworkInfo::onCurrentNetworkModeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::locationAreaCodeChanged, this,
+        &SystemNetworkInfo::onLocationAreaCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkInterfaceCountChanged, this,
+        &SystemNetworkInfo::onNetworkInterfaceCountChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkNameChanged, this,
+        &SystemNetworkInfo::onNetworkNameChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkSignalStrengthChanged, this,
+        &SystemNetworkInfo::onNetworkSignalStrengthChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkStatusChanged, this,
+        &SystemNetworkInfo::onNetworkStatusChanged))
+                    << "Could not connect to signal";
 
-    connect(_configMan,
+    CHECK(connect(_configMan,
         &QNetworkConfigurationManager::onlineStateChanged, this,
-        &SystemNetworkInfo::onOnlineStateChanged);
+        &SystemNetworkInfo::onOnlineStateChanged))
+                    << "Could not connect to signal";
 #else
     // connect to interesting signals
-    connect(_info, &QNetworkInfo::cellIdChanged, this,
-        &SystemNetworkInfo::cellIdChanged);
-    connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged, this,
-        &SystemNetworkInfo::currentCellDataTechnologyChanged);
-    connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, this,
-        &SystemNetworkInfo::currentMobileCountryCodeChanged);
-    connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, this,
-        &SystemNetworkInfo::currentMobileNetworkCodeChanged);
-    connect(_info, &QNetworkInfo::currentNetworkModeChanged, this,
-        &SystemNetworkInfo::currentNetworkModeChanged);
-    connect(_info, &QNetworkInfo::locationAreaCodeChanged, this,
-        &SystemNetworkInfo::locationAreaCodeChanged);
-    connect(_info, &QNetworkInfo::networkInterfaceCountChanged, this,
-        &SystemNetworkInfo::networkInterfaceCountChanged);
-    connect(_info, &QNetworkInfo::networkNameChanged, this,
-        &SystemNetworkInfo::networkNameChanged);
-    connect(_info, &QNetworkInfo::networkSignalStrengthChanged, this,
-        &SystemNetworkInfo::networkSignalStrengthChanged);
-    connect(_info, &QNetworkInfo::networkStatusChanged, this,
-        &SystemNetworkInfo::networkStatusChanged);
+    CHECK(connect(_info, &QNetworkInfo::cellIdChanged, this,
+        &SystemNetworkInfo::cellIdChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentCellDataTechnologyChanged,
+        this, &SystemNetworkInfo::currentCellDataTechnologyChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentMobileCountryCodeChanged, this,
+        &SystemNetworkInfo::currentMobileCountryCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentMobileNetworkCodeChanged, this,
+        &SystemNetworkInfo::currentMobileNetworkCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::currentNetworkModeChanged, this,
+        &SystemNetworkInfo::currentNetworkModeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::locationAreaCodeChanged, this,
+        &SystemNetworkInfo::locationAreaCodeChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkInterfaceCountChanged, this,
+        &SystemNetworkInfo::networkInterfaceCountChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkNameChanged, this,
+        &SystemNetworkInfo::networkNameChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkSignalStrengthChanged, this,
+        &SystemNetworkInfo::networkSignalStrengthChanged))
+                    << "Could not connect to signal";
+    CHECK(connect(_info, &QNetworkInfo::networkStatusChanged, this,
+        &SystemNetworkInfo::networkStatusChanged))
+                    << "Could not connect to signal";
 
-    connect(_configMan,
+    CHECK(connect(_configMan,
         &QNetworkConfigurationManager::onlineStateChanged, this,
-        &SystemNetworkInfo::onlineStateChanged);
+        &SystemNetworkInfo::onlineStateChanged))
+                    << "Could not connect to signal";
 #endif
 
 }

@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
+#include <glog/logging.h>
 #include "download_impl.h"
 #include "error.h"
 #include "group_download.h"
@@ -39,8 +40,9 @@ DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &QDBusPendingCallWatcher::finished,
-        this, &DownloadManagerPendingCallWatcher::onFinished);
+    CHECK(connect(this, &QDBusPendingCallWatcher::finished,
+        this, &DownloadManagerPendingCallWatcher::onFinished))
+            << "Could not connect to signal";
 }
 
 void
@@ -76,8 +78,9 @@ GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &QDBusPendingCallWatcher::finished,
-        this, &GroupManagerPendingCallWatcher::onFinished);
+    CHECK(connect(this, &QDBusPendingCallWatcher::finished,
+        this, &GroupManagerPendingCallWatcher::onFinished))
+            << "Could not connect to signal";
 }
 
 void
