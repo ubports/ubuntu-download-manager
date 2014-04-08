@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <QSslError>
 #include "test_ssl_error_transition.h"
 
@@ -53,8 +52,8 @@ TestSslErrorTransition::testOnTransition() {
     QList<QSslError> errors;
     errors.append(QSslError(QSslError::CertificateExpired));
 
-    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
 
     // set expectations
     EXPECT_CALL(*_down, emitSslError(errors))
@@ -62,6 +61,7 @@ TestSslErrorTransition::testOnTransition() {
 
     _stateMachine.start();
     // ensure that we started
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // raise the signal and assert that the correct method was called with the
@@ -69,6 +69,7 @@ TestSslErrorTransition::testOnTransition() {
     _down->sslErrors(errors);
 
     // ensure that we finished
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QVERIFY(Mock::VerifyAndClearExpectations(_down));
 }
