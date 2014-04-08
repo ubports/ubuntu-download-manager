@@ -61,7 +61,7 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-test-lib
 )
 if(DBUS_RUNNER)
-        ADD_TEST(NAME ClientTests COMMAND dbus-test-runner -m 240 --task=${CMAKE_CURRENT_BINARY_DIR}/${TARGET} -c)
+        ADD_TEST(NAME ClientTests COMMAND dbus-test-runner -m 120 --task=${CMAKE_CURRENT_BINARY_DIR}/${TARGET} -c)
 else(DBUS_RUNNER)
         message(WARNING "dbus-test-runner binary not found tests will be disabled")
 endif(DBUS_RUNNER)

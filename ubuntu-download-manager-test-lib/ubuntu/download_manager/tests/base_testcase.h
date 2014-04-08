@@ -50,8 +50,7 @@ class SignalBarrier : public QSignalSpy {
     bool ensureSignalEmitted() {
         bool result = count() > 0;
         if (!result) {
-            waitForSignal(_obj, _signal, -1);
-            result = wait();
+            result = waitForSignal(_obj, _signal, -1);
         }
         return result;
     }

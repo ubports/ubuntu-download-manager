@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <ubuntu/downloads/factory.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -122,10 +121,11 @@ TestDownloadManager::testCreateDownload() {
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct = DownloadStruct(url, metadata, headers);
     _man->createDownload(downStruct);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     // grab the created download and assert that
@@ -209,11 +209,12 @@ TestDownloadManager::testCreateDownloadWithHash() {
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata,
         headers);
     _man->createDownload(downStruct);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     // grab the created download and assert that it was created
@@ -264,7 +265,7 @@ TestDownloadManager::testGetAllDownloads() {
     // do not use the fake uuid factory, else we only get one object path
     QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
 
-    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -279,6 +280,7 @@ TestDownloadManager::testGetAllDownloads() {
     man->createDownload(
         DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     // get the diff create downloads and theri paths so
@@ -311,7 +313,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     // do not use the fake uuid factory, else we only get one object path
     QScopedPointer<DownloadManager> man(new DownloadManager(_app, _conn, downloadFactory, q));
 
-    QSignalSpy spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(man.data(), SIGNAL(downloadCreated(QDBusObjectPath)));
 
     QString firstUrl("http://www.ubuntu.com"),
             secondUrl("http://www.ubuntu.com/phone"),
@@ -330,6 +332,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
     man->createDownload(
         DownloadStruct(thirdUrl, thirdMetadata, thirdHeaders));
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     // get the diff create downloads and theri paths so that we
@@ -429,11 +432,12 @@ TestDownloadManager::testSizeChangedEmittedOnAddition_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnAddition() {
     QFETCH(int, size);
-    QSignalSpy spy(_man,
+    SignalBarrier spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadAdded("");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
@@ -452,11 +456,12 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QFETCH(int, size);
-    QSignalSpy spy(_man,
+    SignalBarrier spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
     _q->setSize(size);
     _q->emitDownloadRemoved("");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);

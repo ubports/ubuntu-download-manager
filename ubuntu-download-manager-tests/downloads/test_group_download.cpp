@@ -17,7 +17,6 @@
  */
 
 #include <QScopedPointer>
-#include <QSignalSpy>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -548,7 +547,7 @@ TestGroupDownload::testSingleDownloadFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -575,7 +574,7 @@ TestGroupDownload::testAllDownloadsFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -585,6 +584,7 @@ TestGroupDownload::testAllDownloadsFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(0, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 }
 
@@ -603,7 +603,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    SignalBarrier spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -612,6 +612,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(0, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(Download::ERROR, group->state());
 }
@@ -631,7 +632,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    SignalBarrier spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -643,6 +644,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(2, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(Download::ERROR, group->state());
 }
@@ -846,11 +848,13 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
         downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
 
-    QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
-    QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier startedSpy(group.data(), SIGNAL(started(bool)));
+    SignalBarrier finishedSpy(group.data(), SIGNAL(finished(QStringList)));
 
     group->startDownload();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QCOMPARE(startedSpy.count(), 1);
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QCOMPARE(finishedSpy.count(), 1);
 }
 
