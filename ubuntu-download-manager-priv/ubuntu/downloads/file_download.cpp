@@ -23,6 +23,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+#include <glog/logging.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/network_reply.h"
@@ -415,10 +416,12 @@ FileDownload::onDownloadCompleted() {
             // connect to signals so that we can tell the clients that
             // the operation succeed
 
-            connect(postDownloadProcess, &Process::finished,
-                this, &FileDownload::onProcessFinished);
-            connect(postDownloadProcess, &Process::error,
-                this, &FileDownload::onProcessError);
+            CHECK(connect(postDownloadProcess, &Process::finished,
+                this, &FileDownload::onProcessFinished))
+                    << "Could not connect to signal";
+            CHECK(connect(postDownloadProcess, &Process::error,
+                this, &FileDownload::onProcessError))
+                    << "Could not connect to signal";
 
             DOWN_LOG(INFO) << "Executing" << command << args;
             postDownloadProcess->start(command, args);
@@ -535,8 +538,9 @@ FileDownload::init() {
     _downloading = false;
 
     // connect to the network changed signals
-    connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
-        this, &FileDownload::onOnlineStateChanged);
+    CHECK(connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
+        this, &FileDownload::onOnlineStateChanged))
+            << "Could not connect to signal";
 
     initFileNames();
 
@@ -550,14 +554,18 @@ FileDownload::init() {
 void
 FileDownload::connectToReplySignals() {
     if (_reply != nullptr) {
-        connect(_reply, &NetworkReply::downloadProgress,
-            this, &FileDownload::onDownloadProgress);
-        connect(_reply, &NetworkReply::error,
-            this, &FileDownload::onError);
-        connect(_reply, &NetworkReply::finished,
-            this, &FileDownload::onFinished);
-        connect(_reply, &NetworkReply::sslErrors,
-            this, &FileDownload::onSslErrors);
+        CHECK(connect(_reply, &NetworkReply::downloadProgress,
+            this, &FileDownload::onDownloadProgress))
+                << "Could not connect to signal";
+        CHECK(connect(_reply, &NetworkReply::error,
+            this, &FileDownload::onError))
+                << "Could not connect to signal";
+        CHECK(connect(_reply, &NetworkReply::finished,
+            this, &FileDownload::onFinished))
+                << "Could not connect to signal";
+        CHECK(connect(_reply, &NetworkReply::sslErrors,
+            this, &FileDownload::onSslErrors))
+                << "Could not connect to signal";
     }
 }
 
