@@ -20,6 +20,7 @@
 #include <QtDBus/QDBusConnection>
 #include <QSharedPointer>
 #include <QSslCertificate>
+#include <glog/logging.h>
 #include "ubuntu/transfers/system/application.h"
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/timer.h"
@@ -213,8 +214,9 @@ BaseDaemon::init() {
     // we accept self signed certs
     parseCommandLine();
     if (_isTimeoutEnabled) {
-        connect(_shutDownTimer, &Timer::timeout,
-            this, &BaseDaemon::onTimeout);
+        CHECK(connect(_shutDownTimer, &Timer::timeout,
+            this, &BaseDaemon::onTimeout))
+                << "Could not connect to signal";
         _shutDownTimer->start(DEFAULT_TIMEOUT);
     }
 
@@ -223,9 +225,10 @@ BaseDaemon::init() {
 
     _manager->setAcceptedCertificates(_certs);
     // connect to the download manager changes
-    connect(_manager,
-        &BaseManager::sizeChanged,  // NOLINT (readability/function)
-        this, &BaseDaemon::onDownloadManagerSizeChanged); // NOLINT (readability/function)
+    CHECK(connect(_manager,
+        &BaseManager::sizeChanged,
+        this, &BaseDaemon::onDownloadManagerSizeChanged))
+                << "Could not connect to signal";
 }
 
 }  // General
