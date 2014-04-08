@@ -18,7 +18,6 @@
 
 #include <QDebug>
 #include <QScopedPointer>
-#include <QSignalSpy>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -1099,7 +1098,7 @@ TestGroupDownload::testAllDownloadsFinished() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier spy(group.data(), SIGNAL(finished(QStringList)));
 
     // emit signals for each download
     QStringList expectedPaths;
@@ -1111,6 +1110,7 @@ TestGroupDownload::testAllDownloadsFinished() {
         index++;
     }
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     // ensure that we have the correct paths
@@ -1474,11 +1474,13 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
         downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
-    QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier startedSpy(group.data(), SIGNAL(started(bool)));
+    SignalBarrier finishedSpy(group.data(), SIGNAL(finished(QStringList)));
 
     group->startDownload();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QCOMPARE(startedSpy.count(), 1);
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QCOMPARE(finishedSpy.count(), 1);
 }
 
