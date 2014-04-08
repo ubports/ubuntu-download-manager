@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <glog/logging.h>
 #include "download_impl.h"
 
 namespace Ubuntu {
@@ -34,33 +35,34 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
         _id, conn);
 
     // fwd all the signals but the error one
-    connect(_dbusInterface, &DownloadInterface::canceled,
-        this, &Download::canceled);
-    connect(_dbusInterface, &DownloadInterface::finished,
-        this, &Download::finished);
-    connect(_dbusInterface, &DownloadInterface::paused,
-        this, &Download::paused);
-    connect(_dbusInterface, &DownloadInterface::processing,
-        this, &Download::processing);
-    connect(_dbusInterface, static_cast<void(DownloadInterface::*)
+    CHECK(connect(_dbusInterface, &DownloadInterface::canceled,
+        this, &Download::canceled)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::finished,
+        this, &Download::finished)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::paused,
+        this, &Download::paused)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::processing,
+        this, &Download::processing)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, static_cast<void(DownloadInterface::*)
         (qulonglong, qulonglong)>(&DownloadInterface::progress),
         this, static_cast<void(Download::*)
-            (qulonglong, qulonglong)>(&Download::progress));
-    connect(_dbusInterface, &DownloadInterface::resumed,
-        this, &Download::resumed);
-    connect(_dbusInterface, &DownloadInterface::started,
-        this, &Download::started);
+            (qulonglong, qulonglong)>(&Download::progress)))
+            << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::resumed,
+        this, &Download::resumed)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::started,
+        this, &Download::started)) << "Could not connect to signal";
 
     // connect to the different type of errors that will later be converted to
     // the error type to be used by the client.
-    connect(_dbusInterface, &DownloadInterface::httpError,
-        this, &DownloadImpl::onHttpError);
-    connect(_dbusInterface, &DownloadInterface::networkError,
-        this, &DownloadImpl::onNetworkError);
-    connect(_dbusInterface, &DownloadInterface::processError,
-        this, &DownloadImpl::onProcessError);
-    connect(_dbusInterface, &DownloadInterface::authError,
-        this, &DownloadImpl::onAuthError);
+    CHECK(connect(_dbusInterface, &DownloadInterface::httpError,
+        this, &DownloadImpl::onHttpError)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::networkError,
+        this, &DownloadImpl::onNetworkError)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::processError,
+        this, &DownloadImpl::onProcessError)) << "Could not connect to signal";
+    CHECK(connect(_dbusInterface, &DownloadInterface::authError,
+        this, &DownloadImpl::onAuthError)) << "Could not connect to signal";
 }
 
 DownloadImpl::DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent)
