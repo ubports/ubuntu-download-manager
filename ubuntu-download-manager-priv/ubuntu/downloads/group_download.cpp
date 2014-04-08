@@ -18,6 +18,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <glog/logging.h>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
@@ -60,27 +61,36 @@ GroupDownload::~GroupDownload() {
 
 void
 GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
-    connect(singleDownload, static_cast<void(Download::*)
+    CHECK(connect(singleDownload, static_cast<void(Download::*)
             (qulonglong, qulonglong)>(&Download::progress),
-                this, &GroupDownload::onProgress);
-    connect(singleDownload, &FileDownload::finished,
-        this, &GroupDownload::onFinished);
-    connect(singleDownload, &FileDownload::processing,
-        this, &GroupDownload::processing);
-    connect(singleDownload, &FileDownload::canceled,
-        this, &GroupDownload::onCanceled);
+                this, &GroupDownload::onProgress))
+                    << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::finished,
+        this, &GroupDownload::onFinished))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::processing,
+        this, &GroupDownload::processing))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::canceled,
+        this, &GroupDownload::onCanceled))
+            << "Could not connect to signal";
 
     // connect to the error signals
-    connect(singleDownload, &Download::error,
-        this, &GroupDownload::onError);
-    connect(singleDownload, &FileDownload::authError,
-        this, &GroupDownload::onAuthError);
-    connect(singleDownload, &FileDownload::httpError,
-        this, &GroupDownload::onHttpError);
-    connect(singleDownload, &FileDownload::networkError,
-        this, &GroupDownload::onNetworkError);
-    connect(singleDownload, &FileDownload::processError,
-        this, &GroupDownload::onProcessError);
+    CHECK(connect(singleDownload, &Download::error,
+        this, &GroupDownload::onError))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::authError,
+        this, &GroupDownload::onAuthError))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::httpError,
+        this, &GroupDownload::onHttpError))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::networkError,
+        this, &GroupDownload::onNetworkError))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::processError,
+        this, &GroupDownload::onProcessError))
+            << "Could not connect to signal";
 }
 
 void
