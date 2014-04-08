@@ -20,6 +20,7 @@
 #include <QState>
 #include <QStateMachine>
 #include <QSslError>
+#include <glog/logging.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "download_sm.h"
 #include "final_state.h"
@@ -361,12 +362,15 @@ class DownloadSMPrivate {
         _stateMachine.setInitialState(_idleState);
 
         // connect the signals
-        q->connect(&_stateMachine, SIGNAL(started()),
-            q, SIGNAL(started()));
-        q->connect(&_stateMachine, SIGNAL(stopped()),
-            q, SIGNAL(stopped()));
-        q->connect(&_stateMachine, SIGNAL(finished()),
-            q, SIGNAL(finished()));
+        CHECK(q->connect(&_stateMachine, SIGNAL(started()),
+            q, SIGNAL(started())))
+                << "Could not connect to signal";
+        CHECK(q->connect(&_stateMachine, SIGNAL(stopped()),
+            q, SIGNAL(stopped())))
+                << "Could not connect to signal";
+        CHECK(q->connect(&_stateMachine, SIGNAL(finished()),
+            q, SIGNAL(finished())))
+                << "Could not connect to signal";
     }
 
     QString state() {

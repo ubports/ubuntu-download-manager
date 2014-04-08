@@ -17,6 +17,7 @@
  */
 
 #include <ubuntu/transfers/system/logger.h>
+#include <glog/logging.h>
 #include "network_reply.h"
 
 namespace Ubuntu {
@@ -30,16 +31,20 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
       _reply(reply) {
     // connect to all the signals so that we forward them
     if (_reply != nullptr) {
-        connect(_reply, &QNetworkReply::downloadProgress,
-            this, &NetworkReply::downloadProgress);
-        connect(_reply, &QNetworkReply::finished,
-            this, &NetworkReply::finished);
-        connect(_reply, &QNetworkReply::sslErrors,
-            this, &NetworkReply::sslErrors);
+        CHECK(connect(_reply, &QNetworkReply::downloadProgress,
+            this, &NetworkReply::downloadProgress))
+                << "Could not connect to signal";
+        CHECK(connect(_reply, &QNetworkReply::finished,
+            this, &NetworkReply::finished))
+                << "Could not connect to signal";
+        CHECK(connect(_reply, &QNetworkReply::sslErrors,
+            this, &NetworkReply::sslErrors))
+                << "Could not connect to signal";
 	// because error is overloaded we need to help the compiler
-	connect(_reply, static_cast<void(QNetworkReply::*)
+	CHECK(connect(_reply, static_cast<void(QNetworkReply::*)
 	    (QNetworkReply::NetworkError)>(&QNetworkReply::error),
-		this, &NetworkReply::error);
+		this, &NetworkReply::error))
+                    << "Could not connect to signal";
     }
 }
 
