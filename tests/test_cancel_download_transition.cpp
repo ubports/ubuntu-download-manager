@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_cancel_download_transition.h"
 
 using ::testing::Mock;
@@ -49,11 +48,12 @@ TestCancelDownloadTransition::cleanup() {
 
 void
 TestCancelDownloadTransition::testOnTransition() {
-    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
 
     _stateMachine.start();
     // ensure that we started
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     EXPECT_CALL(*_down, cancelRequestDownload())
@@ -65,6 +65,7 @@ TestCancelDownloadTransition::testOnTransition() {
     _down->canceled();
 
     // ensure that we finished
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
 
     QVERIFY(Mock::VerifyAndClearExpectations(_down));
