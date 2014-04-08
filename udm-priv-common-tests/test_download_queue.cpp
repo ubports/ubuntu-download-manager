@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include "test_download_queue.h"
 
@@ -57,9 +56,10 @@ TestTransferQueue::cleanup() {
 void
 TestTransferQueue::testAddTransfer() {
     // test that when a transfer added the add signals is raised
-    QSignalSpy spy(_q, SIGNAL(transferAdded(QString)));
+    SignalBarrier spy(_q, SIGNAL(transferAdded(QString)));
     _q->add(_first);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -70,13 +70,14 @@ void
 TestTransferQueue::testStartTransferWithNoCurrent() {
     // add a transfer, set the state to start and assert that it will be started
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
     QVERIFY(_q->currentTransfer().isEmpty());
 
     _first->start();  // emit signal
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -95,12 +96,13 @@ TestTransferQueue::testStartTransferWithCurrent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _first->start();  // emit signal
     _q->add(_second);
     _second->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);  // just raised by the first change of state
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -121,13 +123,14 @@ TestTransferQueue::testStartTransferWithNoCurrentCannotTransfer() {
     // tell the fake that it cannot transfer (GSM enabled)
     _first->setCanTransfer(false);
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     // we do not transfer just yet
     QVERIFY(_q->currentTransfer().isEmpty());
 
     _first->start();  // emit signal
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -145,7 +148,7 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
     // chage current to "" and emit the required
     // signals and execute the required methods
     _first->record();
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentTransfer().isEmpty());
@@ -154,6 +157,7 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
     _first->pause();
     QVERIFY(_q->currentTransfer().isEmpty());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -176,7 +180,7 @@ TestTransferQueue::testPauseTransferOtherReady() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -188,6 +192,7 @@ TestTransferQueue::testPauseTransferOtherReady() {
     _first->pause();
     QCOMPARE(_q->currentTransfer(), _second->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -214,7 +219,7 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -227,6 +232,7 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
 
     QCOMPARE(_q->currentTransfer(), _first->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -258,7 +264,7 @@ TestTransferQueue::testResumeTransferOtherPresent() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -272,6 +278,7 @@ TestTransferQueue::testResumeTransferOtherPresent() {
 
     QCOMPARE(_q->currentTransfer(), _second->path());
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -303,7 +310,7 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
     _first->record();
     _second->record();
 
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -317,6 +324,7 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
 
     QCOMPARE(_q->currentTransfer(), QString(""));
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 3);
 
     QList<QVariant> arguments = spy.takeFirst();
@@ -343,7 +351,7 @@ void
 TestTransferQueue::testCancelTransferNoOtherReady() {
     // cancel the transfer and expect it to be done
     _first->record();
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentTransfer().isEmpty());
@@ -352,6 +360,7 @@ TestTransferQueue::testCancelTransferNoOtherReady() {
     _first->cancel();
     QVERIFY(_q->currentTransfer().isEmpty());
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -372,7 +381,7 @@ TestTransferQueue::testCancelTransferOtherReady() {
     _first->record();
     _second->record();
 
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -384,6 +393,7 @@ TestTransferQueue::testCancelTransferOtherReady() {
     _first->cancel();
     QCOMPARE(_q->currentTransfer(), _second->path());
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -410,7 +420,7 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
     _second->setCanTransfer(false);
     _second->record();
 
-    QSignalSpy changedSpy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier changedSpy(_q, SIGNAL(currentChanged(QString)));
     _q->add(_first);
     _q->add(_second);
 
@@ -422,6 +432,7 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
     _first->cancel();
     QCOMPARE(_q->currentTransfer(), QString(""));
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 2);
 
     QList<QVariant> arguments = changedSpy.takeFirst();
@@ -444,7 +455,7 @@ void
 TestTransferQueue::testCancelTransferNotStarted() {
     // cancel not started and ensure that it is removed
     _first->record();
-    QSignalSpy removedSpy(_q, SIGNAL(transferRemoved(QString)));
+    SignalBarrier removedSpy(_q, SIGNAL(transferRemoved(QString)));
     _q->add(_first);
 
     QVERIFY(_q->currentTransfer().isEmpty());
@@ -551,7 +562,7 @@ TestTransferQueue::testFinishUnmanagedDecreasesNumber() {
 
 void
 TestTransferQueue::testCancelUnmanagedDecreasesNumber() {
-    QSignalSpy spy(_q, SIGNAL(transferRemoved(QString)));
+    SignalBarrier spy(_q, SIGNAL(transferRemoved(QString)));
     _first->setAddToQueue(false);
 
     _q->add(_first);
@@ -559,6 +570,7 @@ TestTransferQueue::testCancelUnmanagedDecreasesNumber() {
     QCOMPARE(1, _q->size());
     _first->cancel();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QCOMPARE(0, _q->size());
 }
