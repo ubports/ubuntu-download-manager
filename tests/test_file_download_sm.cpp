@@ -17,7 +17,6 @@
  */
 
 #include <QNetworkReply>
-#include <QSignalSpy>
 #include <QSslError>
 #include "test_file_download_sm.h"
 
@@ -95,14 +94,16 @@ TestFileDownloadSM::moveToPostProcessing() {
 void
 TestFileDownloadSM::testIdleError() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     _down->error(QNetworkReply::ProtocolFailure);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -113,14 +114,16 @@ TestFileDownloadSM::testIdleSslErrors() {
     QList<QSslError> errors;
     errors.append(QSslError(QSslError::CertificateExpired));
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     _down->sslErrors(errors);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -129,14 +132,16 @@ void
 TestFileDownloadSM::testIdleHeadRequestCompleted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->headRequestCompleted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::INIT);
 }
@@ -144,16 +149,18 @@ TestFileDownloadSM::testIdleHeadRequestCompleted() {
 void
 TestFileDownloadSM::testInitError() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // move to the state we are testing
     moveToInit();
     _down->error(QNetworkReply::ProtocolFailure);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -164,16 +171,18 @@ TestFileDownloadSM::testInitSslErrors() {
     errors.append(QSslError(QSslError::CertificateExpired));
 
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // move to the state we are testing
     moveToInit();
     _down->sslErrors(errors);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -182,15 +191,17 @@ void
 TestFileDownloadSM::testInitDownloadingStarted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToInit();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->downloadingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADING);
 }
@@ -198,16 +209,18 @@ TestFileDownloadSM::testInitDownloadingStarted() {
 void
 TestFileDownloadSM::testDownloadingError() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // move to the state we are testing
     moveToDownloading();
     _down->error(QNetworkReply::ProtocolFailure);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -218,16 +231,18 @@ TestFileDownloadSM::testDownloadingSslErrors() {
     errors.append(QSslError(QSslError::CertificateExpired));
 
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // move to the state we are testing
     moveToDownloading();
     _down->sslErrors(errors);
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -236,15 +251,17 @@ void
 TestFileDownloadSM::testDownloadingCanceled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloading();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->canceled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::CANCELED);
 }
@@ -253,15 +270,17 @@ void
 TestFileDownloadSM::testDownloadingPaused() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloading();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->paused();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::PAUSED);
 }
@@ -270,15 +289,17 @@ void
 TestFileDownloadSM::testDownloadingConnectionLost() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloading();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->connectionDisabled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADING_NOT_CONNECTED);
 }
@@ -287,15 +308,17 @@ void
 TestFileDownloadSM::testDownloadingDownloaded() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloading();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->completed();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADED);
 }
@@ -304,15 +327,17 @@ void
 TestFileDownloadSM::testDownloadingNotConnectedConnectionEnabled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloadingNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->connectionEnabled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADING);
 }
@@ -321,15 +346,17 @@ void
 TestFileDownloadSM::testDownloadingNotConnectedPaused() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloadingNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->paused();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::PAUSED_NOT_CONNECTED);
 }
@@ -338,15 +365,17 @@ void
 TestFileDownloadSM::testDownloadingNotConnectedCanceled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloadingNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->canceled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::CANCELED);
 }
@@ -355,15 +384,17 @@ void
 TestFileDownloadSM::testPauseDownloadingStarted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPaused();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->downloadingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADING);
 }
@@ -372,15 +403,17 @@ void
 TestFileDownloadSM::testPauseConnectionLost() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPaused();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->connectionDisabled();
 
+    QTRY_COMPARE(changedSpy.count(), 1);
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::PAUSED_NOT_CONNECTED);
 }
@@ -389,15 +422,17 @@ void
 TestFileDownloadSM::testPauseCanceled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPaused();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->canceled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::CANCELED);
 }
@@ -406,15 +441,17 @@ void
 TestFileDownloadSM::testPausedNotConnectedConnectionEnabled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPausedNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->connectionEnabled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::PAUSED);
 }
@@ -423,15 +460,17 @@ void
 TestFileDownloadSM::testPausedNotConnectedDownloadingStarted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPausedNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->downloadingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::DOWNLOADING_NOT_CONNECTED);
 }
@@ -440,15 +479,17 @@ void
 TestFileDownloadSM::testPausedNotConnectedCanceled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPausedNotConnected();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->canceled();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::CANCELED);
 }
@@ -457,15 +498,17 @@ void
 TestFileDownloadSM::testDownloadedHashingStarted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloaded();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->hashingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::HASHING);
 }
@@ -474,15 +517,17 @@ void
 TestFileDownloadSM::testDownloadedPostProcessingStarted() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloaded();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->postProcessingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::POST_PROCESSING);
 }
@@ -490,15 +535,17 @@ TestFileDownloadSM::testDownloadedPostProcessingStarted() {
 void
 TestFileDownloadSM::testDownloadedFinished() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloaded();
     _down->finished();
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::FINISHED);
 }
@@ -506,15 +553,17 @@ TestFileDownloadSM::testDownloadedFinished() {
 void
 TestFileDownloadSM::testDownloadedCanceled() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToDownloaded();
     _down->canceled();
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::CANCELED);
 }
@@ -523,15 +572,17 @@ void
 TestFileDownloadSM::testHashingError() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToHashing();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->hashingError();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -539,15 +590,17 @@ TestFileDownloadSM::testHashingError() {
 void
 TestFileDownloadSM::testHashingFinished() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToHashing();
     _down->finished();
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::FINISHED);
 }
@@ -556,15 +609,17 @@ void
 TestFileDownloadSM::testHashingPostProcessing() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
 
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToHashing();
-    QSignalSpy changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
+    SignalBarrier changedSpy(_stateMachine, SIGNAL(stateChanged(QString)));
     _down->postProcessingStarted();
 
+    QVERIFY(changedSpy.ensureSignalEmitted());
     QCOMPARE(changedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::POST_PROCESSING);
 }
@@ -572,15 +627,17 @@ TestFileDownloadSM::testHashingPostProcessing() {
 void
 TestFileDownloadSM::testPostProcessingError() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPostProcessing();
     _down->postProcessingError();
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::ERROR);
 }
@@ -588,15 +645,17 @@ TestFileDownloadSM::testPostProcessingError() {
 void
 TestFileDownloadSM::testPostProcessingFinished() {
     QCOMPARE(_stateMachine->state(), DownloadSM::IDLE);
-    QSignalSpy startedSpy(_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
 
     _stateMachine->start();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     moveToPostProcessing();
     _down->finished();
 
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
     QCOMPARE(_stateMachine->state(), DownloadSM::FINISHED);
 }
