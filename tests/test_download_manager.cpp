@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include <ubuntu/downloads/factory.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -137,7 +136,7 @@ TestDownloadManager::testCreateDownload() {
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct(url, metadata, headers);
 
     // set the expectations of the factory since is the one that
@@ -172,6 +171,7 @@ TestDownloadManager::testCreateDownload() {
 
     _man->createDownload(downStruct);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
@@ -230,7 +230,7 @@ TestDownloadManager::testCreateDownloadWithHash() {
 
     // assert that the download is created with the corret info and that
     // we do connect the object to the dbus session
-    QSignalSpy spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
+    SignalBarrier spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct = DownloadStruct(url, hash, algo, metadata,
         headers);
 
@@ -269,6 +269,7 @@ TestDownloadManager::testCreateDownloadWithHash() {
 
     _man->createDownload(downStruct);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
@@ -422,7 +423,7 @@ TestDownloadManager::testSizeChangedEmittedOnAddition_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnAddition() {
     QFETCH(int, size);
-    QSignalSpy spy(_man,
+    SignalBarrier spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
 
     EXPECT_CALL(*_q, size())
@@ -431,6 +432,7 @@ TestDownloadManager::testSizeChangedEmittedOnAddition() {
 
     _q->transferAdded("");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
@@ -450,7 +452,7 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval_data() {
 void
 TestDownloadManager::testSizeChangedEmittedOnRemoval() {
     QFETCH(int, size);
-    QSignalSpy spy(_man,
+    SignalBarrier spy(_man,
         SIGNAL(sizeChanged(int)));  // NOLINT(readability/function)
 
     EXPECT_CALL(*_q, size())
@@ -459,6 +461,7 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval() {
 
     _q->transferRemoved("");
 
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QList<QVariant> arguments = spy.takeFirst();
     QCOMPARE(arguments.at(0).toInt(), size);
