@@ -18,6 +18,11 @@ ifneq (,$(findstring arm,$(DEB_HOST_GNU_TYPE)))
 export DEB_BUILD_MAINT_OPTIONS := hardening=+pie
 endif
 
+
+ifneq (,$(findstring aarch64,$(DEB_HOST_GNU_TYPE)))
+export DEB_BUILD_MAINT_OPTIONS := hardening=+pie
+endif
+
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
