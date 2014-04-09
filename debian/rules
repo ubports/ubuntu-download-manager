@@ -7,6 +7,16 @@ export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 
 export DEB_HOST_MULTIARCH := $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
+# Work around pointer equality problem with -Bsymbolic-functions:
+# http://lists.linaro.org/pipermail/linaro-toolchain/2014-January/003944.html
+ifneq (,$(findstring powerpc,$(DEB_HOST_GNU_TYPE)))
+export DEB_BUILD_MAINT_OPTIONS := hardening=+pie
+endif
+
+ifneq (,$(findstring arm,$(DEB_HOST_GNU_TYPE)))
+export DEB_BUILD_MAINT_OPTIONS := hardening=+pie
+endif
+
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
 
