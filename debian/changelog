@@ -1,3 +1,71 @@
+ubuntu-download-manager (0.3+14.04.20140321-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Improved the documentation of the project. The registerMetaType
+    function was removed because it is not needed and not used in any
+    part of the code. const have been added in those methods that simply
+    are used as getters. The descturtors that can be trusted to the
+    compiler have been removed to reduce clutter in the code. (LP:
+    #1278784)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Diego Sarmentero ]
+  * Add QML Plugin to manage downloads from applications without C++
+    backend needed. .
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 05:25:34 +0000
+
+ubuntu-download-manager (0.3+14.04.20140319-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Simplify the API by removing the need of the username and the
+    password. The go bindings (only user of the API) has been updated
+    accordingly. (LP: #1294075)
+  * Use errors instead of strings in golang. (LP: #1294089)
+  * Make sure that the resources are cleaned in the correct order by
+    using the deleteLater call. (LP: #1294070)
+
+  [ Colin Watson ]
+  * Fix library installation directory for arm64/powerpc/ppc64el.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 19 Mar 2014 11:58:04 +0000
+
+ubuntu-download-manager (0.3+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Fix some small issues with the logging and ensure that the mutex
+    paht is the correct one when working with a not confined app that
+    passed a local path. (LP: #1287245)
+  * Ensure that Error and Warning are written in the correct dir. (LP:
+    #1288727)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 17:25:03 +0000
+
+ubuntu-download-manager (0.3+14.04.20140305-0ubuntu1) trusty; urgency=low
+
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 05 Mar 2014 13:16:42 +0000
+
+ubuntu-download-manager (0.3+14.04.20140301-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * This fix ensures that the temp file is renamed to the final file
+    before the post-command is executed. (LP: #1286553)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 01 Mar 2014 18:07:30 +0000
+
+ubuntu-download-manager (0.3+14.04.20140224-0ubuntu1) trusty; urgency=low
+
+  [ Manuel de la Peña ]
+  * Ensure that we do no have race issues between the diff downloads.
+    This is fixed in two ways: 1. Use a temp file. 2. USe a mutex to
+    decide the final path of the download. (LP: #1250612)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Feb 2014 23:20:09 +0000
+
 ubuntu-download-manager (0.3+14.04.20140220-0ubuntu1) trusty; urgency=low
 
   [ Manuel de la Peña ]

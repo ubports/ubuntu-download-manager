@@ -1,0 +1,73 @@
+<node>
+  <interface name="com.canonical.applications.Upload">
+
+    <method name="progress">
+        <arg name="uploaded" type="t" direction="out"/>
+    </method>
+
+    <method name="metadata">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QVariantMap"/>
+        <arg name="data" type="a{sv}" direction="out" />
+    </method>
+
+    <method name="setThrottle">
+        <arg name="speed" type="t" direction="in"/>
+    </method>
+
+    <method name="throttle">
+        <arg name="speed" type="t" direction="out"/>
+    </method>
+
+    <method name="allowMobileUpload">
+        <arg name="allowed" type="b" direction="in"/>
+    </method>
+
+    <method name="isMobileUploadAllowed">
+        <arg name="allowed" type="b" direction="out"/>
+    </method>
+
+    <method name="start" />
+    <method name="cancel" />
+
+    <signal name="started">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="canceled">
+        <arg name="success" type="b" direction="out"/>
+    </signal>
+
+    <signal name="finished">
+    </signal>
+
+    <signal name="error">
+        <arg name="error" type="s" direction="out"/>
+    </signal>
+
+    <signal name="authError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="AuthErrorStruct"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="httpError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="HttpErrorStruct"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="networkError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="NetworkErrorStruct"/>
+        <arg name="error" type="(is)" direction="out"/>
+    </signal>
+
+    <signal name="processError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="ProcessErrorStruct"/>
+        <arg name="error" type="(isiss)" direction="out"/>
+    </signal>
+
+    <signal name="progress">
+        <arg name="uploded" type="t" direction="out"/>
+        <arg name="total" type="t" direction="out"/>
+    </signal>
+
+ </interface>
+</node>

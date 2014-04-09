@@ -1,0 +1,12 @@
+#ifndef UDMCOMMON_GLOBAL_H
+#define UDMCOMMON_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(UDMCOMMON_LIBRARY)
+#  define UDMCOMMONSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define UDMCOMMONSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // UDMCOMMON_GLOBAL_H
