@@ -43,6 +43,7 @@ class Download : public Transfer {
 
  public:
     Download(const QString& id,
+             const QString& appId,
              const QString& path,
              bool isConfined,
              const QString& rootPath,

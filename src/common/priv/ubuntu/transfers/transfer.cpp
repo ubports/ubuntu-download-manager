@@ -24,11 +24,13 @@ namespace Ubuntu {
 namespace Transfers {
 
 Transfer::Transfer(const QString& id,
+         const QString& appId,
          const QString& path,
          bool isConfined,
          QObject* parent)
     : QObject(parent),
       _id(id),
+      _appId(appId),
       _throttle(0),
       _allowMobileData(true),
       _state(Transfer::IDLE),
@@ -41,6 +43,11 @@ Transfer::Transfer(const QString& id,
 QString
 Transfer::transferId() const {
     return _id;
+}
+
+QString
+Transfer::transferAppId() const {
+    return _appId;
 }
 
 QString

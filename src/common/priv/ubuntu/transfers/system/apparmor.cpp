@@ -96,9 +96,9 @@ AppArmor::getSecurityDetails(const QString& connName,
         return;
     } else {
         // use the returned value
-        QString appId = reply.value();
+        details->appId = reply.value();
 
-        if (appId.isEmpty() || appId == UNCONFINED_ID) {
+        if (details->appId.isEmpty() || details->appId == UNCONFINED_ID) {
             LOG(INFO) << "UNCONFINED APP";
             details->dbusPath = QString(BASE_ACCOUNT_URL) + "/" + details->id;
             details->localPath = getLocalPath("");
@@ -106,7 +106,7 @@ AppArmor::getSecurityDetails(const QString& connName,
             return;
         } else {
             details->isConfined = true;
-            QByteArray appIdBa = appId.toUtf8();
+            QByteArray appIdBa = details->appId.toUtf8();
 
             char * appIdPath;
             appIdPath = nih_dbus_path(nullptr, BASE_ACCOUNT_URL,
@@ -116,7 +116,7 @@ AppArmor::getSecurityDetails(const QString& connName,
                 LOG(ERROR) << "Unable to allocate memory for "
                     << "nih_dbus_path()";
                 details->dbusPath = QString(BASE_ACCOUNT_URL) + "/" + details->id;
-                details->localPath = getLocalPath(appId);
+                details->localPath = getLocalPath(details->appId);
                 return;
             }
             QString path = QString(appIdPath);
@@ -125,7 +125,7 @@ AppArmor::getSecurityDetails(const QString& connName,
             // free nih data
             nih_free(appIdPath);
             details->dbusPath = path + "/" + details->id;
-            details->localPath = getLocalPath(appId);
+            details->localPath = getLocalPath(details->appId);
             return;
         }  // not empty appid string
     }  // no dbus error

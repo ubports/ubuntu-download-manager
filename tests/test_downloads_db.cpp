@@ -103,6 +103,7 @@ TestDownloadsDb::testTableExists() {
 void
 TestDownloadsDb::testStoreSingleDownload_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
@@ -111,8 +112,8 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     QTest::addColumn<QMap<QString, QString> >("headers");
 
     QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "first path" << QUrl("http://ubuntu.com") << "" << "md5"
-        << QVariantMap() << QMap<QString, QString>();
+        << "FIRST APP" << "first path" << QUrl("http://ubuntu.com") << ""
+        << "md5" << QVariantMap() << QMap<QString, QString>();
 
     QVariantMap secondMetadata;
     secondMetadata["test"] = 1;
@@ -120,8 +121,8 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     secondMetadata["hello"] = 23;
 
     QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "second path" << QUrl("http://ubuntu.com/phone") << "" << "sha512"
-        << secondMetadata << QMap<QString, QString>();
+        << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone") << ""
+        << "sha512" << secondMetadata << QMap<QString, QString>();
 
     QVariantMap thirdMetadata;
     secondMetadata["test"] = 3;
@@ -132,14 +133,15 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     thirdHeaders["my-header"] = "I do something cool";
 
     QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "third path" << QUrl("http://ubuntu.com/tablet") << "" << "sha384"
-        << thirdMetadata << thirdHeaders;
+        << "LAST APP" << "third path" << QUrl("http://ubuntu.com/tablet") << ""
+        << "sha384" << thirdMetadata << thirdHeaders;
 }
 
 void
 TestDownloadsDb::testStoreSingleDownload() {
     _db->init();
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
@@ -147,8 +149,8 @@ TestDownloadsDb::testStoreSingleDownload() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, false, "", url, hash,
-        hashAlgoString, metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        false, "", url, hash, hashAlgoString, metadata, headers));
 
     _db->storeSingleDownload(download.data());
     // query that the download is there and that the data is correct
@@ -193,6 +195,7 @@ TestDownloadsDb::testStoreSingleDownload() {
 void
 TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
@@ -201,8 +204,8 @@ TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     QTest::addColumn<QMap<QString, QString> >("headers");
 
     QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "first path" << QUrl("http://ubuntu.com") << "" << "md5"
-        << QVariantMap() << QMap<QString, QString>();
+        << "TEST APP" << "first path" << QUrl("http://ubuntu.com") << ""
+        << "md5" << QVariantMap() << QMap<QString, QString>();
 
     QVariantMap secondMetadata;
     secondMetadata["test"] = 1;
@@ -210,8 +213,8 @@ TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     secondMetadata["hello"] = 23;
 
     QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "second path" << QUrl("http://ubuntu.com/phone") << "" << "sha512"
-        << secondMetadata << QMap<QString, QString>();
+        << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone")
+        << "" << "sha512" << secondMetadata << QMap<QString, QString>();
 
     QVariantMap thirdMetadata;
     secondMetadata["test"] = 3;
@@ -222,7 +225,8 @@ TestDownloadsDb::testStoreSingleDownloadPresent_data() {
     thirdHeaders["my-header"] = "I do something cool";
 
     QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "third path" << QUrl("http://ubuntu.com/tablet") << "" << "sha384"
+        << "LAST APP" << "third path" << QUrl("http://ubuntu.com/tablet")
+        << "" << "sha384"
         << thirdMetadata << thirdHeaders;
 }
 
@@ -230,6 +234,7 @@ void
 TestDownloadsDb::testStoreSingleDownloadPresent() {
     _db->init();
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
@@ -237,14 +242,14 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     QFETCH(QVariantMap, metadata);
     QFETCH(StringMap, headers);
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, true, "", url, hash,
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path, true, "", url, hash,
         hashAlgoString, metadata, headers));
 
     _db->storeSingleDownload(download.data());
 
     // create a second download with same id but a diff path to test is update
     QString newPath = path + path;
-    QScopedPointer<FileDownload> secondDownload(new FileDownload(id,
+    QScopedPointer<FileDownload> secondDownload(new FileDownload(id, appId,
         newPath, true, "", url, hash, hashAlgoString, metadata, headers));
 
     _db->storeSingleDownload(secondDownload.data());
@@ -291,6 +296,7 @@ TestDownloadsDb::testConnectedToDownload() {
     SignalBarrier spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
 
     auto id = UuidUtils::getDBusString(QUuid::createUuid());
+    auto appId = QString("TEST");
     QString path = "first path";
     auto url =  QUrl("http://ubuntu.com");
     auto hash = QString();
@@ -298,8 +304,8 @@ TestDownloadsDb::testConnectedToDownload() {
     QVariantMap metadata;
     QMap<QString, QString> headers;
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, true, "",
-        url, hash, hashAlgoString, metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        true, "", url, hash, hashAlgoString, metadata, headers));
 
     testingDb->connectToDownload(download.data());
     // update the throttle and test that it is update
@@ -315,6 +321,7 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     SignalBarrier spy(testingDb.data(), SIGNAL(downloadStored(Download*)));
 
     auto id = UuidUtils::getDBusString(QUuid::createUuid());
+    auto appId = QString("TEST");
     QString path = "first path";
     auto url =  QUrl("http://ubuntu.com");
     auto hash = QString();
@@ -322,8 +329,8 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     QVariantMap metadata;
     QMap<QString, QString> headers;
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, true, "",
-        url, hash, hashAlgoString, metadata, headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        true, "", url, hash, hashAlgoString, metadata, headers));
 
     testingDb->connectToDownload(download.data());
     // update the throttle and test that it is update

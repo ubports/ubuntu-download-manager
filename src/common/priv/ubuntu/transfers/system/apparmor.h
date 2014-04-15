@@ -39,6 +39,7 @@ struct SecurityDetails {
     SecurityDetails() = default;
     SecurityDetails(const QString& requiredId) { id = requiredId; }
     QString id;
+    QString appId;
     QString dbusPath;
     QString localPath;
     bool isConfined = false;
