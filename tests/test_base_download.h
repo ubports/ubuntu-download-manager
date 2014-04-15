@@ -49,6 +49,7 @@ class TestBaseDownload : public BaseTestCase {
 
  private:
     QString _id;
+    QString _appId;
     QString _path;
     bool _isConfined;
     QString _rootPath;
