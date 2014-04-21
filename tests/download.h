@@ -35,8 +35,34 @@ class MockDownload : public FileDownload {
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0)
-        : FileDownload(id, path, isConfined, rootPath,
+        : FileDownload(id, "", path, isConfined, rootPath,
             url, metadata, headers, parent) {}
+
+    MockDownload(const QString& id,
+                 const QString& appId,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QObject* parent = 0)
+        : FileDownload(id, appId, path, isConfined, rootPath,
+            url, metadata, headers, parent) {}
+
+    MockDownload(const QString& id,
+                 const QString& appId,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QString& hash,
+                 const QString& algo,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QObject* parent = 0)
+        : FileDownload(id, appId, path, isConfined, rootPath, url, hash,
+            algo, metadata, headers, parent) {}
 
     MockDownload(const QString& id,
                  const QString& path,
@@ -48,7 +74,7 @@ class MockDownload : public FileDownload {
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0)
-        : FileDownload(id, path, isConfined, rootPath, url, hash,
+        : FileDownload(id, "", path, isConfined, rootPath, url, hash,
             algo, metadata, headers, parent) {}
 
     MOCK_METHOD0(canDownload, bool());

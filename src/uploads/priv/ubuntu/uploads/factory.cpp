@@ -76,8 +76,9 @@ Factory::createUpload(const QString& dbusOwner,
                       const QMap<QString, QString>& headers) {
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
-    auto upload = new FileUpload(details->id, details->dbusPath,
-            details->isConfined, url, filePath, metadata, headers);
+    auto upload = new FileUpload(details->id, details->appId,
+            details->dbusPath, details->isConfined, url,
+	    filePath, metadata, headers);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);
     return upload;
@@ -97,7 +98,7 @@ Factory::createMmsUpload(const QString& dbusOwner,
     QMap<QString, QString> headers;
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
-    auto upload = new MmsFileUpload(details->id, details->dbusPath,
+    auto upload = new MmsFileUpload(details->id, "", details->dbusPath,
         details->isConfined, url, filePath, metadata, headers, proxy);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);

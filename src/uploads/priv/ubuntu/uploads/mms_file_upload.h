@@ -34,6 +34,7 @@ class MmsFileUpload : public FileUpload {
 
  public:
     MmsFileUpload(const QString& id,
+                  const QString& appId,
                   const QString& path,
                   bool isConfined,
                   const QUrl& url,

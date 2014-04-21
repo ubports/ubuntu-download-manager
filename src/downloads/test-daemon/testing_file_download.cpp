@@ -21,6 +21,7 @@
 TestingFileDownload::TestingFileDownload(FileDownload* down,
                                          QObject* parent)
     : FileDownload(down->transferId(),
+                   down->transferAppId(),
                    down->path(),
                    down->isConfined(),
                    down->rootPath(),

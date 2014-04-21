@@ -26,6 +26,7 @@ namespace UploadManager {
 namespace Daemon {
 
 MmsFileUpload::MmsFileUpload(const QString& id,
+		    const QString& appId,
                     const QString& path,
                     bool isConfined,
                     const QUrl& url,
@@ -34,7 +35,7 @@ MmsFileUpload::MmsFileUpload(const QString& id,
                     const QMap<QString, QString>& headers,
                     const QNetworkProxy& proxy,
                     QObject* parent)
-    : FileUpload(id, path, isConfined, url, filePath,
+    : FileUpload(id, appId, path, isConfined, url, filePath,
                    metadata, headers, parent){
     _requestFactory = new ApnRequestFactory(proxy);
     setAddToQueue(false);
