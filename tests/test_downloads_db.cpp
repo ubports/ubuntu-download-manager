@@ -34,7 +34,7 @@ namespace {
     const QString TABLE_EXISTS = "SELECT count(name) FROM sqlite_master "\
         "WHERE type='table' AND name=:table_name;";
 
-    const QString SELECT_SINGLE_DOWNLOAD = "SELECT url, dbus_path, local_path, "\
+    const QString SELECT_SINGLE_DOWNLOAD = "SELECT appId, url, dbus_path, local_path, "\
         "hash, hash_algo, state, total_size, throttle, metadata, headers "\
         "FROM SingleDownload WHERE uuid=:uuid;";
 }
@@ -121,8 +121,8 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     secondMetadata["hello"] = 23;
 
     QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone") << ""
-        << "sha512" << secondMetadata << QMap<QString, QString>();
+        << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone")
+        << "" << "sha512" << secondMetadata << QMap<QString, QString>();
 
     QVariantMap thirdMetadata;
     secondMetadata["test"] = 3;
@@ -133,8 +133,8 @@ TestDownloadsDb::testStoreSingleDownload_data() {
     thirdHeaders["my-header"] = "I do something cool";
 
     QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "LAST APP" << "third path" << QUrl("http://ubuntu.com/tablet") << ""
-        << "sha384" << thirdMetadata << thirdHeaders;
+        << "THIRD APP" << "third path" << QUrl("http://ubuntu.com/tablet")
+        << "" << "sha384" << thirdMetadata << thirdHeaders;
 }
 
 void
@@ -161,28 +161,31 @@ TestDownloadsDb::testStoreSingleDownload() {
     query.bindValue(":uuid", id);
     query.exec();
     if (query.next()) {
-        QString dbUrl = query.value(0).toString();
+        auto dbAppId = query.value(0).toString();
+        QCOMPARE(appId, dbAppId);
+
+        auto dbUrl = query.value(1).toString();
         QCOMPARE(url.toString(), dbUrl);
 
-        QString dbDbusPath = query.value(1).toString();
+        auto dbDbusPath = query.value(2).toString();
         QCOMPARE(path, dbDbusPath);
 
-        QString dbLocalPath = query.value(2).toString();
+        auto dbLocalPath = query.value(3).toString();
         QCOMPARE(dbLocalPath, download->filePath());
 
-        QString dbHash = query.value(3).toString();
+        auto dbHash = query.value(4).toString();
         QCOMPARE(hash, dbHash);
 
-        QString dbHashAlgo = query.value(4).toString();
+        auto dbHashAlgo = query.value(5).toString();
         QCOMPARE(hashAlgoString, dbHashAlgo);
 
-        int stateDb = query.value(5).toInt();
+        int stateDb = query.value(6).toInt();
         QCOMPARE(0, stateDb);
 
-        QString dbTotalSize = query.value(6).toString();
+        auto dbTotalSize = query.value(7).toString();
         QCOMPARE(QString::number(download->totalSize()), dbTotalSize);
 
-        QString dbThrottle = query.value(7).toString();
+        auto dbThrottle = query.value(8).toString();
         QCOMPARE(QString::number(download->throttle()), dbThrottle);
 
         db.close();
@@ -262,25 +265,31 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
     query.bindValue(":uuid", id);
     query.exec();
     if (query.next()) {
-        QString dbUrl = query.value(0).toString();
+        auto dbAppId = query.value(0).toString();
+        QCOMPARE(appId, dbAppId);
+
+        auto dbUrl = query.value(1).toString();
         QCOMPARE(url.toString(), dbUrl);
 
-        QString dbDbusPath = query.value(1).toString();
+        auto dbDbusPath = query.value(2).toString();
         QCOMPARE(newPath, dbDbusPath);
 
-        QString dbHash = query.value(3).toString();
+        auto dbLocalPath = query.value(3).toString();
+        QCOMPARE(dbLocalPath, secondDownload->filePath());
+
+        auto dbHash = query.value(4).toString();
         QCOMPARE(hash, dbHash);
 
-        QString dbHashAlgo = query.value(4).toString();
+        auto dbHashAlgo = query.value(5).toString();
         QCOMPARE(hashAlgoString, dbHashAlgo);
 
-        int stateDb = query.value(5).toInt();
+        int stateDb = query.value(6).toInt();
         QCOMPARE(0, stateDb);
 
-        QString dbTotalSize = query.value(6).toString();
+        auto dbTotalSize = query.value(7).toString();
         QCOMPARE(QString::number(download->totalSize()), dbTotalSize);
 
-        QString dbThrottle = query.value(7).toString();
+        auto dbThrottle = query.value(8).toString();
         QCOMPARE(QString::number(download->throttle()), dbThrottle);
 
         db.close();
