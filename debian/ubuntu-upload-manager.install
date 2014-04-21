@@ -1,4 +1,4 @@
 usr/bin/ubuntu-upload-manager
 usr/share/dbus-1/services/ubuntu-upload-manager.service
-etc/dbus-1/system-services/com.canonical.applications.Uploader.service
+usr/share/dbus-1/system-services/com.canonical.applications.Uploader.service
 etc/dbus-1/system.d/com.canonical.applications.Uploader.conf

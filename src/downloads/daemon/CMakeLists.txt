@@ -31,7 +31,7 @@ target_link_libraries(${TARGET}
 install(FILES ${TARGET}.service DESTINATION
    	${CMAKE_INSTALL_DATADIR}/dbus-1/services)
 install(FILES "com.canonical.applications.Downloader.service" DESTINATION
-   	/etc/dbus-1/system-services)
+   	/usr/share/dbus-1/system-services)
 install(FILES "com.canonical.applications.Downloader.conf" DESTINATION
    	/etc/dbus-1/system.d)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_BINDIR})
