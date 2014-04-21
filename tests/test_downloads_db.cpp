@@ -275,7 +275,7 @@ TestDownloadsDb::testStoreSingleDownloadPresent() {
         QCOMPARE(newPath, dbDbusPath);
 
         auto dbLocalPath = query.value(3).toString();
-        QCOMPARE(dbLocalPath, download->filePath());
+        QCOMPARE(dbLocalPath, secondDownload->filePath());
 
         auto dbHash = query.value(4).toString();
         QCOMPARE(hash, dbHash);
