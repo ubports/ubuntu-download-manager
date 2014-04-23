@@ -89,6 +89,7 @@ class MockDownload : public FileDownload {
     MOCK_CONST_METHOD0(state, Transfer::State());
     MOCK_CONST_METHOD0(path, QString());
     MOCK_CONST_METHOD0(metadata, QVariantMap());
+    MOCK_CONST_METHOD0(transferAppId, QString());
     MOCK_METHOD1(allowGSMDownload, void(bool));
     MOCK_METHOD0(isGSMDownloadAllowed, bool());
 

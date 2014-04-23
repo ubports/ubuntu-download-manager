@@ -1,5 +1,6 @@
 set(DAEMON_TESTS
 	test_apn_request_factory
+	test_apparmor
         test_base_download
 	test_cancel_download_transition
         test_daemon
@@ -35,6 +36,8 @@ foreach(test ${DAEMON_TESTS})
                 cryptographic_hash.h
 		database.h
                 dbus_connection.h
+		dbus_proxy.h
+		dbus_proxy_factory.h
 		download.h
                 factory.h
                 file_manager.h
@@ -42,6 +45,7 @@ foreach(test ${DAEMON_TESTS})
 		manager.h
                 matchers.h
 		network_reply.h
+		pending_reply.h
                 process.h
                 process_factory.h
                 queue.h
@@ -114,6 +118,7 @@ set(DAEMON_TESTS_LIBS
 	${GLOG_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
+        ${Qt5DBus_LIBRARIES}
 	${Qt5Test_LIBRARIES}
         ${GMOCK_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}

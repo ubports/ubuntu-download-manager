@@ -22,8 +22,10 @@
 #include <ubuntu/transfers/system/process_factory.h>
 #include <ubuntu/transfers/system/system_network_info.h>
 #include <gmock/gmock.h>
+#include "dbus_proxy.h"
 #include "download.h"
 #include "matchers.h"
+#include "pending_reply.h"
 #include "test_download_manager.h"
 
 using ::testing::_;
@@ -43,8 +45,9 @@ TestDownloadManager::init() {
     _requestFactory = new MockRequestFactory();
     RequestFactory::setInstance(_requestFactory);
     _factory = new MockDownloadFactory();
-    qDebug() << "MOCK QUEUE" << _q;
     _man = new DownloadManager(_app, _conn, _factory, _q);
+    _dbusProxyFactory = new MockDBusProxyFactory();
+    DBusProxyFactory::setInstance(_dbusProxyFactory );
 }
 
 void
@@ -55,6 +58,7 @@ TestDownloadManager::cleanup() {
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
     DownloadsDb::deleteInstance();
+    DBusProxyFactory::deleteInstance();
     delete _man;
     delete _conn;
     delete _app;
@@ -68,6 +72,7 @@ TestDownloadManager::verifyMocks() {
     QVERIFY(Mock::VerifyAndClearExpectations(_factory));
     QVERIFY(Mock::VerifyAndClearExpectations(_q));
     QVERIFY(Mock::VerifyAndClearExpectations(_requestFactory));
+    QVERIFY(Mock::VerifyAndClearExpectations(_dbusProxyFactory));
 }
 
 QCryptographicHash::Algorithm
@@ -277,71 +282,6 @@ TestDownloadManager::testCreateDownloadWithHash() {
 }
 
 void
-TestDownloadManager::testGetAllDownloads() {
-    // assert that we return the downloads from the q
-    QStringList expectedPaths;
-    expectedPaths.append("/first/path/object");
-    expectedPaths.append("/second/path/object");
-    expectedPaths.append("/third/path/object");
-
-    EXPECT_CALL(*_q, paths())
-        .Times(1)
-        .WillRepeatedly(Return(expectedPaths));
-
-    auto result = _man->getAllDownloads();
-    foreach(auto path, result) {
-        QVERIFY(expectedPaths.contains(path.path()));
-    }
-
-    verifyMocks();
-}
-
-void
-TestDownloadManager::testAllDownloadsWithMetadata() {
-    auto key = QString("filter");
-    auto value = QString("coconut");
-    auto validPath = QString("/valid/metadata/path");
-
-    QVariantMap filteredMetadata;
-    filteredMetadata[key] = value;
-    QVariantMap metadata;
-    QMap<QString, QString> headers;
-
-    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
-        QUrl("http://one.ubunt.com"), metadata, headers));
-    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
-        QUrl("http://ubuntu.com"), metadata, headers));
-    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
-        QUrl("http://reddit.com"), metadata, headers));
-    QHash<QString, Transfer*> downs;
-    downs[validPath] = first.data();
-    downs["/second/object/path"] = second.data();
-    downs["/third/object/path"] = third.data();
-
-    EXPECT_CALL(*first.data(), metadata())
-        .Times(1)
-        .WillRepeatedly(Return(filteredMetadata));
-
-    EXPECT_CALL(*second.data(), metadata())
-        .Times(1)
-        .WillRepeatedly(Return(metadata));
-
-    EXPECT_CALL(*third.data(), metadata())
-        .Times(1)
-        .WillRepeatedly(Return(metadata));
-
-    EXPECT_CALL(*_q, transfers())
-        .Times(1)
-        .WillRepeatedly(Return(downs));
-
-    auto result = _man->getAllDownloadsWithMetadata(key, value);
-    QCOMPARE(1, result.count());
-    QCOMPARE(result[0].path(), validPath);
-
-    verifyMocks();
-}
-
-void
 TestDownloadManager::testSetThrottleNotDownloads_data() {
     QTest::addColumn<qulonglong>("speed");
 
@@ -507,6 +447,279 @@ TestDownloadManager::testNotStoppable() {
         .Times(0);  // never exit!
 
     man->exit();
+    verifyMocks();
+}
+
+void
+TestDownloadManager::testGetAllDownloadsUnconfined() {
+    QString expectedAppId = "unconfined";
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+        .Times(1)
+        .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+        .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+        .Times(1)
+        .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+        .Times(1)
+        .WillOnce(Return(expectedAppId));
+
+    QStringList expectedPaths;
+    expectedPaths.append("/first/path/object");
+    expectedPaths.append("/second/path/object");
+    expectedPaths.append("/third/path/object");
+
+    EXPECT_CALL(*_q, paths())
+        .Times(1)
+        .WillRepeatedly(Return(expectedPaths));
+
+    auto result = _man->getAllDownloads();
+    QCOMPARE(3, result.count());
+    foreach(auto path, result) {
+        QVERIFY(expectedPaths.contains(path.path()));
+    }
+
+    QVERIFY(Mock::VerifyAndClearExpectations(dbusProxy));
+    verifyMocks();
+}
+
+void
+TestDownloadManager::testGetAllDownloadsConfined() {
+    QString expectedAppId = "APPID";
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+        .Times(1)
+        .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+        .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+        .Times(1)
+        .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+        .Times(1)
+        .WillOnce(Return(expectedAppId));
+
+    // create several downloads with diff app ids to check that we
+    // do getonly those with the correct app id
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), metadata, headers));
+    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), metadata, headers));
+    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
+         QUrl("http://reddit.com"), metadata, headers));
+
+    QHash<QString, Transfer*> downs;
+    QStringList paths;
+    paths.append("/first/path/object");
+    paths.append("/second/path/object");
+    paths.append("/third/path/object");
+
+    downs[paths[0]] = first.data();
+    downs[paths[1]] = second.data();
+    downs[paths[2]] = third.data();
+
+    EXPECT_CALL(*first.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(expectedAppId));
+
+    EXPECT_CALL(*second.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(QString("SECONDAPP")));
+
+    EXPECT_CALL(*third.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(QString("LASTAPP")));
+
+    EXPECT_CALL(*_q, transfers())
+        .Times(1)
+        .WillRepeatedly(Return(downs));
+
+    auto result = _man->getAllDownloads();
+    QCOMPARE(1, result.count());
+
+    QVERIFY(Mock::VerifyAndClearExpectations(dbusProxy));
+    verifyMocks();
+}
+
+void
+TestDownloadManager::testAllDownloadsWithMetadataUnconfined() {
+    QString expectedAppId = "unconfined";
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+        .Times(1)
+        .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+        .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+        .Times(1)
+        .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+        .Times(1)
+        .WillOnce(Return(expectedAppId));
+
+    // create downloads to be used to filter
+    auto key = QString("filter");
+    auto value = QString("coconut");
+    auto validPath = QString("/valid/metadata/path");
+
+    QVariantMap filteredMetadata;
+    filteredMetadata[key] = value;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), metadata, headers));
+    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), metadata, headers));
+    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), metadata, headers));
+    QHash<QString, Transfer*> downs;
+    downs[validPath] = first.data();
+    downs["/second/object/path"] = second.data();
+    downs["/third/object/path"] = third.data();
+
+    EXPECT_CALL(*first.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(filteredMetadata));
+
+    EXPECT_CALL(*first.data(), transferAppId())
+        .Times(0);
+
+    EXPECT_CALL(*second.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(metadata));
+
+    EXPECT_CALL(*second.data(), transferAppId())
+        .Times(0);
+
+    EXPECT_CALL(*third.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(metadata));
+
+    EXPECT_CALL(*third.data(), transferAppId())
+        .Times(0);
+
+    EXPECT_CALL(*_q, transfers())
+        .Times(1)
+        .WillRepeatedly(Return(downs));
+
+    auto result = _man->getAllDownloadsWithMetadata(key, value);
+    QCOMPARE(1, result.count());
+    QCOMPARE(result[0].path(), validPath);
+
+    QVERIFY(Mock::VerifyAndClearExpectations(dbusProxy));
+    verifyMocks();
+}
+
+void
+TestDownloadManager::testAllDownloadsWithMetadataConfined() {
+    QString expectedAppId = "APPID";
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+        .Times(1)
+        .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+        .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+        .Times(1)
+        .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+        .Times(1)
+        .WillOnce(Return(expectedAppId));
+
+    auto key = QString("filter");
+    auto value = QString("coconut");
+    auto validPath = QString("/valid/metadata/path");
+
+    QVariantMap filteredMetadata;
+    filteredMetadata[key] = value;
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    QScopedPointer<MockDownload> first(new MockDownload("", "", "", "",
+        QUrl("http://one.ubunt.com"), metadata, headers));
+    QScopedPointer<MockDownload> second(new MockDownload("", "", "", "",
+        QUrl("http://ubuntu.com"), metadata, headers));
+    QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
+        QUrl("http://reddit.com"), metadata, headers));
+    QHash<QString, Transfer*> downs;
+    downs[validPath] = first.data();
+    downs["/second/object/path"] = second.data();
+    downs["/third/object/path"] = third.data();
+
+    EXPECT_CALL(*first.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(filteredMetadata));
+
+    EXPECT_CALL(*first.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(expectedAppId));
+
+    EXPECT_CALL(*second.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(filteredMetadata));
+
+    EXPECT_CALL(*second.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(QString("LEAPP")));
+
+    EXPECT_CALL(*third.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(filteredMetadata));
+
+    EXPECT_CALL(*third.data(), transferAppId())
+        .Times(1)
+        .WillRepeatedly(Return(QString("LEAPP")));
+
+    EXPECT_CALL(*_q, transfers())
+        .Times(1)
+        .WillRepeatedly(Return(downs));
+
+    auto result = _man->getAllDownloadsWithMetadata(key, value);
+    QCOMPARE(1, result.count());
+    QCOMPARE(result[0].path(), validPath);
+
+    QVERIFY(Mock::VerifyAndClearExpectations(dbusProxy));
     verifyMocks();
 }
 
