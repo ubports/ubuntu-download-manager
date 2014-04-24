@@ -128,16 +128,13 @@ QDBusObjectPath
 UploadManager::createMmsUpload(const QString& url,
                                const QString& file,
                                const QString& hostname,
-                               int port,
-                               const QString& username,
-                               const QString& password) {
+                               int port) {
     LOG(INFO) << "Create MMS upload == {url:" << url << " filePath: "
-        << file << " hostname:" << hostname << " port:"
-        << port << " username:" << username << " pwd: " << password << "}";
+        << file << " hostname:" << hostname << " port:" << port << "}";
     UploadCreationFunc createUploadFunc =
-        [this, url, file, hostname, port, username, password](QString owner) {
+        [this, url, file, hostname, port](QString owner) {
         auto upload = _factory->createMmsUpload(owner, url, file, hostname,
-            port, username, password);
+            port);
         return upload;
     };
     return createUpload(createUploadFunc);
