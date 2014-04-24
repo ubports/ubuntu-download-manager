@@ -51,9 +51,7 @@ class Factory : public QObject {
                                         const QUrl& url,
                                         const QString& filePath,
                                         const QString& hostname,
-                                        int port,
-                                        const QString& username,
-                                        const QString& password);
+                                        int port);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();

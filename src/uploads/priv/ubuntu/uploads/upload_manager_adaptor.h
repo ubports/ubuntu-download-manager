@@ -50,8 +50,6 @@ class UploadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"s\" name=\"file\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"hostname\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"port\"/>\n"
-"      <arg direction=\"in\" type=\"s\" name=\"username\"/>\n"
-"      <arg direction=\"in\" type=\"s\" name=\"password\"/>\n"
 "      <arg direction=\"out\" type=\"o\" name=\"uploadPath\"/>\n"
 "    </method>\n"
 "    <method name=\"getAllUploads\">\n"
@@ -87,7 +85,7 @@ public:
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
     void allowMobileUpload(bool allowed);
-    QDBusObjectPath createMmsUpload(const QString &url, const QString &file, const QString &hostname, int port, const QString &username, const QString &password);
+    QDBusObjectPath createMmsUpload(const QString &url, const QString &file, const QString &hostname, int port);
     QDBusObjectPath createUpload(UploadStruct upload);
     qulonglong defaultThrottle();
     void exit();

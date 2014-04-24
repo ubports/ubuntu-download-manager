@@ -44,11 +44,11 @@ void UploadManagerAdaptor::allowMobileUpload(bool allowed)
     QMetaObject::invokeMethod(parent(), "allowMobileUpload", Q_ARG(bool, allowed));
 }
 
-QDBusObjectPath UploadManagerAdaptor::createMmsUpload(const QString &url, const QString &file, const QString &hostname, int port, const QString &username, const QString &password)
+QDBusObjectPath UploadManagerAdaptor::createMmsUpload(const QString &url, const QString &file, const QString &hostname, int port)
 {
     // handle method call com.canonical.applications.UploadManager.createMmsUpload
     QDBusObjectPath uploadPath;
-    QMetaObject::invokeMethod(parent(), "createMmsUpload", Q_RETURN_ARG(QDBusObjectPath, uploadPath), Q_ARG(QString, url), Q_ARG(QString, file), Q_ARG(QString, hostname), Q_ARG(int, port), Q_ARG(QString, username), Q_ARG(QString, password));
+    QMetaObject::invokeMethod(parent(), "createMmsUpload", Q_RETURN_ARG(QDBusObjectPath, uploadPath), Q_ARG(QString, url), Q_ARG(QString, file), Q_ARG(QString, hostname), Q_ARG(int, port));
     return uploadPath;
 }
 
