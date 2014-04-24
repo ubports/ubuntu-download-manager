@@ -76,13 +76,6 @@ type Download interface {
 	Error() chan error
 }
 
-// Manager is the single point of entry of the API. Allows to interact with the
-// general setting of udm as well as to create downloads at will.
-type Manager interface {
-	CreateDownload(string, string, string, map[string]interface{}, map[string]string) (Download, error)
-	CreateMmsDownload(string, string, int, string, string) (Download, error)
-}
-
 // FileDownload represents a single file being downloaded by udm.
 type FileDownload struct {
 	conn       *dbus.Connection
@@ -310,7 +303,7 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 }
 
 // Start tells udm that the download is ready to be peformed and that the client is
-// ready to recieve signals. The following is a commong pattern to be used when
+// ready to recieve signals. The following is a common pattern to be used when
 // creating downloads in udm.
 //
 //     man, err := udm.NewDownloadManager()

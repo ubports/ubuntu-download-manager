@@ -22,87 +22,31 @@
 package udm
 
 import (
-	. "gopkg.in/check.v1"
 	"errors"
+	. "gopkg.in/check.v1"
 	"launchpad.net/go-dbus/v1"
 	"reflect"
-	"testing"
 )
 
-type fakeProxy struct {
-	Interface  string
-	MethodName string
-	Args       []interface{}
-	Err        error
-	Result     *dbus.Message
-}
-
-func (f *fakeProxy) Call(iface, method string, args ...interface{}) (*dbus.Message, error) {
-	// store the called method and return Result
-	f.Interface = iface
-	f.MethodName = method
-	f.Args = args
-	if f.Err == nil {
-		return f.Result, nil
-	}
-	return nil, f.Err
-}
-
-type FakeWatch struct {
-	Canceled bool
-	Ch       chan *dbus.Message
-}
-
-func newFakeWatch() *FakeWatch {
-	ch := make(chan *dbus.Message)
-	fw := FakeWatch{false, ch}
-	return &fw
-}
-
-func (w *FakeWatch) Cancel() error {
-	w.Canceled = true
-	return nil
-}
-
-func (w *FakeWatch) Chanel() chan *dbus.Message {
-	return w.Ch
-}
-
-// returns a new error that can be used in the tests
-func newDBusError() *dbus.Message {
-	msg := dbus.NewMethodCallMessage("com.destination", "/path", "com.interface", "method")
-	msg.Type = dbus.TypeError
-	msg.ErrorName = "com.testing.udm"
-	return msg
-}
-
-func newDBusReturn() *dbus.Message {
-	msg := dbus.NewMethodCallMessage("com.destination", "/path", "com.interface", "method")
-	msg.Type = dbus.TypeMethodReturn
-	return msg
-}
-
-func Test(t *testing.T) { TestingT(t) }
-
 type DownloadSuite struct {
-	proxy       *fakeProxy
-	download    *FileDownload
-	msg_args    []interface{}
+	proxy        *fakeProxy
+	download     *FileDownload
+	msg_args     []interface{}
 	msg_args_err error
-	started_ch  chan bool
-	started_w   watch
-	paused_ch   chan bool
-	paused_w    watch
-	resumed_ch  chan bool
-	resumed_w   watch
-	canceled_ch chan bool
-	canceled_w  watch
-	finished_ch chan string
-	finished_w  watch
-	errors_ch   chan error
-	errors_w    watch
-	progress_ch chan Progress
-	progress_w  watch
+	started_ch   chan bool
+	started_w    watch
+	paused_ch    chan bool
+	paused_w     watch
+	resumed_ch   chan bool
+	resumed_w    watch
+	canceled_ch  chan bool
+	canceled_w   watch
+	finished_ch  chan string
+	finished_w   watch
+	errors_ch    chan error
+	errors_w     watch
+	progress_ch  chan Progress
+	progress_w   watch
 }
 
 var _ = Suite(&DownloadSuite{})
@@ -125,7 +69,7 @@ func (s *DownloadSuite) SetUpTest(c *C) {
 	s.progress_w = newFakeWatch()
 	s.download = &FileDownload{nil, s.proxy, "", s.started_ch, s.started_w, s.paused_ch, s.paused_w, s.resumed_ch, s.resumed_w, s.canceled_ch, s.canceled_w, s.finished_ch, s.finished_w, s.errors_ch, s.errors_w, s.progress_ch, s.progress_w}
 
-	readArgs =  func(msg *dbus.Message, args ...interface{}) error {
+	readArgs = func(msg *dbus.Message, args ...interface{}) error {
 		for i, arg := range args {
 			v := reflect.ValueOf(arg)
 			e := v.Elem()
@@ -154,7 +98,7 @@ func (s *DownloadSuite) TestTotalSizeError(c *C) {
 func (s *DownloadSuite) TestTotalSize(c *C) {
 	expected_size := uint64(98)
 	s.proxy.Result = newDBusReturn()
-	s.msg_args =  make([]interface{}, 1)
+	s.msg_args = make([]interface{}, 1)
 	s.msg_args[0] = expected_size
 	s.msg_args_err = nil
 	size, err := s.download.TotalSize()
@@ -176,7 +120,7 @@ func (s *DownloadSuite) TestProgressError(c *C) {
 func (s *DownloadSuite) TestProgress(c *C) {
 	expected_progress := uint64(98)
 	s.proxy.Result = newDBusReturn()
-	s.msg_args =  make([]interface{}, 1)
+	s.msg_args = make([]interface{}, 1)
 	s.msg_args[0] = expected_progress
 	s.msg_args_err = nil
 	progress, err := s.download.Progress()
@@ -225,7 +169,7 @@ func (s *DownloadSuite) TestThrottleError(c *C) {
 func (s *DownloadSuite) TestThrottle(c *C) {
 	expected_throttle := uint64(98)
 	s.proxy.Result = newDBusReturn()
-	s.msg_args =  make([]interface{}, 1)
+	s.msg_args = make([]interface{}, 1)
 	s.msg_args[0] = expected_throttle
 	s.msg_args_err = nil
 	throttle, err := s.download.Throttle()
@@ -283,7 +227,7 @@ func (s *DownloadSuite) TestIsMobileDownloadError(c *C) {
 func (s *DownloadSuite) TestIsMobileDownload(c *C) {
 	expected_allowed := true
 	s.proxy.Result = newDBusReturn()
-	s.msg_args =  make([]interface{}, 1)
+	s.msg_args = make([]interface{}, 1)
 	s.msg_args[0] = expected_allowed
 	s.msg_args_err = nil
 	allowed, err := s.download.IsMobileDownload()
