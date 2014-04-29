@@ -42,7 +42,7 @@ target_link_libraries(${TARGET}
 	udm-common
 )
 
-configure_file(${TARGET}.pc.in ${CMAKE_INSTALL_LIBEXECDIR}/${TARGET}.pc @ONLY)
+configure_file(${TARGET}.pc.in ${CMAKE_INSTALL_LIBEXECDIR}/pkgconfig/${TARGET}.pc @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
