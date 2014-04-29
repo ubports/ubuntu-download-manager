@@ -2,5 +2,5 @@ usr/include/ubuntu/download_manager/error.h
 usr/include/ubuntu/download_manager/manager.h
 usr/include/ubuntu/download_manager/download.h
 usr/include/ubuntu/download_manager/group_download.h
-usr/share/pkgconfig/ubuntu-download-manager-client.pc
+usr/lib/*/pkgconfig/ubuntu-download-manager-client.pc
 usr/lib/*/libubuntu-download-manager-client.so

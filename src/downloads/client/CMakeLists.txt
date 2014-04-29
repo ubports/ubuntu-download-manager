@@ -61,7 +61,7 @@ target_link_libraries(${TARGET}
         ubuntu-download-manager-common
 )
 
-configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc @ONLY)
+configure_file(${TARGET}.pc.in ${CMAKE_INSTALL_LIBEXECDIR}/${TARGET}.pc @ONLY)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
