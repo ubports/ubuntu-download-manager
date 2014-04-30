@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
+#include <ubuntu/transfers/transfer.h>
 #include "ubuntu/transfers/system/process_factory.h"
 #include "ubuntu/transfers/system/request_factory.h"
 #include "ubuntu/transfers/system/system_network_info.h"
@@ -30,26 +31,17 @@
 
 namespace Ubuntu {
 
+using namespace Transfers;
 using namespace Transfers::System;
 
 namespace DownloadManager {
 
 namespace Daemon {
 
-class Download : public QObject {
+class Download : public Transfer {
     Q_OBJECT
 
  public:
-    enum State {
-        IDLE,
-        START,
-        PAUSE,
-        RESUME,
-        CANCEL,
-        FINISH,
-        ERROR
-    };
-
     Download(const QString& id,
              const QString& path,
              bool isConfined,
@@ -60,27 +52,9 @@ class Download : public QObject {
 
     virtual ~Download();
 
-    QString downloadId() const {
-        return _id;
-    }
-
-    virtual QString path() const {
-        return _dbusPath;
-    }
-
-    bool isConfined() const {
-        return _isConfined;
-    }
-
     QString rootPath() const {
         return _rootPath;
     }
-
-    virtual Download::State state() const {
-        return _state;
-    }
-
-    void setState(Download::State state);
 
     QObject* adaptor() const {
         return _adaptor;
@@ -91,25 +65,9 @@ class Download : public QObject {
         return _headers;
     }
 
-    virtual bool canDownload();
-
-    virtual bool isValid() const {
-        return _isValid;
+    virtual bool pausable() {
+        return true;
     }
-
-    bool addToQueue() const {
-        return _addToQueue;
-    }
-
-    virtual QString lastError() const {
-        return _lastError;
-    }
-
-    // methods to be overriden by the children
-    virtual void cancelDownload() = 0;
-    virtual void pauseDownload() = 0;
-    virtual void resumeDownload() = 0;
-    virtual void startDownload() = 0;
 
  public slots:  // NOLINT(whitespace/indent)
     // slots that are exposed via dbus, they just change the state,
@@ -118,37 +76,12 @@ class Download : public QObject {
         return _metadata;
     }
 
-    virtual void setThrottle(qulonglong speed);
-
-    virtual qulonglong throttle() {
-        return _throttle;
+    virtual void allowGSMDownload(bool allowed) {
+        // rename the transfer method
+        Transfer::allowGSMData(allowed);
     }
-
-    virtual void allowGSMDownload(bool allowed);
-    virtual bool isGSMDownloadAllowed();
-
-    virtual inline void cancel() {
-        setState(Download::CANCEL);
-        if(!_addToQueue)
-            cancelDownload();
-    }
-
-    virtual inline void pause() {
-        setState(Download::PAUSE);
-        if(!_addToQueue)
-            pauseDownload();
-    }
-
-    virtual inline void resume() {
-        setState(Download::RESUME);
-        if(!_addToQueue)
-            resumeDownload();
-    }
-
-    virtual inline void start() {
-        setState(Download::START);
-        if(!_addToQueue)
-            startDownload();
+    virtual bool isGSMDownloadAllowed() {
+        return Transfer::isGSMDataAllowed();
     }
 
     // slots to be implemented by the children
@@ -157,38 +90,16 @@ class Download : public QObject {
 
  signals:
     // signals that are exposed via dbus
-    void canceled(bool success);
-    void error(const QString& error);
-    void paused(bool success);
     void processing(const QString& file);
-    void resumed(bool success);
-    void started(bool success);
     void progress(qulonglong received, qulonglong total);
 
-    // internal signals
-    void stateChanged();
-    void throttleChanged();
-
  protected:
-    void setIsValid(bool isValid);
-    void setAddToQueue(bool addToQueue);
-    void setLastError(const QString& lastError);
     virtual void emitError(const QString& error);
 
  private:
-    bool _isValid = true;
-    bool _addToQueue = true;
-    QString _lastError = "";
-    QString _id;
-    qulonglong _throttle;
-    bool _allowGSMDownload;
-    Download::State _state;
-    QString _dbusPath;
-    bool _isConfined;
     QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    SystemNetworkInfo* _networkInfo;
     QObject* _adaptor = nullptr;
 };
 

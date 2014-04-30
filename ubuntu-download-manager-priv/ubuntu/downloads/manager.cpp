@@ -81,10 +81,10 @@ DownloadManager::init() {
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
-    CHECK(connect(_downloadsQueue, &Queue::downloadRemoved,
+    CHECK(connect(_downloadsQueue, &Queue::transferRemoved,
         this, &DownloadManager::onDownloadsChanged))
             << "Could not connect to signal";
-    CHECK(connect(_downloadsQueue, &Queue::downloadAdded,
+    CHECK(connect(_downloadsQueue, &Queue::transferAdded,
         this, &DownloadManager::onDownloadsChanged))
             << "Could not connect to signal";
 }
@@ -124,13 +124,16 @@ DownloadManager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
     if (!_db->store(download)) {
-        LOG(WARNING) << download->downloadId()
+        LOG(WARNING) << download->transferId()
             << "could not be stored in the db";
     }
     _db->connectToDownload(download);
     _downloadsQueue->add(download);
-    _conn->registerObject(download->path(), download);
-    QDBusObjectPath objectPath = QDBusObjectPath(download->path());
+    auto path = download->path();
+    qDebug() << "ADDED TO Q";
+    _conn->registerObject(path, download);
+    qDebug() << "REGISTER OBJ";
+    QDBusObjectPath objectPath = QDBusObjectPath(path);
 
     // emit that the download was created. Usefull in case other
     // processes are interested in them
@@ -232,7 +235,7 @@ DownloadManager::defaultThrottle() {
 void
 DownloadManager::setDefaultThrottle(qulonglong speed) {
     _throttle = speed;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
         downloads[path]->setThrottle(speed);
     }
@@ -241,9 +244,9 @@ DownloadManager::setDefaultThrottle(qulonglong speed) {
 void
 DownloadManager::allowGSMDownload(bool allowed) {
     _allowMobileData = allowed;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
-        downloads[path]->allowGSMDownload(allowed);
+        downloads[path]->allowGSMData(allowed);
     }
 }
 
@@ -264,14 +267,17 @@ QList<QDBusObjectPath>
 DownloadManager::getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value) {
     QList<QDBusObjectPath> paths;
-    QHash<QString, Download*> downloads = _downloadsQueue->downloads();
+    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
-        QVariantMap metadata = downloads[path]->metadata();
-        if (metadata.contains(name)) {
-            QVariant data = metadata[name];
-            if (data.canConvert(QMetaType::QString)
-                    && data.toString() == value)
-                paths << QDBusObjectPath(path);
+        auto down = qobject_cast<Download*>(downloads[path]);
+        if (down != nullptr) {
+            QVariantMap metadata = down->metadata();
+            if (metadata.contains(name)) {
+                QVariant data = metadata[name];
+                if (data.canConvert(QMetaType::QString)
+                        && data.toString() == value)
+                    paths << QDBusObjectPath(path);
+            }
         }
     }
     return paths;

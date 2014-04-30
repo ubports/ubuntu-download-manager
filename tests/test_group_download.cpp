@@ -66,7 +66,7 @@ TestGroupDownload::testCancelNoDownloads() {
     GroupDownload* group = new GroupDownload(_id, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
         _headers, _factory, _fileManager);
-    group->cancelDownload();
+    group->cancelTransfer();
     verifyMocks();
 }
 
@@ -104,7 +104,7 @@ TestGroupDownload::testCancelAllDownloads() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, cancelDownload())
+        EXPECT_CALL(*down, cancelTransfer())
             .Times(1);
         index++;
     }
@@ -112,7 +112,7 @@ TestGroupDownload::testCancelAllDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
         _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _factory, _fileManager));
-    group->cancelDownload();
+    group->cancelTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -160,7 +160,7 @@ TestGroupDownload::testCancelDownloadWithFinished() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, cancelDownload())
+        EXPECT_CALL(*down, cancelTransfer())
             .Times(1);
         index++;
     }
@@ -178,7 +178,7 @@ TestGroupDownload::testCancelDownloadWithFinished() {
         _factory, _fileManager));
 
     first->finished(downloadedPath);
-    group->cancelDownload();
+    group->cancelTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -225,7 +225,7 @@ TestGroupDownload::testCancelDownloadWithCancel() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*downs[index], cancelDownload())
+        EXPECT_CALL(*downs[index], cancelTransfer())
             .Times(1);
     }
 
@@ -239,7 +239,7 @@ TestGroupDownload::testCancelDownloadWithCancel() {
     EXPECT_CALL(*downs[0], state())
         .Times(1)
         .WillOnce(Return(Download::CANCEL));
-    EXPECT_CALL(*downs[0], cancelDownload())
+    EXPECT_CALL(*downs[0], cancelTransfer())
         .Times(0);
 
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
@@ -248,8 +248,8 @@ TestGroupDownload::testCancelDownloadWithCancel() {
         _factory, _fileManager));
 
     // cancel a download and the expectations will make sue that we are
-    // only calling cancelDownload once
-    group->cancelDownload();
+    // only calling cancelTransfer once
+    group->cancelTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -264,7 +264,7 @@ TestGroupDownload::testPauseNoDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined,
         _rootPath, downloads, _algo, _isGSMDownloadAllowed, _metadata,
         _headers, _factory, _fileManager));
-    group->pauseDownload();
+    group->pauseTransfer();
     verifyMocks();
 }
 
@@ -305,13 +305,13 @@ TestGroupDownload::testPauseAllDownloads() {
         EXPECT_CALL(*down, filePath())
             .Times(1)
             .WillRepeatedly(Return(QString("local_file %1").arg(index)));
-        EXPECT_CALL(*down, startDownload())
+        EXPECT_CALL(*down, startTransfer())
             .Times(1);
         EXPECT_CALL(*down, state())
             .Times(2)
             .WillOnce(Return(Download::IDLE))
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, pauseDownload())
+        EXPECT_CALL(*down, pauseTransfer())
             .Times(1);
         index++;
     }
@@ -320,10 +320,10 @@ TestGroupDownload::testPauseAllDownloads() {
         _isConfined, _rootPath, downloadsStruct, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
-    group->startDownload();
+    group->startTransfer();
 
-    // trust mocks to ensure that pauseDownload was called in all downloads
-    group->pauseDownload();
+    // trust mocks to ensure that pauseTransfer was called in all downloads
+    group->pauseTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -367,7 +367,7 @@ TestGroupDownload::testPauseDownloadWithFinished() {
     EXPECT_CALL(*first, filePath())
         .Times(1)
         .WillRepeatedly(Return(QString("first_local_file")));
-    EXPECT_CALL(*first, startDownload())
+    EXPECT_CALL(*first, startTransfer())
         .Times(1);
     EXPECT_CALL(*first, state())
         .Times(2)
@@ -383,13 +383,13 @@ TestGroupDownload::testPauseDownloadWithFinished() {
         EXPECT_CALL(*down, filePath())
             .Times(1)
             .WillRepeatedly(Return(QString("local_file %1").arg(index)));
-        EXPECT_CALL(*down, startDownload())
+        EXPECT_CALL(*down, startTransfer())
             .Times(1);
         EXPECT_CALL(*down, state())
             .Times(2)
             .WillOnce(Return(Download::IDLE))
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, pauseDownload())
+        EXPECT_CALL(*down, pauseTransfer())
             .Times(1);
         index++;
     }
@@ -402,9 +402,9 @@ TestGroupDownload::testPauseDownloadWithFinished() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
     first->finished(path);
-    group->pauseDownload();
+    group->pauseTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -451,15 +451,15 @@ TestGroupDownload::testPauseDownloadWithCancel() {
         EXPECT_CALL(*downs[index], filePath())
             .Times(1)
             .WillRepeatedly(Return(path));
-        EXPECT_CALL(*downs[index], startDownload())
+        EXPECT_CALL(*downs[index], startTransfer())
             .Times(1);
         EXPECT_CALL(*downs[index], state())
             .Times(2)
             .WillOnce(Return(Download::IDLE))
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*downs[index], pauseDownload())
+        EXPECT_CALL(*downs[index], pauseTransfer())
             .Times(0);
-        EXPECT_CALL(*downs[index], cancelDownload())
+        EXPECT_CALL(*downs[index], cancelTransfer())
             .Times(1);
     }
 
@@ -470,13 +470,13 @@ TestGroupDownload::testPauseDownloadWithCancel() {
     EXPECT_CALL(*downs[0], filePath())
         .Times(1)
         .WillRepeatedly(Return(QString("local_file")));
-    EXPECT_CALL(*downs[0], startDownload())
+    EXPECT_CALL(*downs[0], startTransfer())
         .Times(1);
     EXPECT_CALL(*downs[0], state())
         .Times(2)
         .WillOnce(Return(Download::IDLE))
         .WillOnce(Return(Download::CANCEL));
-    EXPECT_CALL(*downs[0], pauseDownload())
+    EXPECT_CALL(*downs[0], pauseTransfer())
         .Times(0);
     EXPECT_CALL(*_fileManager, remove(path))
         .Times(0);
@@ -486,7 +486,7 @@ TestGroupDownload::testPauseDownloadWithCancel() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
     first->canceled(true);
 
     foreach(MockDownload* down, downs) {
@@ -502,7 +502,7 @@ TestGroupDownload::testResumeNoDownloads() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path,
         _isConfined, _rootPath, downloads, _algo, _isGSMDownloadAllowed,
         _metadata, _headers, _factory, _fileManager));
-    group->cancelDownload();
+    group->cancelTransfer();
     verifyMocks();
 }
 
@@ -541,7 +541,7 @@ TestGroupDownload::testResumeAllDownloads() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::PAUSE));
-        EXPECT_CALL(*down, resumeDownload())
+        EXPECT_CALL(*down, resumeTransfer())
             .Times(1);
         index++;
     }
@@ -560,7 +560,7 @@ TestGroupDownload::testResumeAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -601,7 +601,7 @@ TestGroupDownload::testResumeWithFinished() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::PAUSE));
-        EXPECT_CALL(*downs[index], resumeDownload())
+        EXPECT_CALL(*downs[index], resumeTransfer())
             .Times(1);
     }
 
@@ -614,7 +614,7 @@ TestGroupDownload::testResumeWithFinished() {
     EXPECT_CALL(*downs[0], state())
         .Times(1)
         .WillOnce(Return(Download::FINISH));
-    EXPECT_CALL(*downs[0], resumeDownload())
+    EXPECT_CALL(*downs[0], resumeTransfer())
         .Times(0);
 
     QList<GroupDownloadStruct> downloadsStruct;
@@ -631,7 +631,7 @@ TestGroupDownload::testResumeWithFinished() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -672,7 +672,7 @@ TestGroupDownload::testResumeWidhCancel() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::PAUSE));
-        EXPECT_CALL(*downs[index], resumeDownload())
+        EXPECT_CALL(*downs[index], resumeTransfer())
             .Times(1);
     }
 
@@ -685,7 +685,7 @@ TestGroupDownload::testResumeWidhCancel() {
     EXPECT_CALL(*downs[0], state())
         .Times(1)
         .WillOnce(Return(Download::CANCEL));
-    EXPECT_CALL(*downs[0], resumeDownload())
+    EXPECT_CALL(*downs[0], resumeTransfer())
         .Times(0);
 
     QList<GroupDownloadStruct> downloadsStruct;
@@ -702,7 +702,7 @@ TestGroupDownload::testResumeWidhCancel() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -745,7 +745,7 @@ TestGroupDownload::testResumeNoStarted() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::IDLE));
-        EXPECT_CALL(*down, resumeDownload())
+        EXPECT_CALL(*down, resumeTransfer())
             .Times(0);
         index++;
     }
@@ -764,7 +764,7 @@ TestGroupDownload::testResumeNoStarted() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->resumeDownload();
+    group->resumeTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -780,7 +780,7 @@ TestGroupDownload::testStartNoDownloads() {
         _rootPath, downloads, _algo,
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
-    group->startDownload();
+    group->startTransfer();
 }
 
 void
@@ -818,7 +818,7 @@ TestGroupDownload::testStartAllDownloads() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::IDLE));
-        EXPECT_CALL(*down, startDownload())
+        EXPECT_CALL(*down, startTransfer())
             .Times(1);
         index++;
     }
@@ -837,7 +837,7 @@ TestGroupDownload::testStartAllDownloads() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -880,7 +880,7 @@ TestGroupDownload::testStartAlreadyStarted() {
         EXPECT_CALL(*down, state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*down, startDownload())
+        EXPECT_CALL(*down, startTransfer())
             .Times(0);
         index++;
     }
@@ -899,7 +899,7 @@ TestGroupDownload::testStartAlreadyStarted() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -940,7 +940,7 @@ TestGroupDownload::testStartFinished() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::IDLE));
-        EXPECT_CALL(*downs[index], startDownload())
+        EXPECT_CALL(*downs[index], startTransfer())
             .Times(1);
     }
 
@@ -953,7 +953,7 @@ TestGroupDownload::testStartFinished() {
     EXPECT_CALL(*downs[0], state())
         .Times(1)
         .WillOnce(Return(Download::FINISH));
-    EXPECT_CALL(*downs[0], startDownload())
+    EXPECT_CALL(*downs[0], startTransfer())
         .Times(0);
 
     QList<GroupDownloadStruct> downloadsStruct;
@@ -970,7 +970,7 @@ TestGroupDownload::testStartFinished() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -1011,7 +1011,7 @@ TestGroupDownload::testStartCancel() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::IDLE));
-        EXPECT_CALL(*downs[index], startDownload())
+        EXPECT_CALL(*downs[index], startTransfer())
             .Times(1);
     }
 
@@ -1024,7 +1024,7 @@ TestGroupDownload::testStartCancel() {
     EXPECT_CALL(*downs[0], state())
         .Times(1)
         .WillOnce(Return(Download::CANCEL));
-    EXPECT_CALL(*downs[0], startDownload())
+    EXPECT_CALL(*downs[0], startTransfer())
         .Times(0);
 
     QList<GroupDownloadStruct> downloadsStruct;
@@ -1041,7 +1041,7 @@ TestGroupDownload::testStartCancel() {
         _isGSMDownloadAllowed, _metadata, _headers,
         _factory, _fileManager));
 
-    group->startDownload();
+    group->startTransfer();
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -1168,7 +1168,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
         EXPECT_CALL(*downs[index], state())
             .Times(1)
             .WillOnce(Return(Download::START));
-        EXPECT_CALL(*downs[index], cancelDownload())
+        EXPECT_CALL(*downs[index], cancelTransfer())
             .Times(1);
     }
 
@@ -1254,7 +1254,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     EXPECT_CALL(*second, state())
         .Times(1)
         .WillOnce(Return(Download::START));
-    EXPECT_CALL(*second, cancelDownload())
+    EXPECT_CALL(*second, cancelTransfer())
         .Times(1);
 
     // we are going to tell the last download to finish
@@ -1267,7 +1267,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     EXPECT_CALL(*third, state())
         .Times(1)
         .WillOnce(Return(Download::FINISH));
-    EXPECT_CALL(*third, cancelDownload())
+    EXPECT_CALL(*third, cancelTransfer())
         .Times(0);
 
     EXPECT_CALL(*_fileManager, remove(finishedPath))
@@ -1477,7 +1477,7 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
     SignalBarrier startedSpy(group.data(), SIGNAL(started(bool)));
     SignalBarrier finishedSpy(group.data(), SIGNAL(finished(QStringList)));
 
-    group->startDownload();
+    group->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
     QCOMPARE(startedSpy.count(), 1);
     QVERIFY(finishedSpy.ensureSignalEmitted());

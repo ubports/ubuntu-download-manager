@@ -36,7 +36,7 @@ TestBaseDownload::testStartQueued() {
         new MockDownload(_id, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
     down->start();
-    EXPECT_CALL(*down.data(), startDownload())
+    EXPECT_CALL(*down.data(), startTransfer())
             .Times(0);
 
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
@@ -49,7 +49,7 @@ TestBaseDownload::testStartNotQueued() {
             _metadata, _headers));
     down->setAddToQueue(false);
 
-    EXPECT_CALL(*down.data(), startDownload())
+    EXPECT_CALL(*down.data(), startTransfer())
             .Times(1);
 
     down->start();
@@ -63,7 +63,7 @@ TestBaseDownload::testPauseQueued() {
         new MockDownload(_id, _path, _isConfined, _rootPath, _url,
             _metadata, _headers));
 
-    EXPECT_CALL(*down.data(), pauseDownload())
+    EXPECT_CALL(*down.data(), pauseTransfer())
             .Times(0);
 
     down->pause();
@@ -78,7 +78,7 @@ TestBaseDownload::testPauseNotQueued() {
             _metadata, _headers));
     down->setAddToQueue(false);
 
-    EXPECT_CALL(*down.data(), pauseDownload())
+    EXPECT_CALL(*down.data(), pauseTransfer())
             .Times(1);
 
     down->pause();
@@ -93,7 +93,7 @@ TestBaseDownload::testResumeQueued() {
             _metadata, _headers));
     down->resume();
 
-    EXPECT_CALL(*down.data(), resumeDownload())
+    EXPECT_CALL(*down.data(), resumeTransfer())
             .Times(0);
 
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
@@ -106,7 +106,7 @@ TestBaseDownload::testResumeNotQueued() {
             _metadata, _headers));
     down->setAddToQueue(false);
 
-    EXPECT_CALL(*down.data(), resumeDownload())
+    EXPECT_CALL(*down.data(), resumeTransfer())
             .Times(1);
 
     down->resume();
@@ -121,7 +121,7 @@ TestBaseDownload::testCancelQueued() {
             _metadata, _headers));
     down->cancel();
 
-    EXPECT_CALL(*down.data(), cancelDownload())
+    EXPECT_CALL(*down.data(), cancelTransfer())
             .Times(0);
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
 }
@@ -133,7 +133,7 @@ TestBaseDownload::testCancelNotQueued() {
             _metadata, _headers));
     down->setAddToQueue(false);
 
-    EXPECT_CALL(*down.data(), cancelDownload())
+    EXPECT_CALL(*down.data(), cancelTransfer())
             .Times(1);
 
     down->cancel();

@@ -96,14 +96,29 @@ Transfer::isValid() const {
     return _isValid;
 }
 
+QString
+Transfer::lastError() const {
+    return _lastError;
+}
+
 bool
 Transfer::addToQueue() const {
     return _addToQueue;
 }
 
 void
+Transfer::setIsValid(bool isValid) {
+    _isValid = isValid;
+}
+
+void
 Transfer::setAddToQueue(bool addToQueue) {
     _addToQueue = addToQueue;
+}
+
+void
+Transfer::setLastError(const QString& lastError) {
+    _lastError = lastError;
 }
 
 void
@@ -120,7 +135,7 @@ Transfer::throttle() {
 }
 
 void
-Transfer::allowGSMDownload(bool allowed) {
+Transfer::allowGSMData(bool allowed) {
     if (_allowMobileData != allowed) {
         _allowMobileData = allowed;
         // emit the signals so that they q knows what to do
@@ -129,7 +144,7 @@ Transfer::allowGSMDownload(bool allowed) {
 }
 
 bool
-Transfer::isGSMDownloadAllowed() {
+Transfer::isGSMDataAllowed() {
     return _allowMobileData;
 }
 

@@ -63,7 +63,7 @@ TestDownloadFactory::testCreateDownload() {
     QScopedPointer<Download> download(_downFactory->createDownload("",
         QUrl(), QVariantMap(), QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
@@ -88,7 +88,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
         hash, algo, QVariantMap(), QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     // no need to worry about the pointer because it will be
@@ -146,7 +146,7 @@ TestDownloadFactory::testCreateGroupDownload() {
         QList<GroupDownloadStruct>(), "Md5",
         true, QVariantMap(), QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     auto group = qobject_cast<GroupDownload*>(download.data());
@@ -174,7 +174,7 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
     QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
         metadata, QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
@@ -202,7 +202,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QScopedPointer<Download> download(_downFactory->createDownload("", QUrl(),
         hash, algo, metadata, QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     // not to worry, QSCopedPointer will take care of the pointer
@@ -235,7 +235,7 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
         QList<GroupDownloadStruct>(), "Md5",
         true, metadata, QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
@@ -252,7 +252,7 @@ TestDownloadFactory::testCreateDownloadForGroup() {
     QScopedPointer<Download> download(_downFactory->createDownloadForGroup(
         true, "", QUrl(), QVariantMap(), QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
@@ -273,7 +273,7 @@ TestDownloadFactory::testCreateDownloadForGroupWithHash() {
         true, "", QUrl(), hash, algo, QVariantMap(),
         QMap<QString, QString>()));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), busPath);
 
     auto single = reinterpret_cast<FileDownload*>(download.data());

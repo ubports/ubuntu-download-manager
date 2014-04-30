@@ -166,7 +166,7 @@ GroupDownload::cancelAllDownloads() {
         if (state != Download::FINISH && state != Download::ERROR
                 && state != Download::CANCEL) {
             download->cancel();
-            download->cancelDownload();
+            download->cancelTransfer();
         }
     }
 
@@ -178,7 +178,7 @@ GroupDownload::cancelAllDownloads() {
 }
 
 void
-GroupDownload::cancelDownload() {
+GroupDownload::cancelTransfer() {
     TRACE;
     cancelAllDownloads();
     GROUP_LOG(INFO) << "EMIT canceled";
@@ -186,14 +186,14 @@ GroupDownload::cancelDownload() {
 }
 
 void
-GroupDownload::pauseDownload() {
+GroupDownload::pauseTransfer() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::START || state == Download::RESUME) {
             GROUP_LOG(INFO) << "Pausing download of "
                 << download->url();
             download->pause();
-            download->pauseDownload();
+            download->pauseTransfer();
         }
     }
     GROUP_LOG(INFO) << "EMIT paused";
@@ -201,12 +201,12 @@ GroupDownload::pauseDownload() {
 }
 
 void
-GroupDownload::resumeDownload() {
+GroupDownload::resumeTransfer() {
     foreach(FileDownload* download, _downloads) {
         Download::State state = download->state();
         if (state == Download::PAUSE) {
             download->resume();
-            download->resumeDownload();
+            download->resumeTransfer();
         }
     }
     GROUP_LOG(INFO) << "EMIT resumed";
@@ -214,13 +214,13 @@ GroupDownload::resumeDownload() {
 }
 
 void
-GroupDownload::startDownload() {
+GroupDownload::startTransfer() {
     if (_downloads.count() > 0) {
         foreach(FileDownload* download, _downloads) {
             Download::State state = download->state();
             if (state == Download::IDLE) {
                 download->start();
-                download->startDownload();
+                download->startTransfer();
             }
         }
         GROUP_LOG(INFO) << "EMIT started";
@@ -286,7 +286,7 @@ void
 GroupDownload::onCanceled() {
     // one of the file was canceled therefore we are going to
     // cancel all of them
-    cancelDownload();
+    cancelTransfer();
 }
 
 QString

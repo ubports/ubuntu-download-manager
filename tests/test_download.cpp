@@ -112,7 +112,7 @@ TestDownload::testNoHashConstructor() {
     // assert that we did set the initial state correctly
     // gets for internal state
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->state(), Download::IDLE);
@@ -157,7 +157,7 @@ TestDownload::testHashConstructor() {
     QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
         _rootPath, url, hash, algo, _metadata, _headers));
 
-    QCOMPARE(download->downloadId(), id);
+    QCOMPARE(download->transferId(), id);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
@@ -289,7 +289,7 @@ TestDownload::testProgress() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     reply->downloadProgress(received, qulonglong(total));
 
@@ -377,7 +377,7 @@ TestDownload::testProgressNotKnownSize() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     emit reply->downloadProgress(received, total);
 
@@ -455,7 +455,7 @@ TestDownload::testTotalSize() {
 
     // start the download so that we do have access to the reply
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // assert that the total size is just set once
     // by emitting two signals with diff sizes
@@ -555,7 +555,7 @@ TestDownload::testSetThrottle() {
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     download->setThrottle(speed);
     QCOMPARE(speed, download->throttle());
 
@@ -661,7 +661,7 @@ TestDownload::testCanDownloadGSM() {
     QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(true);
-    QVERIFY(download->canDownload());
+    QVERIFY(download->canTransfer());
     verifyMocks();
 }
 
@@ -712,7 +712,7 @@ TestDownload::testCanDownloadNoGSM() {
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(false);
 
-    QCOMPARE(result, download->canDownload());
+    QCOMPARE(result, download->canTransfer());
     verifyMocks();
 }
 
@@ -822,12 +822,10 @@ TestDownload::testCancelDownload() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
-
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
-
     download->cancel();  // change state
-    download->cancelDownload();  // method under test
+    download->cancelTransfer();  // method under test
     QVERIFY(spy.ensureSignalEmitted());
 
     // assert that method was indeed called
@@ -853,7 +851,7 @@ TestDownload::testCancelDownloadNotStarted() {
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
 
     download->cancel();  // change state
-    download->cancelDownload();  // method under test
+    download->cancelTransfer();  // method under test
 
     QVERIFY(spy.ensureSignalEmitted());
 
@@ -915,12 +913,10 @@ TestDownload::testPauseDownload() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
-
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
-
     download->pause();  // change state
-    download->pauseDownload();  // method under test
+    download->pauseTransfer();  // method under test
 
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
@@ -945,7 +941,7 @@ TestDownload::testPauseDownloadNotStarted() {
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
 
     download->pause();
-    download->pauseDownload();
+    download->pauseTransfer();
 
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
@@ -993,11 +989,10 @@ TestDownload::testResumeRunning() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
-
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
 
     QVERIFY(spy.ensureSignalEmitted());
 
@@ -1084,13 +1079,13 @@ TestDownload::testResumeDownload() {
     SignalBarrier resumedSpy(download, SIGNAL(resumed(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
     download->pause();
-    download->pauseDownload();
+    download->pauseTransfer();
     QVERIFY(pausedSpy.ensureSignalEmitted());
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
     QVERIFY(resumedSpy.ensureSignalEmitted());
 
     QCOMPARE(1, pausedSpy.count());
@@ -1149,7 +1144,7 @@ TestDownload::testStartDownload() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(1, spy.count());
@@ -1202,8 +1197,8 @@ TestDownload::testStartDownloadAlreadyStarted() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
-    download->startDownload();
+    download->startTransfer();
+    download->startTransfer();
 
     QVERIFY(spy.ensureSignalEmitted());
 
@@ -1267,7 +1262,7 @@ TestDownload::testOnSuccessNoHash() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised
@@ -1348,7 +1343,7 @@ TestDownload::testOnSuccessHashError() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     emit reply->finished();
@@ -1434,7 +1429,7 @@ TestDownload::testOnSuccessHash() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     emit reply->finished();
@@ -1514,7 +1509,7 @@ TestDownload::testOnHttpError() {
     SignalBarrier httpErrorSpy(download, SIGNAL(httpError(HttpErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the error and ensure that the signals are raised
@@ -1572,7 +1567,7 @@ TestDownload::testOnSslError() {
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     QList<QSslError> errors;
@@ -1647,7 +1642,7 @@ TestDownload::testOnNetworkError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the error and ensure that the signals are raised
@@ -1713,7 +1708,7 @@ TestDownload::testOnAuthError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the error and ensure that the signals are raised
@@ -1783,7 +1778,7 @@ TestDownload::testOnProxyAuthError() {
         SIGNAL(networkError(NetworkErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the error and ensure that the signals are raised
@@ -1863,7 +1858,7 @@ TestDownload::testSetRawHeadersStart() {
         _isConfined, _rootPath, _url, _metadata, headers);
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     delete download;
 
@@ -1939,7 +1934,7 @@ TestDownload::testSetRawHeadersWithRangeStart() {
         _isConfined, _rootPath, _url, _metadata, headers);
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     delete download;
 
@@ -2045,13 +2040,13 @@ TestDownload::testSetRawHeadersResume() {
     SignalBarrier resumedSpy(download, SIGNAL(resumed(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
     download->pause();
-    download->pauseDownload();
+    download->pauseTransfer();
     QVERIFY(pausedSpy.ensureSignalEmitted());
     download->resume();
-    download->resumeDownload();
+    download->resumeTransfer();
     QVERIFY(resumedSpy.ensureSignalEmitted());
 
     delete download;
@@ -2143,7 +2138,7 @@ TestDownload::testProcessExecutedNoParams() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(startedSpy.ensureSignalEmitted());
 
@@ -2250,7 +2245,7 @@ TestDownload::testProcessExecutedWithParams() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(startedSpy.ensureSignalEmitted());
 
@@ -2366,7 +2361,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // emit the finish signal and expect it to be raised
     emit reply->finished();
@@ -2456,8 +2451,7 @@ TestDownload::testProcessFinishedWithError() {
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
-    
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised
@@ -2575,7 +2569,7 @@ TestDownload::testProcessError() {
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(startedSpy.ensureSignalEmitted());
 
@@ -2668,7 +2662,7 @@ TestDownload::testProcessFinishedCrash() {
         SIGNAL(processError(ProcessErrorStruct)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(startedSpy.ensureSignalEmitted());
 
@@ -2732,7 +2726,7 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
         SIGNAL(started(bool)));  // NOLINT(readability/function)
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QCOMPARE(1, spy.count());
     auto arguments = spy.takeFirst();
@@ -2794,7 +2788,7 @@ TestDownload::testSslErrorsIgnored() {
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     QVERIFY(startedSpy.ensureSignalEmitted());
 
@@ -2856,7 +2850,7 @@ TestDownload::testSslErrorsNotIgnored() {
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     SignalBarrier stateSpy(download, SIGNAL(stateChanged()));
     QVERIFY(startedSpy.ensureSignalEmitted());
@@ -3162,7 +3156,7 @@ TestDownload::testProcessingJustOnce() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
 
     // makes the process to be executed
     reply->finished();
@@ -3230,7 +3224,7 @@ TestDownload::testFileSystemErrorProgress() {
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     reply->downloadProgress(0, 13);  // emit progress so that we try to write
@@ -3307,10 +3301,10 @@ TestDownload::testFileSystemErrorPause() {
     SignalBarrier pausedSpy(download, SIGNAL(paused(bool)));
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
     download->pause();
-    download->pauseDownload();
+    download->pauseTransfer();
     QVERIFY(pausedSpy.ensureSignalEmitted());
 
     // assert that the error signal is emitted
@@ -3394,7 +3388,7 @@ TestDownload::testRedirectCycle() {
     SignalBarrier pausedSpy(download, SIGNAL(paused(bool)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit finished and an errors should be emitted
@@ -3483,7 +3477,7 @@ TestDownload::testSingleRedirect() {
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
     download->start();
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     firstReply->finished();
@@ -3636,7 +3630,7 @@ TestDownload::testProcessFinishUnlocksPath() {
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
 
     download->start();  // change state
-    download->startDownload();
+    download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
     // emit the finish signal and expect it to be raised

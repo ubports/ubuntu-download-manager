@@ -20,7 +20,7 @@
 
 TestingFileDownload::TestingFileDownload(FileDownload* down,
                                          QObject* parent)
-    : FileDownload(down->downloadId(),
+    : FileDownload(down->transferId(),
                    down->path(),
                    down->isConfined(),
                    down->rootPath(),
@@ -221,22 +221,22 @@ TestingFileDownload::start() {
 }
 
 void
-TestingFileDownload::cancelDownload() {
-    _down->cancelDownload();
+TestingFileDownload::cancelTransfer() {
+    _down->cancelTransfer();
 }
 
 void
-TestingFileDownload::pauseDownload() {
-    _down->pauseDownload();
+TestingFileDownload::pauseTransfer() {
+    _down->pauseTransfer();
 }
 
 void
-TestingFileDownload::resumeDownload() {
-    _down->resumeDownload();
+TestingFileDownload::resumeTransfer() {
+    _down->resumeTransfer();
 }
 
 void
-TestingFileDownload::startDownload() {
+TestingFileDownload::startTransfer() {
      qDebug() << "Start testing down";
-    _down->startDownload();
+    _down->startTransfer();
 }

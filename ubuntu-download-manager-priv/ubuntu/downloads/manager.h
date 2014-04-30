@@ -23,13 +23,13 @@
 #include <QByteArray>
 #include <QtDBus/QDBusObjectPath>
 #include <QSslCertificate>
-#include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
+#include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/transfers/base_manager.h"
 #include "ubuntu/transfers/system/application.h"
 #include "download.h"
 #include "downloads_db.h"
-#include "queue.h"
 #include "factory.h"
 
 namespace Ubuntu {

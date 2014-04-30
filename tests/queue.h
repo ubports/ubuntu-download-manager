@@ -18,23 +18,24 @@
 
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
+#include <QSharedPointer>
+#include <ubuntu/transfers/queue.h>
 
-#include <ubuntu/downloads/queue.h>
 #include <gmock/gmock.h>
 
-using namespace Ubuntu::DownloadManager::Daemon;
+using namespace Ubuntu::Transfers;
 
 class MockDownloadQueue : public Queue {
  public:
-    MOCK_METHOD1(add, void(Download*));
-    MOCK_METHOD0(currentDownload, QString());
+    MOCK_METHOD1(add, void(Transfer*));
+    MOCK_METHOD0(currentTransfer, QString());
     MOCK_METHOD0(paths, QStringList());
-    MOCK_METHOD0(downloads, QHash<QString, Download*>());
+    MOCK_METHOD0(transfers, QHash<QString, Transfer*>());
     MOCK_METHOD0(size, int());
 
     using Queue::currentChanged;
-    using Queue::downloadAdded;
-    using Queue::downloadRemoved;
+    using Queue::transferAdded;
+    using Queue::transferRemoved;
 };
 
 #endif  // FAKE_DOWNLOAD_QUEUE_H

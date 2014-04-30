@@ -54,15 +54,17 @@ class MockDownload : public FileDownload {
     MOCK_METHOD0(canDownload, bool());
     MOCK_METHOD1(setThrottle, void(qulonglong));
     MOCK_METHOD0(throttle, qulonglong());
-    MOCK_METHOD0(cancelDownload, void());
-    MOCK_METHOD0(pauseDownload, void());
-    MOCK_METHOD0(resumeDownload, void());
-    MOCK_METHOD0(startDownload, void());
+    MOCK_METHOD0(cancelTransfer, void());
+    MOCK_METHOD0(pauseTransfer, void());
+    MOCK_METHOD0(resumeTransfer, void());
+    MOCK_METHOD0(startTransfer, void());
     MOCK_CONST_METHOD0(isValid, bool());
     MOCK_CONST_METHOD0(filePath, QString());
-    MOCK_CONST_METHOD0(state, Download::State());
+    MOCK_CONST_METHOD0(state, Transfer::State());
     MOCK_CONST_METHOD0(path, QString());
     MOCK_CONST_METHOD0(metadata, QVariantMap());
+    MOCK_METHOD1(allowGSMDownload, void(bool));
+    MOCK_METHOD0(isGSMDownloadAllowed, bool());
 
     // useful methods to emit signals
     using FileDownload::finished;
@@ -72,6 +74,7 @@ class MockDownload : public FileDownload {
     using FileDownload::processError;
 
     using Download::setAddToQueue;
+
     using Download::error;
 };
 

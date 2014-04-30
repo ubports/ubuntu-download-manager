@@ -17,7 +17,7 @@
  */
 
 #include <QDebug>
-#include <ubuntu/downloads/queue.h>
+#include <ubuntu/transfers/queue.h>
 #include <ubuntu/downloads/download.h>
 #include <ubuntu/downloads/download_adaptor.h>
 #include <ubuntu/downloads/file_download.h>
@@ -30,8 +30,8 @@ TestingManager::returnDBusErrors(bool errors) {
     _returnErrors = errors;
     // set all the downloads to return errors
     auto q = queue();
-    foreach(Download* down, q->downloads().values()) {
-        auto testDown = qobject_cast<TestingFileDownload*>(down);
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
         if (testDown != nullptr) {
             testDown->returnDBusErrors(errors);
         }
@@ -42,8 +42,8 @@ void
 TestingManager::returnHttpError(const QString &download,
                                 HttpErrorStruct error) {
     auto q = queue();
-    foreach(Download* down, q->downloads().values()) {
-        auto testDown = qobject_cast<TestingFileDownload*>(down);
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
         if (testDown != nullptr && testDown->url() == download) {
             testDown->returnHttpError(error);
         }
@@ -54,8 +54,8 @@ void
 TestingManager::returnNetworkError(const QString &download,
                                    NetworkErrorStruct error) {
     auto q = queue();
-    foreach(Download* down, q->downloads().values()) {
-        auto testDown = qobject_cast<TestingFileDownload*>(down);
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
         if (testDown != nullptr && testDown->url() == download) {
             testDown->returnNetworkError(error);
         }
@@ -66,8 +66,8 @@ void
 TestingManager::returnProcessError(const QString &download,
                                    ProcessErrorStruct error) {
     auto q = queue();
-    foreach(Download* down, q->downloads().values()) {
-        auto testDown = qobject_cast<TestingFileDownload*>(down);
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
         if (testDown != nullptr && testDown->url() == download) {
             testDown->returnProcessError(error);
         }
@@ -78,8 +78,8 @@ void
 TestingManager::returnAuthError(const QString &download,
                                 AuthErrorStruct error) {
     auto q = queue();
-    foreach(Download* down, q->downloads().values()) {
-        auto testDown = qobject_cast<TestingFileDownload*>(down);
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
         if (testDown != nullptr && testDown->url() == download) {
             testDown->returnAuthError(error);
         }

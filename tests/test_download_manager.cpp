@@ -43,6 +43,7 @@ TestDownloadManager::init() {
     _requestFactory = new MockRequestFactory();
     RequestFactory::setInstance(_requestFactory);
     _factory = new MockDownloadFactory();
+    qDebug() << "MOCK QUEUE" << _q;
     _man = new DownloadManager(_app, _conn, _factory, _q);
 }
 
@@ -151,7 +152,7 @@ TestDownloadManager::testCreateDownload() {
         .Times(1);
 
     EXPECT_CALL(*down.data(), path())
-        .Times(2)
+        .Times(1)
         .WillRepeatedly(Return(dbusPath));
 
     // expected actions performed by the db
@@ -245,8 +246,11 @@ TestDownloadManager::testCreateDownloadWithHash() {
     EXPECT_CALL(*down.data(), setThrottle(_man->defaultThrottle()))
         .Times(1);
 
+    EXPECT_CALL(*down.data(), allowGSMDownload(_))
+        .Times(1);
+
     EXPECT_CALL(*down.data(), path())
-        .Times(2)
+        .Times(1)
         .WillRepeatedly(Return(dbusPath));
 
     // expected actions performed by the db
@@ -309,7 +313,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         QUrl("http://ubuntu.com"), metadata, headers));
     QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
         QUrl("http://reddit.com"), metadata, headers));
-    QHash<QString, Download*> downs;
+    QHash<QString, Transfer*> downs;
     downs[validPath] = first.data();
     downs["/second/object/path"] = second.data();
     downs["/third/object/path"] = third.data();
@@ -326,7 +330,7 @@ TestDownloadManager::testAllDownloadsWithMetadata() {
         .Times(1)
         .WillRepeatedly(Return(metadata));
 
-    EXPECT_CALL(*_q, downloads())
+    EXPECT_CALL(*_q, transfers())
         .Times(1)
         .WillRepeatedly(Return(downs));
 
@@ -352,9 +356,9 @@ TestDownloadManager::testSetThrottleNotDownloads() {
     QFETCH(qulonglong, speed);
 
     // return no downloads
-    EXPECT_CALL(*_q, downloads())
+    EXPECT_CALL(*_q, transfers())
         .Times(1)
-        .WillRepeatedly(Return(QHash<QString, Download*>()));
+        .WillRepeatedly(Return(QHash<QString, Transfer*>()));
 
     _man->setDefaultThrottle(speed);
     QCOMPARE(_man->defaultThrottle(), speed);
@@ -382,14 +386,13 @@ TestDownloadManager::testSetThrottleWithDownloads() {
         QUrl("http://ubuntu.com"), metadata, headers));
     QScopedPointer<MockDownload> third(new MockDownload("", "", "", "",
         QUrl("http://reddit.com"), metadata, headers));
-    QHash<QString, Download*> downs;
+    QHash<QString, Transfer*> downs;
     downs["/first/object/path"] = first.data();
     downs["/second/object/path"] = second.data();
     downs["/third/object/path"] = third.data();
 
     // set expectations
-    EXPECT_CALL(*_q, downloads())
-        .Times(1)
+    EXPECT_CALL(*_q, transfers())
         .WillRepeatedly(Return(downs));
 
     foreach(auto key, downs.keys()) {
@@ -427,7 +430,7 @@ TestDownloadManager::testSizeChangedEmittedOnAddition() {
         .Times(1)
         .WillRepeatedly(Return(size));
 
-    _q->downloadAdded("");
+    _q->transferAdded("");
 
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
@@ -456,7 +459,7 @@ TestDownloadManager::testSizeChangedEmittedOnRemoval() {
         .Times(1)
         .WillRepeatedly(Return(size));
 
-    _q->downloadRemoved("");
+    _q->transferRemoved("");
 
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);

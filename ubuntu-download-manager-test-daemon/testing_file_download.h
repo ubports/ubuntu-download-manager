@@ -58,10 +58,10 @@ class TestingFileDownload : public FileDownload, public QDBusContext {
     void resume() override;
     void start() override;
 
-    void cancelDownload() override;
-    void pauseDownload() override;
-    void resumeDownload() override;
-    void startDownload() override;
+    void cancelTransfer() override;
+    void pauseTransfer() override;
+    void resumeTransfer() override;
+    void startTransfer() override;
 
  private:
     bool _returnErrors = false;

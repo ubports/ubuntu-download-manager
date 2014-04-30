@@ -14,7 +14,6 @@ set(SOURCES
 	ubuntu/downloads/group_download_adaptor.cpp
 	ubuntu/downloads/manager.cpp
 	ubuntu/downloads/mms_file_download.cpp
-	ubuntu/downloads/queue.cpp
 	ubuntu/downloads/sm_file_download.cpp
 	ubuntu/downloads/state_machines/download_sm.cpp
 	ubuntu/downloads/state_machines/final_state.cpp
@@ -35,7 +34,6 @@ set(HEADERS
 	ubuntu/downloads/group_download_adaptor.h
 	ubuntu/downloads/manager.h
 	ubuntu/downloads/mms_file_download.h
-	ubuntu/downloads/queue.h
 	ubuntu/downloads/sm_file_download.h
 	ubuntu/downloads/state_machines/download_sm.h
 	ubuntu/downloads/state_machines/final_state.h
