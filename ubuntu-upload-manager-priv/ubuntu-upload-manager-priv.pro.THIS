@@ -14,6 +14,7 @@ SOURCES += \
     ubuntu/uploads/daemon.cpp \
     ubuntu/uploads/manager.cpp \
     ubuntu/uploads/file_upload.cpp \
+    ubuntu/uploads/mms_file_upload.cpp \
     ubuntu/uploads/upload_manager_factory.cpp \
     ubuntu/uploads/upload_adaptor_factory.cpp \
     ubuntu/uploads/upload_adaptor.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     ubuntu/uploads/daemon.h \
     ubuntu/uploads/manager.h \
     ubuntu/uploads/file_upload.h \
+    ubuntu/uploads/mms_file_upload.h \
     ubuntu/uploads/upload_manager_factory.h \
     ubuntu/uploads/upload_adaptor_factory.h \
     ubuntu/uploads/upload_adaptor.h \
