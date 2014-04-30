@@ -81,6 +81,7 @@ class GroupDownload : public Download {
     void onProgress(qulonglong received, qulonglong total);
     void onFinished(const QString& file);
     void onError(const QString& error);
+    void onCanceled();
     void onAuthError(AuthErrorStruct err);
     void onHttpError(HttpErrorStruct err);
     void onNetworkError(NetworkErrorStruct err);

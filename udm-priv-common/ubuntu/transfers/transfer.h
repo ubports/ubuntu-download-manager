@@ -45,22 +45,22 @@ class Transfer : public QObject {
              bool isConfined,
              QObject* parent = 0);
 
-    QString transferId() const;
-    QString path() const;
-    bool isConfined() const;
+    virtual QString transferId() const;
+    virtual QString path() const;
+    virtual bool isConfined() const;
     virtual Transfer::State state() const;
-    void setState(Transfer::State state);
+    virtual void setState(Transfer::State state);
     virtual bool canTransfer();
     virtual bool isValid() const;
-    bool addToQueue() const;
-    void setAddToQueue(bool addToQueue);
+    virtual bool addToQueue() const;
+    virtual void setAddToQueue(bool addToQueue);
 
     // methods to be overridden by the children
-    virtual bool pausable() = 0;
-    virtual void cancelTransfer() = 0;
-    virtual void pauseTransfer() = 0;
-    virtual void resumeTransfer() = 0;
-    virtual void startTransfer() = 0;
+    virtual bool pausable() { return false; }
+    virtual void cancelTransfer() {}
+    virtual void pauseTransfer() {}
+    virtual void resumeTransfer() {}
+    virtual void startTransfer() {}
 
  public slots:  // NOLINT(whitespace/indent)
 

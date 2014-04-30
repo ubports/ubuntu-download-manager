@@ -1,3 +1,5 @@
+pkg_check_modules(GLOG libglog)
+
 set(TARGET udm-common)
 
 set(SOURCES
@@ -48,6 +50,8 @@ set_target_properties(
 
 target_link_libraries(${TARGET}
 	${Qt5DBus_LIBRARIES}
+	${Qt5Network_LIBRARIES}
+	glog
 )
 
 configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc @ONLY)

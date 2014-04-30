@@ -39,17 +39,17 @@ class File : public QObject {
     virtual ~File();
 
     // wrappers around the used QFile methods
-    void close();
+    virtual void close();
     virtual QFile::FileError error() const;  // virtual for testing purposes
-    QString fileName() const;
+    virtual QString fileName() const;
     virtual bool flush();  // virtual for testing purposes
-    bool open(QIODevice::OpenMode mode);
-    QByteArray readAll();
-    bool remove();
-    bool reset();
-    qint64 size() const;
-    qint64 write(const QByteArray& byteArray);
-    QIODevice* device();
+    virtual bool open(QIODevice::OpenMode mode);
+    virtual QByteArray readAll();
+    virtual bool remove();
+    virtual bool reset();
+    virtual qint64 size() const;
+    virtual qint64 write(const QByteArray& byteArray);
+    virtual QIODevice* device();
 
  protected:
     explicit File(const QString& name);

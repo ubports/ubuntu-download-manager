@@ -71,6 +71,9 @@ GroupDownload::connectToDownloadSignals(FileDownload* singleDownload) {
     CHECK(connect(singleDownload, &FileDownload::processing,
         this, &GroupDownload::processing))
             << "Could not connect to signal";
+    CHECK(connect(singleDownload, &FileDownload::canceled,
+        this, &GroupDownload::onCanceled))
+            << "Could not connect to signal";
 
     // connect to the error signals
     CHECK(connect(singleDownload, &Download::error,
@@ -114,10 +117,10 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
                 _downFactory->createDownloadForGroup(isConfined(),
                     rootPath(), url, downloadMetadata, headersMap));
         } else {
-
             if (!HashAlgorithm::isValidAlgo(algo)) {
                 setIsValid(false);
                 setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+                break;
             }
 
             singleDownload = qobject_cast<FileDownload*>(
@@ -277,6 +280,13 @@ GroupDownload::onError(const QString& error) {
 
     GROUP_LOG(INFO) << "EMIT error " << errorMsg;
     emitError(errorMsg);
+}
+
+void
+GroupDownload::onCanceled() {
+    // one of the file was canceled therefore we are going to
+    // cancel all of them
+    cancelDownload();
 }
 
 QString

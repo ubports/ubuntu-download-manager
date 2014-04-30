@@ -42,9 +42,9 @@ class Queue : public QObject {
     virtual void add(Download* download);
 
     // accessors for useful info
-    QString currentDownload();
-    QStringList paths();
-    QHash<QString, Download*> downloads();
+    virtual QString currentDownload();
+    virtual QStringList paths();
+    virtual QHash<QString, Download*> downloads();
     virtual int size();
 
  signals:

@@ -90,12 +90,9 @@ class Factory : public QObject {
 
  private:
 
-    void getDownloadPath(const QString& dbusOwner,
-                         const QVariantMap& metadata,
-                         QString& id,
-                         QString& dbusPath,
-                         QString& rootPath,
-                         bool& isConfined);
+    SecurityDetails* getSecurityDetails(const QString& dbusOwner,
+                                        const QVariantMap& metadata);
+
  private:
     AppArmor* _apparmor;
 };
