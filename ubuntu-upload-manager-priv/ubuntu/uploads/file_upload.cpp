@@ -71,6 +71,16 @@ FileUpload::~FileUpload() {
     delete _reply;
 }
 
+QObject*
+FileUpload::adaptor() const {
+    return _adaptor;
+}
+
+void
+FileUpload::setAdaptor(QObject* adaptor) {
+    _adaptor = adaptor;
+}
+
 bool
 FileUpload::pausable() {
     return false;

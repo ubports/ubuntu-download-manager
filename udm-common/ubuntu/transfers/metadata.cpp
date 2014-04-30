@@ -20,7 +20,7 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Transfers {
 
 const QString Metadata::COMMAND_KEY = "post-download-command";
 const QString Metadata::COMMAND_FILE_KEY = "$file";

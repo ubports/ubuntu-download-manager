@@ -24,7 +24,7 @@
 
 namespace Ubuntu {
 
-namespace DownloadManager {
+namespace Transfers {
 
 class Metadata : public QVariantMap {
 

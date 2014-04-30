@@ -29,6 +29,7 @@ using ::testing::_;
 using ::testing::Mock;
 using ::testing::AnyNumber;
 using ::testing::Return;
+using namespace Ubuntu::Transfers;
 
 void
 TestGroupDownload::init() {

@@ -18,7 +18,7 @@
 
 #include "test_metadata.h"
 
-using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::Transfers;
 
 void
 TestMetadata::testCommnad_data() {
