@@ -1,5 +1,5 @@
 usr/include/ubuntu/upload_manager/common.h
 usr/include/ubuntu/upload_manager/metatypes.h
 usr/include/ubuntu/upload_manager/upload_struct.h
-usr/share/pkgconfig/ubuntu-upload-manager-common.pc
+usr/lib/*/pkgconfig/ubuntu-upload-manager-common.pc
 usr/lib/*/libubuntu-upload-manager-common.so

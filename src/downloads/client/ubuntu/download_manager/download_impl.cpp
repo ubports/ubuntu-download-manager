@@ -96,7 +96,7 @@ void
 DownloadImpl::start() {
     QDBusPendingCall call =
         _dbusInterface->start();
-    auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+    auto watcher = new DownloadPCW(_conn, _servicePath,
         call, this);
     Q_UNUSED(watcher);
 }
@@ -105,7 +105,7 @@ void
 DownloadImpl::pause() {
     QDBusPendingCall call =
         _dbusInterface->pause();
-    auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+    auto watcher = new DownloadPCW(_conn, _servicePath,
         call, this);
     Q_UNUSED(watcher);
 }
@@ -114,7 +114,7 @@ void
 DownloadImpl::resume() {
     QDBusPendingCall call =
         _dbusInterface->resume();
-    auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+    auto watcher = new DownloadPCW(_conn, _servicePath,
         call, this);
     Q_UNUSED(watcher);
 }
@@ -123,7 +123,7 @@ void
 DownloadImpl::cancel() {
     QDBusPendingCall call =
         _dbusInterface->cancel();
-    auto watcher = new DownloadPendingCallWatcher(_conn, _servicePath,
+    auto watcher = new DownloadPCW(_conn, _servicePath,
         call, this);
     Q_UNUSED(watcher);
 }

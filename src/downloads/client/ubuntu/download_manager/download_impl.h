@@ -44,8 +44,10 @@ class DownloadImpl : public Download {
 
     // allow the manager to create downloads
     friend class ManagerImpl;
-    friend class DownloadPendingCallWatcher;
-    friend class DownloadManagerPendingCallWatcher;
+    friend class DownloadPCW;
+    friend class MetadataDownloadsListManagerPCW;
+    friend class DownloadsListManagerPCW;
+    friend class DownloadManagerPCW;
 
  public:
     virtual ~DownloadImpl();

@@ -19,6 +19,7 @@
 #include <QDebug>
 #include <glog/logging.h>
 #include "download_impl.h"
+#include "downloads_list.h"
 #include "manager_impl.h"
 
 namespace {
@@ -66,6 +67,7 @@ ManagerImpl::init() {
     qRegisterMetaType<NetworkError*>("NetworkError*");
     qRegisterMetaType<AuthError*>("AuthError*");
     qRegisterMetaType<ProcessError*>("ProcessError*");
+    qRegisterMetaType<DownloadsList*>("DownloadsList*");
     qDBusRegisterMetaType<StringMap>();
     qDBusRegisterMetaType<DownloadStruct>();
     qDBusRegisterMetaType<GroupDownloadStruct>();
@@ -84,15 +86,8 @@ ManagerImpl::getDownloadForId(const QString& id) {
 
 void
 ManagerImpl::createDownload(DownloadStruct downStruct) {
-    QDBusPendingCall call =
-        _dbusInterface->createDownload(downStruct);
     DownloadCb cb = [](Download*) {};
-
-    auto watcher = new DownloadManagerPendingCallWatcher(_conn,
-            _servicePath, call, cb, cb, this);
-    CHECK(connect(watcher,
-        &DownloadManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    createDownload(downStruct, cb, cb);
 }
 
 void
@@ -101,10 +96,9 @@ ManagerImpl::createDownload(DownloadStruct downStruct,
                     DownloadCb errCb) {
     QDBusPendingCall call =
         _dbusInterface->createDownload(downStruct);
-    auto watcher = new DownloadManagerPendingCallWatcher(_conn,
+    auto watcher = new DownloadManagerPCW(_conn,
             _servicePath, call, cb, errCb, this);
-    CHECK(connect(watcher,
-        &DownloadManagerPendingCallWatcher::callbackExecuted,
+    CHECK(connect(watcher, &DownloadManagerPCW::callbackExecuted,
         this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 
@@ -114,16 +108,8 @@ ManagerImpl::createDownload(StructList downs,
                     bool allowed3G,
                     const QVariantMap& metadata,
                     StringMap headers) {
-    QDBusPendingCall call =
-        _dbusInterface->createDownloadGroup(downs,
-            algorithm, allowed3G, metadata, headers);
-
     GroupCb cb = [](GroupDownload*) {};
-
-    auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
-            call, cb, cb, this);
-    CHECK(connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    createDownload(downs, algorithm, allowed3G, metadata, headers, cb, cb);
 }
 
 void
@@ -137,9 +123,45 @@ ManagerImpl::createDownload(StructList downs,
     QDBusPendingCall call =
         _dbusInterface->createDownloadGroup(downs,
             algorithm, allowed3G, metadata, headers);
-    auto watcher = new GroupManagerPendingCallWatcher(_conn, _servicePath,
+    auto watcher = new GroupManagerPCW(_conn, _servicePath,
             call, cb, errCb, this);
-    CHECK(connect(watcher, &GroupManagerPendingCallWatcher::callbackExecuted,
+    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+}
+
+void
+ManagerImpl::getAllDownloads() {
+    DownloadsListCb cb = [](DownloadsList*){};
+    getAllDownloads(cb, cb);
+}
+
+void
+ManagerImpl::getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb) {
+    QDBusPendingCall call = _dbusInterface->getAllDownloads();
+    auto watcher = new DownloadsListManagerPCW(
+        _conn, _servicePath, call, cb, errCb, this);
+    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+}
+
+void
+ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
+                                         const QString &value) {
+    MetadataDownloadsListCb cb =
+        [](const QString&, const QString&, DownloadsList*){};
+    getAllDownloadsWithMetadata(name, value, cb, cb);
+}
+
+void
+ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
+                                         const QString &value,
+                                         MetadataDownloadsListCb cb,
+                                         MetadataDownloadsListCb errCb) {
+    QDBusPendingCall call = _dbusInterface->getAllDownloadsWithMetadata(
+    name, value);
+    auto watcher = new MetadataDownloadsListManagerPCW(
+        _conn, _servicePath, call, name, value, cb, errCb, this);
+    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
         this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
 }
 

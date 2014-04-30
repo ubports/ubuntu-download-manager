@@ -20,7 +20,6 @@
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_H
 
 #include <functional>
-#include <QList>
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/common.h>
@@ -33,6 +32,7 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Download;
+class DownloadsList;
 class Error;
 class GroupDownload;
 
@@ -41,6 +41,18 @@ class GroupDownload;
     the manager.
 */
 typedef std::function<void(Download*)> DownloadCb;
+
+/*!
+    Callback to be executed that takes a download list object created by
+    the manager.
+*/
+typedef std::function<void(DownloadsList*)> DownloadsListCb;
+
+/*!
+    Callback to be executed that takes a download list object created by
+    the manager for a given metadata value.
+*/
+typedef std::function<void(const QString&, const QString&, DownloadsList*)> MetadataDownloadsListCb;
 
 /*!
     Callback to be executed that takes a group download object created by
@@ -153,10 +165,59 @@ class Manager : public QObject {
                                 StringMap headers,
                                 GroupCb cb,
                                 GroupCb errCb) = 0;
+    /*!
+        \fn void getAllDownloads()
+
+        Returns all the downloads in the download manager that can be accessed
+        by the calling client. If the client is not confined all downloads are
+        returned, on the other hand if the client is confined the result will 
+        be only those downloads created by the client. The result of the method
+        is returned via the downloadsFound signal.
+    */
+    virtual void getAllDownloads() = 0;
+
+    /*!
+        \fn void getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb)
+
+        Returns all the downloads in the download manager that can be accessed
+        by the calling client. If the client is not confined all downloads are
+        returned, on the other hand if the client is confined the result will 
+        be only those downloads created by the client. If the method is a
+        success the \a cb is executed else \a errCb is executed.
+    */
+    virtual void getAllDownloads(DownloadsListCb cb,
+                                 DownloadsListCb errCb) = 0;
+    /*!
+        \fn void getAllDownloadsWithMetadata(const QString &name, const QString &value)
+
+        Returns all the downloads in the download manager that can be accessed
+        by the calling client. If the client is not confined all downloads are
+        returned, on the other hand if the client is confined the result will 
+        be only those downloads created by the client. The result of the method
+        is returned via the downloadsWithMetadataFound signal.
+
+    */
+    virtual void getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value) = 0;
+    /*!
+        \fn void getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value,
+                                             MetadataDownloadsListCb cb,
+                                             MetadataDownloadsListCb errCb)
+
+        Returns all the downloads in the download manager that can be accessed
+        by the calling client. If the client is not confined all downloads are
+        returned, on the other hand if the client is confined the result will 
+        be only those downloads created by the client. If the method is a
+        success the \a cb is executed else \a errCb is executed.
+    */
+    virtual void getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value,
+                                             MetadataDownloadsListCb cb,
+                                             MetadataDownloadsListCb errCb) = 0;
 
     /*!
         \fn bool isError() const
-
         Returns if the manager received an error during the execution
         of a command.
     */
@@ -258,6 +319,10 @@ class Manager : public QObject {
         download manager.
     */
     void downloadCreated(Download* down);
+    void downloadsFound(DownloadsList* downloads);
+    void downloadsWithMetadataFound(const QString& name,
+                                    const QString& value,
+                                    DownloadsList* downloads);
 
     /*!
         \fn void groupCreated(GroupDownload* down)

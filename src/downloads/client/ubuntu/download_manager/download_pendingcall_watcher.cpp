@@ -26,19 +26,19 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-DownloadPendingCallWatcher::DownloadPendingCallWatcher(
+DownloadPCW::DownloadPCW(
                                                const QDBusConnection& conn,
                                                const QString& servicePath,
                                                const QDBusPendingCall& call,
                                                Download* parent)
     : PendingCallWatcher(conn, servicePath, call, parent) {
-    CHECK(connect(this, &DownloadPendingCallWatcher::finished,
-        this, &DownloadPendingCallWatcher::onFinished))
+    CHECK(connect(this, &DownloadPCW::finished,
+        this, &DownloadPCW::onFinished))
             << "Could not connect to signal";
 }
 
 void
-DownloadPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+DownloadPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     auto down = qobject_cast<Download*>(parent());
     QDBusPendingReply<> reply = *watcher;
     if (reply.isError()) {

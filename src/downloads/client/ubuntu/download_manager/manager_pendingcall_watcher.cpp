@@ -21,6 +21,7 @@
 #include <QDBusObjectPath>
 #include <glog/logging.h>
 #include "download_impl.h"
+#include "downloads_list_impl.h"
 #include "error.h"
 #include "group_download.h"
 #include "manager.h"
@@ -30,28 +31,27 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-DownloadManagerPendingCallWatcher::DownloadManagerPendingCallWatcher(
-                                                  const QDBusConnection& conn,
-                                                  const QString& servicePath,
-                                                  const QDBusPendingCall& call,
-                                                  DownloadCb cb,
-                                                  DownloadCb errCb,
-                                                  QObject* parent)
+DownloadManagerPCW::DownloadManagerPCW(const QDBusConnection& conn,
+                                       const QString& servicePath,
+                                       const QDBusPendingCall& call,
+                                       DownloadCb cb,
+                                       DownloadCb errCb,
+                                       QObject* parent)
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     CHECK(connect(this, &QDBusPendingCallWatcher::finished,
-        this, &DownloadManagerPendingCallWatcher::onFinished))
+        this, &DownloadManagerPCW::onFinished))
             << "Could not connect to signal";
 }
 
 void
-DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+DownloadManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
         qDebug() << "ERROR" << reply.error() << reply.error().type();
-        // creater error and deal with it
+        // create error and deal with it
         auto err = new DBusError(reply.error());
         auto down = new DownloadImpl(_conn, err);
         _errCb(down);
@@ -67,24 +67,115 @@ DownloadManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) 
     watcher->deleteLater();
 }
 
+DownloadsListManagerPCW::DownloadsListManagerPCW(const QDBusConnection& conn,
+                                                 const QString& servicePath,
+                                                 const QDBusPendingCall& call,
+                                                 DownloadsListCb cb,
+                                                 DownloadsListCb errCb,
+                                                 QObject* parent)
+    : PendingCallWatcher(conn, servicePath, call, parent),
+      _cb(cb),
+      _errCb(errCb) {
+    connect(this, &QDBusPendingCallWatcher::finished,
+        this, &DownloadsListManagerPCW::onFinished);
+}
 
-GroupManagerPendingCallWatcher::GroupManagerPendingCallWatcher(
-                                            const QDBusConnection& conn,
-                                            const QString& servicePath,
-                                            const QDBusPendingCall& call,
-                                            GroupCb cb,
-                                            GroupCb errCb,
-                                            QObject* parent)
+void
+DownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
+    QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
+    DownloadsListImpl* list;
+    auto man = static_cast<Manager*>(parent());
+    if (reply.isError()) {
+        qDebug() << "ERROR" << reply.error() << reply.error().type();
+        // create error and deal with it
+        auto err = new DBusError(reply.error());
+        list = new DownloadsListImpl(err);
+        _errCb(list);
+        emit man->downloadsFound(list);
+    } else {
+        qDebug() << "Success!";
+        auto paths = reply.value();
+        QList<QSharedPointer<Download> > downloads;
+        list = new DownloadsListImpl();
+        foreach(const QDBusObjectPath& path, paths) {
+            QSharedPointer<Download> down =
+                QSharedPointer<Download>(new DownloadImpl(_conn,
+                            _servicePath, path));
+            downloads.append(down);
+        }
+        list = new DownloadsListImpl(downloads);
+        emit man->downloadsFound(list);
+        _cb(list);
+    }
+    emit callbackExecuted();
+    watcher->deleteLater();
+}
+
+MetadataDownloadsListManagerPCW::MetadataDownloadsListManagerPCW(
+                                    const QDBusConnection& conn,
+                                    const QString& servicePath,
+                                    const QDBusPendingCall& call,
+                                    const QString& key,
+                                    const QString& value,
+                                    MetadataDownloadsListCb cb,
+                                    MetadataDownloadsListCb errCb,
+                                    QObject* parent)
+    : PendingCallWatcher(conn, servicePath, call, parent),
+      _key(key),
+      _value(value),
+      _cb(cb),
+      _errCb(errCb) {
+    connect(this, &QDBusPendingCallWatcher::finished,
+        this, &MetadataDownloadsListManagerPCW::onFinished);
+}
+
+void
+MetadataDownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
+    QDBusPendingReply<QList<QDBusObjectPath> > reply = *watcher;
+    DownloadsListImpl* list;
+    auto man = static_cast<Manager*>(parent());
+    if (reply.isError()) {
+        qDebug() << "ERROR" << reply.error() << reply.error().type();
+        // create error and deal with it
+        auto err = new DBusError(reply.error());
+        list = new DownloadsListImpl(err);
+        _errCb(_key, _value, list);
+        emit man->downloadsWithMetadataFound(_key, _value, list);
+    } else {
+        qDebug() << "Success!";
+        auto paths = reply.value();
+        QList<QSharedPointer<Download> > downloads;
+        list = new DownloadsListImpl();
+        foreach(const QDBusObjectPath& path, paths) {
+            QSharedPointer<Download> down =
+                QSharedPointer<Download>(new DownloadImpl(
+                            _conn, _servicePath, path));
+            downloads.append(down);
+        }
+        list = new DownloadsListImpl(downloads);
+        emit man->downloadsWithMetadataFound(_key, _value, list);
+        _cb(_key, _value, list);
+    }
+    emit callbackExecuted();
+    watcher->deleteLater();
+}
+
+GroupManagerPCW::GroupManagerPCW(const QDBusConnection& conn,
+                                 const QString& servicePath,
+                                 const QDBusPendingCall& call,
+                                 GroupCb cb,
+                                 GroupCb errCb,
+                                 QObject* parent)
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
     CHECK(connect(this, &QDBusPendingCallWatcher::finished,
-        this, &GroupManagerPendingCallWatcher::onFinished))
+        this, &GroupManagerPCW::onFinished))
             << "Could not connect to signal";
 }
 
 void
-GroupManagerPendingCallWatcher::onFinished(QDBusPendingCallWatcher* watcher) {
+GroupManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {

@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <ubuntu/download_manager/download.h>
+#include <ubuntu/download_manager/downloads_list.h>
 #include "test_client_manager.h"
 
 TestManager::TestManager(QObject *parent)
@@ -134,6 +135,207 @@ TestManager::testCreateDownloadSignalsEmittedCallbacks() {
     QTRY_COMPARE(1, managerSpy.count());
     auto down = managerSpy.takeFirst().at(0).value<Download*>();
     delete down;
+}
+
+void
+TestManager::testGetAllDownloadsSignalsEmitted_data() {
+    QTest::addColumn<int>("count");
+
+    QTest::newRow("5 downloads") << 5;
+    QTest::newRow("10 downloads") << 10;
+    QTest::newRow("15 downloads") << 15;
+}
+
+void
+TestManager::testGetAllDownloadsSignalsEmitted() {
+    QFETCH(int, count);
+
+    QString url = "http://example.com/";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier listSpy(_man, SIGNAL(downloadsFound(DownloadsList*)));
+
+    for (int index = 0; index < count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+
+    // ensure that all of the are created
+    QVERIFY(managerSpy.ensureSignalEmitted());
+    QTRY_COMPARE(count, managerSpy.count());
+    _man->getAllDownloads();
+
+    QVERIFY(listSpy.ensureSignalEmitted());
+    QTRY_COMPARE(1, listSpy.count());
+    auto downs = listSpy.takeFirst().at(0).value<DownloadsList*>();
+    QCOMPARE(count, downs->downloads().count());
+
+    delete downs;
+}
+
+void
+TestManager::testGetAllDownloadsSignalsEmittedCallbacks_data() {
+    QTest::addColumn<int>("count");
+
+    QTest::newRow("5 downloads") << 5;
+    QTest::newRow("10 downloads") << 10;
+    QTest::newRow("15 downloads") << 15;
+}
+
+void
+TestManager::testGetAllDownloadsSignalsEmittedCallbacks() {
+    QFETCH(int, count);
+
+    QString url = "http://example.com/";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    DownloadsListCb cb = [](DownloadsList*){};
+
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier listSpy(_man, SIGNAL(downloadsFound(DownloadsList*)));
+
+    for (int index = 0; index < count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+
+    // ensure that all of the are created
+    QVERIFY(managerSpy.ensureSignalEmitted());
+    QTRY_COMPARE(count, managerSpy.count());
+    _man->getAllDownloads(cb, cb);
+
+    QVERIFY(listSpy.ensureSignalEmitted());
+    QTRY_COMPARE(1, listSpy.count());
+    auto downs = listSpy.takeFirst().at(0).value<DownloadsList*>();
+    QCOMPARE(count, downs->downloads().count());
+
+    delete downs;
+}
+
+void
+TestManager::testGetAllDownloadsMetadataSignalsEmitted_data() {
+    QTest::addColumn<int>("count");
+
+    QTest::newRow("5 downloads") << 5;
+    QTest::newRow("10 downloads") << 10;
+    QTest::newRow("15 downloads") << 15;
+}
+
+void
+TestManager::testGetAllDownloadsMetadataSignalsEmitted() {
+    QFETCH(int, count);
+    int metadataCount = 5;
+    QString key = "test";
+    QString value = "metadata";
+
+    QString url = "http://example.com/";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier listSpy(_man, SIGNAL(
+        downloadsWithMetadataFound(const QString&, const QString&,
+            DownloadsList*)));
+
+    for (int index = 0; index < count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+
+    // add downloads with metadata
+    metadata[key] = value;
+    for (int index = count; index < metadataCount + count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+    // ensure that all of the are created
+    QVERIFY(managerSpy.ensureSignalEmitted());
+    QTRY_COMPARE(count + metadataCount, managerSpy.count());
+    _man->getAllDownloadsWithMetadata(key, value);
+
+    QVERIFY(listSpy.ensureSignalEmitted());
+    QTRY_COMPARE(1, listSpy.count());
+
+    auto signalInfo = listSpy.takeFirst();
+    auto signalKey = signalInfo.at(0).toString();
+    QCOMPARE(key, signalKey);
+
+    auto signalValue = signalInfo.at(1).toString();
+    QCOMPARE(value, signalValue);
+
+    auto downs = signalInfo.at(2).value<DownloadsList*>();
+
+    QCOMPARE(metadataCount, downs->downloads().count());
+
+    delete downs;
+}
+
+void
+TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks_data() {
+    QTest::addColumn<int>("count");
+
+    QTest::newRow("5 downloads") << 5;
+    QTest::newRow("10 downloads") << 10;
+    QTest::newRow("15 downloads") << 15;
+}
+
+void
+TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks() {
+    QFETCH(int, count);
+    int metadataCount = 5;
+    QString key = "test";
+    QString value = "metadata";
+
+    QString url = "http://example.com/";
+    QVariantMap metadata;
+    QMap<QString, QString> headers;
+    MetadataDownloadsListCb cb =
+        [](const QString&, const QString&, DownloadsList*){};
+
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier listSpy(_man, SIGNAL(
+        downloadsWithMetadataFound(const QString&, const QString&,
+            DownloadsList*)));
+
+    for (int index = 0; index < count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+
+    // add downloads with metadata
+    metadata[key] = value;
+    for (int index = count; index < metadataCount + count; index++) {
+        url += index;
+        DownloadStruct downStruct(url, metadata, headers);
+        _man->createDownload(downStruct);
+    }
+    // ensure that all of the are created
+    QVERIFY(managerSpy.ensureSignalEmitted());
+    QTRY_COMPARE(count + metadataCount, managerSpy.count());
+    _man->getAllDownloadsWithMetadata(key, value, cb, cb);
+
+    QVERIFY(listSpy.ensureSignalEmitted());
+    QTRY_COMPARE(1, listSpy.count());
+
+    auto signalInfo = listSpy.takeFirst();
+    auto signalKey = signalInfo.at(0).toString();
+    QCOMPARE(key, signalKey);
+
+    auto signalValue = signalInfo.at(1).toString();
+    QCOMPARE(value, signalValue);
+
+    auto downs = signalInfo.at(2).value<DownloadsList*>();
+
+    QCOMPARE(metadataCount, downs->downloads().count());
+
+    delete downs;
 }
 
 QTEST_MAIN(TestManager)

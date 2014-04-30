@@ -46,8 +46,8 @@ class ManagerImpl : public Manager {
 
     // allow watchers to emit the signals
     friend class Manager;
-    friend class DownloadManagerPendingCallWatcher;
-    friend class GroupManagerPendingCallWatcher;
+    friend class DownloadManagerPCW;
+    friend class GroupManagerPCW;
 
  public:
     virtual ~ManagerImpl();
@@ -68,6 +68,15 @@ class ManagerImpl : public Manager {
                                 StringMap headers,
                                 GroupCb cb,
                                 GroupCb errCb);
+    virtual void getAllDownloads();
+    virtual void getAllDownloads(DownloadsListCb cb,
+                                 DownloadsListCb errCb);
+    virtual void getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value);
+    virtual void getAllDownloadsWithMetadata(const QString &name,
+                                             const QString &value,
+                                             MetadataDownloadsListCb cb,
+                                             MetadataDownloadsListCb errCb);
 
     bool isError() const;
     Error* lastError() const;

@@ -3,6 +3,7 @@ set(TARGET ubuntu-download-manager-client)
 set(SOURCES
         ubuntu/download_manager/download_impl.cpp
         ubuntu/download_manager/download_interface.cpp
+	ubuntu/download_manager/downloads_list_impl.cpp
         ubuntu/download_manager/download_pendingcall_watcher.cpp
         ubuntu/download_manager/error.cpp
         ubuntu/download_manager/group_download.cpp
@@ -15,6 +16,7 @@ set(SOURCES
 
 set(PUBLIC_HEADERS
         ubuntu/download_manager/download.h
+	ubuntu/download_manager/downloads_list.h
         ubuntu/download_manager/error.h
         ubuntu/download_manager/group_download.h
         ubuntu/download_manager/manager.h
@@ -23,6 +25,7 @@ set(PUBLIC_HEADERS
 set(PRIVATE_HEADERS
         ubuntu/download_manager/download_impl.h
         ubuntu/download_manager/download_interface.h
+	ubuntu/download_manager/downloads_list_impl.h
         ubuntu/download_manager/download_pendingcall_watcher.h
         ubuntu/download_manager/manager_impl.h
         ubuntu/download_manager/manager_interface.h
@@ -60,6 +63,6 @@ target_link_libraries(${TARGET}
 
 configure_file(${TARGET}.pc.in ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc @ONLY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET}.pc DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/pkgconfig)
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${PUBLIC_HEADERS} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ubuntu/download_manager)

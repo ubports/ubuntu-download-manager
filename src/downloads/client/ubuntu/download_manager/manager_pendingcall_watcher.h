@@ -27,23 +27,26 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Download;
+class DownloadsList;
 class Error;
 class GroupDownload;
 
 typedef std::function<void(Download*)> DownloadCb;
+typedef std::function<void(DownloadsList*)> DownloadsListCb;
+typedef std::function<void(const QString&, const QString&, DownloadsList*)> MetadataDownloadsListCb;
 typedef std::function<void(GroupDownload*)> GroupCb;
 
 
-class DownloadManagerPendingCallWatcher : public PendingCallWatcher {
+class DownloadManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:
-    DownloadManagerPendingCallWatcher(const QDBusConnection& conn,
-                                      const QString& servicePath,
-                                      const QDBusPendingCall& call,
-                                      DownloadCb cb,
-                                      DownloadCb errCb,
-                                      QObject* parent = 0);
+    DownloadManagerPCW(const QDBusConnection& conn,
+                       const QString& servicePath,
+                       const QDBusPendingCall& call,
+                       DownloadCb cb,
+                       DownloadCb errCb,
+                       QObject* parent = 0);
 
  private slots:
     void onFinished(QDBusPendingCallWatcher* watcher);
@@ -54,16 +57,56 @@ class DownloadManagerPendingCallWatcher : public PendingCallWatcher {
 };
 
 
-class GroupManagerPendingCallWatcher : public PendingCallWatcher {
+class DownloadsListManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:
-    GroupManagerPendingCallWatcher(const QDBusConnection& conn,
-                                   const QString& servicePath,
-                                   const QDBusPendingCall& call,
-                                   GroupCb cb,
-                                   GroupCb errCb,
-                                   QObject* parent = 0);
+    DownloadsListManagerPCW(const QDBusConnection& conn,
+                            const QString& servicePath,
+                            const QDBusPendingCall& call,
+                            DownloadsListCb cb,
+                            DownloadsListCb errCb,
+                            QObject* parent = 0);
+ private slots:
+    void onFinished(QDBusPendingCallWatcher* watcher);
+
+ private:
+    DownloadsListCb _cb;
+    DownloadsListCb _errCb;
+};
+
+class MetadataDownloadsListManagerPCW : public PendingCallWatcher {
+    Q_OBJECT
+
+ public:
+    MetadataDownloadsListManagerPCW(const QDBusConnection& conn,
+                                    const QString& servicePath,
+                                    const QDBusPendingCall& call,
+                                    const QString& key,
+                                    const QString& value,
+                                    MetadataDownloadsListCb cb,
+                                    MetadataDownloadsListCb errCb,
+                                    QObject* parent = 0);
+ private slots:
+    void onFinished(QDBusPendingCallWatcher* watcher);
+
+ private:
+    const QString& _key;
+    const QString& _value;
+    MetadataDownloadsListCb _cb;
+    MetadataDownloadsListCb _errCb;
+};
+
+class GroupManagerPCW : public PendingCallWatcher {
+    Q_OBJECT
+
+ public:
+    GroupManagerPCW(const QDBusConnection& conn,
+                    const QString& servicePath,
+                    const QDBusPendingCall& call,
+                    GroupCb cb,
+                    GroupCb errCb,
+                    QObject* parent = 0);
 
  private slots:
     void onFinished(QDBusPendingCallWatcher* watcher);

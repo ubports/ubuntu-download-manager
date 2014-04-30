@@ -36,7 +36,7 @@ class GroupDownload : public QObject {
 
     // allow the manager to create downloads
     friend class ManagerPrivate;
-    friend class GroupManagerPendingCallWatcher;
+    friend class GroupManagerPCW;
 
  public:
 

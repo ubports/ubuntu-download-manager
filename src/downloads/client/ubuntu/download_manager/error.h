@@ -120,9 +120,11 @@ class DBusError : public Error {
 
     friend class ManagerImpl;
     friend class DownloadImpl;
-    friend class DownloadManagerPendingCallWatcher;
-    friend class DownloadPendingCallWatcher;
-    friend class GroupManagerPendingCallWatcher;
+    friend class DownloadManagerPCW;
+    friend class DownloadsListManagerPCW;
+    friend class MetadataDownloadsListManagerPCW;
+    friend class DownloadPCW;
+    friend class GroupManagerPCW;
 
     /*!
         Disposes of this error and frees any resources associated with it.
