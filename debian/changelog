@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.3+14.10.20140430.1-0ubuntu1) utopic; urgency=low
+
+  [ Michael Sheldon ]
+  * Expose the download id of a SingleDownload within the QML API.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 30 Apr 2014 10:34:59 +0000
+
 ubuntu-download-manager (0.3+14.10.20140430-0ubuntu1) utopic; urgency=low
 
   [ Manuel de la Peña ]
