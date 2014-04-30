@@ -53,6 +53,7 @@ class File : public QObject {
 
  protected:
     explicit File(const QString& name);
+    explicit File(QFile* file);
 
  private:
     QFile* _file = nullptr;
@@ -64,6 +65,7 @@ class FileManager : public QObject {
 
  public:
     virtual File* createFile(const QString& name);
+    virtual File* copyToTempFile(const QString& name);
     virtual bool remove(const QString& path);
     virtual bool exists(const QString& path);
     virtual bool rename(const QString& oldName, const QString& newName);

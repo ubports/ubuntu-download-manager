@@ -26,9 +26,9 @@
 #include <glog/logging.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/cryptographic_hash.h>
-#include "ubuntu/transfers/system/logger.h"
-#include "ubuntu/transfers/system/network_reply.h"
-#include "ubuntu/transfers/system/filename_mutex.h"
+#include <ubuntu/transfers/system/logger.h>
+#include <ubuntu/transfers/system/network_reply.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
@@ -634,6 +634,7 @@ void
 FileDownload::emitFinished() {
     auto fileMan = FileManager::instance();
 
+
     if (fileMan->exists(_tempFilePath)) {
         DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
@@ -681,7 +682,7 @@ FileDownload::cleanUpCurrentData() {
     }
 
     if (!success)
-        qWarning() << "Error " << error <<
+        DOWN_LOG(WARNING) << "Error " << error <<
             "removing file with path" << _filePath;
 }
 

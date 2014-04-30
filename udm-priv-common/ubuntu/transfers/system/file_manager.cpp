@@ -17,6 +17,7 @@
  */
 
 #include <QFile>
+#include <QTemporaryFile>
 #include "file_manager.h"
 
 namespace Ubuntu {
@@ -27,6 +28,10 @@ namespace System {
 
 File::File(const QString& name) {
     _file = new QFile(name);
+}
+
+File::File(QFile* file)
+    : _file(file) {
 }
 
 File::~File() {
@@ -95,6 +100,16 @@ QMutex FileManager::_mutex;
 File*
 FileManager::createFile(const QString& name) {
     return new File(name);
+}
+
+File*
+FileManager::copyToTempFile(const QString& name) {
+    // create a temp file, and copy the old name to the
+    // new file path
+    auto tempFile = new QTemporaryFile();
+    QFile file(name);
+    file.copy(tempFile->fileName());
+    return new File(tempFile);
 }
 
 bool

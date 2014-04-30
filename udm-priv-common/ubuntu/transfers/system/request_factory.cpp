@@ -37,8 +37,7 @@ RequestFactory::RequestFactory(bool stoppable, QObject* parent)
 }
 
 NetworkReply*
-RequestFactory::get(const QNetworkRequest& request) {
-    QNetworkReply* qreply = _nam->get(request);
+RequestFactory::buildRequest(QNetworkReply* qreply) {
     NetworkReply* reply = new NetworkReply(qreply);
 
     if (_certs.count() > 0) {
@@ -62,6 +61,18 @@ RequestFactory::get(const QNetworkRequest& request) {
                 << "Could not connect to signal";
     }
     return reply;
+}
+
+NetworkReply*
+RequestFactory::get(const QNetworkRequest& request) {
+    auto qreply = _nam->get(request);
+    return buildRequest(qreply);
+}
+
+NetworkReply*
+RequestFactory::post(const QNetworkRequest& request, File* data) {
+    auto qreply = _nam->post(request, data->device());
+    return buildRequest(qreply);
 }
 
 QList<QSslCertificate>

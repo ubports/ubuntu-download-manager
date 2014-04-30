@@ -34,6 +34,9 @@ NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
         CHECK(connect(_reply, &QNetworkReply::downloadProgress,
             this, &NetworkReply::downloadProgress))
                 << "Could not connect to signal";
+        CHECK(connect(_reply, &QNetworkReply::uploadProgress,
+            this, &NetworkReply::uploadProgress))
+                << "Could not connect to signal";
         CHECK(connect(_reply, &QNetworkReply::finished,
             this, &NetworkReply::finished))
                 << "Could not connect to signal";

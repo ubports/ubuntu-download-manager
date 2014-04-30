@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QSslCertificate>
 #include <QSslError>
+#include <ubuntu/transfers/system/file_manager.h>
 #include "network_reply.h"
 
 namespace Ubuntu {
@@ -38,6 +39,7 @@ class RequestFactory : public QObject {
 
  public:
     virtual NetworkReply* get(const QNetworkRequest& request);
+    virtual NetworkReply* post(const QNetworkRequest& request, File* data);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
@@ -55,6 +57,7 @@ class RequestFactory : public QObject {
 
  private:
     void removeNetworkReply(NetworkReply* reply);
+    NetworkReply* buildRequest(QNetworkReply* qreply);
 
  private slots:
     void onError(QNetworkReply::NetworkError);
