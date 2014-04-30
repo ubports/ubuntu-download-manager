@@ -56,10 +56,18 @@ FileUpload::FileUpload(const QString& id,
     // we must make sure that the path is absolute
     QFileInfo info(filePath);
     if (!info.isAbsolute()) {
+        UP_LOG(INFO) << "Path is not absolute: " << filePath;
         setIsValid(false);
         setLastError(QString("Path is not absolute: '%1'").arg(filePath));
     }
-    _currentData = FileManager::instance()->copyToTempFile(filePath);
+
+    if (!info.exists()) {
+        UP_LOG(INFO) << "Path does not exist: " << filePath;
+        setIsValid(false);
+        setLastError(QString("Path does not exist: '%1'").arg(filePath));
+    } else {
+        _currentData = FileManager::instance()->createFile(filePath);
+    }
     _requestFactory = RequestFactory::instance();
 }
 
@@ -181,7 +189,7 @@ FileUpload::buildRequest() {
     request.setHeader(QNetworkRequest::ContentTypeHeader,
         CONTENT_TYPE_HEADER);
     request.setHeader(QNetworkRequest::ContentLengthHeader,
-        QString::number(_currentData->size()));
+        _currentData->size());
 
     return request;
 }

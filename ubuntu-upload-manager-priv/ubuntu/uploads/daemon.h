@@ -35,10 +35,10 @@ class UploadDaemon : public BaseDaemon {
  public:
     UploadDaemon(QObject *parent = 0);
     UploadDaemon(ManagerFactory* managerFactory,
-                   System::Application* app,
-                   System::DBusConnection* conn,
-                   System::Timer* timer,
-                   QObject *parent = 0);
+                 System::Application* app,
+                 System::DBusConnection* conn,
+                 System::Timer* timer,
+                 QObject *parent = 0);
 
  public slots:
     virtual void start();

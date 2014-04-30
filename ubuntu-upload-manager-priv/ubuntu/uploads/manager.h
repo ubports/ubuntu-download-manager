@@ -28,6 +28,7 @@
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/base_manager.h>
+#include "factory.h"
 
 namespace Ubuntu {
 
@@ -45,13 +46,13 @@ class UploadManager : public BaseManager {
                   DBusConnection* connection,
                   bool stoppable = false,
                   QObject *parent = 0);
-/*    UploadManager(Application* app,
+    UploadManager(Application* app,
                   DBusConnection* connection,
                   Factory* downloadFactory,
                   Queue* queue,
                   bool stoppable = false,
                   QObject *parent = 0);
-*/
+
     virtual ~UploadManager();
 
     virtual QList<QSslCertificate> acceptedCertificates();
@@ -66,6 +67,10 @@ class UploadManager : public BaseManager {
                                     int port,
                                     const QString& username,
                                     const QString& password);
+    QDBusObjectPath createUpload(const QString& url,
+                                 const QString& filePath,
+                                 const QVariantMap& metadata,
+                                 StringMap headers);
     QDBusObjectPath createUpload(UploadStruct upload);
     qulonglong defaultThrottle();
     QList<QDBusObjectPath> getAllUploads();
@@ -75,6 +80,28 @@ class UploadManager : public BaseManager {
     bool isMobileUploadAllowed();
     void setDefaultThrottle(qulonglong speed);
 
+ signals:
+    void uploadCreated(const QDBusObjectPath& path);
+    void sizeChanged(int size);
+
+ private:
+    typedef std::function<FileUpload*(QString)> UploadCreationFunc;
+
+    QDBusObjectPath createUpload(UploadCreationFunc createUploadFunc);
+    void onUploadsChanged(QString);
+    QDBusObjectPath registerUpload(FileUpload* upload);
+
+    void init();
+
+
+ private:
+    Application* _app = nullptr;
+    qulonglong _throttle;
+    Factory* _factory = nullptr;
+    Queue* _queue = nullptr;
+    DBusConnection* _conn = nullptr;
+    bool _stoppable = false;
+    bool _allowMobileData = true;
 };
 
 }  // Daemon
