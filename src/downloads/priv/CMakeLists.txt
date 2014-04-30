@@ -45,11 +45,11 @@ include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Sql_INCLUDE_DIRS})
 include_directories(${DBUS_INCLUDE_DIRS})
-include_directories(${CMAKE_SOURCE_DIR}/udm-common)
-include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
-include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
+include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
+include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
 
 add_library(${TARGET} STATIC
 	${HEADERS}

@@ -5,12 +5,12 @@ set(SOURCES
 )
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
-include_directories(${CMAKE_SOURCE_DIR}/udm-common)
-include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
-include_directories(${CMAKE_SOURCE_DIR}/ubuntu-upload-manager-common)
-include_directories(${CMAKE_SOURCE_DIR}/ubuntu-upload-manager-priv)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
+include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/common)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/priv)
 
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})

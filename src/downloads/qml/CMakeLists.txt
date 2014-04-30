@@ -15,9 +15,9 @@ set(plugin_HDRS
     single_download.h
 )
 
-include_directories(${CMAKE_SOURCE_DIR}/udm-common)
-include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
-include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-client)
+include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
+include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
+include_directories(${CMAKE_SOURCE_DIR}/src/downloads/client)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
