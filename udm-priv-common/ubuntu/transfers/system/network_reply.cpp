@@ -22,6 +22,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 NetworkReply::NetworkReply(QNetworkReply* reply, QObject* parent)
@@ -115,5 +117,7 @@ NetworkReply::errorString() const {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

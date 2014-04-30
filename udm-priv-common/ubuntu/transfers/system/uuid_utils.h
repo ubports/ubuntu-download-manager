@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class UuidUtils {
@@ -32,6 +34,8 @@ class UuidUtils {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

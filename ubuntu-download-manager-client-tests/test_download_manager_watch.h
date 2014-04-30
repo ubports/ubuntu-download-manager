@@ -24,7 +24,7 @@
 #include <ubuntu/download_manager/error.h>
 #include <ubuntu/download_manager/manager.h>
 #include <QObject>
-#include <ubuntu/download_manager/tests/test_runner.h>
+#include <ubuntu/transfers/tests/test_runner.h>
 #include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;

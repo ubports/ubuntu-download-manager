@@ -24,7 +24,7 @@
 #include <QStateMachine>
 #include <QObject>
 #include <ubuntu/downloads/state_machines/download_sm.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/server/sm_file_download.h>
 
 using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
@@ -33,7 +33,7 @@ class TestNetworkErrorTransition : public BaseTestCase {
     Q_OBJECT
  public:
     explicit TestNetworkErrorTransition(QObject *parent = 0);
-    
+
  private slots:  // NOLINT(whitespace/indent)
     void init() override;
     void cleanup() override;

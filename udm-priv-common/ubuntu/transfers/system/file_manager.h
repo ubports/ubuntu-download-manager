@@ -26,6 +26,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class File : public QObject {
@@ -83,6 +85,8 @@ class FileManager : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

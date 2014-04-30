@@ -29,7 +29,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-using namespace System;
+using namespace Transfers::System;
 
 namespace Daemon {
 

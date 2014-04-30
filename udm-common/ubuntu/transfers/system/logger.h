@@ -46,6 +46,8 @@ std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map);
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class Logger : public QObject {
@@ -63,6 +65,8 @@ class Logger : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

@@ -20,10 +20,12 @@
 #include <QSslError>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <ubuntu/download_manager/tests/server/network_reply.h>
-#include <ubuntu/download_manager/tests/server/process.h>
+#include <ubuntu/transfers/tests/system/network_reply.h>
+#include <ubuntu/transfers/tests/system/process.h>
 #include "test_download.h"
 
+using namespace Ubuntu::Transfers::Tests;
+using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 TestDownload::TestDownload(QObject* parent)

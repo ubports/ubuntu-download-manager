@@ -26,6 +26,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class FileNameMutex : public QObject {
@@ -54,6 +56,8 @@ class FileNameMutex : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

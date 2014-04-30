@@ -20,7 +20,9 @@
 #define TEST_APN_REQUEST_FACTORY_H
 
 #include <QObject>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+
+using namespace Ubuntu::Transfers::Tests;
 
 class TestApnRequestFactory : public BaseTestCase {
     Q_OBJECT

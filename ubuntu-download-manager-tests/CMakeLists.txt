@@ -6,7 +6,6 @@ set(TESTS
         test_download
         test_download_factory
         test_download_manager
-        test_download_queue
         test_downloads_db
         test_file_download_sm
         test_filename_mutex
@@ -40,6 +39,7 @@ include_directories(${Qt5Sql_INCLUDE_DIRS})
 include_directories(${DBUS_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
+include_directories(${CMAKE_SOURCE_DIR}/udm-testing)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-client)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-priv)
@@ -63,6 +63,7 @@ set(DAEMON_TESTS_LIBS
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
+	udm-testing
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 	ubuntu-download-manager-priv

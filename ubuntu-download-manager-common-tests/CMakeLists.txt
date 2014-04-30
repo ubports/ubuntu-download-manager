@@ -17,6 +17,7 @@ include_directories(${Qt5Sql_INCLUDE_DIRS})
 include_directories(${DBUS_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/udm-common)
 include_directories(${CMAKE_SOURCE_DIR}/udm-priv-common)
+include_directories(${CMAKE_SOURCE_DIR}/udm-testing)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-common)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-client)
 include_directories(${CMAKE_SOURCE_DIR}/ubuntu-download-manager-priv)
@@ -39,6 +40,7 @@ target_link_libraries(${TARGET}
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
+	udm-testing
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 	ubuntu-download-manager-priv

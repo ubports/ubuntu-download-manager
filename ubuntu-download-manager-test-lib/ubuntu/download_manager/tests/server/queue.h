@@ -21,8 +21,9 @@
 #include <QSharedPointer>
 #include <ubuntu/downloads/queue.h>
 #include <ubuntu/transfers/system/system_network_info.h>
-#include "ubuntu/download_manager/tests/fake.h"
+#include <ubuntu/transfers/tests/fake.h>
 
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class FakeDownloadQueue : public Queue, public Fake {

@@ -17,7 +17,7 @@
  */
 
 #include <QScopedPointer>
-#include <ubuntu/download_manager/tests/server/apn_request_factory.h>
+#include <ubuntu/transfers/tests/system/apn_request_factory.h>
 #include "test_apn_request_factory.h"
 
 TestApnRequestFactory::TestApnRequestFactory(QObject* parent)

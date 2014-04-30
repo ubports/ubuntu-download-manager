@@ -22,13 +22,13 @@
 #include <QObject>
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/downloads/group_download.h>
-#include <ubuntu/download_manager/tests/server/apparmor.h>
-#include <ubuntu/download_manager/tests/server/file_manager.h>
-#include <ubuntu/download_manager/tests/server/system_network_info.h>
-#include <ubuntu/download_manager/tests/server/request_factory.h>
-#include <ubuntu/download_manager/tests/server/process_factory.h>
+#include <ubuntu/transfers/tests/system/apparmor.h>
+#include <ubuntu/transfers/tests/system/file_manager.h>
+#include <ubuntu/transfers/tests/system/system_network_info.h>
+#include <ubuntu/transfers/tests/system/request_factory.h>
+#include <ubuntu/transfers/tests/system/process_factory.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/server/factory.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
 
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;

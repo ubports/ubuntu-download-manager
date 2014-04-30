@@ -532,7 +532,7 @@ FileDownload::onOnlineStateChanged(bool online) {
 void
 FileDownload::init() {
     _requestFactory = RequestFactory::instance();
-    _fileNameMutex = System::FileNameMutex::instance();
+    _fileNameMutex = FileNameMutex::instance();
     SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
     _connected = networkInfo->isOnline();
     _downloading = false;

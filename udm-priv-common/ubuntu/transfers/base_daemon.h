@@ -28,6 +28,8 @@ class QSslCertificate;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class Application;
@@ -35,8 +37,6 @@ class DBusConnection;
 class Timer;
 
 }
-
-namespace Transfers {
 
 class BaseManager;
 class ManagerFactory;

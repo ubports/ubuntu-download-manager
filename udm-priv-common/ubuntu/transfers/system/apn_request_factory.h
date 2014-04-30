@@ -25,6 +25,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class ApnRequestFactory : public RequestFactory {
@@ -37,6 +39,8 @@ class ApnRequestFactory : public RequestFactory {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

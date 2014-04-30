@@ -21,6 +21,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 QString
@@ -29,5 +31,7 @@ UuidUtils::getDBusString(const QUuid& id) {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

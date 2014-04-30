@@ -23,7 +23,7 @@
 #include <ubuntu/transfers/system/filename_mutex.h>
 #include "test_filename_mutex.h"
 
-using namespace Ubuntu::System;
+using namespace Ubuntu::Transfers::System;
 
 TestFileNameMutex::TestFileNameMutex(QObject *parent)
     : BaseTestCase("TestFileNameMutex", parent) {

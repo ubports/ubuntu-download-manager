@@ -39,9 +39,9 @@ namespace {
 
 namespace Ubuntu {
 
-using namespace System;
-
 namespace Transfers {
+
+using namespace System;
 
 BaseDaemon::BaseDaemon(ManagerFactory* managerFactory,
                AdaptorFactory* adaptorFactory,

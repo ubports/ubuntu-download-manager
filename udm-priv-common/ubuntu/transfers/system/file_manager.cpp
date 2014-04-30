@@ -21,6 +21,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 File::File(const QString& name) {
@@ -136,5 +138,7 @@ void FileManager::deleteInstance() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

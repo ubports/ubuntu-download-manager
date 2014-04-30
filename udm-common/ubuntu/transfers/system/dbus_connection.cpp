@@ -20,6 +20,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 DBusConnection::DBusConnection(QObject* parent)
@@ -61,5 +63,7 @@ DBusConnection::connection() {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 SystemNetworkInfo* SystemNetworkInfo::_instance = nullptr;
@@ -229,5 +231,7 @@ SystemNetworkInfo::onNetworkStatusChanged(QNetworkInfo::NetworkMode mode, int in
 #endif
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

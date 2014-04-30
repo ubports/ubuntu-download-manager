@@ -30,7 +30,7 @@
 
 namespace Ubuntu {
 
-using namespace System;
+using namespace Transfers::System;
 
 namespace DownloadManager {
 
@@ -197,4 +197,5 @@ class Download : public QObject {
 }  // DownloadManager
 
 }  // Ubuntu
+
 #endif  // DOWNLOADER_LIB_APP_DOWNLOAD_H

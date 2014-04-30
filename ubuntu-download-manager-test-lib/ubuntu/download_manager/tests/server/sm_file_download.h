@@ -22,8 +22,9 @@
 #include <QObject>
 #include <QSslError>
 #include <ubuntu/downloads/sm_file_download.h>
-#include "ubuntu/download_manager/tests/fake.h"
+#include <ubuntu/transfers/tests/fake.h>
 
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class NetworkErrorWrapper : public QObject {

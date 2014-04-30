@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class Process : public QObject {
@@ -54,6 +56,8 @@ class Process : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

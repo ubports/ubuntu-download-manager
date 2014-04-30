@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 FileNameMutex* FileNameMutex::_instance = nullptr;
@@ -125,5 +127,7 @@ FileNameMutex::setInstance(FileNameMutex* instance) {
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

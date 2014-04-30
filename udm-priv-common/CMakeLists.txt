@@ -3,6 +3,8 @@ set(TARGET udm-priv-common)
 set(SOURCES
 	ubuntu/transfers/base_daemon.cpp
 	ubuntu/transfers/base_manager.cpp
+	ubuntu/transfers/queue.cpp
+	ubuntu/transfers/transfer.cpp
 	ubuntu/transfers/system/apn_proxy.cpp
 	ubuntu/transfers/system/apn_request_factory.cpp
 	ubuntu/transfers/system/apparmor.cpp
@@ -25,6 +27,8 @@ set(HEADERS
 	ubuntu/transfers/base_daemon.h
 	ubuntu/transfers/base_manager.h
 	ubuntu/transfers/manager_factory.h
+	ubuntu/transfers/queue.h
+	ubuntu/transfers/transfer.h
 	ubuntu/transfers/system/apn_proxy.h
 	ubuntu/transfers/system/apn_request_factory.h
 	ubuntu/transfers/system/apparmor.h

@@ -22,6 +22,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 RequestFactory* RequestFactory::_instance = nullptr;
@@ -156,5 +158,7 @@ RequestFactory::onSslErrors(const QList<QSslError>& errors) {
 
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

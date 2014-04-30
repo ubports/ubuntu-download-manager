@@ -24,9 +24,10 @@
 #include <QState>
 #include <QStateMachine>
 #include <ubuntu/downloads/state_machines/download_sm.h>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/server/sm_file_download.h>
 
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager::Daemon::StateMachines;
 
 class TestResumeDownloadTransition : public BaseTestCase {

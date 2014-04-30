@@ -21,6 +21,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
@@ -31,5 +33,7 @@ ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
 }
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu

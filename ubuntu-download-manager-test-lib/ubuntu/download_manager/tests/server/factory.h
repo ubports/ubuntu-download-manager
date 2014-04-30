@@ -22,9 +22,10 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <ubuntu/downloads/factory.h>
-#include "ubuntu/download_manager/tests/fake.h"
+#include <ubuntu/transfers/tests/fake.h>
 
-using namespace Ubuntu::System;
+using namespace Ubuntu::Transfers::System;
+using namespace Ubuntu::Transfers::Tests;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class FakeDownloadFactory : public Factory, public Fake {

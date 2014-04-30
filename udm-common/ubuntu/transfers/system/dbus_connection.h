@@ -24,6 +24,8 @@
 
 namespace Ubuntu {
 
+namespace Transfers {
+
 namespace System {
 
 class DBusConnection : public QObject {
@@ -45,6 +47,8 @@ class DBusConnection : public QObject {
 };
 
 }  // System
+
+}  // Transfers
 
 }  // Ubuntu
 

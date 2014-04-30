@@ -20,7 +20,9 @@
 #define TEST_FILENAME_MUTEX_H
 
 #include <QObject>
-#include <ubuntu/download_manager/tests/base_testcase.h>
+#include <ubuntu/transfers/tests/base_testcase.h>
+
+using namespace Ubuntu::Transfers::Tests;
 
 class TestFileNameMutex : public BaseTestCase {
     Q_OBJECT
