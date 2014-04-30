@@ -24,7 +24,7 @@
 #include <ubuntu/downloads/factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
 class FakeDownloadFactory : public Factory, public Fake {

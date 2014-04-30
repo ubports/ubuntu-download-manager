@@ -18,15 +18,33 @@
 
 #include <QDebug>
 #include <QDBusError>
-#include <ubuntu/download_manager/system/dbus_connection.h>
-#include <ubuntu/system/application.h>
-#include <ubuntu/system/timer.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include <ubuntu/transfers/system/application.h>
+#include <ubuntu/transfers/system/timer.h>
+#include <ubuntu/downloads/download_adaptor_factory.h>
+#include <ubuntu/transfers/manager_factory.h>
 #include "testing_manager.h"
 #include "testing_manager_adaptor.h"
 #include "testing_daemon.h"
 
+class TestingManagerFactory : public ManagerFactory {
+ public:
+    explicit TestingManagerFactory(QObject *parent = 0)
+        : ManagerFactory(parent) {}
+
+    BaseManager* createManager(Application* app,
+                               DBusConnection* conn,
+                               bool stoppable = false,
+                               QObject *parent = 0) {
+        Q_UNUSED(stoppable);
+        return new TestingManager(app, conn, true, parent);
+    }
+};
+
 TestingDaemon::TestingDaemon(QObject *parent)
-    : Daemon(&TestingDaemon::createManager, parent) {
+    : BaseDaemon(new TestingManagerFactory(),
+                 new DownloadAdaptorFactory(),
+                 parent) {
 }
 
 TestingDaemon::~TestingDaemon() {
@@ -78,19 +96,13 @@ TestingDaemon::setDaemonPath(QString path) {
 }
 
 void
-TestingDaemon::start(QString path) {
+TestingDaemon::start(const QString& path) {
     if (_path.isEmpty()) {
-        Daemon::start(path);
+        BaseDaemon::start(path);
     } else {
-        Daemon::start(_path);
+        BaseDaemon::start(_path);
     }
     auto man = manager();
     TestingManager* manager = qobject_cast<TestingManager*>(man);
     _testsAdaptor = new TestingManagerAdaptor(manager);
-}
-
-Manager*
-TestingDaemon::createManager(System::Application* app,
-                             System::DBusConnection* conn) {
-    return new TestingManager(app, conn, true);
 }

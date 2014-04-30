@@ -11,7 +11,7 @@ TEMPLATE = lib
 DEFINES += APPDOWNLOADERLIB_LIBRARY
 
 SOURCES += \
-    ubuntu/udm/daemon.cpp \
+    ubuntu/downloads/daemon.cpp \
     ubuntu/downloads/download.cpp \
     ubuntu/downloads/download_adaptor.cpp \
     ubuntu/downloads/downloads_db.cpp \
@@ -27,25 +27,29 @@ SOURCES += \
     ubuntu/downloads/state_machines/state.cpp \
     ubuntu/downloads/state_machines/final_state.cpp \
     ubuntu/downloads/mms_file_download.cpp \
-    ubuntu/system/uuid_utils.cpp \
-    ubuntu/system/uuid_factory.cpp \
-    ubuntu/system/timer.cpp \
-    ubuntu/system/system_network_info.cpp \
-    ubuntu/system/request_factory.cpp \
-    ubuntu/system/process_factory.cpp \
-    ubuntu/system/process.cpp \
-    ubuntu/system/logger.cpp \
-    ubuntu/system/file_manager.cpp \
-    ubuntu/system/application.cpp \
-    ubuntu/system/apparmor.cpp \
-    ubuntu/system/network_reply.cpp \
-    ubuntu/system/dbus_proxy.cpp \
-    ubuntu/system/apn_request_factory.cpp \
-    ubuntu/system/apn_proxy.cpp \
-    ubuntu/system/filename_mutex.cpp
+    ubuntu/downloads/download_adaptor_factory.cpp \
+    ubuntu/downloads/download_manager_factory.cpp \
+    ubuntu/transfers/base_daemon.cpp \
+    ubuntu/transfers/base_manager.cpp \
+    ubuntu/transfers/system/uuid_utils.cpp \
+    ubuntu/transfers/system/uuid_factory.cpp \
+    ubuntu/transfers/system/timer.cpp \
+    ubuntu/transfers/system/system_network_info.cpp \
+    ubuntu/transfers/system/request_factory.cpp \
+    ubuntu/transfers/system/process_factory.cpp \
+    ubuntu/transfers/system/process.cpp \
+    ubuntu/transfers/system/logger.cpp \
+    ubuntu/transfers/system/file_manager.cpp \
+    ubuntu/transfers/system/application.cpp \
+    ubuntu/transfers/system/apparmor.cpp \
+    ubuntu/transfers/system/network_reply.cpp \
+    ubuntu/transfers/system/dbus_proxy.cpp \
+    ubuntu/transfers/system/apn_request_factory.cpp \
+    ubuntu/transfers/system/apn_proxy.cpp \
+    ubuntu/transfers/system/filename_mutex.cpp
 
 HEADERS +=\
-    ubuntu/udm/daemon.h \
+    ubuntu/downloads/daemon.h \
     ubuntu/downloads/download.h \
     ubuntu/downloads/download_adaptor.h \
     ubuntu/downloads/downloads_db.h \
@@ -61,22 +65,28 @@ HEADERS +=\
     ubuntu/downloads/state_machines/state.h \
     ubuntu/downloads/state_machines/final_state.h \
     ubuntu/downloads/mms_file_download.h \
-    ubuntu/system/uuid_utils.h \
-    ubuntu/system/uuid_factory.h \
-    ubuntu/system/timer.h \
-    ubuntu/system/system_network_info.h \
-    ubuntu/system/request_factory.h \
-    ubuntu/system/process_factory.h \
-    ubuntu/system/process.h \
-    ubuntu/system/logger.h \
-    ubuntu/system/file_manager.h \
-    ubuntu/system/application.h \
-    ubuntu/system/apparmor.h \
-    ubuntu/system/network_reply.h \
-    ubuntu/system/dbus_proxy.h \
-    ubuntu/system/apn_request_factory.h \
-    ubuntu/system/apn_proxy.h \
-    ubuntu/system/filename_mutex.h
+    ubuntu/transfers/base_daemon.h \
+    ubuntu/transfers/base_manager.h \
+    ubuntu/transfers/adaptor_factory.h \
+    ubuntu/transfers/manager_factory.h \
+    ubuntu/downloads/download_adaptor_factory.h \
+    ubuntu/downloads/download_manager_factory.h \
+    ubuntu/transfers/system/uuid_utils.h \
+    ubuntu/transfers/system/uuid_factory.h \
+    ubuntu/transfers/system/timer.h \
+    ubuntu/transfers/system/system_network_info.h \
+    ubuntu/transfers/system/request_factory.h \
+    ubuntu/transfers/system/process_factory.h \
+    ubuntu/transfers/system/process.h \
+    ubuntu/transfers/system/logger.h \
+    ubuntu/transfers/system/file_manager.h \
+    ubuntu/transfers/system/application.h \
+    ubuntu/transfers/system/apparmor.h \
+    ubuntu/transfers/system/network_reply.h \
+    ubuntu/transfers/system/dbus_proxy.h \
+    ubuntu/transfers/system/apn_request_factory.h \
+    ubuntu/transfers/system/apn_proxy.h \
+    ubuntu/transfers/system/filename_mutex.h
 
 include(../common-installs-config.pri)
 

@@ -99,6 +99,17 @@ Description: Ubuntu Download Manager - daemon
  .
  This package includes the daemon.
 
+Package: ubuntu-upload-manager
+Section: net
+Architecture: any
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libubuntu-download-manager-priv0 (= ${binary:Version}),
+Description: Ubuntu Upload Manager - daemon
+ Ubuntu Upload Manager performs uploads from a centralized location.
+ .
+ This package includes the daemon.
+
 Package: qtdeclarative5-ubuntu-download-manager0.1
 Section: net
 Architecture: any

@@ -21,10 +21,13 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/udm/daemon.h>  // comes from the priv lib, just for testing!!!!
+#include <ubuntu/downloads/daemon.h>  // comes from the priv lib, just for testing!!!!
+
+using namespace Ubuntu::Transfers;
+using namespace Ubuntu::System;
 
 class TestingManagerAdaptor;
-class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
+class TestingDaemon : public Ubuntu::Transfers::BaseDaemon {
     Q_OBJECT
  public:
     explicit TestingDaemon(QObject *parent = 0);
@@ -41,13 +44,9 @@ class TestingDaemon : public Ubuntu::DownloadManager::Daemon::Daemon {
     void setDaemonPath(QString path);
 
  public slots:
-    void start(QString path="com.canonical.applications.testing.Downloader") override;
+    void start(const QString& path="com.canonical.applications.testing.Downloader") override;
 
  private:
-    static Ubuntu::DownloadManager::Daemon::Manager* createManager(
-         Ubuntu::DownloadManager::System::Application* app,
-         Ubuntu::DownloadManager::System::DBusConnection* conn);
-
     QString _path;
     TestingManagerAdaptor* _testsAdaptor = nullptr;
 

@@ -81,7 +81,7 @@ class TestDownloadManager : public BaseTestCase {
     FakeDownloadQueue* _q;
     QSharedPointer<FakeUuidFactory> _uuidFactory;
     FakeAppArmor* _apparmor;
-    Manager* _man;
+    DownloadManager* _man;
 };
 
 DECLARE_TEST(TestDownloadManager)

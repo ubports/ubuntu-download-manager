@@ -96,9 +96,9 @@ TestingManager::registerDownload(Download* download) {
         auto downAdaptor = new DownloadAdaptor(testDown);
     Q_UNUSED(downAdaptor);
         // create wrapper and call parent class
-        path = Manager::registerDownload(testDown);
+        path = DownloadManager::registerDownload(testDown);
     } else {
-        path = Manager::registerDownload(download);
+        path = DownloadManager::registerDownload(download);
     }
     // create an adaptor so that we can be exposed to Dbus
     qDebug() << "Path" << path.path();
@@ -111,7 +111,7 @@ TestingManager::createDownload(DownloadStruct download) {
         sendErrorReply(QDBusError::InvalidMember,
         "createDownload");
     }
-    return Manager::createDownload(download);
+    return DownloadManager::createDownload(download);
 }
 
 QDBusObjectPath
@@ -124,7 +124,7 @@ TestingManager::createDownloadGroup(StructList downloads,
         sendErrorReply(QDBusError::InvalidMember,
         "createDownloadGroup");
     }
-    return Manager::createDownloadGroup(downloads, algorithm, allowed3G,
+    return DownloadManager::createDownloadGroup(downloads, algorithm, allowed3G,
         metadata, headers);
 }
 
@@ -134,7 +134,7 @@ TestingManager::defaultThrottle() {
         sendErrorReply(QDBusError::InvalidMember,
         "defaultThrottle");
     }
-    return Manager::defaultThrottle();
+    return DownloadManager::defaultThrottle();
 }
 
 void
@@ -143,7 +143,7 @@ TestingManager::setDefaultThrottle(qulonglong speed) {
         sendErrorReply(QDBusError::InvalidMember,
         "setDefaultThrottle");
     }
-    Manager::setDefaultThrottle(speed);
+    DownloadManager::setDefaultThrottle(speed);
 }
 
 void
@@ -153,7 +153,7 @@ TestingManager::allowGSMDownload(bool allowed) {
         sendErrorReply(QDBusError::InvalidMember,
         "setDefaultThrottle");
     }
-    Manager::allowGSMDownload(allowed);
+    DownloadManager::allowGSMDownload(allowed);
 }
 
 bool
@@ -163,7 +163,7 @@ TestingManager::isGSMDownloadAllowed() {
         sendErrorReply(QDBusError::InvalidMember,
         "setDefaultThrottle");
     }
-    return Manager::isGSMDownloadAllowed();
+    return DownloadManager::isGSMDownloadAllowed();
 }
 
 QList<QDBusObjectPath>
@@ -172,7 +172,7 @@ TestingManager::getAllDownloads() {
         sendErrorReply(QDBusError::InvalidMember,
         "getAllDownloads");
     }
-    return Manager::getAllDownloads();
+    return DownloadManager::getAllDownloads();
 }
 
 QList<QDBusObjectPath>
@@ -182,7 +182,7 @@ TestingManager::getAllDownloadsWithMetadata(const QString& name,
         sendErrorReply(QDBusError::InvalidMember,
         "getAllDownloadsWithMetadata");
     }
-    return Manager::getAllDownloadsWithMetadata(name, value);
+    return DownloadManager::getAllDownloadsWithMetadata(name, value);
 }
 
 void
@@ -192,5 +192,5 @@ TestingManager::exit() {
         "exit");
         return;
     }
-    Manager::exit();
+    DownloadManager::exit();
 }

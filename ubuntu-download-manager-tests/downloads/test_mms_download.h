@@ -20,15 +20,15 @@
 #define TEST_MMS_DOWNLOAD_H
 
 #include <QObject>
-#include <ubuntu/system/request_factory.h>
-#include <ubuntu/system/apn_request_factory.h>
+#include <ubuntu/transfers/system/request_factory.h>
+#include <ubuntu/transfers/system/apn_request_factory.h>
 #include <ubuntu/downloads/mms_file_download.h>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
 
 
+using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
-using namespace Ubuntu::DownloadManager::System;
 
 class PublicMmsFileDownload : public MmsFileDownload {
     Q_OBJECT

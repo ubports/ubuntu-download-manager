@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -21,14 +21,13 @@
 
 #include <QMap>
 #include <QList>
-#include "auth_error_struct.h"
-#include "http_error_struct.h"
-#include "network_error_struct.h"
-#include "process_error_struct.h"
-#include "download_struct.h"
-#include "group_download_struct.h"
+#include "upload_struct.h"
 
 using namespace Ubuntu::UploadManager;
 
+typedef QMap<QString, QString> StringMap;
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H
+Q_DECLARE_METATYPE(UploadStruct)
+Q_DECLARE_METATYPE(StringMap)
+
+#endif  // UPLOADER_LIB_APP_METATYPES_H

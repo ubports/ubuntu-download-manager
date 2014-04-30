@@ -23,11 +23,10 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
-#include <ubuntu/download_manager/metadata.h>
-#include <ubuntu/download_manager/system/hash_algorithm.h>
-#include "ubuntu/system/logger.h"
-#include "ubuntu/system/network_reply.h"
-#include "ubuntu/system/filename_mutex.h"
+#include <ubuntu/transfers/system/hash_algorithm.h>
+#include "ubuntu/transfers/system/logger.h"
+#include "ubuntu/transfers/system/network_reply.h"
+#include "ubuntu/transfers/system/filename_mutex.h"
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "

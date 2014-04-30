@@ -33,10 +33,6 @@ LIBS += -L$$OUT_PWD/../ubuntu-download-manager-priv/ -lubuntu-download-manager-p
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-priv
 DEPENDPATH += $$PWD/../ubuntu-download-manager-priv
 
-OTHER_FILES += \
-    ubuntu-download-manager.service \
-    com.canonical.applications.Downloader.conf
-
 LIBS += -L$$OUT_PWD/../ubuntu-download-manager-common/ -lubuntu-download-manager-common
 
 INCLUDEPATH += $$PWD/../ubuntu-download-manager-common

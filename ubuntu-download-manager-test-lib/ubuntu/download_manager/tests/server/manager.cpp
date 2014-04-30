@@ -18,10 +18,34 @@
 
 #include "manager.h"
 
+FakeDownloadManagerFactory::FakeDownloadManagerFactory(QObject *parent)
+    : ManagerFactory(parent) {
+}
+
+FakeDownloadManagerFactory::FakeDownloadManagerFactory(
+                                               FakeDownloadManager* man,
+                                               QObject* parent)
+    : ManagerFactory(parent),
+      _man(man) {
+}
+
+BaseManager*
+FakeDownloadManagerFactory::createManager(Application* app,
+                               DBusConnection* connection,
+                               bool stoppable,
+                               QObject *parent) {
+    Q_UNUSED(stoppable);
+    if (_man != nullptr) {
+        return _man;
+    } else {
+        return new FakeDownloadManager(app, connection, parent);
+    }
+}
+
 FakeDownloadManager::FakeDownloadManager(Application* app,
                                          DBusConnection* connection,
                                          QObject *parent)
-    : Manager(app, connection, parent),
+    : DownloadManager(app, connection, parent),
       Fake() {
 }
 
@@ -39,7 +63,7 @@ FakeDownloadManager::acceptedCertificates() {
         MethodData methodData("acceptedCertificates", params);
         _called.append(methodData);
     }
-    return Manager::acceptedCertificates();
+    return DownloadManager::acceptedCertificates();
 }
 
 void
@@ -52,5 +76,5 @@ FakeDownloadManager::setAcceptedCertificates(
         MethodData methodData("setAcceptedCertificates", params);
         _called.append(methodData);
     }
-    Manager::setAcceptedCertificates(certs);
+    DownloadManager::setAcceptedCertificates(certs);
 }

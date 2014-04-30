@@ -20,10 +20,10 @@
 #define FILENAME_MUTEXT_H
 
 #include <QObject>
-#include <ubuntu/system/filename_mutex.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class FakeFileNameMutex : public FileNameMutex, public Fake {
     Q_OBJECT

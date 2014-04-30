@@ -23,16 +23,16 @@
 #include <QObject>
 #include <QProcess>
 #include <QSharedPointer>
-#include "ubuntu/system/process_factory.h"
-#include "ubuntu/system/request_factory.h"
-#include "ubuntu/system/system_network_info.h"
+#include "ubuntu/transfers/system/process_factory.h"
+#include "ubuntu/transfers/system/request_factory.h"
+#include "ubuntu/transfers/system/system_network_info.h"
 
 
 namespace Ubuntu {
 
-namespace DownloadManager {
-
 using namespace System;
+
+namespace DownloadManager {
 
 namespace Daemon {
 

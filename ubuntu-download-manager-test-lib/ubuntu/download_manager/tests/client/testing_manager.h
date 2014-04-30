@@ -25,7 +25,7 @@
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
-class TestingManager : public Manager {
+class TestingManager : public DownloadManager {
     Q_OBJECT
 
  public:
@@ -33,7 +33,7 @@ class TestingManager : public Manager {
             DBusConnection* connection,
             bool stoppable = false,
             QObject *parent = 0)
-        : Manager(app, connection, stoppable, parent) {}
+        : DownloadManager(app, connection, stoppable, parent) {}
 
  public slots:  // NOLINT(whitespace/indent)
     QDBusObjectPath createDownload(DownloadStruct download) override;

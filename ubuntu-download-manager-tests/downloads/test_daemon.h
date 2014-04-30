@@ -20,7 +20,7 @@
 #define TEST_DOWNLOAD_DAEMON_H
 
 #include <QObject>
-#include <ubuntu/udm/daemon.h>
+#include <ubuntu/downloads/daemon.h>
 #include <ubuntu/download_manager/tests/server/application.h>
 #include <ubuntu/download_manager/tests/server/dbus_connection.h>
 #include <ubuntu/download_manager/tests/server/manager.h>

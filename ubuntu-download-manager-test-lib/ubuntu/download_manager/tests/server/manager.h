@@ -21,12 +21,14 @@
 
 #include <QObject>
 #include <ubuntu/downloads/manager.h>
+#include <ubuntu/transfers/manager_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::Transfers;
+using namespace Ubuntu::System;
 using namespace Ubuntu::DownloadManager::Daemon;
 
-class FakeDownloadManager : public Manager, public Fake {
+class FakeDownloadManager : public DownloadManager, public Fake {
     Q_OBJECT
 
  public:
@@ -37,6 +39,21 @@ class FakeDownloadManager : public Manager, public Fake {
     void emitSizeChaged(int size);
     QList<QSslCertificate> acceptedCertificates() override;
     void setAcceptedCertificates(const QList<QSslCertificate>& certs) override;
+};
+
+class FakeDownloadManagerFactory : public ManagerFactory {
+    Q_OBJECT
+
+ public:
+    explicit FakeDownloadManagerFactory(QObject* parent = 0);
+    FakeDownloadManagerFactory(FakeDownloadManager* man, QObject* parent=0);
+
+    virtual BaseManager* createManager(Application* app,
+                                   DBusConnection* connection,
+                                   bool stoppable = false,
+                                   QObject *parent = 0);
+ private:
+    FakeDownloadManager* _man = nullptr;
 };
 
 #endif  // FAKE_DOWNLOAD_MANAGER_H

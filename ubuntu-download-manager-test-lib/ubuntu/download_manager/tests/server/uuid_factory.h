@@ -20,10 +20,10 @@
 #define FAKE_UUID_FACTORY_H
 
 #include <QObject>
-#include <ubuntu/system/uuid_factory.h>
+#include <ubuntu/transfers/system/uuid_factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 class FakeUuidFactory : public UuidFactory, public Fake {
     Q_OBJECT

@@ -13,12 +13,14 @@ SUBDIRS += \
     ubuntu-download-manager-common-tests \
     ubuntu-download-manager-test-daemon \
     ubuntu-download-manager-client-tests \
-    ubuntu-download-manager-client-tests \
-    ubuntu-download-manager-plugin
+    ubuntu-download-manager-plugin \
+    ubuntu-upload-manager \
+    ubuntu-upload-manager-common
 
 ubuntu-download-manager-priv.depends = ubuntu-download-manager-common
 
 ubuntu-download-manager.depends = ubuntu-download-manager-priv
+ubuntu-upload-manager.depends = ubuntu-download-manager-priv
 
 ubuntu-download-manager-client.depends = ubuntu-download-manager-common
 

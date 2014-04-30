@@ -20,10 +20,10 @@
 #include <QDir>
 #include <QFile>
 #include <QScopedPointer>
-#include <ubuntu/system/filename_mutex.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
 #include "test_filename_mutex.h"
 
-using namespace Ubuntu::DownloadManager::System;
+using namespace Ubuntu::System;
 
 TestFileNameMutex::TestFileNameMutex(QObject *parent)
     : BaseTestCase("TestFileNameMutex", parent) {

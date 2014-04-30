@@ -24,12 +24,13 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
+#include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/auth_error_struct.h>
 #include <ubuntu/download_manager/http_error_struct.h>
 #include <ubuntu/download_manager/network_error_struct.h>
 #include <ubuntu/download_manager/process_error_struct.h>
-#include "ubuntu/system/filename_mutex.h"
-#include "ubuntu/system/file_manager.h"
+#include "ubuntu/transfers/system/file_manager.h"
+#include "ubuntu/transfers/system/filename_mutex.h"
 #include "download.h"
 
 namespace Ubuntu {

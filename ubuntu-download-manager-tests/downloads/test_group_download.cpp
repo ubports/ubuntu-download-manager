@@ -20,7 +20,7 @@
 #include <QSignalSpy>
 #include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/downloads/group_download.h>
-#include <ubuntu/system/uuid_utils.h>
+#include <ubuntu/transfers/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
 #include <ubuntu/download_manager/tests/server/group_download.h>
 #include "test_group_download.h"
