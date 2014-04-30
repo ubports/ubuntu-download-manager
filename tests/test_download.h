@@ -171,6 +171,13 @@ class TestDownload: public BaseTestCase {
     void testErrorUnlocksPath();
     void testLockCustomLocalPath();
 
+    // tests related to setting the dir
+    void testSetLocalDirectory();
+    void testSetLocalDirectoryNotAbsolute();
+    void testSetLocalDirectoryNotPresent();
+    void testSetLocalDirectoryNotDir();
+    void testSetLocalDirectoryStarted();
+
  private:
     QString _id;
     bool _isConfined;

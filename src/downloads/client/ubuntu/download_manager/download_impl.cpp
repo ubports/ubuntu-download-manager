@@ -155,6 +155,17 @@ DownloadImpl::isMobileDownloadAllowed() {
 }
 
 void
+DownloadImpl::setDestinationDir(const QString& path) {
+    QDBusPendingReply<> reply =
+        _dbusInterface->setDestinationDir(path);
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        setLastError(reply.error());
+    }
+}
+
+void
 DownloadImpl::setThrottle(qulonglong speed) {
     QDBusPendingReply<> reply =
         _dbusInterface->setThrottle(speed);

@@ -29,6 +29,8 @@
 #include <ubuntu/transfers/system/logger.h>
 #include <ubuntu/transfers/system/network_reply.h>
 #include <ubuntu/transfers/system/filename_mutex.h>
+#include <ubuntu/transfers/system/uuid_factory.h>
+#include <ubuntu/transfers/system/uuid_utils.h>
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
@@ -63,6 +65,7 @@ FileDownload::FileDownload(const QString& id,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+      QDBusContext(),
       _totalSize(0),
       _url(url),
       _hash(""),
@@ -81,6 +84,7 @@ FileDownload::FileDownload(const QString& id,
                    const QMap<QString, QString> &headers,
                    QObject* parent)
     : Download(id, path, isConfined, rootPath, metadata, headers, parent),
+      QDBusContext(),
       _totalSize(0),
       _url(url),
       _hash(hash) {
@@ -234,6 +238,66 @@ FileDownload::setThrottle(qulonglong speed) {
     Download::setThrottle(speed);
     if (_reply != nullptr)
         _reply->setReadBufferSize(speed);
+}
+
+void
+FileDownload::setDestinationDir(const QString& path) {
+    // we have to perform several checks to ensure the integrity
+    // of the download
+    // 1. Trust apparmor that it will bock the call of this method
+    //    from not confined apps
+    // 2. Ensure that the path is an absolute path.
+    // 3. Ensure that the path does exist.
+    // 4. Ensure that the path is a dir.
+    // 5. Ensure that the download was not started
+    QFileInfo info(path);
+    if (!info.isAbsolute()) {
+        DOWN_LOG(WARNING) << "Trying to set destination dir to '"
+            << path << "' when the path is not absolute.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::InvalidArgs,
+                "The destination dir must be an absolute path.");
+        }
+        return;
+    }
+
+    if (!info.exists()) {
+        DOWN_LOG(WARNING) << "Trying to set destination dir to '"
+            << path << "' when the path does not exists.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::InvalidArgs,
+                "The destination dir must be already present in the system.");
+        }
+        return;
+    }
+
+    if (!info.isDir()) {
+        DOWN_LOG(WARNING) << "Trying to set destination dir to '"
+            << path << "' when the path is not a dir.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::InvalidArgs,
+                "The destination dir must be a dir and a file was found.");
+        }
+        return;
+    }
+
+    if (state() == Download::IDLE) {
+        // calculate the new path before we unlock the old one
+        auto desiredPath = path;
+        if (!desiredPath.endsWith(QDir::separator())) {
+            desiredPath += QDir::separator();
+        }
+        desiredPath += _basename;
+        desiredPath = _fileNameMutex->lockFileName(desiredPath);
+        _tempFilePath = desiredPath + TEMP_EXTENSION;
+        _fileNameMutex->unlockFileName(_filePath);
+        _filePath = desiredPath;
+    } else {
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::NotSupported,
+                "The path cannot be changed in a started download.");
+        }
+    }
 }
 
 void
@@ -603,10 +667,12 @@ FileDownload::initFileNames() {
     // the mutex will ensure that we do not have race conditions about
     // the file names in the download manager
     QString path = _url.path();
-    QString basename = QFileInfo(path).fileName();
+    _basename = QFileInfo(path).fileName();
 
-    if (basename.isEmpty())
-        basename = DATA_FILE_NAME;
+    if (_basename.isEmpty()) {
+        QScopedPointer<UuidFactory> uuidFactory(new UuidFactory());
+        _basename = UuidUtils::getDBusString(uuidFactory->createUuid());
+    }
 
     auto metadataMap = metadata();
 
@@ -624,7 +690,7 @@ FileDownload::initFileNames() {
                 _filePath));
         }
     } else {
-        auto desiredPath = rootPath() + QDir::separator() + basename;
+        auto desiredPath = rootPath() + QDir::separator() + _basename;
         _filePath = _fileNameMutex->lockFileName(desiredPath);
         _tempFilePath = _filePath + TEMP_EXTENSION;
     }

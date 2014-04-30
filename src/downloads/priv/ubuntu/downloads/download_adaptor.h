@@ -50,6 +50,9 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"throttle\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
+"    <method name=\"setDestinationDir\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"path\"/>\n"
+"    </method>\n"
 "    <method name=\"allowGSMDownload\">\n"
 "      <arg direction=\"in\" type=\"b\" name=\"allowed\"/>\n"
 "    </method>\n"
@@ -116,6 +119,7 @@ public Q_SLOTS: // METHODS
     void pause();
     qulonglong progress();
     void resume();
+    void setDestinationDir(const QString &path);
     void setThrottle(qulonglong speed);
     void start();
     qulonglong throttle();

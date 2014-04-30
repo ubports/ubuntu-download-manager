@@ -55,6 +55,13 @@ class TestDownload : public LocalTreeTestCase {
     void testProcessErrorRaised_data();
     void testProcessErrorRaised();
 
+    // set local dir tests
+    void testSetLocalDirectory();
+    void testSetLocalDirectoryNotAbsolute();
+    void testSetLocalDirectoryNotPresent();
+    void testSetLocalDirectoryNotDir();
+    void testSetLocalDirectoryStarted();
+
  private:
     QString _url;
     QVariantMap _metadata;

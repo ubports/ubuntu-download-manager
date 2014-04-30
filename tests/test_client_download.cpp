@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDir>
 #include <QNetworkReply>
 #include <ubuntu/download_manager/error.h>
 #include "test_client_download.h"
@@ -252,11 +253,11 @@ TestDownload::testProcessErrorRaised_data() {
     QTest::addColumn<QString>("standardError");
 
     QTest::newRow("Failed To Start") << 0 << "Failed To Start"
-        << -1 << "" << ""; 
+        << -1 << "" << "";
     QTest::newRow("Crashed") << 1 << "Crashed" << -1 << "Calculating.."
-        << "NULL pointer"; 
+        << "NULL pointer";
     QTest::newRow("Timedout") << 2 << "Timedout" << -1 << "stdout"
-        << ""; 
+        << "";
 }
 
 void
@@ -287,6 +288,53 @@ TestDownload::testProcessErrorRaised() {
     QCOMPARE(exitCode, processError->exitCode());
     QCOMPARE(standardOutput, processError->standardOut());
     QCOMPARE(standardError, processError->standardError());
+}
+
+void
+TestDownload::testSetLocalDirectory() {
+    auto path = testDirectory();
+    _down->setDestinationDir(path);
+    QVERIFY(!_down->isError());
+    QVERIFY(_down->error() == nullptr);
+}
+
+void
+TestDownload::testSetLocalDirectoryNotAbsolute() {
+    _down->setDestinationDir("./test");
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testSetLocalDirectoryNotPresent() {
+    _down->setDestinationDir("/etc/test");
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testSetLocalDirectoryNotDir() {
+    auto path = testDirectory() + QDir::separator() + "test";
+    QFile file(path);
+    file.open(QIODevice::ReadWrite | QFile::Append);
+    file.write(QByteArray(100, 'w'));
+    file.close();
+    _down->setDestinationDir(path);
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testSetLocalDirectoryStarted() {
+    auto path = testDirectory();
+    _down->start();
+    _down->setDestinationDir(path);
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
 }
 
 QTEST_MAIN(TestDownload)

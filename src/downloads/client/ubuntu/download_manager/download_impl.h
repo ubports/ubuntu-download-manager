@@ -43,6 +43,7 @@ class DownloadImpl : public Download {
     Q_OBJECT
 
     // allow the manager to create downloads
+    friend class ManagerImpl;
     friend class DownloadPendingCallWatcher;
     friend class DownloadManagerPendingCallWatcher;
 
@@ -57,6 +58,7 @@ class DownloadImpl : public Download {
     void allowMobileDownload(bool allowed);
     bool isMobileDownloadAllowed();
 
+    void setDestinationDir(const QString& path);
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 

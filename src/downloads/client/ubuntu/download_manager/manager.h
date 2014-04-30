@@ -74,6 +74,15 @@ class Manager : public QObject {
         : QObject(parent) {}
 
     /*!
+        \fn void getDownloadForId(const QString& id);
+
+        Returns a download object for the download with the given id. The
+        id most be valid else the returned download will be in an unknown
+        state meaning that most of the download operations will fail.
+    */
+    virtual Download* getDownloadForId(const QString& id) = 0;
+
+    /*!
         \fn void createDownload(DownloadStruct downStruct)
 
         Creates a new download using the data found in the structure.

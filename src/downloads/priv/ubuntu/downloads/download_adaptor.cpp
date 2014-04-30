@@ -81,6 +81,12 @@ void DownloadAdaptor::resume()
     QMetaObject::invokeMethod(parent(), "resume");
 }
 
+void DownloadAdaptor::setDestinationDir(const QString &path)
+{
+    // handle method call com.canonical.applications.Download.setDestinationDir
+    QMetaObject::invokeMethod(parent(), "setDestinationDir", Q_ARG(QString, path));
+}
+
 void DownloadAdaptor::setThrottle(qulonglong speed)
 {
     // handle method call com.canonical.applications.Download.setThrottle
