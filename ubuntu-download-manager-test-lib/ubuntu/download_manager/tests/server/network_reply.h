@@ -21,7 +21,7 @@
 
 #include <QMap>
 #include <QObject>
-#include <system/network_reply.h>
+#include <ubuntu/system/network_reply.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

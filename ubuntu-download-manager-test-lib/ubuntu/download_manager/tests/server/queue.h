@@ -19,8 +19,8 @@
 #ifndef FAKE_DOWNLOAD_QUEUE_H
 #define FAKE_DOWNLOAD_QUEUE_H
 #include <QSharedPointer>
-#include <downloads/queue.h>
-#include <system/system_network_info.h>
+#include <ubuntu/downloads/queue.h>
+#include <ubuntu/system/system_network_info.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::Daemon;

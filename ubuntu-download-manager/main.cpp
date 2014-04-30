@@ -18,7 +18,7 @@
 
 #include <QTimer>
 #include <QCoreApplication>
-#include <downloads/daemon.h>
+#include <ubuntu/udm/daemon.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;
 

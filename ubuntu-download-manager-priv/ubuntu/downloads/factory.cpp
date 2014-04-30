@@ -19,13 +19,14 @@
 #include <QNetworkProxy>
 #include <QPair>
 #include <ubuntu/download_manager/metadata.h>
-#include "downloads/download_adaptor.h"
-#include "downloads/group_download.h"
-#include "downloads/group_download_adaptor.h"
-#include "downloads/file_download.h"
-#include "downloads/mms_file_download.h"
-#include "downloads/factory.h"
-#include "system/logger.h"
+#include "ubuntu/system/logger.h"
+#include "download_adaptor.h"
+#include "group_download.h"
+#include "group_download_adaptor.h"
+#include "file_download.h"
+#include "mms_file_download.h"
+#include "factory.h"
+
 
 namespace Ubuntu {
 

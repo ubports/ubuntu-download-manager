@@ -21,10 +21,10 @@
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
-#include "downloads/download.h"
-#include "system/apparmor.h"
-#include "system/system_network_info.h"
-#include "system/uuid_factory.h"
+#include "ubuntu/system/apparmor.h"
+#include "ubuntu/system/system_network_info.h"
+#include "ubuntu/system/uuid_factory.h"
+#include "download.h"
 
 namespace Ubuntu {
 

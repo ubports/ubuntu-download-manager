@@ -20,7 +20,7 @@
 #define FAKE_TIMER_H
 
 #include <QObject>
-#include <system/timer.h>
+#include <ubuntu/system/timer.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

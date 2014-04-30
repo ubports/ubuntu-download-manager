@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include <downloads/factory.h>
+#include <ubuntu/downloads/factory.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

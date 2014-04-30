@@ -26,11 +26,11 @@
 #include <QSslCertificate>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/download_manager/system/dbus_connection.h>
-#include "downloads/download.h"
-#include "downloads/downloads_db.h"
-#include "downloads/queue.h"
-#include "downloads/factory.h"
-#include "system/application.h"
+#include "ubuntu/system/application.h"
+#include "download.h"
+#include "downloads_db.h"
+#include "queue.h"
+#include "factory.h"
 
 namespace Ubuntu {
 

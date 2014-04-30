@@ -20,7 +20,7 @@
 #define FAKE_APPLICATION_H
 
 #include <QObject>
-#include <system/application.h>
+#include <ubuntu/system/application.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

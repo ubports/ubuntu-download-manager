@@ -25,10 +25,10 @@
 #include <QSslError>
 #include <ubuntu/download_manager/metadata.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
-#include "downloads/file_download.h"
-#include "system/filename_mutex.h"
-#include "system/logger.h"
-#include "system/network_reply.h"
+#include "ubuntu/system/logger.h"
+#include "ubuntu/system/network_reply.h"
+#include "ubuntu/system/filename_mutex.h"
+#include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
 

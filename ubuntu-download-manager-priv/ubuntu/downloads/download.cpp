@@ -17,8 +17,8 @@
  */
 
 #include <QStringList>
-#include "system/logger.h"
-#include "downloads/download.h"
+#include "ubuntu/system/logger.h"
+#include "download.h"
 
 namespace Ubuntu {
 

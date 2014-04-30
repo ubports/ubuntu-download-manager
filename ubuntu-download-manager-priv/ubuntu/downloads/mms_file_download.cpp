@@ -16,7 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "system/apn_request_factory.h"
+#include "ubuntu/system/apn_request_factory.h"
 #include "mms_file_download.h"
 
 namespace Ubuntu {

@@ -20,7 +20,7 @@
 #include <QDir>
 #include <QFile>
 #include <QScopedPointer>
-#include <system/filename_mutex.h>
+#include <ubuntu/system/filename_mutex.h>
 #include "test_filename_mutex.h"
 
 using namespace Ubuntu::DownloadManager::System;

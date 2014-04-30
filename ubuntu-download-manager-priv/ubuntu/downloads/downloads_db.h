@@ -21,8 +21,8 @@
 
 #include <QSqlDatabase>
 #include <QObject>
-#include "downloads/file_download.h"
-#include "system/file_manager.h"
+#include "ubuntu/system/file_manager.h"
+#include "file_download.h"
 
 namespace Ubuntu {
 

@@ -19,7 +19,7 @@
 #ifndef FAKE_GROUP_DOWNLOAD_H
 #define FAKE_GROUP_DOWNLOAD_H
 
-#include <downloads/group_download.h>
+#include <ubuntu/downloads/group_download.h>
 #include "download.h"
 
 class FakeGroupDownload : public GroupDownload {

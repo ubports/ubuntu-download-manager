@@ -19,12 +19,12 @@
 #include <QtDBus/QDBusConnection>
 #include <QSharedPointer>
 #include <QSslCertificate>
-#include "downloads/daemon.h"
-#include "downloads/manager.h"
-#include "downloads/download_manager_adaptor.h"
-#include "system/application.h"
-#include "system/logger.h"
-#include "system/timer.h"
+#include "ubuntu/downloads/manager.h"
+#include "ubuntu/downloads/download_manager_adaptor.h"
+#include "ubuntu/system/application.h"
+#include "ubuntu/system/logger.h"
+#include "ubuntu/system/timer.h"
+#include "daemon.h"
 
 
 namespace {

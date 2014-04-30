@@ -20,7 +20,7 @@
 #define FILENAME_MUTEXT_H
 
 #include <QObject>
-#include <system/filename_mutex.h>
+#include <ubuntu/system/filename_mutex.h>
 #include "ubuntu/download_manager/tests/fake.h"
 
 using namespace Ubuntu::DownloadManager::System;

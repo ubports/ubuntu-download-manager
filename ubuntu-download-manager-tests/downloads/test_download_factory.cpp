@@ -16,11 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <downloads/file_download.h>
-#include <downloads/mms_file_download.h>
+#include <ubuntu/downloads/file_download.h>
+#include <ubuntu/downloads/mms_file_download.h>
 #include <ubuntu/download_manager/system/hash_algorithm.h>
-#include <system/file_manager.h>
-#include <system/uuid_utils.h>
+#include <ubuntu/system/file_manager.h>
+#include <ubuntu/system/uuid_utils.h>
 #include "test_download_factory.h"
 
 TestDownloadFactory::TestDownloadFactory(QObject *parent)
