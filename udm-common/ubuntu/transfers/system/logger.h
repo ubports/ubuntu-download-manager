@@ -35,6 +35,8 @@ class QUrl;
 
 #define TRACE DLOG(INFO) << __PRETTY_FUNCTION__
 
+typedef QMap<QString, QString> StringMap;
+
 std::ostream& operator<<(std::ostream &out, const QString& var);
 std::ostream& operator<<(std::ostream &out, const QByteArray& var);
 std::ostream& operator<<(std::ostream &out, const QStringList& var);

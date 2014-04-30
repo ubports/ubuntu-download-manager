@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,18 +16,33 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QTimer>
-#include <QCoreApplication>
-#include <ubuntu/uploads/daemon.h>
+#ifndef UPLOAD_ADAPTOR_FACTORY_H
+#define UPLOAD_ADAPTOR_FACTORY_H
 
-using namespace Ubuntu::UploadManager::Daemon;
+#include <QObject>
+#include <ubuntu/transfers/adaptor_factory.h>
 
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+namespace Ubuntu {
 
-    auto daemon = new UploadDaemon();
-    // use a singleShot timer so that we start after exec so that exit works
-    QTimer::singleShot(0, daemon, SLOT(start()));
+using namespace Transfers;
 
-    return a.exec();
-}
+namespace UploadManager {
+
+namespace Daemon {
+
+class UploadAdaptorFactory : public AdaptorFactory {
+    Q_OBJECT
+
+ public:
+    explicit UploadAdaptorFactory(QObject *parent = 0);
+
+    virtual QObject* createAdaptor(BaseManager* man);
+};
+
+}  // Daemon
+
+}  // UploadManager
+
+}  // Ubuntu
+#endif // DOWNLOAD_ADAPTOR_FACTORY_H
+

@@ -1,13 +1,21 @@
 set(TARGET ubuntu-upload-manager-priv)
 
 set(SOURCES
+        ubuntu/uploads/daemon.cpp
+        ubuntu/uploads/manager.cpp
         ubuntu/uploads/upload_adaptor.cpp
+        ubuntu/uploads/upload_adaptor_factory.cpp
         ubuntu/uploads/upload_manager_adaptor.cpp
+        ubuntu/uploads/upload_manager_factory.cpp
 )
 
 set(HEADERS
+        ubuntu/uploads/daemon.h
+        ubuntu/uploads/manager.h
         ubuntu/uploads/upload_adaptor.h
+        ubuntu/uploads/upload_adaptor_factory.h
         ubuntu/uploads/upload_manager_adaptor.h
+        ubuntu/uploads/upload_manager_factory.h
 )
 
 include_directories(${Qt5SystemInfo_INCLUDE_DIRS})

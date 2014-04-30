@@ -20,9 +20,9 @@
 #include <QRegExp>
 #include <glog/logging.h>
 #include <ubuntu/download_manager/system/logger.h>
-#include "ubuntu/transfers/system/apparmor.h"
-#include "ubuntu/transfers/system/logger.h"
-#include "ubuntu/transfers/system/request_factory.h"
+#include <ubuntu/transfers/system/apparmor.h>
+#include <ubuntu/transfers/system/logger.h>
+#include <ubuntu/transfers/system/request_factory.h>
 #include "manager.h"
 
 namespace Ubuntu {

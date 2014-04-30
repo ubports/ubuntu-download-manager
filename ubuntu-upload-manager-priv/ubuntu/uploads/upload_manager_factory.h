@@ -16,32 +16,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOAD_ADAPTOR_FACTORY_H
-#define DOWNLOAD_ADAPTOR_FACTORY_H
+#ifndef UPLOADER_LIB_MANAGER_FACTORY_H
+#define UPLOADER_LIB_MANAGER_FACTORY_H
 
-#include <QObject>
-#include <ubuntu/transfers/adaptor_factory.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
+#include <ubuntu/transfers/system/application.h>
+#include <ubuntu/transfers/manager_factory.h>
 
 namespace Ubuntu {
 
 using namespace Transfers;
 
-namespace DownloadManager {
+namespace UploadManager {
 
 namespace Daemon {
 
-class DownloadAdaptorFactory : public AdaptorFactory {
+class UploadManagerFactory : public ManagerFactory {
     Q_OBJECT
 
  public:
-    explicit DownloadAdaptorFactory(QObject *parent = 0);
+    explicit UploadManagerFactory(QObject *parent = 0);
 
-    virtual QObject* createAdaptor(BaseManager* man);
+    virtual BaseManager* createManager(System::Application* app,
+                                       System::DBusConnection* connection,
+                                       bool stoppable = false,
+                                       QObject *parent = 0);
 };
 
 }  // Daemon
 
-}  // DownloadManager
+}  // UploadManager
 
 }  // Ubuntu
-#endif // DOWNLOAD_ADAPTOR_FACTORY_H
+
+#endif

@@ -16,18 +16,40 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QTimer>
-#include <QCoreApplication>
-#include <ubuntu/uploads/daemon.h>
+#ifndef UPLOADER_LIB_UPLOAD_DAEMON_H
+#define UPLOADER_LIB_UPLOAD_DAEMON_H
 
-using namespace Ubuntu::UploadManager::Daemon;
+#include <ubuntu/transfers/base_daemon.h>
 
-int main(int argc, char *argv[]) {
-    QCoreApplication a(argc, argv);
+namespace Ubuntu {
 
-    auto daemon = new UploadDaemon();
-    // use a singleShot timer so that we start after exec so that exit works
-    QTimer::singleShot(0, daemon, SLOT(start()));
+using namespace Transfers;
 
-    return a.exec();
-}
+namespace UploadManager {
+
+namespace Daemon {
+
+class UploadDaemon : public BaseDaemon {
+    Q_OBJECT
+
+ public:
+    UploadDaemon(QObject *parent = 0);
+    UploadDaemon(ManagerFactory* managerFactory,
+                   System::Application* app,
+                   System::DBusConnection* conn,
+                   System::Timer* timer,
+                   QObject *parent = 0);
+
+ public slots:
+    virtual void start();
+    virtual void start(const QString& path) override;
+};
+
+}  // Daemon
+
+}  // UploadManager
+
+}  // Ubuntu
+
+#endif
+
