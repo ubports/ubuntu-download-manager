@@ -41,7 +41,7 @@ class Error;
 
     Due to the asynchronous nature of the API a download request
     is not performed on the Download object creation but after
-    the client has requested it via the \l Download::start method.
+    the client has requested it via the \ref Download::start method.
 
     \note The ownership of the Download is relayed to the caller and
     therefore the client must call delete or deleteLater whenever it
@@ -200,7 +200,7 @@ class Download : public QObject {
 
         This signal is emitted whenever and error occurred during a download.
         To get more information about the cause of the error the client can check
-        the type of the error via \l Error::type() and cast \a error to the
+        the type of the error via \ref Error::type() and cast \a error to the
         appropriate subclass.
     */
     void error(Error* error);
@@ -242,7 +242,7 @@ class Download : public QObject {
         not correctly send the size back, \a received and \a total will have
         the same value. The fact that the values are the same \tt DOES NOT
         mean that a download was completed for that the signals
-        \l Download::finished(const QString& path) should be used.
+        \ref Download::finished(const QString& path) should be used.
     */
     void progress(qulonglong received, qulonglong total);
 

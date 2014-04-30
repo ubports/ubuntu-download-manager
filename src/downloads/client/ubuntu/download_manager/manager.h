@@ -98,11 +98,11 @@ class Manager : public QObject {
         \fn void createDownload(DownloadStruct downStruct)
 
         Creates a new download using the data found in the structure.
-        The \l void downloadCreated(Download* down) can be used to get
+        The downloadCreated(Download* down) can be used to get
         a pointer to the new created download.
 
         \note The download object ownership from
-              \l void downloadCreated(Download* down) is of the caller and
+              downloadCreated(Download* down) is of the caller and
               the download manager will not delete it.
     */
     virtual void createDownload(DownloadStruct downStruct) = 0;
@@ -116,10 +116,10 @@ class Manager : public QObject {
         of the download object.
 
         \note Even when the callbacks are executed the
-              \l void downloadCreated(Download* down) is emitted.
+              downloadCreated(Download* down) is emitted.
 
         \note The download object ownership from
-              \l void downloadCreated(Download* down) is of the caller and
+              downloadCreated(Download* down) is of the caller and
               the download manager will not delete it.
     */
     virtual void createDownload(DownloadStruct downStruct,
@@ -130,11 +130,11 @@ class Manager : public QObject {
         \fn void createDownload(StructList downs, const QString& algorithm, bool allowed3G, const QVariantMap& metadata, StringMap headers)
 
         Creates a group download with the data found in the structure.
-        The \l void groupCreated(GroupDownload* down) signal can be used to
+        The groupCreated(GroupDownload* down) signal can be used to
         get a pointer to the new created group download.
 
         \note The download object ownership from
-              \l void downloadCreated(Download* down) is of the caller and
+              downloadCreated(Download* down) is of the caller and
               the download manager will not delete it.
     */
     virtual void createDownload(StructList downs,
@@ -152,10 +152,10 @@ class Manager : public QObject {
         during the creation of the group download object.
 
         \note Even when the callbacks are executed the
-              \l void downloadCreated(Download* down) is emitted.
+              downloadCreated(Download* down) is emitted.
 
         \note The download object ownership from
-              \l void downloadCreated(Download* down) is of the caller and
+              downloadCreated(Download* down) is of the caller and
               the download manager will not delete it.
     */
     virtual void createDownload(StructList downs,

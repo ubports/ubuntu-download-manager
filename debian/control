@@ -3,6 +3,7 @@ Section: net
 Priority: optional
 Build-Depends: cmake,
                debhelper (>= 9),
+               doxygen,
                dbus-test-runner,
                google-mock,
                qt5-qmake,
