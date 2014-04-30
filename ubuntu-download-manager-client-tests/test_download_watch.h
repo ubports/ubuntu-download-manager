@@ -42,6 +42,4 @@ class TestDownloadWatch : public LocalTreeTestCase {
     Manager* _manager = nullptr;
 };
 
-DECLARE_TEST(TestDownloadWatch)
-
 #endif // TEST_DOWNLOAD_MANAGER_H

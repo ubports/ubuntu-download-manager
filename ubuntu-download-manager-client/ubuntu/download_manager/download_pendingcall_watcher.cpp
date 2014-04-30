@@ -18,6 +18,7 @@
 
 #include <QDebug>
 #include <QDBusPendingReply>
+#include <glog/logging.h>
 #include "error.h"
 #include "download_pendingcall_watcher.h"
 
@@ -31,8 +32,9 @@ DownloadPendingCallWatcher::DownloadPendingCallWatcher(
                                                const QDBusPendingCall& call,
                                                Download* parent)
     : PendingCallWatcher(conn, servicePath, call, parent) {
-    connect(this, &DownloadPendingCallWatcher::finished,
-        this, &DownloadPendingCallWatcher::onFinished);
+    CHECK(connect(this, &DownloadPendingCallWatcher::finished,
+        this, &DownloadPendingCallWatcher::onFinished))
+            << "Could not connect to signal";
 }
 
 void

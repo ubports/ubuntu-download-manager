@@ -43,7 +43,7 @@ typedef QMap<QString, QString> StringList;
     attributes include from the url to be downloaded to the hash checksum
     and the algorithm used for the checksum.
 */
-class DOWNLOAD_MANAGER_EXPORT DownloadStruct {
+class DownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString hash READ getHash)
     Q_PROPERTY(QString algorithm READ getAlgorithm)

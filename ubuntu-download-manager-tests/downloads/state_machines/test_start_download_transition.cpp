@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_start_download_transition.h"
 
 TestStartDownloadTransition::TestStartDownloadTransition(QObject *parent)
@@ -53,11 +52,12 @@ void
 TestStartDownloadTransition::testOnTransition() {
     _down->record();
 
-    QSignalSpy startedSpy(&_stateMachine, SIGNAL(started()));
-    QSignalSpy finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
 
     _stateMachine.start();
     // ensure that we started
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QTRY_COMPARE(startedSpy.count(), 1);
 
     // raise the signal and assert that the correct method was called with the
@@ -65,6 +65,7 @@ TestStartDownloadTransition::testOnTransition() {
     _down->raiseDownloadingStarted();
 
     // ensure that we finished
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QTRY_COMPARE(finishedSpy.count(), 1);
 
     QList<MethodData> calledMethods = _down->calledMethods();

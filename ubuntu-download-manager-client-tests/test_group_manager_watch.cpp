@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QSignalSpy>
 #include "test_group_manager_watch.h"
 
 TestGroupManagerWatch::TestGroupManagerWatch(QObject* parent)
@@ -65,10 +64,11 @@ TestGroupManagerWatch::testCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
-    _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
-        cb, errCb);
+    SignalBarrier spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    _manager->createDownload(downloadsStruct, _algo, false, _metadata,
+        _headers, cb, errCb);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QVERIFY(_calledSuccess);
     QVERIFY(!_calledError);
@@ -89,11 +89,14 @@ TestGroupManagerWatch::testErrCallbackIsExecuted() {
     GroupCb errCb = std::bind(&TestGroupManagerWatch::onErrorCb, this,
         std::placeholders::_1);
 
-    QSignalSpy spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
-    _manager->createDownload(downloadsStruct, _algo, false, _metadata, _headers,
-        cb, errCb);
+    SignalBarrier spy(_manager, SIGNAL(groupCreated(GroupDownload*)));
+    _manager->createDownload(downloadsStruct, _algo, false, _metadata,
+        _headers, cb, errCb);
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QVERIFY(!_calledSuccess);
     QVERIFY(_calledError);
 }
+
+QTEST_MAIN(TestGroupManagerWatch)

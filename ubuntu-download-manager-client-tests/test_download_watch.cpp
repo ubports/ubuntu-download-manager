@@ -17,7 +17,6 @@
  */
 
 #include <QScopedPointer>
-#include <QSignalSpy>
 #include <ubuntu/download_manager/download.h>
 #include "test_download_watch.h"
 
@@ -48,15 +47,20 @@ TestDownloadWatch::testErrorRaised() {
         metadata, headers);
 
     // use the blocking call so that we get a download
-    QSignalSpy managerSpy(_manager, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier managerSpy(_manager, SIGNAL(downloadCreated(Download*)));
     _manager->createDownload(downStruct);
 
+    QVERIFY(managerSpy.ensureSignalEmitted());
     QTRY_COMPARE(1, managerSpy.count());
     QScopedPointer<Download> down(managerSpy.takeFirst().at(0).value<Download*>());
 
-    QSignalSpy spy(down.data(), SIGNAL(error(Error*)));
+    SignalBarrier spy(down.data(), SIGNAL(error(Error*)));
     returnDBusErrors(true);
 
     down->start();
-    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 10000);
+
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
 }
+
+QTEST_MAIN(TestDownloadWatch)

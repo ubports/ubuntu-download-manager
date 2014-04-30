@@ -21,14 +21,15 @@
 
 #include <QMap>
 #include <QList>
-#include "auth_error_struct.h"
-#include "http_error_struct.h"
-#include "network_error_struct.h"
-#include "process_error_struct.h"
+#include <ubuntu/transfers/errors/auth_error_struct.h>
+#include <ubuntu/transfers/errors/http_error_struct.h>
+#include <ubuntu/transfers/errors/network_error_struct.h>
+#include <ubuntu/transfers/errors/process_error_struct.h>
 #include "download_struct.h"
 #include "group_download_struct.h"
 
 using namespace Ubuntu::DownloadManager;
+using namespace Ubuntu::Transfers::Errors;
 
 typedef QMap<QString, QString> StringMap;
 typedef QList<GroupDownloadStruct> StructList;

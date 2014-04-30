@@ -99,14 +99,14 @@ class AuthErrorPrivate {
     Q_DECLARE_PUBLIC(AuthError)
 
  public:
-    AuthErrorPrivate(AuthErrorStruct err, AuthError* parent)
+    AuthErrorPrivate(Transfers::Errors::AuthErrorStruct err, AuthError* parent)
         : _err(err),
           q_ptr(parent) {
     }
 
     inline AuthError::Type type() {
         switch(_err.getType()) {
-            case AuthErrorStruct::Proxy:
+            case Transfers::Errors::AuthErrorStruct::Proxy:
                 return AuthError::Proxy;
             default:
                 return AuthError::Server;
@@ -115,7 +115,7 @@ class AuthErrorPrivate {
 
     inline QString getTypeString() {
         switch(_err.getType()) {
-            case AuthErrorStruct::Proxy:
+            case Transfers::Errors::AuthErrorStruct::Proxy:
                 return "Proxy";
             default:
                 return "Server";
@@ -131,7 +131,7 @@ class AuthErrorPrivate {
     }
 
  private:
-    AuthErrorStruct _err;
+    Transfers::Errors::AuthErrorStruct _err;
     AuthError* q_ptr;
 };
 
@@ -139,7 +139,7 @@ class HttpErrorPrivate {
     Q_DECLARE_PUBLIC(HttpError)
 
  public:
-    HttpErrorPrivate(HttpErrorStruct err, HttpError* parent)
+    HttpErrorPrivate(Transfers::Errors::HttpErrorStruct err, HttpError* parent)
         : _err(err),
           q_ptr(parent) {
     }
@@ -158,7 +158,7 @@ class HttpErrorPrivate {
     }
 
  private:
-    HttpErrorStruct _err;
+    Transfers::Errors::HttpErrorStruct _err;
     HttpError* q_ptr;
 };
 
@@ -166,7 +166,8 @@ class NetworkErrorPrivate {
     Q_DECLARE_PUBLIC(NetworkError)
 
  public:
-    NetworkErrorPrivate(NetworkErrorStruct err, NetworkError* parent)
+    NetworkErrorPrivate(Transfers::Errors::NetworkErrorStruct err,
+                        NetworkError* parent)
         : _err(err),
           q_ptr(parent) {
     }
@@ -186,7 +187,7 @@ class NetworkErrorPrivate {
     }
 
  private:
-    NetworkErrorStruct _err;
+    Transfers::Errors::NetworkErrorStruct _err;
     NetworkError* q_ptr;
 };
 
@@ -194,7 +195,8 @@ class ProcessErrorPrivate {
     Q_DECLARE_PUBLIC(ProcessError)
 
  public:
-    ProcessErrorPrivate(ProcessErrorStruct err, ProcessError* parent)
+    ProcessErrorPrivate(Transfers::Errors::ProcessErrorStruct err,
+                        ProcessError* parent)
         : _err(err),
           q_ptr(parent) {
     }
@@ -227,7 +229,7 @@ class ProcessErrorPrivate {
     }
 
  private:
-    ProcessErrorStruct _err;
+    Transfers::Errors::ProcessErrorStruct _err;
     ProcessError* q_ptr;
 };
 
@@ -283,7 +285,7 @@ DBusError::errorString() {
     return d->errorString();
 }
 
-AuthError::AuthError(AuthErrorStruct err, QObject* parent)
+AuthError::AuthError(Transfers::Errors::AuthErrorStruct err, QObject* parent)
     : Error(Error::Auth, parent),
       d_ptr(new AuthErrorPrivate(err, this)) {
 }
@@ -310,7 +312,7 @@ AuthError::errorString() {
     return d->errorString();
 }
 
-HttpError::HttpError(HttpErrorStruct err, QObject* parent)
+HttpError::HttpError(Transfers::Errors::HttpErrorStruct err, QObject* parent)
     : Error(Error::Http, parent),
       d_ptr(new HttpErrorPrivate(err, this)) {
 }
@@ -337,7 +339,8 @@ HttpError::errorString() {
     return d->errorString();
 }
 
-NetworkError::NetworkError(NetworkErrorStruct err, QObject* parent)
+NetworkError::NetworkError(Transfers::Errors::NetworkErrorStruct err,
+                           QObject* parent)
     : Error(Error::Network, parent),
       d_ptr(new NetworkErrorPrivate(err, this)) {
 }
@@ -364,7 +367,8 @@ NetworkError::errorString() {
     return d->errorString();
 }
 
-ProcessError::ProcessError(ProcessErrorStruct err, QObject* parent)
+ProcessError::ProcessError(Transfers::Errors::ProcessErrorStruct err,
+                           QObject* parent)
     : Error(Error::Process, parent),
       d_ptr(new ProcessErrorPrivate(err, this)) {
 }

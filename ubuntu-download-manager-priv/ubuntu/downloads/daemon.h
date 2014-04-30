@@ -20,9 +20,9 @@
 #define DOWNLOADER_LIB_DOWNLOAD_DAEMON_H
 
 #include <ubuntu/transfers/system/dbus_connection.h>
-#include "ubuntu/transfers/system/application.h"
-#include "ubuntu/transfers/system/timer.h"
-#include "ubuntu/transfers/base_daemon.h"
+#include <ubuntu/transfers/system/application.h>
+#include <ubuntu/transfers/system/timer.h>
+#include <ubuntu/transfers/base_daemon.h>
 
 namespace Ubuntu {
 

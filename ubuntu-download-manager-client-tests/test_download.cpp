@@ -17,7 +17,6 @@
  */
 
 #include <QNetworkReply>
-#include <QSignalSpy>
 #include <ubuntu/download_manager/error.h>
 #include "test_download.h"
 
@@ -36,9 +35,10 @@ TestDownload::init() {
     _url = largeFileUrl().toString();
     DownloadStruct downStruct(_url, _metadata, headers);
 
-    QSignalSpy managerSpy(_man, SIGNAL(downloadCreated(Download*)));
+    SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     _man->createDownload(downStruct);
 
+    QVERIFY(managerSpy.ensureSignalEmitted());
     QTRY_COMPARE(1, managerSpy.count());
     _down = managerSpy.takeFirst().at(0).value<Download*>();
 }
@@ -158,9 +158,10 @@ TestDownload::testAuthErrorRaised() {
     AuthErrorStruct err(code, msg);
     returnAuthError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
@@ -192,9 +193,10 @@ TestDownload::testHttpErrorRaised() {
     HttpErrorStruct err(code, msg);
     returnHttpError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
@@ -226,9 +228,10 @@ TestDownload::testNetworkErroRaised() {
     NetworkErrorStruct err(code, msg);
     returnNetworkError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
@@ -268,9 +271,10 @@ TestDownload::testProcessErrorRaised() {
         standardError);
     returnProcessError(_url, err);
 
-    QSignalSpy spy(_down, SIGNAL(error(Error*)));
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
     _down->start();
 
+    QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(1, spy.count());
     auto error = spy.takeFirst().at(0).value<Error*>();
     QVERIFY(_down->isError());
@@ -284,3 +288,5 @@ TestDownload::testProcessErrorRaised() {
     QCOMPARE(standardOutput, processError->standardOut());
     QCOMPARE(standardError, processError->standardError());
 }
+
+QTEST_MAIN(TestDownload)

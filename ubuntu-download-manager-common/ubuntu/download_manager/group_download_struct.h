@@ -40,7 +40,7 @@ namespace DownloadManager {
     ins such a type of download and therefore exposes a subset of the
     properties of a download.
 */
-class DOWNLOAD_MANAGER_EXPORT GroupDownloadStruct {
+class GroupDownloadStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString hash READ getHash)
     Q_PROPERTY(QString localFile READ getLocalFile)

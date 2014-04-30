@@ -22,7 +22,7 @@
 #include <QObject>
 #include <ubuntu/download_manager/tests/base_testcase.h>
 #include <ubuntu/download_manager/tests/test_runner.h>
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/transfers/metadata.h>
 
 class TestMetadata : public BaseTestCase {
     Q_OBJECT

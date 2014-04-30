@@ -24,6 +24,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <glog/logging.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <unistd.h>
 #include "ubuntu/transfers/system/logger.h"
@@ -288,10 +289,12 @@ DownloadsDb::storeSingleDownload(FileDownload* download) {
 
 void
 DownloadsDb::connectToDownload(Download* download) {
-    connect(download, &Download::stateChanged,
-        this, &DownloadsDb::onDownloadChanged);
-    connect(download, &Download::throttleChanged,
-        this, &DownloadsDb::onDownloadChanged);
+    CHECK(connect(download, &Download::stateChanged,
+        this, &DownloadsDb::onDownloadChanged))
+            << "Could not connect to signal";
+    CHECK(connect(download, &Download::throttleChanged,
+        this, &DownloadsDb::onDownloadChanged))
+            << "Could not connect to signal";
 }
 
 void

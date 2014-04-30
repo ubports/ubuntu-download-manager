@@ -24,16 +24,18 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <QUrl>
-#include <ubuntu/download_manager/metadata.h>
-#include <ubuntu/download_manager/auth_error_struct.h>
-#include <ubuntu/download_manager/http_error_struct.h>
-#include <ubuntu/download_manager/network_error_struct.h>
-#include <ubuntu/download_manager/process_error_struct.h>
-#include "ubuntu/transfers/system/file_manager.h"
-#include "ubuntu/transfers/system/filename_mutex.h"
+#include <ubuntu/transfers/metadata.h>
+#include <ubuntu/transfers/errors/auth_error_struct.h>
+#include <ubuntu/transfers/errors/http_error_struct.h>
+#include <ubuntu/transfers/errors/network_error_struct.h>
+#include <ubuntu/transfers/errors/process_error_struct.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
+#include <ubuntu/transfers/system/file_manager.h>
 #include "download.h"
 
 namespace Ubuntu {
+
+using namespace Transfers::Errors;
 
 namespace DownloadManager {
 

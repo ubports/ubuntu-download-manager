@@ -18,7 +18,7 @@
 
 #include <QNetworkProxy>
 #include <QPair>
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/transfers/metadata.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "download_adaptor.h"
 #include "group_download.h"

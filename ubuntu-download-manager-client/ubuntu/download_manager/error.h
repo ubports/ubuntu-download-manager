@@ -27,12 +27,19 @@ class QDBusError;
 
 namespace Ubuntu {
 
+namespace Transfers {
+
+namespace Errors {
+    class AuthErrorStruct;
+    class HttpErrorStruct;
+    class NetworkErrorStruct;
+    class ProcessErrorStruct;
+}
+
+}
+
 namespace DownloadManager {
 
-class AuthErrorStruct;
-class HttpErrorStruct;
-class NetworkErrorStruct;
-class ProcessErrorStruct;
 class ErrorPrivate;
 
 /*!
@@ -46,7 +53,7 @@ class ErrorPrivate;
     only needs to listen to a single error signal and that can later
     downcast the error class to get more detailed information.
 */
-class DOWNLOAD_MANAGER_EXPORT Error : public QObject {
+class Error : public QObject {
     Q_OBJECT
     Q_DECLARE_PRIVATE(Error)
 
@@ -107,7 +114,7 @@ class DBusErrorPrivate;
            interaction with the DBus API.
     \since 0.3
 */
-class DOWNLOAD_MANAGER_EXPORT DBusError : public Error {
+class DBusError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(DBusError)
 
@@ -173,7 +180,7 @@ class AuthErrorPrivate;
     performed via a proxy that requires authentication and was not
     provided.
 */
-class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
+class AuthError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(AuthError)
 
@@ -221,7 +228,7 @@ class DOWNLOAD_MANAGER_EXPORT AuthError : public Error {
         Creates a new error from the provided authentication error struct.
         \internal
     */
-    AuthError(AuthErrorStruct err, QObject* parent);
+    AuthError(Transfers::Errors::AuthErrorStruct err, QObject* parent);
 
  private:
     /*!
@@ -242,7 +249,7 @@ class HttpErrorPrivate;
     The HttpError represents an error that occurred during the download
     request and that is related to one of the known http 1.1 error codes.
 */
-class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
+class HttpError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(HttpError)
 
@@ -277,12 +284,11 @@ class DOWNLOAD_MANAGER_EXPORT HttpError : public Error {
     QString errorString() override;
 
  protected:
-
     /*!
         Creates a new error from the provided http error struct.
         \internal
     */
-    HttpError(HttpErrorStruct err, QObject* parent);
+    HttpError(Transfers::Errors::HttpErrorStruct err, QObject* parent);
 
  private:
     /*!
@@ -300,7 +306,7 @@ class NetworkErrorPrivate;
            download request.
     \since 0.3
 */
-class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
+class NetworkError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(NetworkError)
 
@@ -372,7 +378,7 @@ class DOWNLOAD_MANAGER_EXPORT NetworkError : public Error {
         Creates a new error from the provided http error struct.
         \internal
     */
-    NetworkError(NetworkErrorStruct err, QObject* parent);
+    NetworkError(Transfers::Errors::NetworkErrorStruct err, QObject* parent);
 
  private:
     /*!
@@ -390,7 +396,7 @@ class ProcessErrorPrivate;
            post processing of a downloaded file.
     \since 0.3
 */
-class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
+class ProcessError : public Error {
     Q_OBJECT
     Q_DECLARE_PRIVATE(ProcessError)
 
@@ -451,7 +457,7 @@ class DOWNLOAD_MANAGER_EXPORT ProcessError : public Error {
         Creates a new error from the provided process error struct.
         \internal
     */
-    ProcessError(ProcessErrorStruct err, QObject* parent);
+    ProcessError(Transfers::Errors::ProcessErrorStruct err, QObject* parent);
 
  private:
     /*!

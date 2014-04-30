@@ -17,8 +17,7 @@
  */
 
 #include <QScopedPointer>
-#include <QSignalSpy>
-#include <ubuntu/download_manager/metadata.h>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include <ubuntu/download_manager/tests/server/download.h>
@@ -548,7 +547,7 @@ TestGroupDownload::testSingleDownloadFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -575,7 +574,7 @@ TestGroupDownload::testAllDownloadsFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier spy(group.data(), SIGNAL(finished(QStringList)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -585,6 +584,7 @@ TestGroupDownload::testAllDownloadsFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(0, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 }
 
@@ -603,7 +603,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    SignalBarrier spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -612,6 +612,7 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(0, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(Download::ERROR, group->state());
 }
@@ -631,7 +632,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
     QScopedPointer<GroupDownload> group(new GroupDownload(_id, _path, _isConfined, _rootPath,
         downloadsStruct, _algo, _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
-    QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    SignalBarrier spy(group.data(), SIGNAL(error(QString)));
 
     QList<Download*> downloads = _downloadFactory->downloads();
     group->startDownload();
@@ -643,6 +644,7 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
 
     QList<MethodData> calledMethods = _fileManager->calledMethods();
     QCOMPARE(2, calledMethods.count());
+    QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(Download::ERROR, group->state());
 }
@@ -846,11 +848,13 @@ TestGroupDownload::testEmptyGroupRaisesFinish() {
         downloadsStruct, "md5", _isGSMDownloadAllowed, _metadata, _headers,
         _downloadFactory, _fileManager));
 
-    QSignalSpy startedSpy(group.data(), SIGNAL(started(bool)));
-    QSignalSpy finishedSpy(group.data(), SIGNAL(finished(QStringList)));
+    SignalBarrier startedSpy(group.data(), SIGNAL(started(bool)));
+    SignalBarrier finishedSpy(group.data(), SIGNAL(finished(QStringList)));
 
     group->startDownload();
+    QVERIFY(startedSpy.ensureSignalEmitted());
     QCOMPARE(startedSpy.count(), 1);
+    QVERIFY(finishedSpy.ensureSignalEmitted());
     QCOMPARE(finishedSpy.count(), 1);
 }
 
@@ -871,116 +875,4 @@ TestGroupDownload::testDuplicatedLocalPath() {
         _downloadFactory, _fileManager));
 
     QVERIFY(!group->isValid());
-}
-
-void
-TestGroupDownload::testAuthErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
-}
-
-void
-TestGroupDownload::testAuthErrorEmitted() {
-    QFETCH(QString, url);
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _downloadFactory, _fileManager));
-
-    QSignalSpy spy(group.data(), SIGNAL(authError(QString, AuthErrorStruct)));
-    group->emitAuthError(url, AuthErrorStruct());
-    QCOMPARE(1, spy.count());
-}
-
-void
-TestGroupDownload::testHttpErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
-}
-
-void
-TestGroupDownload::testHttpErrorEmitted() {
-    QFETCH(QString, url);
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _downloadFactory, _fileManager));
-
-    QSignalSpy spy(group.data(), SIGNAL(httpError(QString, HttpErrorStruct)));
-    group->emitHttpError(url, HttpErrorStruct());
-    QCOMPARE(1, spy.count());
-}
-
-void
-TestGroupDownload::testNetworkErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
-}
-
-void
-TestGroupDownload::testNetworkErrorEmitted() {
-    QFETCH(QString, url);
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _downloadFactory, _fileManager));
-
-    QSignalSpy spy(group.data(), SIGNAL(networkError(QString, NetworkErrorStruct)));
-    group->emitNetworkError(url, NetworkErrorStruct());
-    QCOMPARE(1, spy.count());
-}
-
-void
-TestGroupDownload::testProcessErrorEmitted_data() {
-    QTest::addColumn<QString>("url");
-
-    QTest::newRow("First url") << "http://www.one.ubuntu.com";
-    QTest::newRow("Second url") << "http://ubuntu.com/file";
-}
-
-void
-TestGroupDownload::testProcessErrorEmitted() {
-    QFETCH(QString, url);
-    QList<GroupDownloadStruct> downloadsStruct;
-    downloadsStruct.append(GroupDownloadStruct(url,
-        "first path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://ubuntu.com",
-        "second path", ""));
-    downloadsStruct.append(GroupDownloadStruct("http://reddit.com",
-        "other_reddit_local_file", ""));
-
-    QScopedPointer<FakeGroupDownload> group(new FakeGroupDownload(_id, _path,
-        false, _rootPath, downloadsStruct, "md5", _isGSMDownloadAllowed,
-        _metadata, _headers, _downloadFactory, _fileManager));
-
-    QSignalSpy spy(group.data(), SIGNAL(processError(QString, ProcessErrorStruct)));
-    group->emitProcessError(url, ProcessErrorStruct());
-    QCOMPARE(1, spy.count());
 }

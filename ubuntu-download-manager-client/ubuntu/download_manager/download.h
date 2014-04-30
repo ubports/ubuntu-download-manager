@@ -47,7 +47,7 @@ class Error;
     therefore the client must call delete or deleteLater whenever it
     considers to be appropriate.
 */
-class DOWNLOAD_MANAGER_EXPORT Download : public QObject {
+class Download : public QObject {
     Q_OBJECT
 
  public:

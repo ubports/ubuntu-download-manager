@@ -66,7 +66,7 @@ typedef std::function<void(GroupDownload*)> GroupCb;
     connect to the session which contains all the downloads created for
     the user in the current session.
 */
-class DOWNLOAD_MANAGER_EXPORT Manager : public QObject {
+class Manager : public QObject {
     Q_OBJECT
 
  public:
