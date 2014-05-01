@@ -51,7 +51,7 @@ DaemonTestCase::addFileToHttpServer(const QString& absolutePath) {
         QString filename(fileInfo.fileName());
         serverFile.copy(httpServerDir() + "/" + filename);
     } else {
-        QFAIL(QString("File '%1' does not exist.").arg(absolutePath).toUtf8());
+        QSKIP(QString("File '%1' does not exist.").arg(absolutePath).toUtf8(), SkipSingle);
     }
 }
 
@@ -81,7 +81,7 @@ DaemonTestCase::returnDBusErrors(bool errors) {
 	    auto error = reply.error();
 	    QString msg = "Could not tell the daemon to return DBus errors: "
                 + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
+            QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
         QFAIL("returnDBusErrors must be used after init has been executed.");
@@ -102,7 +102,7 @@ DaemonTestCase::returnAuthError(const QString &download, AuthErrorStruct error) 
 	    auto error = reply.error();
 	    QString msg = "Could not tell the daemon to return Auth errors: "
                 + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
+            QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
         QFAIL("returnHttpError must be used after init has been executed.");
@@ -123,7 +123,7 @@ DaemonTestCase::returnHttpError(const QString &download, HttpErrorStruct error) 
 	    auto error = reply.error();
 	    QString msg = "Could not tell the daemon to return Http errors: "
                 + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
+            QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
         QFAIL("returnHttpError must be used after init has been executed.");
@@ -145,7 +145,7 @@ DaemonTestCase::returnNetworkError(const QString &download,
 	    auto error = reply.error();
 	    QString msg = "Could not tell the daemon to return Network errors: "
                 + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
+            QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
         QFAIL("returnNetworkError must be used after init has been executed.");
@@ -167,7 +167,7 @@ DaemonTestCase::returnProcessError(const QString &download,
 	    auto error = reply.error();
 	    QString msg = "Could not tell the daemon to return Process errors: "
                 + error.name() + ":" +  error.message();
-            QFAIL(msg.toUtf8());
+            QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
         QFAIL("returnProcessError must be used after init has been executed.");
@@ -251,7 +251,7 @@ void
 DaemonTestCase::onProcessError(QProcess::ProcessError error) {
     qDebug() << error << _daemonProcess->readAllStandardError()
         << _daemonProcess->readAllStandardOutput();
-    QFAIL("Process could not be started.");
+    QSKIP("Process could not be started.", SkipSingle);
 }
 
 void
