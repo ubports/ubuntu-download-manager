@@ -1,3 +1,12 @@
+ubuntu-download-manager (0.3+14.10.20140501-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * If we have issues setting up the diff daemons for the integrations
+    tests we should skip the test and not fail because it is giving
+    false negatives in the jekins bots. (LP: #1305153)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 01 May 2014 17:32:45 +0000
+
 ubuntu-download-manager (0.3+14.10.20140430.1-0ubuntu1) utopic; urgency=low
 
   [ Michael Sheldon ]
