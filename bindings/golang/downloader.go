@@ -52,13 +52,6 @@ const (
 	POST_DOWNLOAD_COMMAND = "post-download-command"
 )
 
-// Progress provides how much progress has been performed in a download that was
-// already started.
-type Progress struct {
-	Received uint64
-	Total    uint64
-}
-
 // Download is the common interface of a download. It provides all the required
 // methods to interact with a download created by udm.
 type Download interface {
@@ -83,46 +76,6 @@ type Download interface {
 	Error() chan error
 }
 
-// internal interface used to simplify testing
-type watch interface {
-	Cancel() error
-	Chanel() chan *dbus.Message
-}
-
-// small wrapper used to simplify testing by using the watch interface
-type watchWrapper struct {
-	watch *dbus.SignalWatch
-}
-
-func newWatchWrapper(sw *dbus.SignalWatch) *watchWrapper {
-	w := watchWrapper{}
-	return &w
-}
-
-func (w *watchWrapper) Cancel() error {
-	return w.watch.Cancel()
-}
-
-func (w *watchWrapper) Chanel() chan *dbus.Message {
-	return w.watch.C
-}
-
-// interface added to simplify testing
-type proxy interface {
-	Call(iface, method string, args ...interface{}) (*dbus.Message, error)
-}
-
-var readArgs = func(msg *dbus.Message, args ...interface{}) error {
-	return msg.Args(args)
-}
-
-// Manager is the single point of entry of the API. Allows to interact with the
-// general setting of udm as well as to create downloads at will.
-type Manager interface {
-	CreateDownload(string, string, string, map[string]interface{}, map[string]string) (Download, error)
-	CreateMmsDownload(string, string, int, string, string) (Download, error)
-}
-
 // FileDownload represents a single file being downloaded by udm.
 type FileDownload struct {
 	conn       *dbus.Connection
@@ -142,17 +95,6 @@ type FileDownload struct {
 	error_w    watch
 	progress   chan Progress
 	progress_w watch
-}
-
-func connectToSignal(conn *dbus.Connection, path dbus.ObjectPath, signal string) (watch, error) {
-	sw, err := conn.WatchSignal(&dbus.MatchRule{
-		Type:      dbus.TypeSignal,
-		Sender:    DOWNLOAD_SERVICE,
-		Interface: DOWNLOAD_INTERFACE,
-		Member:    signal,
-		Path:      path})
-	w := newWatchWrapper(sw)
-	return w, err
 }
 
 func (down *FileDownload) free() {
@@ -361,7 +303,7 @@ func (down *FileDownload) IsMobileDownload() (allowed bool, err error) {
 }
 
 // Start tells udm that the download is ready to be peformed and that the client is
-// ready to recieve signals. The following is a commong pattern to be used when
+// ready to recieve signals. The following is a common pattern to be used when
 // creating downloads in udm.
 //
 //     man, err := udm.NewDownloadManager()
