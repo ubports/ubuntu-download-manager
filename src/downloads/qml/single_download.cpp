@@ -10,7 +10,7 @@ namespace DownloadManager {
 /*!
     \qmltype SingleDownload
     \instantiates SingleDownload
-    \inqmlmodule UbuntuDownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 0.1
     \ingroup download
     \brief Manage file downloads and tracking the progress.
 
@@ -22,7 +22,7 @@ namespace DownloadManager {
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
-    import UbuntuDownloadManager 0.1
+    import Ubuntu.DownloadManager 0.1
 
     Rectangle {
         width: units.gu(100)

@@ -35,6 +35,6 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-client
 )
 
-set(PLUGIN_DIR ${QT_INSTALL_QML}/${TARGET})
+set(PLUGIN_DIR ${QT_INSTALL_QML}/Ubuntu/DownloadManager)
 install(TARGETS ${TARGET} DESTINATION ${PLUGIN_DIR})
 install(FILES qmldir DESTINATION ${PLUGIN_DIR})
