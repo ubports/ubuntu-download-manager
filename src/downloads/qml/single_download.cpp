@@ -125,6 +125,8 @@ void SingleDownload::bindDownload(Download* download)
          &SingleDownload::setDownloadStarted))
             << "Could not connect to signal";
 
+    emit downloadIdChanged();
+
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
     }
@@ -276,6 +278,13 @@ void SingleDownload::setDownloadCanceled(bool)
     This property represents the current state of the download.
     False if paused or not downloading anything.
     True if the file is currently being downloaded.
+*/
+
+/*!
+    \qmlproperty string SingleDownload::downloadId
+
+    This property provides the unique identifier that represents the download
+    within the download manager.
 */
 
 }
