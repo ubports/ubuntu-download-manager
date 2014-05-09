@@ -1,2 +1,2 @@
-module UbuntuDownloadManager
+module Ubuntu.DownloadManager
 plugin UbuntuDownloadManager
