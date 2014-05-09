@@ -1,3 +1,11 @@
+ubuntu-download-manager (0.3+14.10.20140509-0ubuntu1) utopic; urgency=low
+
+  [ Michael Sheldon ]
+  * Rename the QML module from UbuntuDownloadManager to
+    Ubuntu.DownloadManager for consistency with other Ubuntu modules
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 May 2014 10:48:17 +0000
+
 ubuntu-download-manager (0.3+14.10.20140501-0ubuntu1) utopic; urgency=low
 
   [ Manuel de la Peña ]
