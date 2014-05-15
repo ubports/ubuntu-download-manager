@@ -47,6 +47,7 @@ class FileDownload : public Download, public QDBusContext {
 
  public:
     FileDownload(const QString& id,
+                 const QString& appId,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,
@@ -55,6 +56,7 @@ class FileDownload : public Download, public QDBusContext {
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0);
     FileDownload(const QString& id,
+                 const QString& appId,
                  const QString& path,
                  bool isConfined,
                  const QString& rootPath,

@@ -34,6 +34,7 @@ class MmsFileDownload : public FileDownload {
 
  public:
     MmsFileDownload(const QString& id,
+                    const QString& appId,
                     const QString& path,
                     bool isConfined,
                     const QString& rootPath,

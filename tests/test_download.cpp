@@ -44,6 +44,7 @@ TestDownload::init() {
     BaseTestCase::init();
 
     _id = UuidUtils::getDBusString(QUuid::createUuid());
+    _appId = "ApplicationID";
     _isConfined = false;
     _rootPath = testDirectory();
     _path = "random path to dbus";
@@ -85,35 +86,38 @@ TestDownload::cleanup() {
 void
 TestDownload::testNoHashConstructor_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
 
     QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/first/app" << QUrl("http://ubuntu.com");
+        << "MY FIRST APP" << "/path/to/first/app" << QUrl("http://ubuntu.com");
     QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/second/app" << QUrl("http://ubuntu.com/juju");
+        << "LE APP" << "/path/to/second/app" << QUrl("http://ubuntu.com/juju");
     QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet");
+        << "NOTES" << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet");
     QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
+        << "MAPS" << "/path/to/last/app" << QUrl("http://ubuntu.com/phone");
 }
 
 void
 TestDownload::testNoHashConstructor() {
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path,
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
         _isConfined, _rootPath, url, _metadata, _headers));
 
     // assert that we did set the initial state correctly
     // gets for internal state
 
     QCOMPARE(download->transferId(), id);
+    QCOMPARE(download->transferAppId(), appId);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->state(), Download::IDLE);
@@ -125,28 +129,30 @@ TestDownload::testNoHashConstructor() {
 void
 TestDownload::testHashConstructor_data() {
     QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
     QTest::addColumn<QString>("path");
     QTest::addColumn<QUrl>("url");
     QTest::addColumn<QString>("hash");
     QTest::addColumn<QString>("algo");
 
     QTest::newRow("First row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/first/app" << QUrl("http://ubuntu.com")
+        << "MY APP ID" << "/path/to/first/app" << QUrl("http://ubuntu.com")
         << "my-first-hash" << "md5";
     QTest::newRow("Second row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/second/app" << QUrl("http://ubuntu.com/juju")
+        << "NOTES" << "/path/to/second/app" << QUrl("http://ubuntu.com/juju")
         << "my-second-hash" << "Md5";
     QTest::newRow("Third row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet")
+        << "MAPS" << "/path/to/third/app" << QUrl("http://ubuntu.com/tablet")
         << "my-third-hash" << "Sha1";
     QTest::newRow("Last row") << UuidUtils::getDBusString(QUuid::createUuid())
-        << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
+        << "LISTS" << "/path/to/last/app" << QUrl("http://ubuntu.com/phone")
         << "my-last-hash" << "Sha256";
 }
 
 void
 TestDownload::testHashConstructor() {
     QFETCH(QString, id);
+    QFETCH(QString, appId);
     QFETCH(QString, path);
     QFETCH(QUrl, url);
     QFETCH(QString, hash);
@@ -155,10 +161,11 @@ TestDownload::testHashConstructor() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(id, path, _isConfined,
-        _rootPath, url, hash, algo, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
+        _isConfined, _rootPath, url, hash, algo, _metadata, _headers));
 
     QCOMPARE(download->transferId(), id);
+    QCOMPARE(download->transferAppId(), appId);
     QCOMPARE(download->path(), path);
     QCOMPARE(download->url(), url);
     QCOMPARE(download->hash(), hash);
@@ -188,8 +195,8 @@ TestDownload::testPath() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     QCOMPARE(download->path(), path);
     verifyMocks();
 }
@@ -213,8 +220,8 @@ TestDownload::testUrl() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, url, _metadata, _headers));
     QCOMPARE(download->url(), url);
     verifyMocks();
 }
@@ -283,7 +290,7 @@ TestDownload::testProgress() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(progress(qulonglong, qulonglong)));
@@ -371,7 +378,7 @@ TestDownload::testProgressNotKnownSize() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(progress(qulonglong, qulonglong)));
@@ -449,7 +456,7 @@ TestDownload::testTotalSize() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(progress(qulonglong, qulonglong)));
@@ -479,7 +486,7 @@ TestDownload::testTotalSizeNoProgress() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     QCOMPARE(0ULL, download->totalSize());
     verifyMocks();
@@ -501,7 +508,7 @@ TestDownload::testSetThrottleNoReply() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->setThrottle(speed);
     QCOMPARE(speed, download->throttle());
@@ -552,7 +559,7 @@ TestDownload::testSetThrottle() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     download->start();
@@ -582,7 +589,7 @@ TestDownload::testSetGSMDownloadSame() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(value);
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
@@ -609,7 +616,7 @@ TestDownload::testSetGSMDownloadDiff() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(oldValue);
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
@@ -659,7 +666,7 @@ TestDownload::testCanDownloadGSM() {
         .Times(1)
         .WillOnce(Return(mode.value<QNetworkInfo::NetworkMode>()));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(true);
     QVERIFY(download->canTransfer());
@@ -709,7 +716,7 @@ TestDownload::testCanDownloadNoGSM() {
         .Times(1)
         .WillOnce(Return(mode.value<QNetworkInfo::NetworkMode>()));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     download->allowGSMDownload(false);
 
@@ -722,7 +729,7 @@ TestDownload::testCancel() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->cancel();
@@ -738,8 +745,8 @@ TestDownload::testPause() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->pause();
 
@@ -754,8 +761,8 @@ TestDownload::testResume() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->resume();
 
@@ -770,8 +777,8 @@ TestDownload::testStart() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, _isConfined,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(), SIGNAL(stateChanged()));
     download->start();
 
@@ -815,7 +822,7 @@ TestDownload::testCancelDownload() {
         .Times(1)
         .WillOnce(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
@@ -846,7 +853,7 @@ TestDownload::testCancelDownloadNotStarted() {
     EXPECT_CALL(*_reqFactory, get(_))
         .Times(0);
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(),
         SIGNAL(canceled(bool)));  // NOLINT(readability/function)
@@ -906,7 +913,7 @@ TestDownload::testPauseDownload() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
@@ -936,7 +943,7 @@ TestDownload::testPauseDownloadNotStarted() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier spy(download.data(),
         SIGNAL(paused(bool)));  // NOLINT(readability/function)
@@ -982,7 +989,7 @@ TestDownload::testResumeRunning() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path, _isConfined,
+    auto download = new FileDownload(_id, _appId, _path, _isConfined,
         _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(resumed(bool)));  // NOLINT(readability/function)
@@ -1073,7 +1080,7 @@ TestDownload::testResumeDownload() {
     EXPECT_CALL(*file, remove())
         .Times(0);
 
-    auto download(new FileDownload(_id, _path,
+    auto download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     SignalBarrier pausedSpy(download, SIGNAL(paused(bool)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -1139,7 +1146,7 @@ TestDownload::testStartDownload() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(started(bool)));  // NOLINT(readability/function)
@@ -1192,7 +1199,7 @@ TestDownload::testStartDownloadAlreadyStarted() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download,
         SIGNAL(started(bool)));  // NOLINT(readability/function)
@@ -1256,7 +1263,7 @@ TestDownload::testOnSuccessNoHash() {
     EXPECT_CALL(*_cryptoFactory, createCryptographicHash(_, _))
         .Times(0);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download, SIGNAL(finished(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -1335,7 +1342,7 @@ TestDownload::testOnSuccessHashError() {
         .Times(1)
         .WillOnce(Return(QByteArray()));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, "imposible-hash-is-not-hex",
         _algo, _metadata, _headers);
 
@@ -1422,7 +1429,7 @@ TestDownload::testOnSuccessHash() {
         .Times(1)
         .WillOnce(Return(hashData));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, hashString, _algo, _metadata,
         _headers);
     SignalBarrier spy(download, SIGNAL(finished(QString)));
@@ -1503,7 +1510,7 @@ TestDownload::testOnHttpError() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -1561,7 +1568,7 @@ TestDownload::testOnSslError() {
     EXPECT_CALL(*file.data(), remove())
         .Times(1)
         .WillOnce(Return(true));
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(error(QString)));
@@ -1635,7 +1642,7 @@ TestDownload::testOnNetworkError() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -1698,7 +1705,7 @@ TestDownload::testOnAuthError() {
     EXPECT_CALL(*file.data(), remove())
         .Times(1)
         .WillOnce(Return(true));
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
@@ -1769,7 +1776,7 @@ TestDownload::testOnProxyAuthError() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -1855,7 +1862,7 @@ TestDownload::testSetRawHeadersStart() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, headers);
 
     download->start();  // change state
@@ -1931,7 +1938,7 @@ TestDownload::testSetRawHeadersWithRangeStart() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, headers);
 
     download->start();  // change state
@@ -2034,7 +2041,7 @@ TestDownload::testSetRawHeadersResume() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, headers);
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
     SignalBarrier pausedSpy(download, SIGNAL(paused(bool)));
@@ -2131,7 +2138,7 @@ TestDownload::testProcessExecutedNoParams() {
     EXPECT_CALL(*process.data(), start(command, StringListEq(args), _))
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(finished(QString)));
@@ -2238,7 +2245,7 @@ TestDownload::testProcessExecutedWithParams() {
     EXPECT_CALL(*process.data(), start(command, StringListEq(args), _))
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(finished(QString)));
@@ -2343,7 +2350,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
         .WillOnce(Return(process.data()));
 
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     // set the expectation after we know the file path
@@ -2442,7 +2449,7 @@ TestDownload::testProcessFinishedWithError() {
         .Times(1)
         .WillOnce(Return(QByteArray()));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(error(QString)));
@@ -2560,7 +2567,7 @@ TestDownload::testProcessError() {
         .Times(1)
         .WillOnce(Return(QStringList()));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(error(QString)));
@@ -2653,7 +2660,7 @@ TestDownload::testProcessFinishedCrash() {
         .Times(1)
         .WillOnce(Return(QByteArray()));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(error(QString)));
@@ -2721,7 +2728,7 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     QSignalSpy spy(download,
         SIGNAL(started(bool)));  // NOLINT(readability/function)
@@ -2783,7 +2790,7 @@ TestDownload::testSslErrorsIgnored() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -2846,7 +2853,7 @@ TestDownload::testSslErrorsNotIgnored() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
 
@@ -2879,8 +2886,8 @@ TestDownload::testLocalPathConfined() {
     QString localPath = "/home/my/local/path";
     metadata["local-path"] = localPath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, metadata, _headers));
 
     QVERIFY(download->filePath() != localPath);
     verifyMocks();
@@ -2895,8 +2902,8 @@ TestDownload::testLocalPathNotConfined() {
     QString localPath = "/home/my/local/path";
     metadata["local-path"] = localPath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
 
     QCOMPARE(download->filePath(), localPath);
     verifyMocks();
@@ -2907,7 +2914,7 @@ TestDownload::testInvalidUrl() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, QUrl(), _metadata, _headers));
 
     QVERIFY(!download->isValid());
@@ -2919,7 +2926,7 @@ TestDownload::testValidUrl() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(download->isValid());
@@ -2931,7 +2938,7 @@ TestDownload::testInvalidHashAlgorithm() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, "hash", "not-valid-algo", _metadata,
         _headers));
     QVERIFY(!download->isValid());
@@ -2957,7 +2964,7 @@ TestDownload::testValidHashAlgorithm() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, "hash", algo, _metadata, _headers));
     QVERIFY(download->isValid());
     verifyMocks();
@@ -2978,8 +2985,8 @@ TestDownload::testInvalidFilePresent() {
     QVariantMap metadata;
     metadata["local-path"] = filePath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
     QVERIFY(!download->isValid());
     verifyMocks();
 }
@@ -2994,8 +3001,8 @@ TestDownload::testValidFileNotPresent() {
     QVariantMap metadata;
     metadata["local-path"] = filePath;
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, false,
-        _rootPath, _url, metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
     QVERIFY(download->isValid());
     verifyMocks();
 }
@@ -3008,8 +3015,8 @@ TestDownload::testDownloadPresent() {
     // create a download and get the filename to use, then write it
     // and create the same download and assert that the filename is diff
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QString filePath = download->filePath();
 
@@ -3018,8 +3025,8 @@ TestDownload::testDownloadPresent() {
     file->write("data data data!");
     file->close();
 
-    QScopedPointer<FileDownload> other(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> other(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(filePath != other->filePath());
     verifyMocks();
@@ -3042,8 +3049,8 @@ TestDownload::testDownloadPresentSeveralFiles() {
 
     QFETCH(int, count);
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QString filePath = download->filePath();
 
@@ -3068,8 +3075,8 @@ TestDownload::testDownloadPresentSeveralFiles() {
         otherFile->close();
     }
 
-    QScopedPointer<FileDownload> other(new FileDownload(_id, _path, true,
-        _rootPath, _url, _metadata, _headers));
+    QScopedPointer<FileDownload> other(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, _metadata, _headers));
 
     QVERIFY(filePath != other->filePath());
     if (count > 0) {
@@ -3150,7 +3157,7 @@ TestDownload::testProcessingJustOnce() {
     EXPECT_CALL(*process.data(), start(command, _, _))
         .Times(1);
 
-    auto download = new FileDownload(_id,
+    auto download = new FileDownload(_id, _appId,
         _path, _isConfined, _rootPath, _url, hashString, _algo, metadata,
         _headers);
 
@@ -3219,7 +3226,7 @@ TestDownload::testFileSystemErrorProgress() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -3295,7 +3302,7 @@ TestDownload::testFileSystemErrorPause() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
@@ -3380,7 +3387,7 @@ TestDownload::testRedirectCycle() {
         .Times(1)
         .WillOnce(Return(true));
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
     SignalBarrier networkErrorSpy(download,
@@ -3468,7 +3475,7 @@ TestDownload::testSingleRedirect() {
     EXPECT_CALL(*secondFile, close())
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers);
 
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
@@ -3623,7 +3630,7 @@ TestDownload::testProcessFinishUnlocksPath() {
     EXPECT_CALL(*process.data(), start(command, _, _))
         .Times(1);
 
-    auto download = new FileDownload(_id, _path,
+    auto download = new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, metadata, _headers);
 
     SignalBarrier spy(download, SIGNAL(finished(QString)));
@@ -3700,7 +3707,7 @@ TestDownload::testSetLocalDirectory() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     auto original = download->filePath();
     download->setDestinationDir(path);
@@ -3715,7 +3722,7 @@ TestDownload::testSetLocalDirectoryNotAbsolute() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     
     auto original = download->filePath();
@@ -3730,7 +3737,7 @@ TestDownload::testSetLocalDirectoryNotPresent() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     
     auto original = download->filePath();
@@ -3750,7 +3757,7 @@ TestDownload::testSetLocalDirectoryNotDir() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     
     auto original = download->filePath();
@@ -3767,7 +3774,7 @@ TestDownload::testSetLocalDirectoryStarted() {
     EXPECT_CALL(*_networkInfo, isOnline())
         .WillRepeatedly(Return(true));
 
-    QScopedPointer<FileDownload> download(new FileDownload(_id, _path,
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
     
     auto original = download->filePath();
