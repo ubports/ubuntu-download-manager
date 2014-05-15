@@ -119,6 +119,19 @@ DownloadManager::onDownloadsChanged(QString path) {
     emit sizeChanged(_downloadsQueue->size());
 }
 
+QString
+DownloadManager::getCaller() {
+    QString caller = "";
+
+    bool wasCalledFromDBus = calledFromDBus();
+    if (wasCalledFromDBus) {
+        caller = connection().interface()->serviceOwner(
+            message().service());
+        LOG(INFO) << "Owner is: " << caller;
+    }
+    return caller;
+}
+
 QDBusObjectPath
 DownloadManager::registerDownload(Download* download) {
     download->setThrottle(_throttle);
@@ -143,18 +156,10 @@ DownloadManager::registerDownload(Download* download) {
 
 QDBusObjectPath
 DownloadManager::createDownload(DownloadCreationFunc createDownloadFunc) {
-    QString owner = "";
+    auto owner = getCaller();
+    auto download = createDownloadFunc(owner);
 
-    bool wasCalledFromDBus = calledFromDBus();
-    if (wasCalledFromDBus) {
-        owner = connection().interface()->serviceOwner(
-            message().service());
-        LOG(INFO) << "Owner is: " << owner;
-    }
-
-    Download* download = createDownloadFunc(owner);
-
-    if (wasCalledFromDBus && !download->isValid()) {
+    if (calledFromDBus() && !download->isValid()) {
         sendErrorReply(QDBusError::InvalidArgs, download->lastError());
         // the result will be ignored thanks to the sendErrorReply
         return QDBusObjectPath();
@@ -257,15 +262,38 @@ DownloadManager::isGSMDownloadAllowed() {
 
 QList<QDBusObjectPath>
 DownloadManager::getAllDownloads() {
+    // filter per app id if owner is not "" and the app is confined else
+    // return all downloads
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor());
+    auto owner = getCaller();
+    auto appId = appArmor->appId(owner);
     QList<QDBusObjectPath> paths;
-    foreach(const QString& path, _downloadsQueue->paths())
-        paths << QDBusObjectPath(path);
+    if (appArmor->isConfined(appId)) {
+        LOG(INFO) << "Returning downloads for api with id" << appId;
+        auto transfers = _downloadsQueue->transfers();
+        foreach(const QString& path, transfers.keys()) {
+            auto t = transfers[path];
+            if (t->transferAppId() == appId)
+                paths << QDBusObjectPath(path);
+        }
+    } else {
+        LOG(INFO) << "Returning all downloads for unconfined app";
+        foreach(const QString& path, _downloadsQueue->paths())
+            paths << QDBusObjectPath(path);
+    }
     return paths;
 }
 
 QList<QDBusObjectPath>
 DownloadManager::getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value) {
+    // filter per app id if owner is not "" and the app is confined else
+    // return all downloads
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor());
+    auto owner = getCaller();
+    auto appId = appArmor->appId(owner);
+    auto isConfined = appArmor->isConfined(appId);
+
     QList<QDBusObjectPath> paths;
     QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
     foreach(const QString& path, downloads.keys()) {
@@ -275,8 +303,11 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
             if (metadata.contains(name)) {
                 QVariant data = metadata[name];
                 if (data.canConvert(QMetaType::QString)
-                        && data.toString() == value)
-                    paths << QDBusObjectPath(path);
+                        && data.toString() == value) {
+                    if (!isConfined || appId == down->transferAppId()) {
+                        paths << QDBusObjectPath(path);
+                    }
+                }
             }
         }
     }

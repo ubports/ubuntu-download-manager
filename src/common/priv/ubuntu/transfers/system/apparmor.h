@@ -58,6 +58,10 @@ class AppArmor : public QObject {
     virtual SecurityDetails* getSecurityDetails(const QString& connName);
     virtual SecurityDetails* getSecurityDetails(const QString& connName,
                                                 const QString& id);
+    virtual QString appId(QString caller);
+    virtual bool isConfined(QString appId);
+
+    static QString UNCONFINED_ID;
 
  private:
     void getSecurityDetails(const QString& connName,
@@ -66,7 +70,6 @@ class AppArmor : public QObject {
 
  private:
     const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
-    static QString UNCONFINED_ID;
 
     DBusProxy* _dbus;
     UuidFactory* _uuidFactory;

@@ -29,6 +29,7 @@
 #include "base_testcase.h"
 #include "database.h"
 #include "dbus_connection.h"
+#include "dbus_proxy_factory.h"
 #include "factory.h"
 #include "queue.h"
 #include "request_factory.h"
@@ -62,8 +63,6 @@ class TestDownloadManager : public BaseTestCase {
     // tests
     void testCreateDownload();
     void testCreateDownloadWithHash();
-    void testGetAllDownloads();
-    void testAllDownloadsWithMetadata();
     void testSetThrottleNotDownloads();
     void testSetThrottleWithDownloads();
     void testSizeChangedEmittedOnAddition();
@@ -71,6 +70,12 @@ class TestDownloadManager : public BaseTestCase {
     void testSetSelfSignedCerts();
     void testStoppable();
     void testNotStoppable();
+
+    // all downloads tests
+    void testGetAllDownloadsUnconfined();
+    void testGetAllDownloadsConfined();
+    void testAllDownloadsWithMetadataUnconfined();
+    void testAllDownloadsWithMetadataConfined();
 
  private:
     void verifyMocks();
@@ -84,6 +89,7 @@ class TestDownloadManager : public BaseTestCase {
     MockDownloadQueue* _q;
     DownloadManager* _man;
     MockRequestFactory* _requestFactory;
+    MockDBusProxyFactory* _dbusProxyFactory;
 };
 
 #endif  // TEST_DOWNLOADER_H
