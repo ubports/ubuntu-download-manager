@@ -1,3 +1,19 @@
+ubuntu-download-manager (0.3+14.10.20140515-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * Add a new field in the transaction so that we know the application
+    that created it via its app id.
+  * Store the appid of the download owner in the downloads db. (LP:
+    #1278393)
+  * Ensure that the getAllDownloads* methods do filter per app id if the
+    application is confined. (LP: #1278393)
+
+  [ Alejandro J. Cura ]
+  * Include downloads_list.h in the udm -client-dev package (LP:
+    #1319553)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 15 May 2014 14:24:59 +0000
+
 ubuntu-download-manager (0.3+14.10.20140509-0ubuntu1) utopic; urgency=low
 
   [ Michael Sheldon ]
