@@ -166,6 +166,11 @@ GroupDownload::cancelAllDownloads() {
         Download::State state = download->state();
         if (state != Download::FINISH && state != Download::ERROR
                 && state != Download::CANCEL) {
+            // disconnect from the canceled signal so that we do not react
+            // to it
+            CHECK(disconnect(download, &FileDownload::canceled,
+                this, &GroupDownload::onCanceled))
+                    << "Could not disconnect from signal";
             download->cancel();
             download->cancelTransfer();
         }

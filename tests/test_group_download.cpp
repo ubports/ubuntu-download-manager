@@ -1193,9 +1193,11 @@ TestGroupDownload::testSingleDownloadErrorNoFinished() {
         _factory, _fileManager));
 
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    QSignalSpy canceledSpy(group.data(), SIGNAL(canceled(bool)));
     first->error("testing");
 
     QCOMPARE(1, spy.count());
+    QCOMPARE(0, canceledSpy.count());
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
@@ -1280,10 +1282,12 @@ TestGroupDownload::testSingleDownloadErrorWithFinished() {
         _factory, _fileManager));
 
     QSignalSpy spy(group.data(), SIGNAL(error(QString)));
+    QSignalSpy canceledSpy(group.data(), SIGNAL(canceled(bool)));
     third->finished(finishedPath);
     first->error("testing");
 
     QCOMPARE(1, spy.count());
+    QCOMPARE(0, canceledSpy.count());
 
     foreach(MockDownload* down, downs) {
         QVERIFY(Mock::VerifyAndClearExpectations(down));
