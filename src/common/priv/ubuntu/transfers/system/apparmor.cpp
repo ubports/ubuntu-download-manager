@@ -26,8 +26,10 @@
 #include <QRegExp>
 #include <QStandardPaths>
 #include <ubuntu/transfers/system/logger.h>
-#include "uuid_utils.h"
 #include "apparmor.h"
+#include "dbus_proxy_factory.h"
+#include "pending_reply.h"
+#include "uuid_utils.h"
 
 namespace Ubuntu {
 
@@ -39,16 +41,14 @@ QString AppArmor::UNCONFINED_ID = "unconfined";
 
 AppArmor::AppArmor(QObject* parent)
     : QObject(parent) {
-    _dbus = new DBusProxy("org.freedesktop.DBus", "/",
-        QDBusConnection::sessionBus(), this);
+    _dbus = DBusProxyFactory::instance()->createDBusProxy(this);
     _uuidFactory = new UuidFactory(this);
 }
 
 AppArmor::AppArmor(QSharedPointer<DBusConnection> connection,
                 QObject* parent)
     : QObject(parent) {
-    _dbus = new DBusProxy("org.freedesktop.DBus", "/",
-        connection->connection(), this);
+    _dbus = DBusProxyFactory::instance()->createDBusProxy(connection, this);
     _uuidFactory = new UuidFactory(this);
 }
 
@@ -74,6 +74,26 @@ AppArmor::getSecurityDetails(const QString& connName,
     return details;
 }
 
+QString
+AppArmor::appId(QString caller) {
+    QScopedPointer<PendingReply<QString> > reply(
+        _dbus->GetConnectionAppArmorSecurityContext(caller));
+    // blocking but should be ok for now
+    reply->waitForFinished();
+    if (reply->isError()) {
+        return "";
+    }
+    return reply->value();
+}
+
+bool
+AppArmor::isConfined(QString appId) {
+    if (appId.isEmpty() || appId == UNCONFINED_ID) {
+        return false;
+    }
+    return true;
+}
+
 void
 AppArmor::getSecurityDetails(const QString& connName,
                              SecurityDetails* details) {
@@ -84,21 +104,21 @@ AppArmor::getSecurityDetails(const QString& connName,
         return;
     }
 
-    QDBusPendingReply<QString> reply =
-        _dbus->GetConnectionAppArmorSecurityContext(connName);
+    QScopedPointer<PendingReply<QString> > reply (
+        _dbus->GetConnectionAppArmorSecurityContext(connName));
     // blocking but should be ok for now
-    reply.waitForFinished();
-    if (reply.isError()) {
-        LOG(ERROR) << reply.error(); 
+    reply->waitForFinished();
+    if (reply->isError()) {
+        LOG(ERROR) << reply->error();
         details->dbusPath = QString(BASE_ACCOUNT_URL) + "/" + details->id;
         details->localPath = getLocalPath("");
         details->isConfined = false;
         return;
     } else {
         // use the returned value
-        QString appId = reply.value();
+        details->appId = reply->value();
 
-        if (appId.isEmpty() || appId == UNCONFINED_ID) {
+        if (details->appId.isEmpty() || details->appId == UNCONFINED_ID) {
             LOG(INFO) << "UNCONFINED APP";
             details->dbusPath = QString(BASE_ACCOUNT_URL) + "/" + details->id;
             details->localPath = getLocalPath("");
@@ -106,7 +126,7 @@ AppArmor::getSecurityDetails(const QString& connName,
             return;
         } else {
             details->isConfined = true;
-            QByteArray appIdBa = appId.toUtf8();
+            QByteArray appIdBa = details->appId.toUtf8();
 
             char * appIdPath;
             appIdPath = nih_dbus_path(nullptr, BASE_ACCOUNT_URL,
@@ -116,7 +136,7 @@ AppArmor::getSecurityDetails(const QString& connName,
                 LOG(ERROR) << "Unable to allocate memory for "
                     << "nih_dbus_path()";
                 details->dbusPath = QString(BASE_ACCOUNT_URL) + "/" + details->id;
-                details->localPath = getLocalPath(appId);
+                details->localPath = getLocalPath(details->appId);
                 return;
             }
             QString path = QString(appIdPath);
@@ -125,7 +145,7 @@ AppArmor::getSecurityDetails(const QString& connName,
             // free nih data
             nih_free(appIdPath);
             details->dbusPath = path + "/" + details->id;
-            details->localPath = getLocalPath(appId);
+            details->localPath = getLocalPath(details->appId);
             return;
         }  // not empty appid string
     }  // no dbus error

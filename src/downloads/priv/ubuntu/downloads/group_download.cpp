@@ -36,6 +36,7 @@ namespace DownloadManager {
 namespace Daemon {
 
 GroupDownload::GroupDownload(const QString& id,
+                  const QString& appId,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,
@@ -46,7 +47,7 @@ GroupDownload::GroupDownload(const QString& id,
                   const QMap<QString, QString>& headers,
                   Factory* downFactory,
                   QObject* parent)
-    : Download(id, path, isConfined, rootPath, metadata, headers,
+    : Download(id, appId, path, isConfined, rootPath, metadata, headers,
             parent),
       _downloads(),
       _finishedDownloads(),

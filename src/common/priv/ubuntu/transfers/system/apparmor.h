@@ -39,6 +39,7 @@ struct SecurityDetails {
     SecurityDetails() = default;
     SecurityDetails(const QString& requiredId) { id = requiredId; }
     QString id;
+    QString appId;
     QString dbusPath;
     QString localPath;
     bool isConfined = false;
@@ -57,6 +58,10 @@ class AppArmor : public QObject {
     virtual SecurityDetails* getSecurityDetails(const QString& connName);
     virtual SecurityDetails* getSecurityDetails(const QString& connName,
                                                 const QString& id);
+    virtual QString appId(QString caller);
+    virtual bool isConfined(QString appId);
+
+    static QString UNCONFINED_ID;
 
  private:
     void getSecurityDetails(const QString& connName,
@@ -65,7 +70,6 @@ class AppArmor : public QObject {
 
  private:
     const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
-    static QString UNCONFINED_ID;
 
     DBusProxy* _dbus;
     UuidFactory* _uuidFactory;

@@ -41,6 +41,7 @@ class GroupDownload : public Download {
 
  public:
     GroupDownload(const QString& id,
+                  const QString& appId,
                   const QString& path,
                   bool isConfined,
                   const QString& rootPath,

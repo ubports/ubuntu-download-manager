@@ -35,8 +35,34 @@ class MockDownload : public FileDownload {
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0)
-        : FileDownload(id, path, isConfined, rootPath,
+        : FileDownload(id, "", path, isConfined, rootPath,
             url, metadata, headers, parent) {}
+
+    MockDownload(const QString& id,
+                 const QString& appId,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QObject* parent = 0)
+        : FileDownload(id, appId, path, isConfined, rootPath,
+            url, metadata, headers, parent) {}
+
+    MockDownload(const QString& id,
+                 const QString& appId,
+                 const QString& path,
+                 bool isConfined,
+                 const QString& rootPath,
+                 const QUrl& url,
+                 const QString& hash,
+                 const QString& algo,
+                 const QVariantMap& metadata,
+                 const QMap<QString, QString>& headers,
+                 QObject* parent = 0)
+        : FileDownload(id, appId, path, isConfined, rootPath, url, hash,
+            algo, metadata, headers, parent) {}
 
     MockDownload(const QString& id,
                  const QString& path,
@@ -48,7 +74,7 @@ class MockDownload : public FileDownload {
                  const QVariantMap& metadata,
                  const QMap<QString, QString>& headers,
                  QObject* parent = 0)
-        : FileDownload(id, path, isConfined, rootPath, url, hash,
+        : FileDownload(id, "", path, isConfined, rootPath, url, hash,
             algo, metadata, headers, parent) {}
 
     MOCK_METHOD0(canDownload, bool());
@@ -63,6 +89,7 @@ class MockDownload : public FileDownload {
     MOCK_CONST_METHOD0(state, Transfer::State());
     MOCK_CONST_METHOD0(path, QString());
     MOCK_CONST_METHOD0(metadata, QVariantMap());
+    MOCK_CONST_METHOD0(transferAppId, QString());
     MOCK_METHOD1(allowGSMDownload, void(bool));
     MOCK_METHOD0(isGSMDownloadAllowed, bool());
 

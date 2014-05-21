@@ -98,7 +98,6 @@ class DownloadManager : public BaseManager {
     typedef std::function<Download*(QString)> DownloadCreationFunc;
 
     void init();
-
     void loadPreviewsDownloads(QString path);
     void addDownload(Download* download);
     QDBusObjectPath createDownload(DownloadCreationFunc createDownloadFunc);
@@ -108,6 +107,7 @@ class DownloadManager : public BaseManager {
                                    const QVariantMap& metadata,
                                    StringMap headers);
     void onDownloadsChanged(QString);
+    QString getCaller();
 
  private:
     Application* _app = nullptr;

@@ -11,6 +11,7 @@ set(SOURCES
 	ubuntu/transfers/system/application.cpp
         ubuntu/transfers/system/cryptographic_hash.cpp
 	ubuntu/transfers/system/dbus_proxy.cpp
+	ubuntu/transfers/system/dbus_proxy_factory.cpp
 	ubuntu/transfers/system/file_manager.cpp
 	ubuntu/transfers/system/filename_mutex.cpp
 	ubuntu/transfers/system/network_reply.cpp
@@ -36,9 +37,11 @@ set(HEADERS
 	ubuntu/transfers/system/application.h
         ubuntu/transfers/system/cryptographic_hash.h
 	ubuntu/transfers/system/dbus_proxy.h
+	ubuntu/transfers/system/dbus_proxy_factory.h
 	ubuntu/transfers/system/file_manager.h
 	ubuntu/transfers/system/filename_mutex.h
 	ubuntu/transfers/system/network_reply.h
+	ubuntu/transfers/system/pending_reply.h
 	ubuntu/transfers/system/process.h
 	ubuntu/transfers/system/process_factory.h
 	ubuntu/transfers/system/request_factory.h

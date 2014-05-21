@@ -1,3 +1,43 @@
+ubuntu-download-manager (0.3+14.10.20140515-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * Add a new field in the transaction so that we know the application
+    that created it via its app id.
+  * Store the appid of the download owner in the downloads db. (LP:
+    #1278393)
+  * Ensure that the getAllDownloads* methods do filter per app id if the
+    application is confined. (LP: #1278393)
+
+  [ Alejandro J. Cura ]
+  * Include downloads_list.h in the udm -client-dev package (LP:
+    #1319553)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 15 May 2014 14:24:59 +0000
+
+ubuntu-download-manager (0.3+14.10.20140509-0ubuntu1) utopic; urgency=low
+
+  [ Michael Sheldon ]
+  * Rename the QML module from UbuntuDownloadManager to
+    Ubuntu.DownloadManager for consistency with other Ubuntu modules
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 May 2014 10:48:17 +0000
+
+ubuntu-download-manager (0.3+14.10.20140501-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * If we have issues setting up the diff daemons for the integrations
+    tests we should skip the test and not fail because it is giving
+    false negatives in the jekins bots. (LP: #1305153)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 01 May 2014 17:32:45 +0000
+
+ubuntu-download-manager (0.3+14.10.20140430.1-0ubuntu1) utopic; urgency=low
+
+  [ Michael Sheldon ]
+  * Expose the download id of a SingleDownload within the QML API.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 30 Apr 2014 10:34:59 +0000
+
 ubuntu-download-manager (0.3+14.10.20140430-0ubuntu1) utopic; urgency=low
 
   [ Manuel de la Peña ]

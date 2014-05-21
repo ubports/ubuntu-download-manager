@@ -16,40 +16,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef MMS_FILE_UPLOAD_H
-#define MMS_FILE_UPLOAD_H
+#ifndef TEST_APPARMOR_H
+#define TEST_APPARMOR_H
 
-#include <QNetworkProxy>
 #include <QObject>
-#include "file_upload.h"
+#include "base_testcase.h"
+#include "dbus_proxy_factory.h"
 
-namespace Ubuntu {
+using namespace Ubuntu::Transfers::Tests;
+using namespace Ubuntu::Transfers::System;
 
-namespace UploadManager {
-
-namespace Daemon {
-
-class MmsFileUpload : public FileUpload {
+class TestAppArmor : public BaseTestCase {
     Q_OBJECT
 
- public:
-    MmsFileUpload(const QString& id,
-                  const QString& appId,
-                  const QString& path,
-                  bool isConfined,
-                  const QUrl& url,
-                  const QString& filePath,
-                  const QVariantMap& metadata,
-                  const QMap<QString, QString>& headers,
-                  const QNetworkProxy& proxy,
-                  QObject* parent = 0);
-    ~MmsFileUpload();
+public:
+    explicit TestAppArmor(QObject *parent = 0)
+        : BaseTestCase("TestAppArmor", parent) { }
+
+ private slots:  // NOLINT(whitespace/indent)
+
+    void init() override;
+    void cleanup() override;
+
+    void testAppIdError();
+    void testAppId();
+    void testIsConfinedEmptyString();
+    void testIsConfinedUnconfinedString();
+    void testIsConfinedAppIdString();
+
+ private:
+    MockDBusProxyFactory* _dbusProxyFactory;
 };
 
-}  // Daemon
-
-}  // UploadManager
-
-}  // Ubunut
-
-#endif
+#endif // TEST_APN_REQUEST_FACTORY_H

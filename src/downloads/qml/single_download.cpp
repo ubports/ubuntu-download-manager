@@ -10,7 +10,7 @@ namespace DownloadManager {
 /*!
     \qmltype SingleDownload
     \instantiates SingleDownload
-    \inqmlmodule UbuntuDownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 0.1
     \ingroup download
     \brief Manage file downloads and tracking the progress.
 
@@ -22,7 +22,7 @@ namespace DownloadManager {
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
-    import UbuntuDownloadManager 0.1
+    import Ubuntu.DownloadManager 0.1
 
     Rectangle {
         width: units.gu(100)
@@ -124,6 +124,8 @@ void SingleDownload::bindDownload(Download* download)
     CHECK(connect(m_download, &Download::started, this,
          &SingleDownload::setDownloadStarted))
             << "Could not connect to signal";
+
+    emit downloadIdChanged();
 
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
@@ -276,6 +278,13 @@ void SingleDownload::setDownloadCanceled(bool)
     This property represents the current state of the download.
     False if paused or not downloading anything.
     True if the file is currently being downloaded.
+*/
+
+/*!
+    \qmlproperty string SingleDownload::downloadId
+
+    This property provides the unique identifier that represents the download
+    within the download manager.
 */
 
 }

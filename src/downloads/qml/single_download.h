@@ -22,6 +22,7 @@ class SingleDownload : public QObject
     Q_PROPERTY(qulonglong throttle READ throttle WRITE setThrottle NOTIFY throttleChanged)
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloadingChanged)
+    Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
 
 public:
     explicit SingleDownload(QObject *parent = 0);
@@ -44,6 +45,7 @@ public:
     bool downloading() const { return m_downloading; }
     bool downloadInProgress() const { return m_downloadInProgress; }
     bool autoStart() const { return m_autoStart; }
+    QString downloadId() const { return m_download->id(); }
 
     // setters
     void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }
@@ -57,6 +59,7 @@ signals:
     void progressChanged();
     void downloadingChanged();
     void downloadInProgressChanged();
+    void downloadIdChanged();
 
     void canceled(bool success);
     void finished(const QString& path);

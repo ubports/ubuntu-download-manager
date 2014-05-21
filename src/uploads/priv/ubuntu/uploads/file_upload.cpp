@@ -40,6 +40,7 @@ namespace UploadManager {
 namespace Daemon {
 
 FileUpload::FileUpload(const QString& id,
+               const QString& appId,
                const QString& path,
                bool isConfined,
                const QUrl& url,
@@ -47,7 +48,7 @@ FileUpload::FileUpload(const QString& id,
                const QVariantMap& metadata,
                const QMap<QString, QString>& headers,
                QObject* parent)
-    : Transfer(id, path, isConfined, parent),
+    : Transfer(id, appId, path, isConfined, parent),
       _url(url),
       _filePath(filePath),
       _metadata(metadata),

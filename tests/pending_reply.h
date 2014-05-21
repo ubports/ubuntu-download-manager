@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,10 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef FAKE_APPARMOR_H
-#define FAKE_APPARMOR_H
+#ifndef FAKE_PENDING_REPLY_H
+#define FAKE_PENDING_REPLY_H
 
-#include <ubuntu/transfers/system/apparmor.h>
+#include <ubuntu/transfers/system/pending_reply.h>
 #include <gmock/gmock.h>
 
 namespace Ubuntu {
@@ -30,15 +30,13 @@ using namespace System;
 
 namespace Tests {
 
-class MockAppArmor : public AppArmor {
+template <class T>
+class MockPendingReply : public PendingReply<T> {
  public:
-    MOCK_METHOD0(getDBusPath, QPair<QString, QString>());
-    MOCK_METHOD1(getSecurityDetails,
-        SecurityDetails*(const QString&));
-    MOCK_METHOD2(getSecurityDetails,
-        SecurityDetails*(const QString&, const QString&));
-    MOCK_METHOD1(appId, QString(QString caller));
-    MOCK_METHOD1(isConfined, bool(QString appId));
+    MOCK_CONST_METHOD0_T(value, T());
+    MOCK_CONST_METHOD0_T(isError, bool());
+    MOCK_CONST_METHOD0_T(error, QDBusError());
+    MOCK_METHOD0_T(waitForFinished, void());
 };
 
 }  // Ubuntu
@@ -47,4 +45,5 @@ class MockAppArmor : public AppArmor {
 
 }  // Tests
 
-#endif  // FAKE_APPARMOR_H
+#endif  // FAKE_DBUS_PROXY_H
+

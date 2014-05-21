@@ -27,13 +27,14 @@ namespace DownloadManager {
 namespace Daemon {
 
 Download::Download(const QString& id,
+                   const QString& appId,
                    const QString& path,
                    bool isConfined,
                    const QString& rootPath,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
-    : Transfer(id, path, isConfined, parent),
+    : Transfer(id, appId, path, isConfined, parent),
       _rootPath(rootPath),
       _metadata(metadata),
       _headers(headers) {

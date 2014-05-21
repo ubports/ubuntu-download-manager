@@ -1,2 +1,2 @@
-usr/lib/*/qt5/qml/UbuntuDownloadManager/libUbuntuDownloadManager.so
-usr/lib/*/qt5/qml/UbuntuDownloadManager/qmldir
+usr/lib/*/qt5/qml/Ubuntu/DownloadManager/libUbuntuDownloadManager.so
+usr/lib/*/qt5/qml/Ubuntu/DownloadManager/qmldir

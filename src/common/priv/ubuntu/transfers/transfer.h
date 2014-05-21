@@ -41,11 +41,13 @@ class Transfer : public QObject {
     };
 
     Transfer(const QString& id,
+             const QString& appId,
              const QString& path,
              bool isConfined,
              QObject* parent = 0);
 
     virtual QString transferId() const;
+    virtual QString transferAppId() const;
     virtual QString path() const;
     virtual bool isConfined() const;
     virtual Transfer::State state() const;
@@ -95,6 +97,7 @@ class Transfer : public QObject {
     bool _addToQueue = true;
     QString _lastError = "";
     QString _id;
+    QString _appId;
     qulonglong _throttle;
     bool _allowMobileData;
     Transfer::State _state;

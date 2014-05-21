@@ -8,7 +8,7 @@
 
 void BackendPlugin::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QLatin1String("UbuntuDownloadManager"));
+    Q_ASSERT(uri == QLatin1String("Ubuntu.DownloadManager"));
 
     qmlRegisterType<Ubuntu::DownloadManager::DownloadError>(uri, 0, 1, "Error");
     qmlRegisterType<Ubuntu::DownloadManager::SingleDownload>(uri, 0, 1, "SingleDownload");
