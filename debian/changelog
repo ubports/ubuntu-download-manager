@@ -1,3 +1,17 @@
+ubuntu-download-manager (0.3+14.10.20140523-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * Remove the go bindings, now they are located in lp:udm
+  * Remove not needed username and password.
+  * Make the exit method a slot else the dbus adaptor won't be able to
+    use it. (LP: #1320987)
+  * Ensure we do not send canceled when the downloads are canceled
+    internally or due an error. (LP: #1320306)
+  * Add doxygen documentation for the client library. Added doxygen as a
+    dependency. (LP: #1296774)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 May 2014 09:19:03 +0000
+
 ubuntu-download-manager (0.3+14.10.20140515-0ubuntu1) utopic; urgency=low
 
   [ Manuel de la Peña ]
