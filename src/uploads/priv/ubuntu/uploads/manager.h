@@ -64,9 +64,7 @@ class UploadManager : public BaseManager {
     QDBusObjectPath createMmsUpload(const QString& url,
                                     const QString& file,
                                     const QString& hostname,
-                                    int port,
-                                    const QString& username,
-                                    const QString& password);
+                                    int port);
     QDBusObjectPath createUpload(const QString& url,
                                  const QString& filePath,
                                  const QVariantMap& metadata,
