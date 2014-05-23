@@ -3,6 +3,7 @@ Section: net
 Priority: optional
 Build-Depends: cmake,
                debhelper (>= 9),
+               doxygen,
                dbus-test-runner,
                google-mock,
                qt5-qmake,
@@ -116,6 +117,14 @@ Replaces: ubuntu-download-manager-client-dev
 Description: QT library for Ubuntu Download Manager - development files
  This package contains the header that can be used to allow an application use
  the Ubuntu Download Manager client library.
+
+Package: libubuntu-download-manager-client-doc
+Section: doc
+Architecture: all
+Depends: libubuntu-download-manager-client-dev (>= ${source:Version}),
+          ${misc:Depends},
+Description: Documentation files for libcontent-hub-dev 
+ Documentation files for the libcontent-hub development
 
 Package: libubuntu-upload-manager-common0
 Section: libs
