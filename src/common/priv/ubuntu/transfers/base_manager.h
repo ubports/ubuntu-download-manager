@@ -43,6 +43,7 @@ class BaseManager : public QObject, public QDBusContext {
     virtual void setAcceptedCertificates(
         const QList<QSslCertificate>& certs) = 0;
 
+ public slots:
     virtual void exit();
 
  signals:
