@@ -1,0 +1,32 @@
+libubuntu-upload-manager-common.so.0 libubuntu-upload-manager-common0 #MINVER#
+ (c++)"QMetaTypeId<QDBusVariant>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusVariant, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusVariant, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusVariant, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusVariant, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMap<QString, QVariant>::detach_helper()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMap<QString, QVariant>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMap<QString, QVariant>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMap<QString, QString>::detach_helper()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::getHeaders()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::getFilePath()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::getMetadata()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::getUrl()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&, QMap<QString, QVariant> const&, QMap<QString, QString> const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(Ubuntu::UploadManager::UploadStruct const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&, QMap<QString, QVariant> const&, QMap<QString, QString> const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(Ubuntu::UploadManager::UploadStruct const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::UploadStruct::operator=(Ubuntu::UploadManager::UploadStruct const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::operator<<(QDBusArgument&, Ubuntu::UploadManager::UploadStruct const&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"Ubuntu::UploadManager::operator>>(QDBusArgument const&, Ubuntu::UploadManager::UploadStruct&)@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QString::~QString()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QString::~QString()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMapNode<QString, QVariant>::destroySubTree()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMapNode<QString, QString>::destroySubTree()@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMapNode<QString, QVariant>::copy(QMapData<QString, QVariant>*) const@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMapNode<QString, QString>::copy(QMapData<QString, QString>*) const@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"QMetaTypeId<QDBusVariant>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
