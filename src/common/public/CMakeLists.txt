@@ -15,6 +15,7 @@ set(SOURCES
 
 set(TRANSFERS_PUBLIC_HEADERS
 	ubuntu/transfers/metadata.h
+	ubuntu/transfers/visibility.h
 )
 
 set(ERRORS_PUBLIC_HEADERS
