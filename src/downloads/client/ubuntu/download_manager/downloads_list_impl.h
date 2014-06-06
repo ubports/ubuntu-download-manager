@@ -19,6 +19,7 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_LIST_IMPL_H
 
+#include <ubuntu/transfers/visibility.h>
 #include "downloads_list.h"
 
 namespace Ubuntu {
@@ -28,7 +29,7 @@ namespace DownloadManager {
 class Error;
 class Download;
 
-class DOWNLOAD_MANAGER_EXPORT DownloadsListImpl : public DownloadsList {
+class UBUNTU_TRANSFERS_PRIVATE DownloadsListImpl : public DownloadsList {
     Q_OBJECT
 
  public:

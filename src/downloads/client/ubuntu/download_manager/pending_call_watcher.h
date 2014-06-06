@@ -19,6 +19,7 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_PENDING_CALL_WATCHER_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_PENDING_CALL_WATCHER_H
 
+#include <ubuntu/transfers/visibility.h>
 #include <QDBusConnection>
 #include <QDBusPendingCallWatcher>
 #include <QObject>
@@ -27,7 +28,7 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-class PendingCallWatcher : public QDBusPendingCallWatcher {
+class UBUNTU_TRANSFERS_PRIVATE PendingCallWatcher : public QDBusPendingCallWatcher {
     Q_OBJECT
 
  public:

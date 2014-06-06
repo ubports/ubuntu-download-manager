@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QString>
-#include <ubuntu/download_manager/common.h>
+#include <ubuntu/transfers/visibility.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include "download_interface.h"
 #include "download_pendingcall_watcher.h"
@@ -39,7 +39,7 @@ namespace Ubuntu {
 namespace DownloadManager {
 
 class Error;
-class DownloadImpl : public Download {
+class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     Q_OBJECT
 
     // allow the manager to create downloads

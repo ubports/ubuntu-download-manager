@@ -22,7 +22,6 @@
 #include <functional>
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
-#include <ubuntu/download_manager/common.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/group_download_struct.h>
 

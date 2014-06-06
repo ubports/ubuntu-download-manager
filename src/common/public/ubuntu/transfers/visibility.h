@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,13 +16,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_COMMON_H
-#define UBUNTU_DOWNLOADMANAGER_COMMON_H
+#ifndef UBUNTU_TRANSFERS_VISIBILITY_H_
+#define UBUNTU_TRANSFERS_VISIBILITY_H_
 
 #if __GNUC__ >= 4
-    #define DOWNLOAD_MANAGER_EXPORT __attribute__ ((visibility("default")))
+#define UBUNTU_TRANSFERS_PUBLIC __attribute__ ((visibility ("default")))
+#define UBUNTU_TRANSFERS_PRIVATE __attribute__ ((visibility ("hidden")))
 #else
-    #define DOWNLOAD_MANAGER_EXPORT
+#define UBUNTU_TRANSFERS_PUBLIC
+#define UBUNTU_TRANSFERS_PRIVATE
 #endif
 
-#endif
+#endif // UBUNTU_TRANSFERS_VISIBILITY_H_

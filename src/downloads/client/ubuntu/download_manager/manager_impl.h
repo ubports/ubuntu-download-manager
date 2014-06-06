@@ -21,6 +21,7 @@
 
 #include <QDBusConnection>
 #include <QDBusObjectPath>
+#include <ubuntu/transfers/visibility.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include "download.h"
 #include "error.h"
@@ -41,7 +42,7 @@ class Error;
 class GroupDownload;
 class ManagerInterface;
 
-class ManagerImpl : public Manager {
+class UBUNTU_TRANSFERS_PRIVATE ManagerImpl : public Manager {
     Q_OBJECT
 
     // allow watchers to emit the signals

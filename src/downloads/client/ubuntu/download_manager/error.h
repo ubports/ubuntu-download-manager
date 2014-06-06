@@ -21,7 +21,6 @@
 
 #include <QObject>
 #include <QProcess>
-#include <ubuntu/download_manager/common.h>
 
 class QDBusError;
 

@@ -7,7 +7,6 @@ set(SOURCES
 )
 
 set(PUBLIC_HEADERS
-	ubuntu/download_manager/common.h
 	ubuntu/download_manager/download_struct.h
 	ubuntu/download_manager/group_download_struct.h
 	ubuntu/download_manager/metatypes.h

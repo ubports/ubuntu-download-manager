@@ -22,7 +22,6 @@
 #include <QList>
 #include <QObject>
 #include <QSharedPointer>
-#include <ubuntu/download_manager/common.h>
 
 namespace Ubuntu {
 
@@ -31,7 +30,7 @@ namespace DownloadManager {
 class Error;
 class Download;
 
-class DOWNLOAD_MANAGER_EXPORT DownloadsList : public QObject {
+class DownloadsList : public QObject {
     Q_OBJECT
 
  public:
