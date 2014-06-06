@@ -1,487 +1,487 @@
 libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVER#
- (c++)"int qRegisterMetaType<Ubuntu::DownloadManager::GroupDownloadStruct>(char const*, Ubuntu::DownloadManager::GroupDownloadStruct*, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::GroupDownloadStruct, QMetaTypeId2<Ubuntu::DownloadManager::GroupDownloadStruct>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::GroupDownloadStruct>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<QMap<QString, QString> >(QDBusArgument&, QMap<QString, QString> const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QDBusArgument&, QList<Ubuntu::DownloadManager::GroupDownloadStruct> const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::DownloadManager::DownloadStruct>(QDBusArgument&, Ubuntu::DownloadManager::DownloadStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::DownloadManager::GroupDownloadStruct>(QDBusArgument&, Ubuntu::DownloadManager::GroupDownloadStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::AuthErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::AuthErrorStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::HttpErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::HttpErrorStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::NetworkErrorStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::ProcessErrorStruct const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<QMap<QString, QString> >(QDBusArgument const&, QMap<QString, QString>*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QDBusArgument const&, QList<Ubuntu::DownloadManager::GroupDownloadStruct>*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::DownloadManager::DownloadStruct>(QDBusArgument const&, Ubuntu::DownloadManager::DownloadStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::DownloadManager::GroupDownloadStruct>(QDBusArgument const&, Ubuntu::DownloadManager::GroupDownloadStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::AuthErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::AuthErrorStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::HttpErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::HttpErrorStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::NetworkErrorStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::ProcessErrorStruct*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<QMap<QString, QString> >(QByteArray const&, QMap<QString, QString>*, QtPrivate::MetaTypeDefinedHelper<QMap<QString, QString>, QMetaTypeId2<QMap<QString, QString> >::Defined&&(!QMetaTypeId2<QMap<QString, QString> >::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QByteArray const&, QList<Ubuntu::DownloadManager::GroupDownloadStruct>*, QtPrivate::MetaTypeDefinedHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QMetaTypeId2<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::Defined&&(!QMetaTypeId2<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::NetworkError*>(QByteArray const&, Ubuntu::DownloadManager::NetworkError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::NetworkError*, QMetaTypeId2<Ubuntu::DownloadManager::NetworkError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::NetworkError*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::ProcessError*>(QByteArray const&, Ubuntu::DownloadManager::ProcessError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::ProcessError*, QMetaTypeId2<Ubuntu::DownloadManager::ProcessError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::ProcessError*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::DownloadsList*>(QByteArray const&, Ubuntu::DownloadManager::DownloadsList**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::DownloadsList*, QMetaTypeId2<Ubuntu::DownloadManager::DownloadsList*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::DownloadsList*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::GroupDownload*>(QByteArray const&, Ubuntu::DownloadManager::GroupDownload**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::GroupDownload*, QMetaTypeId2<Ubuntu::DownloadManager::GroupDownload*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::GroupDownload*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::Error*>(QByteArray const&, Ubuntu::DownloadManager::Error**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::Error*, QMetaTypeId2<Ubuntu::DownloadManager::Error*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::Error*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::Download*>(QByteArray const&, Ubuntu::DownloadManager::Download**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::Download*, QMetaTypeId2<Ubuntu::DownloadManager::Download*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::Download*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::AuthError*>(QByteArray const&, Ubuntu::DownloadManager::AuthError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::AuthError*, QMetaTypeId2<Ubuntu::DownloadManager::AuthError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::AuthError*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::DBusError*>(QByteArray const&, Ubuntu::DownloadManager::DBusError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::DBusError*, QMetaTypeId2<Ubuntu::DownloadManager::DBusError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::DBusError*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::HttpError*>(QByteArray const&, Ubuntu::DownloadManager::HttpError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::HttpError*, QMetaTypeId2<Ubuntu::DownloadManager::HttpError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::HttpError*>::IsBuiltIn)>::DefinedType)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::AuthErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::HttpErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::NetworkErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::ProcessErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<QDBusPendingCallWatcher*>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ValueTypeIsMetaType<QList<QDBusObjectPath>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::ValueTypeIsMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"guard variable for QtPrivate::AssociativeValueTypeIsMetaType<QMap<QString, QString>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QByteArray::~QByteArray()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QByteArray::~QByteArray()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QDBusArgument>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QDBusObjectPath>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QList<QDBusObjectPath> >::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QtMetaTypePrivate::QSequentialIterableImpl>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QtMetaTypePrivate::QAssociativeIterableImpl>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::DownloadManager::DownloadStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::DownloadManager::GroupDownloadStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::AuthErrorStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::HttpErrorStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::NetworkErrorStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::ProcessErrorStruct>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QSharedPointer<Ubuntu::DownloadManager::Download>::deref(QtSharedPointer::ExternalRefCountData*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtSharedPointer::ExternalRefCountWithCustomDeleter<Ubuntu::DownloadManager::Download, QtSharedPointer::NormalDeleter>::deleter(QtSharedPointer::ExternalRefCountData*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::processing(QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::networkError(Ubuntu::Transfers::Errors::NetworkErrorStruct)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::processError(Ubuntu::Transfers::Errors::ProcessErrorStruct)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::error(QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::paused(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::resumed(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::started(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::canceled(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::finished(QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::progress(unsigned long long, unsigned long long)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::authError(Ubuntu::Transfers::Errors::AuthErrorStruct)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::httpError(Ubuntu::Transfers::Errors::HttpErrorStruct)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::DownloadInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::DownloadInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::~DownloadInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::~DownloadInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::~DownloadInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Create(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Delete(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Destruct(void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Construct(void*, void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::advanceImpl<QList<QDBusObjectPath> >(void**, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::advanceImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::copyIterImpl<QList<QDBusObjectPath> >(void**, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::copyIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"bool QtMetaTypePrivate::QSequentialIterableImpl::equalIterImpl<QList<QDBusObjectPath> >(void* const*, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"bool QtMetaTypePrivate::QSequentialIterableImpl::equalIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void* const*, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToEndImpl<QList<QDBusObjectPath> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToEndImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::destroyIterImpl<QList<QDBusObjectPath> >(void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::destroyIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToBeginImpl<QList<QDBusObjectPath> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToBeginImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void const* QtMetaTypePrivate::QSequentialIterableImpl::atImpl<QList<QDBusObjectPath> >(void const*, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void const* QtMetaTypePrivate::QSequentialIterableImpl::atImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QSequentialIterableImpl::getImpl<QList<QDBusObjectPath> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QSequentialIterableImpl::getImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int QtMetaTypePrivate::QSequentialIterableImpl::sizeImpl<QList<QDBusObjectPath> >(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int QtMetaTypePrivate::QSequentialIterableImpl::sizeImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QMap<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QMap<QString, QString> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QHash<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QMap<QString, QVariant> >(void**, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QMap<QString, QString> >(void**, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QHash<QString, QVariant> >(void**, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QMap<QString, QVariant> >(void**, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QMap<QString, QString> >(void**, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QHash<QString, QVariant> >(void**, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QMap<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QMap<QString, QString> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QHash<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QMap<QString, QVariant> >(void* const*, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QMap<QString, QString> >(void* const*, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QHash<QString, QVariant> >(void* const*, void* const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QMap<QString, QVariant> >(void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QMap<QString, QString> >(void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QHash<QString, QVariant> >(void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QMap<QString, QVariant> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QMap<QString, QString> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QHash<QString, QVariant> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QMap<QString, QVariant> >(void const*, void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QMap<QString, QString> >(void const*, void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QHash<QString, QVariant> >(void const*, void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QMap<QString, QVariant> >(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QMap<QString, QString> >(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QHash<QString, QVariant> >(void const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QMap<QString, QVariant> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QMap<QString, QString> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QHash<QString, QVariant> >(void const*, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<QDBusPendingCallWatcher*, true>::qt_metatype_id()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QVariant>::detach_helper()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QVariant>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QVariant>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QString>::detach_helper()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QString>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMap<QString, QString>::~QMap()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::detach_helper_grow(int, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::append(QSharedPointer<Ubuntu::DownloadManager::Download> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::QList(QList<QSharedPointer<Ubuntu::DownloadManager::Download> > const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::QList(QList<QSharedPointer<Ubuntu::DownloadManager::Download> > const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::detach_helper_grow(int, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::append(QDBusObjectPath const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::QList(QList<QDBusObjectPath> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::QList(QList<QDBusObjectPath> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QDBusObjectPath>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QVariant>::detach_helper_grow(int, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QVariant>::append(QVariant const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QVariant>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<QVariant>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::detach_helper_grow(int, int)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::append(Ubuntu::DownloadManager::GroupDownloadStruct const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::QList(QList<Ubuntu::DownloadManager::GroupDownloadStruct> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::QList(QList<Ubuntu::DownloadManager::GroupDownloadStruct> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::~QList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QDebug::~QDebug()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QDebug::~QDebug()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::code()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::phrase()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::standardOut()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::standardError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::code()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::phrase()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::exitCode()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::error()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::isError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadStruct::~DownloadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadStruct::~DownloadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::downloadCreated(QDBusObjectPath const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::ManagerInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::ManagerInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::~GroupDownloadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::~GroupDownloadStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::type()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::groupCreated(Ubuntu::DownloadManager::GroupDownload*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::downloadsFound(Ubuntu::DownloadManager::DownloadsList*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::downloadCreated(Ubuntu::DownloadManager::Download*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::createSystemManager(QString const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::createSessionManager(QString const&, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::downloadsWithMetadataFound(QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::processing(QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::error(Ubuntu::DownloadManager::Error*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::paused(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::resumed(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::started(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::canceled(bool)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::finished(QString const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::progress(unsigned long long, unsigned long long)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::type()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::phrase()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::name()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::message()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::errorString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::qt_metacast(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::staticMetaObject@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::code()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::phrase()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::~ProcessErrorStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::~ProcessErrorStruct()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QString::QString(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QString::QString(char const*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QString::~QString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QString::~QString()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMapNode<QString, QVariant>::destroySubTree()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMapNode<QString, QString>::destroySubTree()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(QString const&), QtPrivate::List<QString const&>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(QString const&), QtPrivate::List<QString const&>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(bool), QtPrivate::List<bool>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(bool), QtPrivate::List<bool>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(unsigned long long, unsigned long long), QtPrivate::List<unsigned long long, unsigned long long>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(unsigned long long, unsigned long long), QtPrivate::List<unsigned long long, unsigned long long>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::~ConverterFunctor()@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::QVariantValueHelperInterface<QMap<QString, QVariant> >::invoke(QVariant const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"DownloadInterface::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::NetworkError::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ProcessError::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DownloadsList::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::GroupDownload::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::ManagerInterface::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Error::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Manager::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::Download::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::AuthError::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::DBusError::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"Ubuntu::DownloadManager::HttpError::metaObject() const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMapNode<QString, QVariant>::copy(QMapData<QString, QVariant>*) const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMapNode<QString, QString>::copy(QMapData<QString, QString>*) const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::operator()(Ubuntu::DownloadManager::DownloadsList*) const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::operator()(Ubuntu::DownloadManager::GroupDownload*) const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::operator()(Ubuntu::DownloadManager::Download*) const@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for DownloadInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::NetworkError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::ProcessError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::DownloadsList@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::GroupDownload@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::ManagerInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::Error@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::Manager@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::Download@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::AuthError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::DBusError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo for Ubuntu::DownloadManager::HttpError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for DownloadInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::NetworkError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::ProcessError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::DownloadsList@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::GroupDownload@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::ManagerInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::Error@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::Manager@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::Download@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::AuthError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::DBusError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"typeinfo name for Ubuntu::DownloadManager::HttpError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for DownloadInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::NetworkError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::ProcessError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::DownloadsList@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::GroupDownload@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::ManagerInterface@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::Error@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::Manager@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::Download@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::AuthError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::DBusError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"vtable for Ubuntu::DownloadManager::HttpError@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QDBusArgument>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QDBusObjectPath>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QMap<QString, QString> >::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QList<QDBusObjectPath> >::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QtMetaTypePrivate::QSequentialIterableImpl>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<QtMetaTypePrivate::QAssociativeIterableImpl>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::DownloadManager::DownloadStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::DownloadManager::GroupDownloadStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::AuthErrorStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::HttpErrorStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::NetworkErrorStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::ProcessErrorStruct>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<QDBusPendingCallWatcher*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::NetworkError*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::ProcessError*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::DownloadsList*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::GroupDownload*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::Error*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::Download*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::AuthError*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::DBusError*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::HttpError*, true>::qt_metatype_id()::metatype_id@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::AuthErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::HttpErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::NetworkErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::ProcessErrorStruct>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<QDBusPendingCallWatcher*>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<QString const&>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<bool>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<unsigned long long, unsigned long long>, true>::types()::t@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ValueTypeIsMetaType<QList<QDBusObjectPath>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::ValueTypeIsMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
- (c++)"QtPrivate::AssociativeValueTypeIsMetaType<QMap<QString, QString>, true>::registerConverter(int)::f@Base" 0.3+14.10.20140523-0ubuntu1
+ (c++)"int qRegisterMetaType<Ubuntu::DownloadManager::GroupDownloadStruct>(char const*, Ubuntu::DownloadManager::GroupDownloadStruct*, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::GroupDownloadStruct, QMetaTypeId2<Ubuntu::DownloadManager::GroupDownloadStruct>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::GroupDownloadStruct>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<QMap<QString, QString> >(QDBusArgument&, QMap<QString, QString> const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QDBusArgument&, QList<Ubuntu::DownloadManager::GroupDownloadStruct> const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::DownloadManager::DownloadStruct>(QDBusArgument&, Ubuntu::DownloadManager::DownloadStruct const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::DownloadManager::GroupDownloadStruct>(QDBusArgument&, Ubuntu::DownloadManager::GroupDownloadStruct const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::AuthErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::AuthErrorStruct const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::HttpErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::HttpErrorStruct const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::NetworkErrorStruct const*)@Base" 0replaceme
+ (c++)"void qDBusMarshallHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct>(QDBusArgument&, Ubuntu::Transfers::Errors::ProcessErrorStruct const*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<QMap<QString, QString> >(QDBusArgument const&, QMap<QString, QString>*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QDBusArgument const&, QList<Ubuntu::DownloadManager::GroupDownloadStruct>*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::DownloadManager::DownloadStruct>(QDBusArgument const&, Ubuntu::DownloadManager::DownloadStruct*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::DownloadManager::GroupDownloadStruct>(QDBusArgument const&, Ubuntu::DownloadManager::GroupDownloadStruct*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::AuthErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::AuthErrorStruct*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::HttpErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::HttpErrorStruct*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::NetworkErrorStruct*)@Base" 0replaceme
+ (c++)"void qDBusDemarshallHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct>(QDBusArgument const&, Ubuntu::Transfers::Errors::ProcessErrorStruct*)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<QMap<QString, QString> >(QByteArray const&, QMap<QString, QString>*, QtPrivate::MetaTypeDefinedHelper<QMap<QString, QString>, QMetaTypeId2<QMap<QString, QString> >::Defined&&(!QMetaTypeId2<QMap<QString, QString> >::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(QByteArray const&, QList<Ubuntu::DownloadManager::GroupDownloadStruct>*, QtPrivate::MetaTypeDefinedHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QMetaTypeId2<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::Defined&&(!QMetaTypeId2<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::NetworkError*>(QByteArray const&, Ubuntu::DownloadManager::NetworkError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::NetworkError*, QMetaTypeId2<Ubuntu::DownloadManager::NetworkError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::NetworkError*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::ProcessError*>(QByteArray const&, Ubuntu::DownloadManager::ProcessError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::ProcessError*, QMetaTypeId2<Ubuntu::DownloadManager::ProcessError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::ProcessError*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::DownloadsList*>(QByteArray const&, Ubuntu::DownloadManager::DownloadsList**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::DownloadsList*, QMetaTypeId2<Ubuntu::DownloadManager::DownloadsList*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::DownloadsList*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::GroupDownload*>(QByteArray const&, Ubuntu::DownloadManager::GroupDownload**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::GroupDownload*, QMetaTypeId2<Ubuntu::DownloadManager::GroupDownload*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::GroupDownload*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::Error*>(QByteArray const&, Ubuntu::DownloadManager::Error**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::Error*, QMetaTypeId2<Ubuntu::DownloadManager::Error*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::Error*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::Download*>(QByteArray const&, Ubuntu::DownloadManager::Download**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::Download*, QMetaTypeId2<Ubuntu::DownloadManager::Download*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::Download*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::AuthError*>(QByteArray const&, Ubuntu::DownloadManager::AuthError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::AuthError*, QMetaTypeId2<Ubuntu::DownloadManager::AuthError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::AuthError*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::DBusError*>(QByteArray const&, Ubuntu::DownloadManager::DBusError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::DBusError*, QMetaTypeId2<Ubuntu::DownloadManager::DBusError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::DBusError*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"int qRegisterNormalizedMetaType<Ubuntu::DownloadManager::HttpError*>(QByteArray const&, Ubuntu::DownloadManager::HttpError**, QtPrivate::MetaTypeDefinedHelper<Ubuntu::DownloadManager::HttpError*, QMetaTypeId2<Ubuntu::DownloadManager::HttpError*>::Defined&&(!QMetaTypeId2<Ubuntu::DownloadManager::HttpError*>::IsBuiltIn)>::DefinedType)@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::AuthErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::HttpErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::NetworkErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::ProcessErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ConnectionTypes<QtPrivate::List<QDBusPendingCallWatcher*>, true>::types()::t@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ValueTypeIsMetaType<QList<QDBusObjectPath>, true>::registerConverter(int)::f@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::ValueTypeIsMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::registerConverter(int)::f@Base" 0replaceme
+ (c++)"guard variable for QtPrivate::AssociativeValueTypeIsMetaType<QMap<QString, QString>, true>::registerConverter(int)::f@Base" 0replaceme
+ (c++)"QByteArray::~QByteArray()@Base" 0replaceme
+ (c++)"QByteArray::~QByteArray()@Base" 0replaceme
+ (c++)"QMetaTypeId<QDBusArgument>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<QDBusObjectPath>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<QList<QDBusObjectPath> >::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<QtMetaTypePrivate::QSequentialIterableImpl>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<QtMetaTypePrivate::QAssociativeIterableImpl>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::DownloadManager::DownloadStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::DownloadManager::GroupDownloadStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::AuthErrorStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::HttpErrorStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::NetworkErrorStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::ProcessErrorStruct>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QSharedPointer<Ubuntu::DownloadManager::Download>::deref(QtSharedPointer::ExternalRefCountData*)@Base" 0replaceme
+ (c++)"QtSharedPointer::ExternalRefCountWithCustomDeleter<Ubuntu::DownloadManager::Download, QtSharedPointer::NormalDeleter>::deleter(QtSharedPointer::ExternalRefCountData*)@Base" 0replaceme
+ (c++)"DownloadInterface::processing(QString const&)@Base" 0replaceme
+ (c++)"DownloadInterface::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"DownloadInterface::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"DownloadInterface::networkError(Ubuntu::Transfers::Errors::NetworkErrorStruct)@Base" 0replaceme
+ (c++)"DownloadInterface::processError(Ubuntu::Transfers::Errors::ProcessErrorStruct)@Base" 0replaceme
+ (c++)"DownloadInterface::staticMetaObject@Base" 0replaceme
+ (c++)"DownloadInterface::error(QString const&)@Base" 0replaceme
+ (c++)"DownloadInterface::paused(bool)@Base" 0replaceme
+ (c++)"DownloadInterface::resumed(bool)@Base" 0replaceme
+ (c++)"DownloadInterface::started(bool)@Base" 0replaceme
+ (c++)"DownloadInterface::canceled(bool)@Base" 0replaceme
+ (c++)"DownloadInterface::finished(QString const&)@Base" 0replaceme
+ (c++)"DownloadInterface::progress(unsigned long long, unsigned long long)@Base" 0replaceme
+ (c++)"DownloadInterface::authError(Ubuntu::Transfers::Errors::AuthErrorStruct)@Base" 0replaceme
+ (c++)"DownloadInterface::httpError(Ubuntu::Transfers::Errors::HttpErrorStruct)@Base" 0replaceme
+ (c++)"DownloadInterface::DownloadInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0replaceme
+ (c++)"DownloadInterface::DownloadInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0replaceme
+ (c++)"DownloadInterface::~DownloadInterface()@Base" 0replaceme
+ (c++)"DownloadInterface::~DownloadInterface()@Base" 0replaceme
+ (c++)"DownloadInterface::~DownloadInterface()@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusArgument, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusObjectPath, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QMap<QString, QString>, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<QDBusObjectPath>, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownloadStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::AuthErrorStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::HttpErrorStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::NetworkErrorStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::Transfers::Errors::ProcessErrorStruct, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QSequentialIterableImpl, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QtMetaTypePrivate::QAssociativeIterableImpl, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<QDBusPendingCallWatcher*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::NetworkError*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::ProcessError*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DownloadsList*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::GroupDownload*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Error*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::Download*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::AuthError*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::DBusError*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Create(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Delete(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Destruct(void*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::QMetaTypeFunctionHelper<Ubuntu::DownloadManager::HttpError*, true>::Construct(void*, void const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::advanceImpl<QList<QDBusObjectPath> >(void**, int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::advanceImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**, int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::copyIterImpl<QList<QDBusObjectPath> >(void**, void* const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::copyIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**, void* const*)@Base" 0replaceme
+ (c++)"bool QtMetaTypePrivate::QSequentialIterableImpl::equalIterImpl<QList<QDBusObjectPath> >(void* const*, void* const*)@Base" 0replaceme
+ (c++)"bool QtMetaTypePrivate::QSequentialIterableImpl::equalIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void* const*, void* const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToEndImpl<QList<QDBusObjectPath> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToEndImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::destroyIterImpl<QList<QDBusObjectPath> >(void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::destroyIterImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToBeginImpl<QList<QDBusObjectPath> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QSequentialIterableImpl::moveToBeginImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, void**)@Base" 0replaceme
+ (c++)"void const* QtMetaTypePrivate::QSequentialIterableImpl::atImpl<QList<QDBusObjectPath> >(void const*, int)@Base" 0replaceme
+ (c++)"void const* QtMetaTypePrivate::QSequentialIterableImpl::atImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*, int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QSequentialIterableImpl::getImpl<QList<QDBusObjectPath> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QSequentialIterableImpl::getImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"int QtMetaTypePrivate::QSequentialIterableImpl::sizeImpl<QList<QDBusObjectPath> >(void const*)@Base" 0replaceme
+ (c++)"int QtMetaTypePrivate::QSequentialIterableImpl::sizeImpl<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >(void const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QMap<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QMap<QString, QString> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getKeyImpl<QHash<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QMap<QString, QVariant> >(void**, int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QMap<QString, QString> >(void**, int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::advanceImpl<QHash<QString, QVariant> >(void**, int)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QMap<QString, QVariant> >(void**, void* const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QMap<QString, QString> >(void**, void* const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::copyIterImpl<QHash<QString, QVariant> >(void**, void* const*)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QMap<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QMap<QString, QString> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"QtMetaTypePrivate::VariantData QtMetaTypePrivate::QAssociativeIterableImpl::getValueImpl<QHash<QString, QVariant> >(void* const*, int, unsigned int)@Base" 0replaceme
+ (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QMap<QString, QVariant> >(void* const*, void* const*)@Base" 0replaceme
+ (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QMap<QString, QString> >(void* const*, void* const*)@Base" 0replaceme
+ (c++)"bool QtMetaTypePrivate::QAssociativeIterableImpl::equalIterImpl<QHash<QString, QVariant> >(void* const*, void* const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QMap<QString, QVariant> >(void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QMap<QString, QString> >(void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::destroyIterImpl<QHash<QString, QVariant> >(void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QMap<QString, QVariant> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QMap<QString, QString> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::endImpl<QHash<QString, QVariant> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QMap<QString, QVariant> >(void const*, void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QMap<QString, QString> >(void const*, void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::findImpl<QHash<QString, QVariant> >(void const*, void const*, void**)@Base" 0replaceme
+ (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QMap<QString, QVariant> >(void const*)@Base" 0replaceme
+ (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QMap<QString, QString> >(void const*)@Base" 0replaceme
+ (c++)"int QtMetaTypePrivate::QAssociativeIterableImpl::sizeImpl<QHash<QString, QVariant> >(void const*)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QMap<QString, QVariant> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QMap<QString, QString> >(void const*, void**)@Base" 0replaceme
+ (c++)"void QtMetaTypePrivate::QAssociativeIterableImpl::beginImpl<QHash<QString, QVariant> >(void const*, void**)@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<QDBusPendingCallWatcher*, true>::qt_metatype_id()@Base" 0replaceme
+ (c++)"QMap<QString, QVariant>::detach_helper()@Base" 0replaceme
+ (c++)"QMap<QString, QVariant>::~QMap()@Base" 0replaceme
+ (c++)"QMap<QString, QVariant>::~QMap()@Base" 0replaceme
+ (c++)"QMap<QString, QString>::detach_helper()@Base" 0replaceme
+ (c++)"QMap<QString, QString>::~QMap()@Base" 0replaceme
+ (c++)"QMap<QString, QString>::~QMap()@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::detach_helper_grow(int, int)@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::append(QSharedPointer<Ubuntu::DownloadManager::Download> const&)@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::QList(QList<QSharedPointer<Ubuntu::DownloadManager::Download> > const&)@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::QList(QList<QSharedPointer<Ubuntu::DownloadManager::Download> > const&)@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::~QList()@Base" 0replaceme
+ (c++)"QList<QSharedPointer<Ubuntu::DownloadManager::Download> >::~QList()@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::detach_helper_grow(int, int)@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::append(QDBusObjectPath const&)@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::QList(QList<QDBusObjectPath> const&)@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::QList(QList<QDBusObjectPath> const&)@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::~QList()@Base" 0replaceme
+ (c++)"QList<QDBusObjectPath>::~QList()@Base" 0replaceme
+ (c++)"QList<QVariant>::detach_helper_grow(int, int)@Base" 0replaceme
+ (c++)"QList<QVariant>::append(QVariant const&)@Base" 0replaceme
+ (c++)"QList<QVariant>::~QList()@Base" 0replaceme
+ (c++)"QList<QVariant>::~QList()@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::detach_helper_grow(int, int)@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::append(Ubuntu::DownloadManager::GroupDownloadStruct const&)@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::QList(QList<Ubuntu::DownloadManager::GroupDownloadStruct> const&)@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::QList(QList<Ubuntu::DownloadManager::GroupDownloadStruct> const&)@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::~QList()@Base" 0replaceme
+ (c++)"QList<Ubuntu::DownloadManager::GroupDownloadStruct>::~QList()@Base" 0replaceme
+ (c++)"QDebug::~QDebug()@Base" 0replaceme
+ (c++)"QDebug::~QDebug()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::code()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::phrase()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::standardOut()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::standardError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::code()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::phrase()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::exitCode()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::error()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::isError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadStruct::~DownloadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadStruct::~DownloadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::downloadCreated(QDBusObjectPath const&)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::ManagerInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::ManagerInterface(QString const&, QString const&, QDBusConnection const&, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::~ManagerInterface()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::~GroupDownloadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::~GroupDownloadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::type()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::groupCreated(Ubuntu::DownloadManager::GroupDownload*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::downloadsFound(Ubuntu::DownloadManager::DownloadsList*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::downloadCreated(Ubuntu::DownloadManager::Download*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::createSystemManager(QString const&, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::createSessionManager(QString const&, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::downloadsWithMetadataFound(QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::processing(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::error(Ubuntu::DownloadManager::Error*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::paused(bool)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::resumed(bool)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::started(bool)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::canceled(bool)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::finished(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::progress(unsigned long long, unsigned long long)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::type()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::phrase()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::name()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::message()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::code()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::phrase()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::~ProcessErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::~ProcessErrorStruct()@Base" 0replaceme
+ (c++)"QString::QString(char const*)@Base" 0replaceme
+ (c++)"QString::QString(char const*)@Base" 0replaceme
+ (c++)"QString::~QString()@Base" 0replaceme
+ (c++)"QString::~QString()@Base" 0replaceme
+ (c++)"QMapNode<QString, QVariant>::destroySubTree()@Base" 0replaceme
+ (c++)"QMapNode<QString, QString>::destroySubTree()@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(QString const&), QtPrivate::List<QString const&>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(QString const&), QtPrivate::List<QString const&>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(bool), QtPrivate::List<bool>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(bool), QtPrivate::List<bool>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(unsigned long long, unsigned long long), QtPrivate::List<unsigned long long, unsigned long long>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::QSlotObject<void (Ubuntu::DownloadManager::Download::*)(unsigned long long, unsigned long long), QtPrivate::List<unsigned long long, unsigned long long>, void>::impl(int, QtPrivate::QSlotObjectBase*, QObject*, void**, bool*)@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QMap<QString, QString>, QtMetaTypePrivate::QAssociativeIterableImpl, QtMetaTypePrivate::QAssociativeIterableConvertFunctor<QMap<QString, QString> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<QDBusObjectPath>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<QDBusObjectPath> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::convert(QtPrivate::AbstractConverterFunction const*, void const*, void*)@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::ConverterFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, QtMetaTypePrivate::QSequentialIterableImpl, QtMetaTypePrivate::QSequentialIterableConvertFunctor<QList<Ubuntu::DownloadManager::GroupDownloadStruct> > >::~ConverterFunctor()@Base" 0replaceme
+ (c++)"QtPrivate::QVariantValueHelperInterface<QMap<QString, QVariant> >::invoke(QVariant const&)@Base" 0replaceme
+ (c++)"DownloadInterface::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::NetworkError::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ProcessError::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DownloadsList::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::GroupDownload::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::ManagerInterface::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Error::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Manager::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::Download::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::AuthError::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::DBusError::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HttpError::metaObject() const@Base" 0replaceme
+ (c++)"QMapNode<QString, QVariant>::copy(QMapData<QString, QVariant>*) const@Base" 0replaceme
+ (c++)"QMapNode<QString, QString>::copy(QMapData<QString, QString>*) const@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::operator()(Ubuntu::DownloadManager::DownloadsList*) const@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::operator()(Ubuntu::DownloadManager::GroupDownload*) const@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::operator()(Ubuntu::DownloadManager::Download*) const@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0replaceme
+ (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0replaceme
+ (c++)"typeinfo for DownloadInterface@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::NetworkError@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::ProcessError@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::DownloadsList@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::GroupDownload@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::ManagerInterface@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::Error@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::Manager@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::Download@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::AuthError@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::DBusError@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::HttpError@Base" 0replaceme
+ (c++)"typeinfo name for DownloadInterface@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::NetworkError@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::ProcessError@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::DownloadsList@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::GroupDownload@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::ManagerInterface@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Error@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Manager@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Download@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::AuthError@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::DBusError@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::HttpError@Base" 0replaceme
+ (c++)"vtable for DownloadInterface@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::NetworkError@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::ProcessError@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::DownloadsList@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::GroupDownload@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::ManagerInterface@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::Error@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::Manager@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::Download@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::AuthError@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::DBusError@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::HttpError@Base" 0replaceme
+ (c++)"QMetaTypeId<QDBusArgument>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QDBusObjectPath>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QMap<QString, QString> >::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QList<QDBusObjectPath> >::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QList<Ubuntu::DownloadManager::GroupDownloadStruct> >::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QtMetaTypePrivate::QSequentialIterableImpl>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<QtMetaTypePrivate::QAssociativeIterableImpl>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::DownloadManager::DownloadStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::DownloadManager::GroupDownloadStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::AuthErrorStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::HttpErrorStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::NetworkErrorStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeId<Ubuntu::Transfers::Errors::ProcessErrorStruct>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<QDBusPendingCallWatcher*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::NetworkError*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::ProcessError*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::DownloadsList*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::GroupDownload*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::Error*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::Download*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::AuthError*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::DBusError*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QMetaTypeIdQObject<Ubuntu::DownloadManager::HttpError*, true>::qt_metatype_id()::metatype_id@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::AuthErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::HttpErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::NetworkErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<Ubuntu::Transfers::Errors::ProcessErrorStruct>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<QDBusPendingCallWatcher*>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<QString const&>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<bool>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ConnectionTypes<QtPrivate::List<unsigned long long, unsigned long long>, true>::types()::t@Base" 0replaceme
+ (c++)"QtPrivate::ValueTypeIsMetaType<QList<QDBusObjectPath>, true>::registerConverter(int)::f@Base" 0replaceme
+ (c++)"QtPrivate::ValueTypeIsMetaType<QList<Ubuntu::DownloadManager::GroupDownloadStruct>, true>::registerConverter(int)::f@Base" 0replaceme
+ (c++)"QtPrivate::AssociativeValueTypeIsMetaType<QMap<QString, QString>, true>::registerConverter(int)::f@Base" 0replaceme
