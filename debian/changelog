@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.4) UNRELEASED; urgency=medium
+
+  * Add the symbols files to ensure that we have no regressions.
+
+ -- Manuel de la Pena <manuel.delapena@canonical.com> Mon, 09 Jun
+
+2014 13:53:45 +0200
 ubuntu-download-manager (0.3+14.10.20140523-0ubuntu1) utopic; urgency=low
 
   [ Manuel de la Peña ]
