@@ -1,20 +1,4 @@
 libudm-common.so.0 libudm-common0 #MINVER#
- (c++)"QByteArray::~QByteArray()@Base" 0replaceme
- (c++)"QByteArray::~QByteArray()@Base" 0replaceme
- (c++)"QMap<QString, QVariant>::detach_helper()@Base" 0replaceme
- (c++)"QList<QString>::detach_helper_grow(int, int)@Base" 0replaceme
- (c++)"QList<QString>::append(QString const&)@Base" 0replaceme
- (c++)"QList<QString>::reserve(int)@Base" 0replaceme
- (c++)"QList<QString>::QList(QList<QString> const&)@Base" 0replaceme
- (c++)"QList<QString>::QList(QList<QString> const&)@Base" 0replaceme
- (c++)"QList<QString>::~QList()@Base" 0replaceme
- (c++)"QList<QString>::~QList()@Base" 0replaceme
- (c++)"QList<QSslError>::QList(QList<QSslError> const&)@Base" 0replaceme
- (c++)"QList<QSslError>::QList(QList<QSslError> const&)@Base" 0replaceme
- (c++)"QList<QSslError>::~QList()@Base" 0replaceme
- (c++)"QList<QSslError>::~QList()@Base" 0replaceme
- (c++)"QDebug::~QDebug()@Base" 0replaceme
- (c++)"QDebug::~QDebug()@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getType()@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getPhrase()@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct::Type, QString)@Base" 0replaceme
@@ -97,11 +81,6 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::Metadata::LOCAL_PATH_KEY@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::OBJECT_PATH_KEY@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::COMMAND_FILE_KEY@Base" 0replaceme
- (c++)"QString::QString(char const*)@Base" 0replaceme
- (c++)"QString::QString(char const*)@Base" 0replaceme
- (c++)"QString::~QString()@Base" 0replaceme
- (c++)"QString::~QString()@Base" 0replaceme
- (c++)"QMapNode<QString, QVariant>::destroySubTree()@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getCode() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getPhrase() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::getCode() const@Base" 0replaceme
@@ -119,8 +98,6 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::Metadata::hasObjectPath() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::command() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::localPath() const@Base" 0replaceme
- (c++)"QMapData<QString, QVariant>::findNode(QString const&) const@Base" 0replaceme
- (c++)"QMapNode<QString, QVariant>::copy(QMapData<QString, QVariant>*) const@Base" 0replaceme
  (c++)"typeinfo for Ubuntu::Transfers::System::DBusConnection@Base" 0replaceme
  (c++)"typeinfo for Ubuntu::Transfers::System::Logger@Base" 0replaceme
  (c++)"typeinfo name for Ubuntu::Transfers::System::DBusConnection@Base" 0replaceme
