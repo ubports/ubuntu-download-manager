@@ -42,13 +42,12 @@ add_library(${TARGET} SHARED
 )
 
 set(symbol_map "${CMAKE_SOURCE_DIR}/src/common/public/symbols.map")
-
-set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${ldflags} -Wl,--version-script,${symbol_map}")
-set_target_properties(${TARGET} PROPERTIES LINK_DEPENDS ${symbol_map})
 set_target_properties(
 	${TARGET}
 
 	PROPERTIES
+        LINK_FLAGS "${ldflags} -Wl,--version-script,${symbol_map}"
+        LINK_DEPENDS ${symbol_map}
 	VERSION ${UDM_VERSION_MAJOR}.${UDM_VERSION_MINOR}.${UDM_VERSION_PATCH}
 	SOVERSION ${UDM_VERSION_MAJOR}
 )

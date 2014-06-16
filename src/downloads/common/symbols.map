@@ -1,0 +1,17 @@
+{
+global:
+    extern "C++" {
+        Ubuntu::DownloadManager::*;
+        typeinfo?for?Ubuntu::DownloadManager::*;
+        typeinfo?name?for?Ubuntu::DownloadManager::*;
+        VTT?for?Ubuntu::DownloadManager::*;
+        virtual?thunk?to?Ubuntu::DownloadManager::*;
+        vtable?for?Ubuntu::DownloadManager::*;
+        operator*;
+    };
+
+local:
+    extern "C++" {
+        *;
+    };
+};
