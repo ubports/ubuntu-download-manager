@@ -41,6 +41,10 @@ add_library(${TARGET} SHARED
 	${PRIVATE_HEADERS}
 )
 
+set(symbol_map "${CMAKE_SOURCE_DIR}/src/common/public/symbols.map")
+
+set_target_properties(${TARGET} PROPERTIES LINK_FLAGS "${ldflags} -Wl,--version-script,${symbol_map}")
+set_target_properties(${TARGET} PROPERTIES LINK_DEPENDS ${symbol_map})
 set_target_properties(
 	${TARGET}
 

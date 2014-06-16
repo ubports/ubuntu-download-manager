@@ -1,0 +1,29 @@
+{
+global:
+    extern "C++" {
+        Ubuntu::Transfers::Metadata::*;
+        Ubuntu::Transfers::Errors::*;
+        Ubuntu::Transfers::System::*;
+        typeinfo?for?Ubuntu::Transfers::Metadata::*;
+        typeinfo?for?Ubuntu::Transfers::Errors::*;
+        typeinfo?for?Ubuntu::Transfers::System::*;
+        typeinfo?name?for?Ubuntu::Transfers::Metadata::*;
+        typeinfo?name?for?Ubuntu::Transfers::Errors::*;
+        typeinfo?name?for?Ubuntu::Transfers::System::*;
+        VTT?for?Ubuntu::Transfers::Metadata::*;
+        VTT?for?Ubuntu::Transfers::Errors::*;
+        VTT?for?Ubuntu::Transfers::System::*;
+        virtual?thunk?to?Ubuntu::Transfers::Metadata::*;
+        virtual?thunk?to?Ubuntu::Transfers::Errors::*;
+        virtual?thunk?to?Ubuntu::Transfers::System::*;
+        vtable?for?Ubuntu::Transfers::Metadata::*;
+        vtable?for?Ubuntu::Transfers::Errors::*;
+        vtable?for?Ubuntu::Transfers::System::*;
+        operator*;
+    };
+
+local:
+    extern "C++" {
+        *;
+    };
+};
