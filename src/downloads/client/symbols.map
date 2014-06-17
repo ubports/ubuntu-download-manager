@@ -1,0 +1,71 @@
+{
+global:
+    extern "C++" {
+        Ubuntu::DownloadManager::Download::*;
+        Ubuntu::DownloadManager::DownloadsList::*;
+        Ubuntu::DownloadManager::Error::*;
+        Ubuntu::DownloadManager::DBusError::*;
+        Ubuntu::DownloadManager::AuthError::*;
+        Ubuntu::DownloadManager::HttpError::*;
+        Ubuntu::DownloadManager::NetworkError::*;
+        Ubuntu::DownloadManager::ProcessError::*;
+        Ubuntu::DownloadManager::GroupDownload::*;
+        Ubuntu::DownloadManager::Manager::*;
+        typeinfo?for?Ubuntu::DownloadManager::Download;
+        typeinfo?for?Ubuntu::DownloadManager::DownloadsList;
+        typeinfo?for?Ubuntu::DownloadManager::Error;
+        typeinfo?for?Ubuntu::DownloadManager::DBusError;
+        typeinfo?for?Ubuntu::DownloadManager::AuthError;
+        typeinfo?for?Ubuntu::DownloadManager::HttpError;
+        typeinfo?for?Ubuntu::DownloadManager::NetworkError;
+        typeinfo?for?Ubuntu::DownloadManager::ProcessError;
+        typeinfo?for?Ubuntu::DownloadManager::GroupDownload;
+        typeinfo?for?Ubuntu::DownloadManager::Manager;
+        typeinfo?name?for?Ubuntu::DownloadManager::Download;
+        typeinfo?name?for?Ubuntu::DownloadManager::DownloadsList;
+        typeinfo?name?for?Ubuntu::DownloadManager::Error;
+        typeinfo?name?for?Ubuntu::DownloadManager::DBusError;
+        typeinfo?name?for?Ubuntu::DownloadManager::AuthError;
+        typeinfo?name?for?Ubuntu::DownloadManager::HttpError;
+        typeinfo?name?for?Ubuntu::DownloadManager::NetworkError;
+        typeinfo?name?for?Ubuntu::DownloadManager::ProcessError;
+        typeinfo?name?for?Ubuntu::DownloadManager::GroupDownload;
+        typeinfo?name?for?Ubuntu::DownloadManager::Manager;
+        VTT?for?Ubuntu::DownloadManager::Download;
+        VTT?for?Ubuntu::DownloadManager::DownloadsList;
+        VTT?for?Ubuntu::DownloadManager::Error;
+        VTT?for?Ubuntu::DownloadManager::DBusError;
+        VTT?for?Ubuntu::DownloadManager::AuthError;
+        VTT?for?Ubuntu::DownloadManager::HttpError;
+        VTT?for?Ubuntu::DownloadManager::NetworkError;
+        VTT?for?Ubuntu::DownloadManager::ProcessError;
+        VTT?for?Ubuntu::DownloadManager::GroupDownload;
+        VTT?for?Ubuntu::DownloadManager::Manager;
+        virtual?thunk?to?Ubuntu::DownloadManager::Download;
+        virtual?thunk?to?Ubuntu::DownloadManager::DownloadsList;
+        virtual?thunk?to?Ubuntu::DownloadManager::Error;
+        virtual?thunk?to?Ubuntu::DownloadManager::DBusError;
+        virtual?thunk?to?Ubuntu::DownloadManager::AuthError;
+        virtual?thunk?to?Ubuntu::DownloadManager::HttpError;
+        virtual?thunk?to?Ubuntu::DownloadManager::NetworkError;
+        virtual?thunk?to?Ubuntu::DownloadManager::ProcessError;
+        virtual?thunk?to?Ubuntu::DownloadManager::GroupDownload;
+        virtual?thunk?to?Ubuntu::DownloadManager::Manager;
+        vtable?for?Ubuntu::DownloadManager::Download;
+        vtable?for?Ubuntu::DownloadManager::DownloadsList;
+        vtable?for?Ubuntu::DownloadManager::Error;
+        vtable?for?Ubuntu::DownloadManager::DBusError;
+        vtable?for?Ubuntu::DownloadManager::AuthError;
+        vtable?for?Ubuntu::DownloadManager::HttpError;
+        vtable?for?Ubuntu::DownloadManager::NetworkError;
+        vtable?for?Ubuntu::DownloadManager::ProcessError;
+        vtable?for?Ubuntu::DownloadManager::GroupDownload;
+        vtable?for?Ubuntu::DownloadManager::Manager;
+	std::function*
+    };
+
+local:
+    extern "C++" {
+        *;
+    };
+};
