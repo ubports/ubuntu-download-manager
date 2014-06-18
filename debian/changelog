@@ -1,4 +1,4 @@
-ubuntu-download-manager (0.4) UNRELEASED; urgency=medium
+ubuntu-download-manager (0.4+14.10.20140618-0ubuntu1) utopic; urgency=medium
 
   [ Manuel de la Pena ]
   * Add the symbols files to ensure that we have no regressions.
@@ -6,7 +6,7 @@ ubuntu-download-manager (0.4) UNRELEASED; urgency=medium
   [ Ubuntu daily release ]
   * debian/*symbols: auto-update new symbols to released version
 
- -- Manuel de la Pena <manuel.delapena@canonical.com>  Mon, 09 Jun 2014 13:53:45 +0200
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 18 Jun 2014 14:49:06 +0000
 
 ubuntu-download-manager (0.3+14.10.20140523-0ubuntu1) utopic; urgency=low
 
