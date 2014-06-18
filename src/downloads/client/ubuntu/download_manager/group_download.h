@@ -21,7 +21,6 @@
 
 #include <QDBusObjectPath>
 #include <QObject>
-#include <ubuntu/download_manager/common.h>
 
 namespace Ubuntu {
 

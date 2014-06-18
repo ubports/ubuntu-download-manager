@@ -1,0 +1,16 @@
+libubuntu-upload-manager-common.so.0 libubuntu-upload-manager-common0 #MINVER#
+ (c++)"Ubuntu::UploadManager::UploadStruct::getHeaders()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::getFilePath()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::getMetadata()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::getUrl()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&, QMap<QString, QVariant> const&, QMap<QString, QString> const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(Ubuntu::UploadManager::UploadStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(QString const&, QString const&, QMap<QString, QVariant> const&, QMap<QString, QString> const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct(Ubuntu::UploadManager::UploadStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::UploadStruct()@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::UploadStruct::operator=(Ubuntu::UploadManager::UploadStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::operator<<(QDBusArgument&, Ubuntu::UploadManager::UploadStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::UploadManager::operator>>(QDBusArgument const&, Ubuntu::UploadManager::UploadStruct&)@Base" 0replaceme

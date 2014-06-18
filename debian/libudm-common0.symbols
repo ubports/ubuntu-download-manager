@@ -1,0 +1,114 @@
+libudm-common.so.0 libudm-common0 #MINVER#
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getType()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getPhrase()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct::Type, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct::Type, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::operator=(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::operator=(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::operator=(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString, int, QString, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, int, QString, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString, int, QString, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, int, QString, QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::operator=(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator<<(QDBusArgument&, Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator<<(QDBusArgument&, Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator<<(QDBusArgument&, Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator<<(QDBusArgument&, Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator>>(QDBusArgument const&, Ubuntu::Transfers::Errors::AuthErrorStruct&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator>>(QDBusArgument const&, Ubuntu::Transfers::Errors::HttpErrorStruct&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator>>(QDBusArgument const&, Ubuntu::Transfers::Errors::NetworkErrorStruct&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::operator>>(QDBusArgument const&, Ubuntu::Transfers::Errors::ProcessErrorStruct&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::HashAlgorithm::getHashAlgo(QCryptographicHash::Algorithm)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::HashAlgorithm::getHashAlgo(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::HashAlgorithm::isValidAlgo(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::HashAlgorithm::algoList@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::connection()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::registerObject(QString const&, QObject*, QFlags<QDBusConnection::RegisterOption>)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::registerService(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::unregisterObject(QString const&, QDBusConnection::UnregisterMode)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::unregisterService(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QDBusConnection, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QDBusConnection, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::setLogLevel(QtMsgType)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::toStdString(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::setupLogging(QString)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::getLogDir()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::setCommand(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::COMMAND_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::setLocalPath(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::setObjectPath(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::LOCAL_PATH_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::OBJECT_PATH_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::COMMAND_FILE_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getCode() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getPhrase() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::getCode() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::getPhrase() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::getExitCode() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::getStandardError() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::getStandardOutput() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::getCode() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::getPhrase() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::Logger::metaObject() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasCommand() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::objectPath() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasLocalPath() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasObjectPath() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::command() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::localPath() const@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::Transfers::System::DBusConnection@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::Transfers::System::Logger@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::Transfers::System::DBusConnection@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::Transfers::System::Logger@Base" 0replaceme
+ (c++)"vtable for Ubuntu::Transfers::System::DBusConnection@Base" 0replaceme
+ (c++)"vtable for Ubuntu::Transfers::System::Logger@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QByteArray const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QDBusError const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QStringList const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QMap<QString, QVariant> const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QMap<QString, QString> const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QUrl const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QList<QSslError> const&)@Base" 0replaceme
+ (c++)"operator<<(std::basic_ostream<char, std::char_traits<char> >&, QString const&)@Base" 0replaceme

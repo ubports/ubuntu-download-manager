@@ -19,6 +19,7 @@
 #ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 #define UBUNTU_DOWNLOADMANAGER_CLIENT_MANAGER_PENDINGCALL_WATCHER_H
 
+#include <ubuntu/transfers/visibility.h>
 #include <functional>
 #include "pending_call_watcher.h"
 
@@ -37,7 +38,7 @@ typedef std::function<void(const QString&, const QString&, DownloadsList*)> Meta
 typedef std::function<void(GroupDownload*)> GroupCb;
 
 
-class DownloadManagerPCW : public PendingCallWatcher {
+class UBUNTU_TRANSFERS_PRIVATE DownloadManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:
@@ -57,7 +58,7 @@ class DownloadManagerPCW : public PendingCallWatcher {
 };
 
 
-class DownloadsListManagerPCW : public PendingCallWatcher {
+class UBUNTU_TRANSFERS_PRIVATE DownloadsListManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:
@@ -75,7 +76,7 @@ class DownloadsListManagerPCW : public PendingCallWatcher {
     DownloadsListCb _errCb;
 };
 
-class MetadataDownloadsListManagerPCW : public PendingCallWatcher {
+class UBUNTU_TRANSFERS_PRIVATE MetadataDownloadsListManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:
@@ -97,7 +98,7 @@ class MetadataDownloadsListManagerPCW : public PendingCallWatcher {
     MetadataDownloadsListCb _errCb;
 };
 
-class GroupManagerPCW : public PendingCallWatcher {
+class UBUNTU_TRANSFERS_PRIVATE GroupManagerPCW : public PendingCallWatcher {
     Q_OBJECT
 
  public:

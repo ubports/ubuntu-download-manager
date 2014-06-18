@@ -22,7 +22,6 @@
 #include <QMap>
 #include <QString>
 #include <QVariantMap>
-#include "common.h"
 
 class QDBusArgument;
 namespace Ubuntu {

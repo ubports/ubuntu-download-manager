@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QString>
-#include <ubuntu/download_manager/common.h>
 
 namespace Ubuntu {
 
