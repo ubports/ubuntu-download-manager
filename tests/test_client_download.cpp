@@ -32,9 +32,10 @@ TestDownload::init() {
 
     _metadata["my-string"] = "canonical";
     _metadata["your-string"] = "developer";
-    QMap<QString, QString> headers;
+    _headers["test"] = "test";
+    _headers["my test"] = "my test";
     _url = largeFileUrl().toString();
-    DownloadStruct downStruct(_url, _metadata, headers);
+    DownloadStruct downStruct(_url, _metadata, _headers);
 
     SignalBarrier managerSpy(_man, SIGNAL(downloadCreated(Download*)));
     _man->createDownload(downStruct);
@@ -98,6 +99,68 @@ void
 TestDownload::testSetThrottleError() {
     returnDBusErrors(true);
     _down->setThrottle(0);
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+
+void
+TestDownload::testHeaders() {
+    auto currentHeaders = _down->headers();
+    foreach(auto key, _headers.keys()) {
+        QCOMPARE(currentHeaders[key], _headers[key]);
+    }
+}
+
+void
+TestDownload::testHeadersError() {
+    returnDBusErrors(true);
+    _down->headers();
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testSetHeaders_data() {
+    QTest::addColumn<QMap<QString, QString> >("headers");
+
+    QMap<QString, QString> first;
+    first["name"] = "first";
+    QTest::newRow("First row") << first;
+
+    QMap<QString, QString> second;
+    second["name"] = "first";
+    second["test"] = "second";
+    QTest::newRow("Second row") << second;
+
+    QMap<QString, QString> last;
+    last["text"] = "hello";
+    last["name"] = "first";
+    last["test"] = "second";
+    QTest::newRow("Last row") << last;
+}
+
+void
+TestDownload::testSetHeaders() {
+    // use a typedef to make the macro happy
+    typedef QMap<QString, QString> StringMap;
+    QFETCH(StringMap, headers);
+
+    _down->setHeaders(headers);
+    auto currentHeaders = _down->headers();
+
+    foreach(auto key, headers.keys()) {
+        QCOMPARE(currentHeaders[key], headers[key]);
+    }
+}
+
+void
+TestDownload::testSetHeadersError() {
+    returnDBusErrors(true);
+    QMap<QString, QString> newHeaders;
+    _down->setHeaders(newHeaders);
     QVERIFY(_down->isError());
     QVERIFY(_down->error() != nullptr);
     QCOMPARE(Error::DBus, _down->error()->type());

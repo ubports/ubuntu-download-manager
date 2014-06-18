@@ -42,6 +42,11 @@ class TestDownload : public LocalTreeTestCase {
     void testSetThrottle_data();
     void testSetThrottle();
     void testSetThrottleError();
+    void testHeaders();
+    void testHeadersError();
+    void testSetHeaders_data();
+    void testSetHeaders();
+    void testSetHeadersError();
     void testMetadata();
     void testMetadataError();
     void testProgressError();
@@ -65,6 +70,7 @@ class TestDownload : public LocalTreeTestCase {
  private:
     QString _url;
     QVariantMap _metadata;
+    QMap<QString, QString> _headers;
     Manager* _man = nullptr;
     Download* _down = nullptr;
 };

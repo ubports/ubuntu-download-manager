@@ -45,6 +45,14 @@ void DownloadAdaptor::cancel()
     QMetaObject::invokeMethod(parent(), "cancel");
 }
 
+StringMap DownloadAdaptor::headers()
+{
+    // handle method call com.canonical.applications.Download.headers
+    StringMap headers;
+    QMetaObject::invokeMethod(parent(), "headers", Q_RETURN_ARG(StringMap, headers));
+    return headers;
+}
+
 bool DownloadAdaptor::isGSMDownloadAllowed()
 {
     // handle method call com.canonical.applications.Download.isGSMDownloadAllowed
@@ -85,6 +93,12 @@ void DownloadAdaptor::setDestinationDir(const QString &path)
 {
     // handle method call com.canonical.applications.Download.setDestinationDir
     QMetaObject::invokeMethod(parent(), "setDestinationDir", Q_ARG(QString, path));
+}
+
+void DownloadAdaptor::setHeaders(StringMap headers)
+{
+    // handle method call com.canonical.applications.Download.setHeaders
+    QMetaObject::invokeMethod(parent(), "setHeaders", Q_ARG(StringMap, headers));
 }
 
 void DownloadAdaptor::setThrottle(qulonglong speed)

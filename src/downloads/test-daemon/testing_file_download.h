@@ -46,6 +46,9 @@ class TestingFileDownload : public FileDownload {
     void setThrottle(qulonglong speed) override;
     qulonglong throttle();
 
+    void setHeaders(StringMap headers) override;
+    StringMap headers();
+
     void allowGSMDownload(bool allowed) override;
     bool isGSMDownloadAllowed() override;
 

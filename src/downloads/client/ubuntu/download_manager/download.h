@@ -122,6 +122,25 @@ class Download : public QObject {
     virtual void setDestinationDir(const QString& path) = 0;
 
     /*!
+        \fn void setHeaders(QMap<QString, QString> headers)
+        \since 0.4
+
+        Allows to set the headers to be used for the download request.
+        If the download has been started the operation will result in
+        an error.
+    */
+    virtual void setHeaders(QMap<QString, QString> headers) = 0;
+
+    /*!
+        \fn QMap<QString, QString> headers()
+        \since 0.4
+
+        Returns the headers that have been set to be fwd in the download
+        request.
+    */
+    virtual QMap<QString, QString> headers() = 0;
+
+    /*!
         \fn void setThrottle(qulonglong speed)
 
         Notifies the download manager that the download represented by this

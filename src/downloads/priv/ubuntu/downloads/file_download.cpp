@@ -303,6 +303,21 @@ FileDownload::setDestinationDir(const QString& path) {
 }
 
 void
+FileDownload::setHeaders(StringMap headers) {
+    TRACE << "Setting headers too " << headers;
+    // header can only be set BEFORE the download was ever started
+    if (state() == Download::IDLE) {
+        Download::setHeaders(headers);
+    } else {
+        DOWN_LOG(WARNING) << "Trying to set headers for already started download.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::NotSupported,
+                "The path cannot be changed in a started download.");
+        }
+    }
+}
+
+void
 FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
     TRACE << _url << currentProgress << bytesTotal;
 
