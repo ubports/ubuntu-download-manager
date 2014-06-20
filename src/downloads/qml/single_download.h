@@ -11,6 +11,8 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+typedef QMap<QString, QString> StringMap;
+
 class SingleDownload : public QObject
 {
     Q_OBJECT
@@ -23,6 +25,7 @@ class SingleDownload : public QObject
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloadingChanged)
     Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
+    Q_PROPERTY(StringMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
 
 public:
     explicit SingleDownload(QObject *parent = 0);
@@ -36,21 +39,96 @@ public:
     void startDownload();
 
     // getters
-    bool isCompleted() const { return m_completed; }
-    DownloadError& error() { return m_error; }
-    QString errorMessage() const { return m_error.message(); }
-    qulonglong throttle() const { return m_download->throttle(); }
-    bool allowMobileDownload() const { return m_download->isMobileDownloadAllowed(); }
-    int progress() const { return m_progress; }
-    bool downloading() const { return m_downloading; }
-    bool downloadInProgress() const { return m_downloadInProgress; }
-    bool autoStart() const { return m_autoStart; }
-    QString downloadId() const { return m_download->id(); }
+    bool isCompleted() const {
+        return m_completed;
+    }
+
+    DownloadError& error() {
+        return m_error;
+    }
+
+    QString errorMessage() const {
+        return m_error.message();
+    }
+
+    qulonglong throttle() const {
+        return m_download->throttle();
+    }
+
+    bool allowMobileDownload() const {
+        return m_download->isMobileDownloadAllowed();
+    }
+
+    int progress() const {
+        return m_progress;
+    }
+
+    bool downloading() const {
+        return m_downloading;
+    }
+
+    bool downloadInProgress() const {
+        return m_downloadInProgress;
+    }
+
+    bool autoStart() const {
+        return m_autoStart;
+    }
+
+    QString downloadId() const {
+        return m_download->id();
+    }
+
+    QMap<QString, QString> headers() const {
+        return m_download->headers();
+    }
 
     // setters
-    void setAllowMobileDownload(bool value) { m_download->allowMobileDownload(value); emit allowMobileDownloadChanged(); }
-    void setThrottle(qulonglong value) { m_download->setThrottle(value); emit throttleChanged(); }
-    void setAutoStart(bool value) { m_autoStart = value; }
+    void setAllowMobileDownload(bool value) {
+        m_download->allowMobileDownload(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit allowMobileDownloadChanged();
+        }
+    }
+
+    void setThrottle(qulonglong value) {
+        m_download->setThrottle(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit throttleChanged();
+        }
+    }
+
+    void setAutoStart(bool value) {
+        m_autoStart = value;
+    }
+
+    void setHeaders(QMap<QString, QString> headers) {
+        m_download->setHeaders(headers);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit headersChanged();
+        }
+    }
 
 signals:
     void isCompletedChanged();
@@ -60,6 +138,7 @@ signals:
     void downloadingChanged();
     void downloadInProgressChanged();
     void downloadIdChanged();
+    void headersChanged();
 
     void canceled(bool success);
     void finished(const QString& path);
@@ -79,6 +158,24 @@ public slots:
     void setDownloadPaused(bool);
     void setDownloadStarted(bool);
     void setDownloadCanceled(bool);
+
+private:
+    QString getErrorType(Error::Type type) {
+        switch (type) {
+            case Error::Auth:
+                return QString("Auth");
+            case Error::DBus:
+                return QString("DBus");
+            case Error::Http:
+                return QString("Http");
+            case Error::Network:
+                return QString("Network");
+            case Error::Process:
+                return QString("Process");
+            default:
+                return QString();
+        }
+    }
 
 private:
     bool m_autoStart;
