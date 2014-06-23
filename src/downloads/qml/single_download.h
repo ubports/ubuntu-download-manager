@@ -11,8 +11,6 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
-typedef QMap<QString, QString> StringMap;
-
 class SingleDownload : public QObject
 {
     Q_OBJECT
@@ -25,7 +23,7 @@ class SingleDownload : public QObject
     Q_PROPERTY(int progress READ progress NOTIFY progressChanged)
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloadingChanged)
     Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
-    Q_PROPERTY(StringMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
+    Q_PROPERTY(QVariantMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
 
 public:
     explicit SingleDownload(QObject *parent = 0);
@@ -79,8 +77,14 @@ public:
         return m_download->id();
     }
 
-    QMap<QString, QString> headers() const {
-        return m_download->headers();
+    QVariantMap headers() const {
+        // convert the QMap<QString, QString> into a QMap<QString, QVariant>
+        auto headers = m_download->headers();
+        QVariantMap result;
+        foreach(const QString& key, headers.keys()) {
+            result[key] = headers[key]; // automatic conversion
+        }
+        return result;
     }
 
     // setters
@@ -116,8 +120,26 @@ public:
         m_autoStart = value;
     }
 
-    void setHeaders(QMap<QString, QString> headers) {
-        m_download->setHeaders(headers);
+    void setHeaders(QVariantMap headers) {
+        QMap<QString, QString> stringMap;
+        // convert the QVariantMap in a QMap<QString, QString> and make sure
+        // that the variants can be converted to strings.
+        foreach(const QString& key, headers.keys()) {
+            auto data = headers[key];
+            if (data.canConvert<QString>()) {
+                stringMap[key] = data.toString();
+            } else {
+                m_error.setType("Headers Conversion Error");
+                auto msg = QString(
+                    "Could not convert data in header '%1' to string.").arg(key);
+                m_error.setMessage(msg);
+                emit errorFound(m_error);
+                emit errorChanged();
+                return;
+            }
+        }
+
+        m_download->setHeaders(stringMap);
         if (m_download->isError()) {
             // set the error details and emit the signals
             auto err = m_download->error();

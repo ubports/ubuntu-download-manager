@@ -287,5 +287,14 @@ void SingleDownload::setDownloadCanceled(bool)
     within the download manager.
 */
 
+/*!
+    \qmlproperty QVariantMap SingleDownload::headers
+
+    This property allows to get and set the headers that will be used to perform
+    the download request. All headers must be strings or at least QVariant should
+    be able to convert them to strings.
+*/
+
+
 }
 }
