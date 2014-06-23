@@ -127,6 +127,17 @@ void SingleDownload::bindDownload(Download* download)
 
     emit downloadIdChanged();
 
+    // is the current in memory setting dirty, if they are, we do set the before we
+    // start
+    if (m_dirty) {
+        setAllowMobileDownload(m_mobile);
+        setThrottle(m_throttle);
+        setHeaders(m_headers);
+
+        // is not really needed but we do it to be consistent
+        m_dirty = false;
+    }
+
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
     }
@@ -227,6 +238,126 @@ void SingleDownload::setDownloadCanceled(bool)
     m_downloadInProgress = false;
 }
 
+bool
+SingleDownload::allowMobileDownload() const {
+    if (m_download == nullptr) {
+            return m_mobile;
+    } else {
+        return m_download->isMobileDownloadAllowed();
+    }
+}
+
+void
+SingleDownload::setAllowMobileDownload(bool value) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_mobile = value;
+    } else {
+        m_download->allowMobileDownload(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit allowMobileDownloadChanged();
+        }
+    }
+}
+
+qulonglong
+SingleDownload::throttle() const {
+    if (m_download == nullptr) {
+        return m_throttle;
+    } else {
+        return m_download->throttle();
+    }
+}
+
+void 
+SingleDownload::setThrottle(qulonglong value) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_throttle = value;
+    } else {
+        m_download->setThrottle(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit throttleChanged();
+        }
+    }
+}
+
+QString
+SingleDownload::downloadId() const {
+    if (m_download == nullptr) {
+        return "";
+    } else {
+        return m_download->id();
+    }
+}
+
+QVariantMap
+SingleDownload::headers() const {
+    if (m_download == nullptr) {
+        return m_headers;
+    } else {
+        // convert the QMap<QString, QString> into a QMap<QString, QVariant>
+        auto headers = m_download->headers();
+        QVariantMap result;
+        foreach(const QString& key, headers.keys()) {
+            result[key] = headers[key]; // automatic conversion
+        }
+        return result;
+    }
+}
+
+void
+SingleDownload::setHeaders(QVariantMap headers) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_headers = headers;
+    } else {
+        QMap<QString, QString> stringMap;
+        // convert the QVariantMap in a QMap<QString, QString> and make sure
+        // that the variants can be converted to strings.
+        foreach(const QString& key, headers.keys()) {
+            auto data = headers[key];
+            if (data.canConvert<QString>()) {
+                stringMap[key] = data.toString();
+            } else {
+                m_error.setType("Headers Conversion Error");
+                auto msg = QString(
+                    "Could not convert data in header '%1' to string.").arg(key);
+                m_error.setMessage(msg);
+                emit errorFound(m_error);
+                emit errorChanged();
+                return;
+            }
+        }
+    
+        m_download->setHeaders(stringMap);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit headersChanged();
+        }
+    }
+}
+
 /*!
     \qmlproperty bool SingleDownload::autoStart
 
@@ -294,7 +425,6 @@ void SingleDownload::setDownloadCanceled(bool)
     the download request. All headers must be strings or at least QVariant should
     be able to convert them to strings.
 */
-
 
 }
 }

@@ -49,13 +49,9 @@ public:
         return m_error.message();
     }
 
-    qulonglong throttle() const {
-        return m_download->throttle();
-    }
+    qulonglong throttle() const;
 
-    bool allowMobileDownload() const {
-        return m_download->isMobileDownloadAllowed();
-    }
+    bool allowMobileDownload() const;
 
     int progress() const {
         return m_progress;
@@ -73,83 +69,17 @@ public:
         return m_autoStart;
     }
 
-    QString downloadId() const {
-        return m_download->id();
-    }
-
-    QVariantMap headers() const {
-        // convert the QMap<QString, QString> into a QMap<QString, QVariant>
-        auto headers = m_download->headers();
-        QVariantMap result;
-        foreach(const QString& key, headers.keys()) {
-            result[key] = headers[key]; // automatic conversion
-        }
-        return result;
-    }
+    QString downloadId() const;
+    QVariantMap headers() const;
 
     // setters
-    void setAllowMobileDownload(bool value) {
-        m_download->allowMobileDownload(value);
-        if (m_download->isError()) {
-            // set the error details and emit the signals
-            auto err = m_download->error();
-            m_error.setType(getErrorType(err->type()));
-            m_error.setMessage(err->errorString());
-            emit errorFound(m_error);
-            emit errorChanged();
-        } else {
-            emit allowMobileDownloadChanged();
-        }
-    }
+    void setAllowMobileDownload(bool value);
+    void setThrottle(qulonglong value);
+    void setHeaders(QVariantMap headers);
 
-    void setThrottle(qulonglong value) {
-        m_download->setThrottle(value);
-        if (m_download->isError()) {
-            // set the error details and emit the signals
-            auto err = m_download->error();
-            m_error.setType(getErrorType(err->type()));
-            m_error.setMessage(err->errorString());
-            emit errorFound(m_error);
-            emit errorChanged();
-        } else {
-            emit throttleChanged();
-        }
-    }
-
+    // only property that does not access the download obj
     void setAutoStart(bool value) {
         m_autoStart = value;
-    }
-
-    void setHeaders(QVariantMap headers) {
-        QMap<QString, QString> stringMap;
-        // convert the QVariantMap in a QMap<QString, QString> and make sure
-        // that the variants can be converted to strings.
-        foreach(const QString& key, headers.keys()) {
-            auto data = headers[key];
-            if (data.canConvert<QString>()) {
-                stringMap[key] = data.toString();
-            } else {
-                m_error.setType("Headers Conversion Error");
-                auto msg = QString(
-                    "Could not convert data in header '%1' to string.").arg(key);
-                m_error.setMessage(msg);
-                emit errorFound(m_error);
-                emit errorChanged();
-                return;
-            }
-        }
-
-        m_download->setHeaders(stringMap);
-        if (m_download->isError()) {
-            // set the error details and emit the signals
-            auto err = m_download->error();
-            m_error.setType(getErrorType(err->type()));
-            m_error.setMessage(err->errorString());
-            emit errorFound(m_error);
-            emit errorChanged();
-        } else {
-            emit headersChanged();
-        }
     }
 
 signals:
@@ -203,11 +133,15 @@ private:
     bool m_autoStart;
     bool m_completed;
     bool m_downloading;
+    bool m_dirty = false;
     bool m_downloadInProgress;
     int m_progress;
+    bool m_mobile = false;
+    qulonglong m_throttle = 0;
+    QVariantMap m_headers;
     DownloadError m_error;
-    Download* m_download;
-    Manager* m_manager;
+    Download* m_download = nullptr;
+    Manager* m_manager = nullptr;
 
 };
 
