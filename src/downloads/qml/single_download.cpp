@@ -1,7 +1,6 @@
 #include "single_download.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
-#include <QDebug>
 
 namespace Ubuntu {
 

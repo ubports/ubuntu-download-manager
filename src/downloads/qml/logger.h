@@ -16,42 +16,40 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOAD_ERROR_H
-#define DOWNLOAD_ERROR_H
-
-#include <QObject>
-#include <QString>
+#ifndef DOWNLOAD_QML_LOGGER_H
+#define DOWNLOAD_QML_LOGGER_H
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-class DownloadError : public QObject
-{
+class Logger : public QObject {
     Q_OBJECT
-    Q_PROPERTY(QString type READ type NOTIFY typeChanged)
-    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
+    Q_ENUMS(Level)
+    Q_PROPERTY(QString path READ path WRITE setPath)
+    Q_PROPERTY(Level level READ level WRITE setLevel)
 
-public:
-    explicit DownloadError(QObject *parent = 0);
+ public:
 
-    QString type() const { return m_type; }
-    QString message() const { return m_message; }
+    enum Level {
+        INFO,
+        WARNING,
+        ERROR,
+        FATAL
+    };
 
-    void setType(QString type) { m_type = type; emit typeChanged(); }
-    void setMessage(QString message) { m_message = message; emit messageChanged(); }
+    explicit Logger(QObject* parent=0);
+    Logger(const QString& path, QObject* parent=0);
 
-signals:
-    void typeChanged();
-    void messageChanged();
+    Q_INVOKABLE void init(Level lvl);
+    Q_INVOKABLE void stop(Level lvl);
 
-private:
-    QString m_message;
-    QString m_type;
-
+ private:
+    QString m_path;  // path used to log
 };
 
-}
-}
+}  // DownloadManager
 
-#endif // DOWNLOAD_ERROR_H
+}  // Ubuntu 
+
+#endif // DOWNLOAD_QML_LOGGER_H 
