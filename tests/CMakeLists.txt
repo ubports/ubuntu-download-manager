@@ -1,4 +1,4 @@
-set(DAEMON_TESTS
+set(DAEMON_DOWNLOAD_TESTS
 	test_apn_request_factory
 	test_apparmor
         test_base_download
@@ -22,14 +22,18 @@ set(DAEMON_TESTS
         test_transfers_queue
 )
 
-foreach(test ${DAEMON_TESTS})
+set(DAEMON_UPLOAD_TESTS
+        test_upload_factory
+)
+
+foreach(test ${DAEMON_DOWNLOAD_TESTS})
         # set the sources per test
-        set(${test}_DAEMON_SOURCES
+        set(${test}_DAEMON_DOWNLOAD_SOURCES
                 base_testcase.cpp
                 ${test}.cpp
         )
 
-        set(${test}_DAEMON_HEADERS
+        set(${test}_DAEMON_DOWNLOAD_HEADERS
                 application.h
                 apparmor.h
                 base_testcase.h
@@ -51,6 +55,39 @@ foreach(test ${DAEMON_TESTS})
                 queue.h
                 request_factory.h
                 sm_file_download.h
+                system_network_info.h
+                timer.h
+                transfer.h
+                uuid_factory.h
+                ${test}.h
+        )
+
+endforeach(test)
+
+foreach(test ${DAEMON_UPLOAD_TESTS})
+        # set the sources per test
+	set(${test}_DAEMON_UPLOAD_SOURCES
+                base_testcase.cpp
+                ${test}.cpp
+        )
+
+        set(${test}_DAEMON_UPLOAD_HEADERS
+                application.h
+                apparmor.h
+                base_testcase.h
+                cryptographic_hash.h
+		database.h
+                dbus_connection.h
+		dbus_proxy.h
+		dbus_proxy_factory.h
+                file_manager.h
+                filename_mutex.h
+                matchers.h
+		network_reply.h
+		pending_reply.h
+                process.h
+                process_factory.h
+                request_factory.h
                 system_network_info.h
                 timer.h
                 transfer.h
@@ -103,6 +140,8 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/client)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/priv)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/priv)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/common)
 
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
@@ -113,7 +152,7 @@ add_custom_target(download-daemon-tests-data ALL
 )
 endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 
-set(DAEMON_TESTS_LIBS
+set(DAEMON_DOWNLOAD_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
         ${Qt5Core_LIBRARIES}
@@ -128,20 +167,49 @@ set(DAEMON_TESTS_LIBS
 	ubuntu-download-manager-priv
 )
 
+set(DAEMON_UPLOAD_TESTS_LIBS
+	${NIH_DBUS_LIBRARIES}
+	${GLOG_LIBRARIES}
+        ${Qt5Core_LIBRARIES}
+        ${Qt5Sql_LIBRARIES}
+        ${Qt5DBus_LIBRARIES}
+	${Qt5Test_LIBRARIES}
+        ${GMOCK_LIBRARY}
+        ${GTEST_BOTH_LIBRARIES}
+	udm-common
+	udm-priv-common
+	ubuntu-upload-manager-common
+	ubuntu-upload-manager-priv
+)
 
-foreach(test ${DAEMON_TESTS})
+foreach(test ${DAEMON_DOWNLOAD_TESTS})
         # set targets, linked libs and test
-        add_executable(${test}_daemon
-                ${${test}_DAEMON_SOURCES}
-                ${${test}_DAEMON_HEADERS}
+        add_executable(${test}_download_daemon
+                ${${test}_DAEMON_DOWNLOAD_SOURCES}
+                ${${test}_DAEMON_DOWNLOAD_HEADERS}
         )
 
-        target_link_libraries(${test}_daemon
-                ${DAEMON_TESTS_LIBS}
+        target_link_libraries(${test}_download_daemon
+                ${DAEMON_DOWNLOAD_TESTS_LIBS}
         )
 
 
-        ADD_TEST(NAME daemon_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_daemon)
+        ADD_TEST(NAME ${test}_download_daemon COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_download_daemon)
+endforeach(test)
+
+foreach(test ${DAEMON_UPLOAD_TESTS})
+        # set targets, linked libs and test
+        add_executable(${test}_upload_daemon
+                ${${test}_DAEMON_UPLOAD_SOURCES}
+                ${${test}_DAEMON_UPLOAD_HEADERS}
+        )
+
+        target_link_libraries(${test}_upload_daemon
+                ${DAEMON_UPLOAD_TESTS_LIBS}
+        )
+
+
+        ADD_TEST(NAME ${test}_upload_daemon COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_upload_daemon)
 endforeach(test)
 
 find_program(DBUS_RUNNER dbus-test-runner)

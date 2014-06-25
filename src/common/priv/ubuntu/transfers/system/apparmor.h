@@ -69,7 +69,7 @@ class AppArmor : public QObject {
     QString getLocalPath(const QString& appId);
 
  private:
-    const char* BASE_ACCOUNT_URL = "/com/canonical/applications/download";
+    const char* BASE_ACCOUNT_URL = "/com/canonical/applications/%1";
 
     DBusProxy* _dbus;
     UuidFactory* _uuidFactory;
