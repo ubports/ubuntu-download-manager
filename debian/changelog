@@ -1,4 +1,4 @@
-ubuntu-download-manager (0.5) UNRELEASED; urgency=medium
+ubuntu-download-manager (0.6) UNRELEASED; urgency=medium
 
   * Add a new public object in the client library that provides a way
     to configure the logging done in the client library. ABI is changed
