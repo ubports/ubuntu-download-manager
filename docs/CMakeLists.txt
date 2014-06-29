@@ -31,3 +31,5 @@ if(DOXYGEN_FOUND)
     DESTINATION ${CMAKE_INSTALL_DOCDIR}/cpp)
   add_dependencies(doc cppdoc)
 endif(DOXYGEN_FOUND)
+
+add_subdirectory(qml)

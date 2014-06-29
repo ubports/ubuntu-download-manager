@@ -16,20 +16,26 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QDBusPendingReply>
 #include <QDBusObjectPath>
-#include <glog/logging.h>
-#include "download_impl.h"
-#include "downloads_list_impl.h"
-#include "error.h"
-#include "group_download.h"
-#include "manager.h"
-#include "manager_pendingcall_watcher.h"
+
+#include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/sources/severity_feature.hpp>
+
+#include <ubuntu/download_manager/download_impl.h>
+#include <ubuntu/download_manager/downloads_list_impl.h>
+#include <ubuntu/download_manager/error.h>
+#include <ubuntu/download_manager/group_download.h>
+#include <ubuntu/download_manager/manager.h>
+#include <ubuntu/download_manager/logging/logger.h>
+
+#include <ubuntu/download_manager/manager_pendingcall_watcher.h>
 
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+using namespace Logging;
 
 DownloadManagerPCW::DownloadManagerPCW(const QDBusConnection& conn,
                                        const QString& servicePath,
@@ -40,9 +46,12 @@ DownloadManagerPCW::DownloadManagerPCW(const QDBusConnection& conn,
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
-    CHECK(connect(this, &QDBusPendingCallWatcher::finished,
-        this, &DownloadManagerPCW::onFinished))
-            << "Could not connect to signal";
+    auto connected = connect(this, &QDBusPendingCallWatcher::finished,
+        this, &DownloadManagerPCW::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &QDBusPendingCallWatcher::finished");
+    }
 }
 
 void
@@ -50,14 +59,14 @@ DownloadManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
-        qDebug() << "ERROR" << reply.error() << reply.error().type();
-        // create error and deal with it
+        auto dbusErr = reply.error();
+        Logger::log(Logger::Error,
+            QString("%1 %2").arg(dbusErr.name()).arg(dbusErr.message()));
         auto err = new DBusError(reply.error());
         auto down = new DownloadImpl(_conn, err);
         _errCb(down);
         emit man->downloadCreated(down);
     } else {
-        qDebug() << "Success!";
         auto path = reply.value();
         auto down = new DownloadImpl(_conn, _servicePath, path);
         emit man->downloadCreated(down);
@@ -76,8 +85,12 @@ DownloadsListManagerPCW::DownloadsListManagerPCW(const QDBusConnection& conn,
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &QDBusPendingCallWatcher::finished,
+    auto connected = connect(this, &QDBusPendingCallWatcher::finished,
         this, &DownloadsListManagerPCW::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &QDBusPendingCallWatcher::finished");
+    }
 }
 
 void
@@ -86,14 +99,14 @@ DownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     DownloadsListImpl* list;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
-        qDebug() << "ERROR" << reply.error() << reply.error().type();
-        // create error and deal with it
+        auto dbusErr = reply.error();
+        Logger::log(Logger::Error,
+            QString("%1 %2").arg(dbusErr.name()).arg(dbusErr.message()));
         auto err = new DBusError(reply.error());
         list = new DownloadsListImpl(err);
         _errCb(list);
         emit man->downloadsFound(list);
     } else {
-        qDebug() << "Success!";
         auto paths = reply.value();
         QList<QSharedPointer<Download> > downloads;
         list = new DownloadsListImpl();
@@ -125,8 +138,12 @@ MetadataDownloadsListManagerPCW::MetadataDownloadsListManagerPCW(
       _value(value),
       _cb(cb),
       _errCb(errCb) {
-    connect(this, &QDBusPendingCallWatcher::finished,
+    auto connected = connect(this, &QDBusPendingCallWatcher::finished,
         this, &MetadataDownloadsListManagerPCW::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &QDBusPendingCallWatcher::finished");
+    }
 }
 
 void
@@ -135,14 +152,14 @@ MetadataDownloadsListManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     DownloadsListImpl* list;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
-        qDebug() << "ERROR" << reply.error() << reply.error().type();
-        // create error and deal with it
+        auto dbusErr = reply.error();
+        Logger::log(Logger::Error,
+            QString("%1 %2").arg(dbusErr.name()).arg(dbusErr.message()));
         auto err = new DBusError(reply.error());
         list = new DownloadsListImpl(err);
         _errCb(_key, _value, list);
         emit man->downloadsWithMetadataFound(_key, _value, list);
     } else {
-        qDebug() << "Success!";
         auto paths = reply.value();
         QList<QSharedPointer<Download> > downloads;
         list = new DownloadsListImpl();
@@ -169,9 +186,12 @@ GroupManagerPCW::GroupManagerPCW(const QDBusConnection& conn,
     : PendingCallWatcher(conn, servicePath, call, parent),
       _cb(cb),
       _errCb(errCb) {
-    CHECK(connect(this, &QDBusPendingCallWatcher::finished,
-        this, &GroupManagerPCW::onFinished))
-            << "Could not connect to signal";
+    auto connected = connect(this, &QDBusPendingCallWatcher::finished,
+        this, &GroupManagerPCW::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadPCW::finished");
+    }
 }
 
 void
@@ -179,7 +199,9 @@ GroupManagerPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     QDBusPendingReply<QDBusObjectPath> reply = *watcher;
     auto man = static_cast<Manager*>(parent());
     if (reply.isError()) {
-        // creater error and deal with it
+        auto dbusErr = reply.error();
+        Logger::log(Logger::Error,
+            QString("%1 %2").arg(dbusErr.name()).arg(dbusErr.message()));
         auto err = new DBusError(reply.error());
         auto down = new GroupDownload(err);
         _errCb(down);

@@ -21,6 +21,8 @@
 
 #include <QObject>
 #include <QUrl>
+
+#include <ubuntu/download_manager/logging/logger.h>
 #include "daemon_testcase.h"
 
 class LocalTreeTestCase : public DaemonTestCase {
