@@ -48,4 +48,6 @@ LocalTreeTestCase::init() {
 
     QString smallFile = dataDirectory() + "/" + QString(SMALL_FILE);
     addFileToHttpServer(smallFile);
+    Ubuntu::DownloadManager::Logging::Logger::init(
+        Ubuntu::DownloadManager::Logging::Logger::Debug, "");
 }

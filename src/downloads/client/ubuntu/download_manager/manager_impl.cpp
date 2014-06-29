@@ -16,11 +16,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
-#include <glog/logging.h>
-#include "download_impl.h"
-#include "downloads_list.h"
+#include <ubuntu/download_manager/download_impl.h>
+#include <ubuntu/download_manager/downloads_list.h>
+#include <ubuntu/download_manager/logging/logger.h>
+
 #include "manager_impl.h"
+
 
 namespace {
     const QString MANAGER_PATH = "/";
@@ -29,6 +30,8 @@ namespace {
 namespace Ubuntu {
 
 namespace DownloadManager {
+
+using namespace Logging;
 
 ManagerImpl::ManagerImpl(const QDBusConnection& conn,
                          const QString& path,
@@ -80,12 +83,14 @@ ManagerImpl::init() {
 
 Download*
 ManagerImpl::getDownloadForId(const QString& id) {
+    Logger::log(Logger::Debug, QString("Manager getDownloadForId(%1)").arg(id));
     auto down = new DownloadImpl(_conn, _servicePath, QDBusObjectPath(id));
     return down;
 }
 
 void
 ManagerImpl::createDownload(DownloadStruct downStruct) {
+    Logger::log(Logger::Debug, "Manager createDownload(%1)", downStruct);
     DownloadCb cb = [](Download*) {};
     createDownload(downStruct, cb, cb);
 }
@@ -98,8 +103,12 @@ ManagerImpl::createDownload(DownloadStruct downStruct,
         _dbusInterface->createDownload(downStruct);
     auto watcher = new DownloadManagerPCW(_conn,
             _servicePath, call, cb, errCb, this);
-    CHECK(connect(watcher, &DownloadManagerPCW::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    auto connected = connect(watcher, &DownloadManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadManagerPCW::callbackExecuted,");
+    }
 }
 
 void
@@ -125,28 +134,40 @@ ManagerImpl::createDownload(StructList downs,
             algorithm, allowed3G, metadata, headers);
     auto watcher = new GroupManagerPCW(_conn, _servicePath,
             call, cb, errCb, this);
-    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &GroupManagerPCW::callbackExecuted");
+    }
 }
 
 void
 ManagerImpl::getAllDownloads() {
+    Logger::log(Logger::Debug, "Manager getAllDownloads()");
     DownloadsListCb cb = [](DownloadsList*){};
     getAllDownloads(cb, cb);
 }
 
 void
 ManagerImpl::getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb) {
+    Logger::log(Logger::Debug, "Manager getAllDownloads()");
     QDBusPendingCall call = _dbusInterface->getAllDownloads();
     auto watcher = new DownloadsListManagerPCW(
         _conn, _servicePath, call, cb, errCb, this);
-    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal");
+    }
 }
 
 void
 ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
                                          const QString &value) {
+    Logger::log(Logger::Debug,
+        QString("Manager getAllDownloadsWithMetadata(%1, %2)").arg(name).arg(value));
     MetadataDownloadsListCb cb =
         [](const QString&, const QString&, DownloadsList*){};
     getAllDownloadsWithMetadata(name, value, cb, cb);
@@ -157,12 +178,17 @@ ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
                                          const QString &value,
                                          MetadataDownloadsListCb cb,
                                          MetadataDownloadsListCb errCb) {
+    Logger::log(Logger::Debug,
+        QString("Manager getAllDownloadsWithMetadata(%1, %2)").arg(name).arg(value));
     QDBusPendingCall call = _dbusInterface->getAllDownloadsWithMetadata(
     name, value);
     auto watcher = new MetadataDownloadsListManagerPCW(
         _conn, _servicePath, call, name, value, cb, errCb, this);
-    CHECK(connect(watcher, &GroupManagerPCW::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone)) << "Could not connect to signal";
+    auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone);
+    if (!connected) {
+        Logger::log(Logger::Critical, "Could not connect to signal");
+    }
 }
 
 bool
@@ -187,27 +213,29 @@ ManagerImpl::setLastError(const QDBusError& err) {
 
 void
 ManagerImpl::allowMobileDataDownload(bool allowed) {
+    Logger::log(Logger::Debug,
+        QString("Manager allowMobileDataDownload(%1)").arg(allowed));
     QDBusPendingReply<> reply =
         _dbusInterface->allowGSMDownload(allowed);
     // we block but because we expect it to be fast
     reply.waitForFinished();
     if (reply.isError()) {
         auto err = reply.error();
-        qCritical() << "Error setting mobile data" << err;
+        Logger::log(Logger::Critical, "Error setting mobile data");
         setLastError(err);
     }
 }
 
 bool
 ManagerImpl::isMobileDataDownload() {
+    Logger::log(Logger::Debug, "Manager isMobileDataDownload()");
     QDBusPendingReply<bool> reply =
         _dbusInterface->isGSMDownloadAllowed();
     // we block but because we expect it to be fast
     reply.waitForFinished();
     if (reply.isError()) {
         auto err = reply.error();
-        qCritical() << "Error getting if mobile data is enabled"
-            << err;
+        Logger::log(Logger::Error, "Error getting if mobile data is enabled");
         setLastError(err);
         return false;
     } else {
@@ -217,13 +245,14 @@ ManagerImpl::isMobileDataDownload() {
 
 qulonglong
 ManagerImpl::defaultThrottle() {
+    Logger::log(Logger::Debug, "Manager defaultThrottle()");
     QDBusPendingReply<qulonglong> reply =
         _dbusInterface->defaultThrottle();
     // we block but because we expect it to be fast
     reply.waitForFinished();
     if (reply.isError()) {
         auto err = reply.error();
-        qCritical() << "Error getting the default throttle" << err;
+        Logger::log(Logger::Error, "Error getting the default throttle");
         setLastError(err);
         return 0;
     } else {
@@ -233,26 +262,29 @@ ManagerImpl::defaultThrottle() {
 
 void
 ManagerImpl::setDefaultThrottle(qulonglong speed) {
+    Logger::log(Logger::Debug,
+        QString("Manager setDefaultThrottle(%1)").arg(speed));
     QDBusPendingReply<> reply =
         _dbusInterface->setDefaultThrottle(speed);
     // we block but because we expect it to be fast
     reply.waitForFinished();
     if (reply.isError()) {
         auto err = reply.error();
-        qCritical() << "Error setting default throttle" << err;
+        Logger::log(Logger::Error, "Error setting default throttle");
         setLastError(err);
     }
 }
 
 void
 ManagerImpl::exit() {
+    Logger::log(Logger::Debug, "Manager exit()");
     QDBusPendingReply<> reply =
         _dbusInterface->exit();
     // we block but because we expect it to be fast
     reply.waitForFinished();
     if (reply.isError()) {
         auto err = reply.error();
-        qCritical() << "Error setting killing the daemon" << err;
+        Logger::log(Logger::Error, "Error setting killing the daemon");
         setLastError(err);
     }
 }
