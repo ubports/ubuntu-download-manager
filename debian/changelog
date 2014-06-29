@@ -5,11 +5,22 @@ ubuntu-download-manager (0.5) UNRELEASED; urgency=medium
 
  -- Manuel de la Pena <manuel.delapena@canonical.com>  Mon, 16 Jun 2014 13:00:45 +0200
 
-ubuntu-download-manager (0.4) UNRELEASED; urgency=medium
+ubuntu-download-manager (0.4+14.10.20140626-0ubuntu1) utopic; urgency=low
 
+  [ Michael Sheldon ]
+  * Add qdoc based documentation generation to the build process
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 26 Jun 2014 18:15:31 +0000
+
+ubuntu-download-manager (0.4+14.10.20140618-0ubuntu1) utopic; urgency=medium
+
+  [ Manuel de la Pena ]
   * Add the symbols files to ensure that we have no regressions.
 
- -- Manuel de la Pena <manuel.delapena@canonical.com>  Mon, 09 Jun 2014 13:53:45 +0200
+  [ Ubuntu daily release ]
+  * debian/*symbols: auto-update new symbols to released version
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 18 Jun 2014 14:49:06 +0000
 
 ubuntu-download-manager (0.3+14.10.20140523-0ubuntu1) utopic; urgency=low
 
