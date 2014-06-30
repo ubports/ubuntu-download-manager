@@ -182,16 +182,33 @@ void SingleDownload::startDownload()
     }
 }
 
+/*!
+    \qmlmethod void SingleDownload::pause()
+
+    Pauses the download. An error is returned if the download was
+    already paused.
+*/
 void SingleDownload::pause()
 {
     m_download->pause();
 }
 
+/*!
+    \qmlmethod void SingleDownload::resume()
+
+    Resumes and already paused download. An error is returned if the download was
+    already resumed or not paused.
+*/
 void SingleDownload::resume()
 {
     m_download->resume();
 }
 
+/*!
+    \qmlmethod void SingleDownload::cancel()
+
+    Cancels a download.
+*/
 void SingleDownload::cancel()
 {
     m_download->cancel();
