@@ -62,6 +62,7 @@ class Logger {
     friend class Ubuntu::DownloadManager::MetadataDownloadsListManagerPCW;
 
  public:
+    /*! The different log levels supported by the default logger of the lib. */
     enum Level
     {
         Debug,
@@ -81,10 +82,15 @@ class Logger {
     static void init(Level lvl, const QString& path);
 
  protected:
+
+    /*! \cond PRIVATE
+     */
     static void log(Level lvl, const QString& msg);
     static void log(Level lvl, const QStringList& msg);
     static void log(Level lvl, const QString& msg, QMap<QString, QString> map);
     static void log(Level lvl, const QString& msg, DownloadStruct downStruct);
+    /*! \endcond
+     */
 
  private:
     static QMutex _mutex;
