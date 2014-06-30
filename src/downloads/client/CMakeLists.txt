@@ -1,3 +1,5 @@
+add_definitions(-DBOOST_LOG_DYN_LINK)
+
 set(TARGET ubuntu-download-manager-client)
 
 set(SOURCES

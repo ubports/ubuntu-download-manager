@@ -11,7 +11,7 @@ global:
         Ubuntu::DownloadManager::ProcessError::*;
         Ubuntu::DownloadManager::GroupDownload::*;
         Ubuntu::DownloadManager::Manager::*;
-        Ubuntu::DownloadManager::Logging::Logger*;
+        Ubuntu::DownloadManager::Logging::Logger::init*;
         typeinfo?for?Ubuntu::DownloadManager::Download;
         typeinfo?for?Ubuntu::DownloadManager::DownloadsList;
         typeinfo?for?Ubuntu::DownloadManager::Error;

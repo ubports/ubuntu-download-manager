@@ -16,9 +16,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <boost/log/sources/severity_channel_logger.hpp>
+#include <boost/log/expressions/attr_fwd.hpp>
+#include <boost/log/expressions/attr.hpp>
+#include <boost/log/expressions/formatters/date_time.hpp>
 #include <boost/log/keywords/channel.hpp>
+#include <boost/log/sources/severity_channel_logger.hpp>
 #include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/support/date_time.hpp>
+#include <boost/log/utility/setup/console.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
 
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/download_manager/logging/logger.h>
@@ -26,6 +33,42 @@
 typedef boost::log::sources::severity_channel_logger_mt<
     Ubuntu::DownloadManager::Logging::Logger::Level,
     std::string> logger_mt;
+
+namespace {
+    const std::string DOWNLOAD_MANAGER_CHANNEL = "ubuntu_download_manager";
+    void my_formatter(boost::log::record_view const& rec,
+                      boost::log::formatting_ostream& strm) {
+        using namespace Ubuntu::DownloadManager::Logging;
+        // grab the attributes we are interested in
+        strm << boost::log::extract<unsigned int>("LineID", rec) << " [";
+        strm << boost::log::extract<boost::posix_time::ptime>("TimeStamp", rec) << "] ";
+        strm << boost::log::extract<std::string>("Channel", rec) << " [";
+        auto severity = boost::log::extract<Logger::Level>("Severity", rec).get();
+        switch(severity) {
+            case Logger::Debug:
+                strm << "Debug";
+                break;
+            case Logger::Normal:
+                strm << "Normal";
+                break;
+            case Logger::Notification:
+                strm << "Notification";
+                break;
+            case Logger::Warning:
+                strm << "Warning";
+                break;
+            case Logger::Error:
+                strm << "Error";
+                break;
+            default:
+                strm << "Critical";
+                break;
+        }
+        strm << "] ";
+        // Finally, put the record message to the stream
+        strm << rec[boost::log::expressions::smessage];
+    }
+}
 
 namespace Ubuntu {
 
@@ -39,10 +82,25 @@ class LoggerPrivate {
 
     void init(Logger::Level lvl, const QString& path) {
         if (_lg == nullptr) {
-            Q_UNUSED(path);
+            boost::log::add_common_attributes();
+
             _lg = new logger_mt(
-                boost::log::keywords::channel = "ubuntu_download_manager",
+                boost::log::keywords::channel = DOWNLOAD_MANAGER_CHANNEL,
                 boost::log::keywords::severity = lvl);
+            // create a sink with the given file name and then add a filter
+            // to ensure that just the download manager logs are written in it
+            auto sink  = boost::log::add_file_log(
+                boost::log::keywords::file_name = path.toStdString(),
+                boost::log::keywords::auto_flush = true
+            );
+
+            sink->set_formatter(&my_formatter);
+
+            sink->set_filter
+            (
+                boost::log::expressions::attr<std::string>("Channel") == DOWNLOAD_MANAGER_CHANNEL
+            );
+
         } else {
             log(Logger::Critical, "Logger init called more than once.");
         }
