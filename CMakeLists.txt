@@ -58,7 +58,6 @@ pkg_check_modules(GLOG libglog)
 enable_testing()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -std=c++11 -Werror -O2 -Wall -W -D_REENTRANT -fPIC -pedantic -Wextra")
 add_definitions("-DNDEBUG")
-add_definitions(-DBOOST_LOG_DYN_LINK)
 
 if(NOT CMAKE_BUILD_TYPE)
 	message(STATUS "Setting build type to 'RelWithDebInfo' as none was specified.")

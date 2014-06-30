@@ -25,7 +25,6 @@
 #include <QStringList>
 #include <QVariant>
 
-// fwd the log template so that we do not need to show the boost include
 
 namespace Ubuntu {
 
@@ -92,9 +91,9 @@ class Logger {
     static LoggerPrivate* _private;
 };
 
-}  // logging
+}  // Logging
 
-}  // Transfers
+}  // DownloadManager
 
 }  // Ubuntu
 
