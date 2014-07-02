@@ -5,7 +5,7 @@ set(TARGET ubuntu-download-manager-client)
 set(SOURCES
         ubuntu/download_manager/download_impl.cpp
         ubuntu/download_manager/download_interface.cpp
-	ubuntu/download_manager/downloads_list_impl.cpp
+        ubuntu/download_manager/downloads_list_impl.cpp
         ubuntu/download_manager/download_pendingcall_watcher.cpp
         ubuntu/download_manager/error.cpp
         ubuntu/download_manager/group_download.cpp
@@ -19,7 +19,7 @@ set(SOURCES
 
 set(PUBLIC_HEADERS
         ubuntu/download_manager/download.h
-	ubuntu/download_manager/downloads_list.h
+        ubuntu/download_manager/downloads_list.h
         ubuntu/download_manager/error.h
         ubuntu/download_manager/group_download.h
         ubuntu/download_manager/manager.h
@@ -29,7 +29,7 @@ set(PUBLIC_HEADERS
 set(PRIVATE_HEADERS
         ubuntu/download_manager/download_impl.h
         ubuntu/download_manager/download_interface.h
-	ubuntu/download_manager/downloads_list_impl.h
+        ubuntu/download_manager/downloads_list_impl.h
         ubuntu/download_manager/download_pendingcall_watcher.h
         ubuntu/download_manager/manager_impl.h
         ubuntu/download_manager/manager_interface.h
@@ -46,27 +46,26 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
 
 add_library(${TARGET} SHARED 
-	${SOURCES}
-	${PUBLIC_HEADERS}
-	${PRIVATE_HEADERS}
+        ${SOURCES}
+        ${PUBLIC_HEADERS}
+        ${PRIVATE_HEADERS}
 )
 
 set(symbol_map "${CMAKE_SOURCE_DIR}/src/downloads/client/symbols.map")
 set_target_properties(
-	${TARGET}
+        ${TARGET}
 
-	PROPERTIES
+        PROPERTIES
         LINK_FLAGS "${ldflags} -Wl,--version-script,${symbol_map}"
         LINK_DEPENDS ${symbol_map}
-	VERSION ${UDM_VERSION_MAJOR}.${UDM_VERSION_MINOR}.${UDM_VERSION_PATCH}
-	SOVERSION ${UDM_VERSION_MAJOR}
+        VERSION ${UDM_VERSION_MAJOR}.${UDM_VERSION_MINOR}.${UDM_VERSION_PATCH}
+        SOVERSION ${UDM_VERSION_MAJOR}
 )
 
 target_link_libraries(${TARGET}
         ${Boost_LIBRARIES}
-	${Qt5DBus_LIBRARIES}
-	${GLOG_LIBRARIES}
-	udm-common
+        ${Qt5DBus_LIBRARIES}
+        udm-common
         ubuntu-download-manager-common
 )
 
