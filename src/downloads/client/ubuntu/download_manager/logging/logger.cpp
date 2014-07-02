@@ -173,7 +173,7 @@ class LoggerPrivate {
     }
 
  private:
-    logger_mt* _lg;
+    logger_mt* _lg = nullptr;
 };
 
 LoggerPrivate* Logger::_private = new LoggerPrivate();
