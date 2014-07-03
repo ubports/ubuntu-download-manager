@@ -261,6 +261,7 @@ SingleDownload::onFinished(const QString& path)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
+    m_download->deleteLater();
     m_download = nullptr;
     emit finished(path);
 }
@@ -305,6 +306,7 @@ SingleDownload::onCanceled(bool wasCanceled)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
+    m_download->deleteLater();
     m_download = nullptr;
     emit canceled(wasCanceled);
 }
