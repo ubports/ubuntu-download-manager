@@ -122,8 +122,9 @@ signals:
 
 public slots:
     void registerError(Error* error);
-    void setCompleted();
+    void setCompleted(const QString& path);
     void bindDownload(Download* download);
+    void unbindDownload(Download* download);
     void setProgress(qulonglong received, qulonglong total);
     void setDownloadPaused(bool);
     void setDownloadStarted(bool);

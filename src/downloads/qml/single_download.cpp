@@ -82,7 +82,8 @@ SingleDownload::SingleDownload(QObject *parent) :
 {
 }
 
-void SingleDownload::bindDownload(Download* download)
+void
+SingleDownload::bindDownload(Download* download)
 {
     m_download = download;
 
@@ -90,8 +91,6 @@ void SingleDownload::bindDownload(Download* download)
         static_cast<void(Download::*)(Error*)>(&Download::error),
         this, &SingleDownload::registerError))
             << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::finished, this,
-        &SingleDownload::finished)) << "Could not connect to signal";
     CHECK(connect(m_download, &Download::finished, this,
         &SingleDownload::setCompleted)) << "Could not connect to signal";
     CHECK(connect(m_download,
@@ -103,8 +102,6 @@ void SingleDownload::bindDownload(Download* download)
          static_cast<void(Download::*)(qulonglong, qulonglong)>(
              &Download::progress), this,
          &SingleDownload::setProgress)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::canceled, this,
-         &SingleDownload::canceled)) << "Could not connect to signal";
     CHECK(connect(m_download, &Download::canceled, this,
          &SingleDownload::setDownloadCanceled))
             << "Could not connect to signal";
@@ -142,12 +139,51 @@ void SingleDownload::bindDownload(Download* download)
     }
 }
 
+void
+SingleDownload::unbindDownload(Download* download) {
+    Q_UNUSED(download);
+    CHECK(disconnect(m_download,
+        static_cast<void(Download::*)(Error*)>(&Download::error),
+        this, &SingleDownload::registerError))
+            << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::finished, this,
+        &SingleDownload::setCompleted)) << "Could not connect to signal";
+    CHECK(disconnect(m_download,
+         static_cast<void(Download::*)(qulonglong, qulonglong)>(
+             &Download::progress), this,
+         &SingleDownload::progressReceived))
+            << "Could not connect to signal";
+    CHECK(disconnect(m_download,
+         static_cast<void(Download::*)(qulonglong, qulonglong)>(
+             &Download::progress), this,
+         &SingleDownload::setProgress)) << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::canceled, this,
+         &SingleDownload::setDownloadCanceled))
+            << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::paused, this,
+         &SingleDownload::paused)) << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::paused, this,
+         &SingleDownload::setDownloadPaused))
+            << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::resumed, this,
+         &SingleDownload::resumed)) << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::resumed, this,
+         &SingleDownload::setDownloadStarted))
+            << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::started, this,
+         &SingleDownload::started)) << "Could not connect to signal";
+    CHECK(disconnect(m_download, &Download::started, this,
+         &SingleDownload::setDownloadStarted))
+            << "Could not connect to signal";
+}
+
 /*!
     \qmlmethod void SingleDownload::download(string url)
 
     Creates the download for the given url and reports the different states through the properties.
 */
-void SingleDownload::download(QString url)
+void
+SingleDownload::download(QString url)
 {
     if (!m_downloadInProgress) {
         if (m_manager == nullptr) {
@@ -170,12 +206,14 @@ void SingleDownload::download(QString url)
 
     Starts the download, used when autoStart is False.
 */
-void SingleDownload::start()
+void
+SingleDownload::start()
 {
     startDownload();
 }
 
-void SingleDownload::startDownload()
+void
+SingleDownload::startDownload()
 {
     if (m_download != nullptr) {
         m_download->start();
@@ -188,7 +226,8 @@ void SingleDownload::startDownload()
     Pauses the download. An error is returned if the download was
     already paused.
 */
-void SingleDownload::pause()
+void
+SingleDownload::pause()
 {
     m_download->pause();
 }
@@ -199,7 +238,8 @@ void SingleDownload::pause()
     Resumes and already paused download. An error is returned if the download was
     already resumed or not paused.
 */
-void SingleDownload::resume()
+void
+SingleDownload::resume()
 {
     m_download->resume();
 }
@@ -209,26 +249,32 @@ void SingleDownload::resume()
 
     Cancels a download.
 */
-void SingleDownload::cancel()
+void
+SingleDownload::cancel()
 {
     m_download->cancel();
 }
 
-void SingleDownload::setCompleted()
+void
+SingleDownload::setCompleted(const QString& path)
 {
     m_completed = true;
     m_downloading = false;
     m_downloadInProgress = false;
+    m_download = nullptr;
+    emit finished(path);
 }
 
-void SingleDownload::registerError(Error* error)
+void
+SingleDownload::registerError(Error* error)
 {
     m_error.setMessage(error->errorString());
     emit errorFound(m_error);
     emit errorChanged();
 }
 
-void SingleDownload::setProgress(qulonglong received, qulonglong total)
+void
+SingleDownload::setProgress(qulonglong received, qulonglong total)
 {
     if (total > 0) {
         qulonglong result = (received * 100);
@@ -237,21 +283,27 @@ void SingleDownload::setProgress(qulonglong received, qulonglong total)
     }
 }
 
-void SingleDownload::setDownloadPaused(bool)
+void
+SingleDownload::setDownloadPaused(bool)
 {
     m_downloading = false;
 }
 
-void SingleDownload::setDownloadStarted(bool)
+void
+SingleDownload::setDownloadStarted(bool)
 {
     m_downloading = true;
 }
 
-void SingleDownload::setDownloadCanceled(bool)
+void
+SingleDownload::setDownloadCanceled(bool result)
 {
     m_completed = false;
     m_downloading = false;
     m_downloadInProgress = false;
+    m_download = nullptr;
+
+    emit canceled(result);
 }
 
 bool

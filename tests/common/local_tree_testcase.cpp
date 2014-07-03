@@ -17,7 +17,7 @@
  */
 
 #include "local_tree_testcase.h"
-#define TEST_DAEMON "../src/downloads/test-daemon/ubuntu-download-manager-test-daemon"
+#define TEST_DAEMON "../../../src/downloads/test-daemon/ubuntu-download-manager-test-daemon"
 #define LARGE_FILE "otasigned.zip"
 #define SMALL_FILE "index.json"
 
