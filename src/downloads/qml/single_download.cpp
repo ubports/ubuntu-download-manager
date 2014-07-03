@@ -91,34 +91,29 @@ SingleDownload::bindDownload(Download* download)
         static_cast<void(Download::*)(Error*)>(&Download::error),
         this, &SingleDownload::registerError))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::finished, this,
-        &SingleDownload::setCompleted)) << "Could not connect to signal";
+        &SingleDownload::onFinished)) << "Could not connect to signal";
+
     CHECK(connect(m_download,
          static_cast<void(Download::*)(qulonglong, qulonglong)>(
              &Download::progress), this,
-         &SingleDownload::progressReceived))
-            << "Could not connect to signal";
-    CHECK(connect(m_download,
-         static_cast<void(Download::*)(qulonglong, qulonglong)>(
-             &Download::progress), this,
-         &SingleDownload::setProgress)) << "Could not connect to signal";
+         &SingleDownload::onProgress)) << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::canceled, this,
-         &SingleDownload::setDownloadCanceled))
+         &SingleDownload::onCanceled))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::paused, this,
-         &SingleDownload::paused)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::paused, this,
-         &SingleDownload::setDownloadPaused))
+         &SingleDownload::onPaused))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::resumed, this,
-         &SingleDownload::resumed)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::resumed, this,
-         &SingleDownload::setDownloadStarted))
+         &SingleDownload::onResumed))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::started, this,
-         &SingleDownload::started)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::started, this,
-         &SingleDownload::setDownloadStarted))
+         &SingleDownload::onStarted))
             << "Could not connect to signal";
 
     emit downloadIdChanged();
@@ -141,39 +136,33 @@ SingleDownload::bindDownload(Download* download)
 
 void
 SingleDownload::unbindDownload(Download* download) {
-    Q_UNUSED(download);
-    CHECK(disconnect(m_download,
+    CHECK(disconnect(download,
         static_cast<void(Download::*)(Error*)>(&Download::error),
         this, &SingleDownload::registerError))
             << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::finished, this,
-        &SingleDownload::setCompleted)) << "Could not connect to signal";
-    CHECK(disconnect(m_download,
+
+    CHECK(disconnect(download, &Download::finished, this,
+        &SingleDownload::onFinished)) << "Could not connect to signal";
+
+    CHECK(disconnect(download,
          static_cast<void(Download::*)(qulonglong, qulonglong)>(
              &Download::progress), this,
-         &SingleDownload::progressReceived))
+         &SingleDownload::onProgress)) << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::canceled, this,
+         &SingleDownload::onCanceled))
             << "Could not connect to signal";
-    CHECK(disconnect(m_download,
-         static_cast<void(Download::*)(qulonglong, qulonglong)>(
-             &Download::progress), this,
-         &SingleDownload::setProgress)) << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::canceled, this,
-         &SingleDownload::setDownloadCanceled))
+
+    CHECK(disconnect(download, &Download::paused, this,
+         &SingleDownload::onPaused))
             << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::paused, this,
-         &SingleDownload::paused)) << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::paused, this,
-         &SingleDownload::setDownloadPaused))
+
+    CHECK(disconnect(download, &Download::resumed, this,
+         &SingleDownload::onResumed))
             << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::resumed, this,
-         &SingleDownload::resumed)) << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::resumed, this,
-         &SingleDownload::setDownloadStarted))
-            << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::started, this,
-         &SingleDownload::started)) << "Could not connect to signal";
-    CHECK(disconnect(m_download, &Download::started, this,
-         &SingleDownload::setDownloadStarted))
+
+    CHECK(disconnect(download, &Download::started, this,
+         &SingleDownload::onStarted))
             << "Could not connect to signal";
 }
 
@@ -256,16 +245,6 @@ SingleDownload::cancel()
 }
 
 void
-SingleDownload::setCompleted(const QString& path)
-{
-    m_completed = true;
-    m_downloading = false;
-    m_downloadInProgress = false;
-    m_download = nullptr;
-    emit finished(path);
-}
-
-void
 SingleDownload::registerError(Error* error)
 {
     m_error.setMessage(error->errorString());
@@ -274,36 +253,60 @@ SingleDownload::registerError(Error* error)
 }
 
 void
-SingleDownload::setProgress(qulonglong received, qulonglong total)
+SingleDownload::onFinished(const QString& path)
+{
+    m_completed = true;
+    m_downloading = false;
+    m_downloadInProgress = false;
+
+    // unbind the download so that we have no memory leaks due to the connections
+    unbindDownload(m_download);
+    m_download = nullptr;
+    emit finished(path);
+}
+
+void
+SingleDownload::onProgress(qulonglong received, qulonglong total)
 {
     if (total > 0) {
         qulonglong result = (received * 100);
         m_progress = static_cast<int>(result / total);
         emit progressChanged();
     }
+    emit progressReceived(received, total);
 }
 
 void
-SingleDownload::setDownloadPaused(bool)
+SingleDownload::onPaused(bool wasPaused)
 {
     m_downloading = false;
+    emit paused(wasPaused);
 }
 
 void
-SingleDownload::setDownloadStarted(bool)
+SingleDownload::onResumed(bool wasResumed) {
+    m_downloading = true;
+    emit resumed(wasResumed);
+}
+
+void
+SingleDownload::onStarted(bool wasStarted)
 {
     m_downloading = true;
+    emit resumed(wasStarted);
 }
 
 void
-SingleDownload::setDownloadCanceled(bool result)
+SingleDownload::onCanceled(bool wasCanceled)
 {
     m_completed = false;
     m_downloading = false;
     m_downloadInProgress = false;
-    m_download = nullptr;
 
-    emit canceled(result);
+    // unbind the download so that we have no memory leaks due to the connections
+    unbindDownload(m_download);
+    m_download = nullptr;
+    emit canceled(wasCanceled);
 }
 
 bool

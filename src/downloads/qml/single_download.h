@@ -122,13 +122,14 @@ signals:
 
 public slots:
     void registerError(Error* error);
-    void setCompleted(const QString& path);
     void bindDownload(Download* download);
     void unbindDownload(Download* download);
-    void setProgress(qulonglong received, qulonglong total);
-    void setDownloadPaused(bool);
-    void setDownloadStarted(bool);
-    void setDownloadCanceled(bool);
+    void onFinished(const QString& path);
+    void onProgress(qulonglong received, qulonglong total);
+    void onPaused(bool wasPaused);
+    void onResumed(bool wasResumed);
+    void onStarted(bool wasStarted);
+    void onCanceled(bool wasCanceled);
 
 private:
     QString getErrorType(Error::Type type) {
