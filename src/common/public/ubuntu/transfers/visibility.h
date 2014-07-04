@@ -16,25 +16,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef LOCAL_TREE_TESTCASE_H
-#define LOCAL_TREE_TESTCASE_H
+#ifndef UBUNTU_TRANSFERS_VISIBILITY_H_
+#define UBUNTU_TRANSFERS_VISIBILITY_H_
 
-#include <QObject>
-#include <QUrl>
-#include "daemon_testcase.h"
+#if __GNUC__ >= 4
+#define UBUNTU_TRANSFERS_PUBLIC __attribute__ ((visibility ("default")))
+#define UBUNTU_TRANSFERS_PRIVATE __attribute__ ((visibility ("hidden")))
+#else
+#define UBUNTU_TRANSFERS_PUBLIC
+#define UBUNTU_TRANSFERS_PRIVATE
+#endif
 
-class LocalTreeTestCase : public DaemonTestCase {
-    Q_OBJECT
-
- public:
-    LocalTreeTestCase(const QString& testName,
-                      QObject* parent);
-    QUrl largeFileUrl();
-    QUrl smallFileUrl();
-
- protected slots:  // NOLINT(whitespace/indent)
-
-    void init() override;
-};
-
-#endif // LOCAL_TREE_TESTCASE_H
+#endif // UBUNTU_TRANSFERS_VISIBILITY_H_

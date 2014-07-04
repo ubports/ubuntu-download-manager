@@ -32,7 +32,6 @@ using ::testing::_;
 using ::testing::Mock;
 using ::testing::AnyNumber;
 using ::testing::Return;
-using ::testing::Return;
 using ::testing::AnyOf;
 
 using namespace Ubuntu::Transfers::Tests;

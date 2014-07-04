@@ -20,7 +20,6 @@
 #define DOWNLOADER_LIB_GROUP_DOWNLOAD_STRUCT_H
 
 #include <QString>
-#include "common.h"
 
 class QDBusArgument;
 

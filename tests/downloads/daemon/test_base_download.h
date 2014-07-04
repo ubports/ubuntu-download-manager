@@ -27,6 +27,8 @@
 #include "base_testcase.h"
 #include "download.h"
 
+using namespace Ubuntu::Transfers;
+
 class TestBaseDownload : public BaseTestCase {
     Q_OBJECT
 
@@ -47,6 +49,12 @@ class TestBaseDownload : public BaseTestCase {
     void testCancelQueued();
     void testCancelNotQueued();
 
+    void testSetHeaders_data();
+    void testSetHeaders();
+
+    void testSetHeadersWrongState_data();
+    void testSetHeadersWrongState();
+
  private:
     QString _id;
     QString _appId;
@@ -57,5 +65,8 @@ class TestBaseDownload : public BaseTestCase {
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
 };
+
+// register the enum so that it can be used in the data driven tests
+Q_DECLARE_METATYPE(Transfer::State)
 
 #endif // TEST_BASE_DOWNLOAD_H

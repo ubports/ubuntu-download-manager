@@ -1,0 +1,165 @@
+libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVER#
+ (c++)"Ubuntu::DownloadManager::NetworkError::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::code()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::phrase()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::NetworkError(Ubuntu::Transfers::Errors::NetworkErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::~NetworkError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::standardOut()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::standardError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::code()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::phrase()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::exitCode()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::ProcessError(Ubuntu::Transfers::Errors::ProcessErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::~ProcessError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Logging::Logger::init(Ubuntu::DownloadManager::Logging::Logger::Level, QString const&)@Base" 0replaceme 
+ (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::error()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::isError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(QDBusObjectPath, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::GroupDownload(Ubuntu::DownloadManager::Error*, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::~GroupDownload()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::type()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::Error(Ubuntu::DownloadManager::Error::Type, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::~Error()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::groupCreated(Ubuntu::DownloadManager::GroupDownload*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::downloadsFound(Ubuntu::DownloadManager::DownloadsList*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::downloadCreated(Ubuntu::DownloadManager::Download*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::createSystemManager(QString const&, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::createSessionManager(QString const&, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::downloadsWithMetadataFound(QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::processing(QString const&)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::error(Ubuntu::DownloadManager::Error*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::paused(bool)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::resumed(bool)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::started(bool)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::canceled(bool)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::finished(QString const&)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::progress(unsigned long long, unsigned long long)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::type()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::phrase()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::AuthError(Ubuntu::Transfers::Errors::AuthErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::~AuthError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::name()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::message()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::DBusError(QDBusError, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::~DBusError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::errorString()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::staticMetaObject@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::code()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::phrase()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::HttpError(Ubuntu::Transfers::Errors::HttpErrorStruct, QObject*)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::~HttpError()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::NetworkError::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::ProcessError::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DownloadsList::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::GroupDownload::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Error::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Manager::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::Download::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::AuthError::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::DBusError::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HttpError::metaObject() const@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::operator()(Ubuntu::DownloadManager::DownloadsList*) const@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::operator()(Ubuntu::DownloadManager::GroupDownload*) const@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::operator()(Ubuntu::DownloadManager::Download*) const@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::function(std::function<void (Ubuntu::DownloadManager::GroupDownload*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::NetworkError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::ProcessError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::DownloadsList@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::GroupDownload@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::Error@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::Manager@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::Download@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::AuthError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::DBusError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo for Ubuntu::DownloadManager::HttpError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::NetworkError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::ProcessError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::DownloadsList@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::GroupDownload@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Error@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Manager@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::Download@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::AuthError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::DBusError@Base" 0.4+14.10.20140618
+ (c++)"typeinfo name for Ubuntu::DownloadManager::HttpError@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::NetworkError@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::ProcessError@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::DownloadsList@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::GroupDownload@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::Error@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::Manager@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::Download@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::AuthError@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::DBusError@Base" 0.4+14.10.20140618
+ (c++)"vtable for Ubuntu::DownloadManager::HttpError@Base" 0.4+14.10.20140618

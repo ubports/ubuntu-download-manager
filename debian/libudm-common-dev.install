@@ -1,4 +1,5 @@
 usr/include/ubuntu/transfers/metadata.h
+usr/include/ubuntu/transfers/visibility.h
 usr/include/ubuntu/transfers/errors/auth_error_struct.h
 usr/include/ubuntu/transfers/errors/http_error_struct.h
 usr/include/ubuntu/transfers/errors/network_error_struct.h

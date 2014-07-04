@@ -96,6 +96,7 @@ class FileDownload : public Download, public QDBusContext {
     qulonglong totalSize() override;
     virtual void setThrottle(qulonglong speed) override;
     virtual void setDestinationDir(const QString& path);
+    virtual void setHeaders(StringMap headers) override;
 
  signals:
     void finished(const QString& path);

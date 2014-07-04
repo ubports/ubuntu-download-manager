@@ -1,0 +1,17 @@
+{
+global:
+    extern "C++" {
+        Ubuntu::UploadManager::*;
+        typeinfo?for?Ubuntu::UploadManager::*;
+        typeinfo?name?for?Ubuntu::UploadManager::*;
+        VTT?for?Ubuntu::UploadManager::*;
+        virtual?thunk?to?Ubuntu::UploadManager::*;
+        vtable?for?Ubuntu::UploadManager::*;
+        operator*;
+    };
+
+local:
+    extern "C++" {
+        *;
+    };
+};

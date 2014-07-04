@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,13 +16,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_COMMON_H
-#define UBUNTU_DOWNLOADMANAGER_COMMON_H
+#ifndef FAKE_CLIENT_ERROR_H
+#define FAKE_CLIENT_ERROR_H
 
-#if __GNUC__ >= 4
-    #define DOWNLOAD_MANAGER_EXPORT __attribute__ ((visibility("default")))
-#else
-    #define DOWNLOAD_MANAGER_EXPORT
-#endif
+#include <ubuntu/download_manager/error.h>
+#include <gmock/gmock.h>
+
+using namespace Ubuntu::DownloadManager;
+
+class MockError : public Error {
+ public:
+    MockError(Type type, QObject* parent = 0)
+        : Error(type, parent) {}
+
+    MOCK_METHOD0(errorString, QString());
+};
 
 #endif

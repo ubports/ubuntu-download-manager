@@ -21,12 +21,16 @@
 
 #include <QDBusConnection>
 #include <QDBusObjectPath>
+
+#include <ubuntu/transfers/visibility.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
-#include "download.h"
-#include "error.h"
-#include "group_download.h"
-#include "manager_interface.h"
-#include "manager_pendingcall_watcher.h"
+
+#include <ubuntu/download_manager/download.h>
+#include <ubuntu/download_manager/error.h>
+#include <ubuntu/download_manager/group_download.h>
+#include <ubuntu/download_manager/manager_interface.h>
+#include <ubuntu/download_manager/manager_pendingcall_watcher.h>
+
 #include "manager.h"
 
 
@@ -41,7 +45,7 @@ class Error;
 class GroupDownload;
 class ManagerInterface;
 
-class ManagerImpl : public Manager {
+class UBUNTU_TRANSFERS_PRIVATE ManagerImpl : public Manager {
     Q_OBJECT
 
     // allow watchers to emit the signals
@@ -107,7 +111,6 @@ class ManagerImpl : public Manager {
     QString _servicePath;
     Error* _lastError = nullptr;
     ManagerInterface* _dbusInterface = nullptr;
-
 };
 
 }  // DownloadManager
