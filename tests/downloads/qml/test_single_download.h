@@ -20,12 +20,14 @@
 #define TEST_DOWNLOAD_H
 
 #include <QObject>
-#include <singled_download.h>
-#include <local_tree_testcase.h>
+#include <base_testcase.h>
+#include "download.h"
+#include "manager.h"
+#include "testable_single_download.h"
 
 using namespace Ubuntu::DownloadManager;
 
-class TestSingleDownload : public LocalTreeTestCase {
+class TestSingleDownload : public BaseTestCase {
     Q_OBJECT
 
  public:
@@ -33,6 +35,34 @@ class TestSingleDownload : public LocalTreeTestCase {
 
     void init() override;
     void cleanup() override;
+
+ private slots:  // NOLINT(whitespace/indent)
+    void testCanceledSignalFwd();
+    void testFinishedSingalFwd();
+    void testPausedSignalFwd();
+    void testProcessingSignalFwd();
+    void testProgressSignalFwd();
+    void testResumedSignalFwd();
+    void testStartedSignalFwd();
+    void testSetAllowMobileDataNullptr();
+    void testSetAllowMobileDataError();
+    void testSetAllowMobileDataSuccess();
+    void testSetThrottleNullptr();
+    void testSetThrottleError();
+    void testSetThrottleSuccess();
+    void testSetHeadersNullptr();
+    void testSetHeadersError();
+    void testSetHeadersSuccess();
+
+ private:
+    void verifyMocks();
+
+ private:
+    QString _url;
+    QVariantMap _metadata;
+    QMap<QString, QString> _headers;
+    MockDownload* _down; 
+    MockManager* _man; 
 };
 
 #endif

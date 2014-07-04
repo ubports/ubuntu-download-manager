@@ -43,7 +43,7 @@ class SingleDownload : public QObject
     Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
     Q_PROPERTY(QVariantMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
 
-public:
+ public:
     explicit SingleDownload(QObject *parent = 0);
 
     Q_INVOKABLE void start();
@@ -100,7 +100,10 @@ public:
         m_autoStart = value;
     }
 
-signals:
+ protected:
+    SingleDownload(Download* down, Manager* man, QObject *parent = 0);
+
+ signals:
     void isCompletedChanged();
     void allowMobileDownloadChanged();
     void throttleChanged();

@@ -48,6 +48,17 @@ class MockDownload : public Download {
     MOCK_METHOD0(totalSize, qulonglong());
     MOCK_CONST_METHOD0(isError, bool());
     MOCK_CONST_METHOD0(error, Error*());
+
+    // expose the signals so that they can  emitted by external objects
+
+    using Download::canceled;
+    using Download::error;
+    using Download::finished;
+    using Download::paused;
+    using Download::processing;
+    using Download::progress;
+    using Download::resumed;
+    using Download::started;
 };
 
 #endif

@@ -1,3 +1,4 @@
+#include <QDebug>
 #include "single_download.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
@@ -69,17 +70,31 @@ namespace DownloadManager {
     \sa {DownloadManager}
 */
 
-SingleDownload::SingleDownload(QObject *parent) :
-    QObject(parent),
-    m_autoStart(true),
-    m_completed(false),
-    m_downloading(false),
-    m_downloadInProgress(false),
-    m_progress(0),
-    m_error(this),
-    m_download(nullptr),
-    m_manager(nullptr)
-{
+SingleDownload::SingleDownload(QObject *parent)
+    : QObject(parent),
+      m_autoStart(true),
+      m_completed(false),
+      m_downloading(false),
+      m_downloadInProgress(false),
+      m_progress(0),
+      m_error(this),
+      m_download(nullptr),
+      m_manager(nullptr) {
+}
+
+// constructor that is simple provided for testing purposes
+SingleDownload::SingleDownload(Download* down, Manager* man, QObject *parent)
+    : QObject(parent),
+      m_autoStart(false),
+      m_completed(false),
+      m_downloading(false),
+      m_downloadInProgress(false),
+      m_progress(0),
+      m_error(this),
+      m_download(down),
+      m_manager(man) {
+    if (m_download != nullptr)
+        bindDownload(m_download);
 }
 
 void
@@ -107,6 +122,9 @@ SingleDownload::bindDownload(Download* download)
     CHECK(connect(m_download, &Download::paused, this,
          &SingleDownload::onPaused))
             << "Could not connect to signal";
+
+    CHECK(connect(m_download, &Download::processing, this,
+        &SingleDownload::processing)) << "Could not connect to signal";
 
     CHECK(connect(m_download, &Download::resumed, this,
          &SingleDownload::onResumed))
@@ -156,6 +174,9 @@ SingleDownload::unbindDownload(Download* download) {
     CHECK(disconnect(download, &Download::paused, this,
          &SingleDownload::onPaused))
             << "Could not connect to signal";
+
+    CHECK(disconnect(m_download, &Download::processing, this,
+        &SingleDownload::processing)) << "Could not connect to signal";
 
     CHECK(disconnect(download, &Download::resumed, this,
          &SingleDownload::onResumed))
@@ -294,7 +315,7 @@ void
 SingleDownload::onStarted(bool wasStarted)
 {
     m_downloading = true;
-    emit resumed(wasStarted);
+    emit started(wasStarted);
 }
 
 void
@@ -349,7 +370,7 @@ SingleDownload::throttle() const {
     }
 }
 
-void 
+void
 SingleDownload::setThrottle(qulonglong value) {
     if (m_download == nullptr) {
         m_dirty = true;
@@ -416,7 +437,7 @@ SingleDownload::setHeaders(QVariantMap headers) {
                 return;
             }
         }
-    
+
         m_download->setHeaders(stringMap);
         if (m_download->isError()) {
             // set the error details and emit the signals

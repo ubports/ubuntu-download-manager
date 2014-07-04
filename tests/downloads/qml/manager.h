@@ -33,7 +33,7 @@ class MockManager : public Manager {
     MOCK_METHOD1(getDownloadForId, Download*(const QString&));
     MOCK_METHOD1(createDownload, void(DownloadStruct));
     MOCK_METHOD3(createDownload, void(DownloadStruct, DownloadCb, DownloadCb));
-    MOCK_METHOD4(createDownload, void(StructList downs, const QString&, bool,
+    MOCK_METHOD5(createDownload, void(StructList, const QString&, bool,
         const QVariantMap&, StringMap));
     MOCK_METHOD7(createDownload, void(StructList, const QString&, bool,
         const QVariantMap&, StringMap, GroupCb, GroupCb));
@@ -41,7 +41,7 @@ class MockManager : public Manager {
     MOCK_METHOD2(getAllDownloads, void(DownloadsListCb, DownloadsListCb));
     MOCK_METHOD2(getAllDownloadsWithMetadata, void(const QString&,
         const QString&));
-    MOCK_METHOD2(getAllDownloadsWithMetadata, void(const QString&,
+    MOCK_METHOD4(getAllDownloadsWithMetadata, void(const QString&,
         const QString&, MetadataDownloadsListCb, MetadataDownloadsListCb));
     MOCK_CONST_METHOD0(isError, bool());
     MOCK_CONST_METHOD0(lastError, Error*());
