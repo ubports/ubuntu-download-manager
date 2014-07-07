@@ -124,6 +124,6 @@ foreach(test ${DAEMON_TESTS})
         )
 
 
-        ADD_TEST(NAME daemon_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_daemon)
+ADD_TEST(NAME daemon_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_daemon)
 endforeach(test)
 
