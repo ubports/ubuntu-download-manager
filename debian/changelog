@@ -1,8 +1,12 @@
 ubuntu-download-manager (0.6) UNRELEASED; urgency=medium
 
+  [ Manuel de la Pena ]
   * Add a new public object in the client library that provides a way
     to configure the logging done in the client library. ABI is changed
     and a new dependency is added.
+
+  [ Ubuntu daily release ]
+  * debian/*symbols: auto-update new symbols to released version
 
  -- Manuel de la Pena <manuel.delapena@canonical.com>  Thu, 26 Jun 2014 13:00:45 +0200
 
