@@ -16,9 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
-#include "manager_impl.h"
-#include "manager.h"
+#include <ubuntu/download_manager/manager_impl.h>
+#include <ubuntu/download_manager/manager.h>
 
 namespace {
     const QString DOWNLOAD_SERVICE = "com.canonical.applications.Downloader";

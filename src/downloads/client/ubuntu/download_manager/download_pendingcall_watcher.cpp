@@ -16,25 +16,33 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QDBusPendingReply>
-#include <glog/logging.h>
-#include "error.h"
-#include "download_pendingcall_watcher.h"
+
+#include <boost/log/sources/record_ostream.hpp>
+#include <boost/log/sources/severity_feature.hpp>
+
+#include <ubuntu/download_manager/error.h>
+#include <ubuntu/download_manager/logging/logger.h>
+
+#include <ubuntu/download_manager/download_pendingcall_watcher.h>
 
 namespace Ubuntu {
 
 namespace DownloadManager {
 
-DownloadPCW::DownloadPCW(
-                                               const QDBusConnection& conn,
-                                               const QString& servicePath,
-                                               const QDBusPendingCall& call,
-                                               Download* parent)
+using namespace Logging;
+
+DownloadPCW::DownloadPCW(const QDBusConnection& conn,
+                         const QString& servicePath,
+                         const QDBusPendingCall& call,
+                         Download* parent)
     : PendingCallWatcher(conn, servicePath, call, parent) {
-    CHECK(connect(this, &DownloadPCW::finished,
-        this, &DownloadPCW::onFinished))
-            << "Could not connect to signal";
+    auto connected = connect(this, &DownloadPCW::finished,
+        this, &DownloadPCW::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadPCW::finished");
+    }
 }
 
 void
@@ -42,7 +50,9 @@ DownloadPCW::onFinished(QDBusPendingCallWatcher* watcher) {
     auto down = qobject_cast<Download*>(parent());
     QDBusPendingReply<> reply = *watcher;
     if (reply.isError()) {
-        qDebug() << "ERROR" << reply.error() << reply.error().type();
+        auto dbusErr = reply.error();
+        Logger::log(Logger::Error,
+            QString("%1 %2").arg(dbusErr.name()).arg(dbusErr.message()));
         auto err = new DBusError(reply.error());
         down->error(err);
     }

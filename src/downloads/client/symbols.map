@@ -11,6 +11,7 @@ global:
         Ubuntu::DownloadManager::ProcessError::*;
         Ubuntu::DownloadManager::GroupDownload::*;
         Ubuntu::DownloadManager::Manager::*;
+        Ubuntu::DownloadManager::Logging::Logger::init*;
         typeinfo?for?Ubuntu::DownloadManager::Download;
         typeinfo?for?Ubuntu::DownloadManager::DownloadsList;
         typeinfo?for?Ubuntu::DownloadManager::Error;
@@ -21,6 +22,7 @@ global:
         typeinfo?for?Ubuntu::DownloadManager::ProcessError;
         typeinfo?for?Ubuntu::DownloadManager::GroupDownload;
         typeinfo?for?Ubuntu::DownloadManager::Manager;
+        typeinfo?for?Ubuntu::DownloadManager::Logging::Logger;
         typeinfo?name?for?Ubuntu::DownloadManager::Download;
         typeinfo?name?for?Ubuntu::DownloadManager::DownloadsList;
         typeinfo?name?for?Ubuntu::DownloadManager::Error;
@@ -31,6 +33,7 @@ global:
         typeinfo?name?for?Ubuntu::DownloadManager::ProcessError;
         typeinfo?name?for?Ubuntu::DownloadManager::GroupDownload;
         typeinfo?name?for?Ubuntu::DownloadManager::Manager;
+        typeinfo?name?for?Ubuntu::DownloadManager::Logging::Logger;
         VTT?for?Ubuntu::DownloadManager::Download;
         VTT?for?Ubuntu::DownloadManager::DownloadsList;
         VTT?for?Ubuntu::DownloadManager::Error;
@@ -41,6 +44,7 @@ global:
         VTT?for?Ubuntu::DownloadManager::ProcessError;
         VTT?for?Ubuntu::DownloadManager::GroupDownload;
         VTT?for?Ubuntu::DownloadManager::Manager;
+        VTT?for?Ubuntu::DownloadManager::Logging::Logger;
         virtual?thunk?to?Ubuntu::DownloadManager::Download;
         virtual?thunk?to?Ubuntu::DownloadManager::DownloadsList;
         virtual?thunk?to?Ubuntu::DownloadManager::Error;
@@ -51,6 +55,7 @@ global:
         virtual?thunk?to?Ubuntu::DownloadManager::ProcessError;
         virtual?thunk?to?Ubuntu::DownloadManager::GroupDownload;
         virtual?thunk?to?Ubuntu::DownloadManager::Manager;
+        virtual?thunk?to?Ubuntu::DownloadManager::Logging::Logger;
         vtable?for?Ubuntu::DownloadManager::Download;
         vtable?for?Ubuntu::DownloadManager::DownloadsList;
         vtable?for?Ubuntu::DownloadManager::Error;
@@ -61,6 +66,7 @@ global:
         vtable?for?Ubuntu::DownloadManager::ProcessError;
         vtable?for?Ubuntu::DownloadManager::GroupDownload;
         vtable?for?Ubuntu::DownloadManager::Manager;
+        vtable?for?Ubuntu::DownloadManager::Logging::Logger;
 	std::function*
     };
 

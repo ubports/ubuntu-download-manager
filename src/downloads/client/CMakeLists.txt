@@ -1,3 +1,5 @@
+add_definitions(-DBOOST_LOG_DYN_LINK)
+
 set(TARGET ubuntu-download-manager-client)
 
 set(SOURCES
@@ -11,6 +13,7 @@ set(SOURCES
         ubuntu/download_manager/manager_impl.cpp
         ubuntu/download_manager/manager_interface.cpp
         ubuntu/download_manager/manager_pendingcall_watcher.cpp
+        ubuntu/download_manager/logging/logger.cpp
         ubuntu/download_manager/pending_call_watcher.cpp
 )
 
@@ -20,6 +23,7 @@ set(PUBLIC_HEADERS
         ubuntu/download_manager/error.h
         ubuntu/download_manager/group_download.h
         ubuntu/download_manager/manager.h
+        ubuntu/download_manager/logging/logger.h
 )
 
 set(PRIVATE_HEADERS
@@ -37,6 +41,7 @@ include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
 
@@ -58,6 +63,7 @@ set_target_properties(
 )
 
 target_link_libraries(${TARGET}
+        ${Boost_LIBRARIES}
 	${Qt5DBus_LIBRARIES}
 	${GLOG_LIBRARIES}
 	udm-common

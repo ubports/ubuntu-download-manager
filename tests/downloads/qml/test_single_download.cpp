@@ -16,20 +16,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef BACKEND_PLUGIN_H
-#define BACKEND_PLUGIN_H
+TestSingleDownload::TestSingleDownload(QObject *parent)
+    : LocalTreeTestCase("TestSingleDownload", parent) {
+}
 
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlExtensionPlugin>
+void
+TestSingleDownload::init() {
+    LocalTreeTestCase::init();
+}
 
-class BackendPlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
-
-public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QQmlEngine *engine, const char *uri);
-};
-#endif // BACKEND_PLUGIN_H
-
+void
+TestSingleDownload::cleanup() {
+    LocalTreeTestCase::cleanup();
+}
