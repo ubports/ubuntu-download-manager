@@ -18,6 +18,16 @@
         <arg name="speed" type="t" direction="in"/>
     </method>
 
+    <method name="headers">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="StringMap"/>
+        <arg name="headers" type="a{ss}" direction="out"/>
+    </method>
+
+    <method name="setHeaders">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="StringMap"/>
+        <arg name="headers" type="a{ss}" direction="in"/>
+    </method>
+
     <method name="throttle">
         <arg name="speed" type="t" direction="out"/>
     </method>

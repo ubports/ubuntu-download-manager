@@ -24,6 +24,7 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <ubuntu/transfers/transfer.h>
+#include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/transfers/system/process_factory.h"
 #include "ubuntu/transfers/system/request_factory.h"
 #include "ubuntu/transfers/system/system_network_info.h"
@@ -62,10 +63,6 @@ class Download : public Transfer {
     }
     void setAdaptor(QObject* adaptor);
 
-    QMap<QString, QString> headers() const {
-        return _headers;
-    }
-
     virtual bool pausable() {
         return true;
     }
@@ -83,6 +80,12 @@ class Download : public Transfer {
     }
     virtual bool isGSMDownloadAllowed() {
         return Transfer::isGSMDataAllowed();
+    }
+    virtual StringMap headers() const {
+        return _headers;
+    }
+    virtual void setHeaders(StringMap headers) {
+        _headers = headers;
     }
 
     // slots to be implemented by the children

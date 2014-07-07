@@ -130,6 +130,24 @@ TestingFileDownload::throttle() {
 }
 
 void
+TestingFileDownload::setHeaders(StringMap headers) {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "setThrottle");
+    }
+    _down->setHeaders(headers);
+}
+
+StringMap
+TestingFileDownload::headers() {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "setThrottle");
+    }
+    return _down->headers();
+}
+
+void
 TestingFileDownload::allowGSMDownload(bool allowed) {
     if (calledFromDBus() && _returnErrors) {
         sendErrorReply(QDBusError::InvalidMember,

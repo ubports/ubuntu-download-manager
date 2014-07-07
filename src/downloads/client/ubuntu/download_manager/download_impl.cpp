@@ -166,6 +166,34 @@ DownloadImpl::setDestinationDir(const QString& path) {
 }
 
 void
+DownloadImpl::setHeaders(QMap<QString, QString> headers) {
+    QDBusPendingReply<> reply =
+        _dbusInterface->setHeaders(headers);
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        setLastError(reply.error());
+    }
+}
+
+QMap<QString, QString>
+DownloadImpl::headers() {
+    QDBusPendingReply<QMap<QString, QString> > reply =
+        _dbusInterface->headers();
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        setLastError(reply.error());
+        QMap<QString, QString> empty;
+        return empty;
+    } else {
+        auto result = reply.value();
+        return result;
+    }
+}
+
+
+void
 DownloadImpl::setThrottle(qulonglong speed) {
     QDBusPendingReply<> reply =
         _dbusInterface->setThrottle(speed);

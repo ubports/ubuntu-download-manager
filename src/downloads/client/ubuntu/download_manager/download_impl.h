@@ -61,6 +61,8 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     bool isMobileDownloadAllowed();
 
     void setDestinationDir(const QString& path);
+    void setHeaders(QMap<QString, QString> headers);
+    QMap<QString, QString> headers();
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 

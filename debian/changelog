@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.5) UNRELEASED; urgency=medium
+
+  * Add support to set the headers for a single file download. This change
+    brings and ABI break.
+
+ -- Manuel de la Pena <manuel.delapena@canonical.com>  Mon, 16 Jun 2014 13:00:45 +0200
+
 ubuntu-download-manager (0.4+14.10.20140626-0ubuntu1) utopic; urgency=low
 
   [ Michael Sheldon ]

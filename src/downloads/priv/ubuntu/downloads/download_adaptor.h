@@ -47,6 +47,14 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"setThrottle\">\n"
 "      <arg direction=\"in\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
+"    <method name=\"headers\">\n"
+"      <annotation value=\"StringMap\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+"      <arg direction=\"out\" type=\"a{ss}\" name=\"headers\"/>\n"
+"    </method>\n"
+"    <method name=\"setHeaders\">\n"
+"      <annotation value=\"StringMap\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
+"      <arg direction=\"in\" type=\"a{ss}\" name=\"headers\"/>\n"
+"    </method>\n"
 "    <method name=\"throttle\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
@@ -114,12 +122,14 @@ public: // PROPERTIES
 public Q_SLOTS: // METHODS
     void allowGSMDownload(bool allowed);
     void cancel();
+    StringMap headers();
     bool isGSMDownloadAllowed();
     QVariantMap metadata();
     void pause();
     qulonglong progress();
     void resume();
     void setDestinationDir(const QString &path);
+    void setHeaders(StringMap headers);
     void setThrottle(qulonglong speed);
     void start();
     qulonglong throttle();
