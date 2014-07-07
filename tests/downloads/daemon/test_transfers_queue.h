@@ -21,9 +21,10 @@
 
 #include <QObject>
 #include <ubuntu/transfers/queue.h>
-#include "request_factory.h"
-#include "process_factory.h"
-#include "system_network_info.h"
+#include <process_factory.h>
+#include <request_factory.h>
+#include <system_network_info.h>
+
 #include "base_testcase.h"
 #include "transfer.h"
 

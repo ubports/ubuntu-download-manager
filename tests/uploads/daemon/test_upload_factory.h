@@ -21,10 +21,11 @@
 
 #include <QObject>
 #include <ubuntu/uploads/factory.h>
-#include "apparmor.h"
-#include "system_network_info.h"
-#include "request_factory.h"
-#include "process_factory.h"
+#include <apparmor.h>
+#include <process_factory.h>
+#include <request_factory.h>
+#include <system_network_info.h>
+
 #include "uuid_factory.h"
 #include "base_testcase.h"
 
