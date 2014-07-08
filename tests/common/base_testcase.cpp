@@ -59,7 +59,7 @@ BaseTestCase::dataDirectory() {
     QDir dir(".");
     dir.makeAbsolute();
 
-    return dir.path() + "/data";
+    return dir.path() + "/tests/data";
 }
 
 bool

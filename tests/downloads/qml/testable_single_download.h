@@ -16,20 +16,13 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef BACKEND_PLUGIN_H
-#define BACKEND_PLUGIN_H
+#include <single_download.h>
 
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlExtensionPlugin>
 
-class BackendPlugin : public QQmlExtensionPlugin
-{
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+class TestableSingleDownload : public SingleDownload {
+ public:
+    TestableSingleDownload(Download* down, Manager* man, QObject* parent = 0)
+        : SingleDownload(down, man, parent) {
+    }
 
-public:
-    void registerTypes(const char *uri);
-    void initializeEngine(QQmlEngine *engine, const char *uri);
 };
-#endif // BACKEND_PLUGIN_H
-

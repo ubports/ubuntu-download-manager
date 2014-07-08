@@ -17,7 +17,7 @@
  */
 
 #include "local_tree_testcase.h"
-#define TEST_DAEMON "../src/downloads/test-daemon/ubuntu-download-manager-test-daemon"
+#define TEST_DAEMON "../../../src/downloads/test-daemon/ubuntu-download-manager-test-daemon"
 #define LARGE_FILE "otasigned.zip"
 #define SMALL_FILE "index.json"
 
@@ -48,4 +48,6 @@ LocalTreeTestCase::init() {
 
     QString smallFile = dataDirectory() + "/" + QString(SMALL_FILE);
     addFileToHttpServer(smallFile);
+    Ubuntu::DownloadManager::Logging::Logger::init(
+        Ubuntu::DownloadManager::Logging::Logger::Debug, testDirectory() + "/client.log");
 }

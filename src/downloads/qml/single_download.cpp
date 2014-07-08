@@ -1,7 +1,7 @@
+#include <QDebug>
 #include "single_download.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
-#include <QDebug>
 
 namespace Ubuntu {
 
@@ -70,20 +70,35 @@ namespace DownloadManager {
     \sa {DownloadManager}
 */
 
-SingleDownload::SingleDownload(QObject *parent) :
-    QObject(parent),
-    m_autoStart(true),
-    m_completed(false),
-    m_downloading(false),
-    m_downloadInProgress(false),
-    m_progress(0),
-    m_error(this),
-    m_download(nullptr),
-    m_manager(nullptr)
-{
+SingleDownload::SingleDownload(QObject *parent)
+    : QObject(parent),
+      m_autoStart(true),
+      m_completed(false),
+      m_downloading(false),
+      m_downloadInProgress(false),
+      m_progress(0),
+      m_error(this),
+      m_download(nullptr),
+      m_manager(nullptr) {
 }
 
-void SingleDownload::bindDownload(Download* download)
+// constructor that is simple provided for testing purposes
+SingleDownload::SingleDownload(Download* down, Manager* man, QObject *parent)
+    : QObject(parent),
+      m_autoStart(false),
+      m_completed(false),
+      m_downloading(false),
+      m_downloadInProgress(false),
+      m_progress(0),
+      m_error(this),
+      m_download(down),
+      m_manager(man) {
+    if (m_download != nullptr)
+        bindDownload(m_download);
+}
+
+void
+SingleDownload::bindDownload(Download* download)
 {
     m_download = download;
 
@@ -91,45 +106,85 @@ void SingleDownload::bindDownload(Download* download)
         static_cast<void(Download::*)(Error*)>(&Download::error),
         this, &SingleDownload::registerError))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::finished, this,
-        &SingleDownload::finished)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::finished, this,
-        &SingleDownload::setCompleted)) << "Could not connect to signal";
+        &SingleDownload::onFinished)) << "Could not connect to signal";
+
     CHECK(connect(m_download,
          static_cast<void(Download::*)(qulonglong, qulonglong)>(
              &Download::progress), this,
-         &SingleDownload::progressReceived))
-            << "Could not connect to signal";
-    CHECK(connect(m_download,
-         static_cast<void(Download::*)(qulonglong, qulonglong)>(
-             &Download::progress), this,
-         &SingleDownload::setProgress)) << "Could not connect to signal";
+         &SingleDownload::onProgress)) << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::canceled, this,
-         &SingleDownload::canceled)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::canceled, this,
-         &SingleDownload::setDownloadCanceled))
+         &SingleDownload::onCanceled))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::paused, this,
-         &SingleDownload::paused)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::paused, this,
-         &SingleDownload::setDownloadPaused))
+         &SingleDownload::onPaused))
             << "Could not connect to signal";
+
+    CHECK(connect(m_download, &Download::processing, this,
+        &SingleDownload::processing)) << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::resumed, this,
-         &SingleDownload::resumed)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::resumed, this,
-         &SingleDownload::setDownloadStarted))
+         &SingleDownload::onResumed))
             << "Could not connect to signal";
+
     CHECK(connect(m_download, &Download::started, this,
-         &SingleDownload::started)) << "Could not connect to signal";
-    CHECK(connect(m_download, &Download::started, this,
-         &SingleDownload::setDownloadStarted))
+         &SingleDownload::onStarted))
             << "Could not connect to signal";
 
     emit downloadIdChanged();
 
+    // is the current in memory setting dirty, if they are, we do set the before we
+    // start
+    if (m_dirty) {
+        setAllowMobileDownload(m_mobile);
+        setThrottle(m_throttle);
+        setHeaders(m_headers);
+
+        // is not really needed but we do it to be consistent
+        m_dirty = false;
+    }
+
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
     }
+}
+
+void
+SingleDownload::unbindDownload(Download* download) {
+    CHECK(disconnect(download,
+        static_cast<void(Download::*)(Error*)>(&Download::error),
+        this, &SingleDownload::registerError))
+            << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::finished, this,
+        &SingleDownload::onFinished)) << "Could not connect to signal";
+
+    CHECK(disconnect(download,
+         static_cast<void(Download::*)(qulonglong, qulonglong)>(
+             &Download::progress), this,
+         &SingleDownload::onProgress)) << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::canceled, this,
+         &SingleDownload::onCanceled))
+            << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::paused, this,
+         &SingleDownload::onPaused))
+            << "Could not connect to signal";
+
+    CHECK(disconnect(m_download, &Download::processing, this,
+        &SingleDownload::processing)) << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::resumed, this,
+         &SingleDownload::onResumed))
+            << "Could not connect to signal";
+
+    CHECK(disconnect(download, &Download::started, this,
+         &SingleDownload::onStarted))
+            << "Could not connect to signal";
 }
 
 /*!
@@ -137,7 +192,8 @@ void SingleDownload::bindDownload(Download* download)
 
     Creates the download for the given url and reports the different states through the properties.
 */
-void SingleDownload::download(QString url)
+void
+SingleDownload::download(QString url)
 {
     if (!m_downloadInProgress) {
         if (m_manager == nullptr) {
@@ -160,71 +216,240 @@ void SingleDownload::download(QString url)
 
     Starts the download, used when autoStart is False.
 */
-void SingleDownload::start()
+void
+SingleDownload::start()
 {
     startDownload();
 }
 
-void SingleDownload::startDownload()
+void
+SingleDownload::startDownload()
 {
     if (m_download != nullptr) {
         m_download->start();
     }
 }
 
-void SingleDownload::pause()
+/*!
+    \qmlmethod void SingleDownload::pause()
+
+    Pauses the download. An error is returned if the download was
+    already paused.
+*/
+void
+SingleDownload::pause()
 {
     m_download->pause();
 }
 
-void SingleDownload::resume()
+/*!
+    \qmlmethod void SingleDownload::resume()
+
+    Resumes and already paused download. An error is returned if the download was
+    already resumed or not paused.
+*/
+void
+SingleDownload::resume()
 {
     m_download->resume();
 }
 
-void SingleDownload::cancel()
+/*!
+    \qmlmethod void SingleDownload::cancel()
+
+    Cancels a download.
+*/
+void
+SingleDownload::cancel()
 {
     m_download->cancel();
 }
 
-void SingleDownload::setCompleted()
-{
-    m_completed = true;
-    m_downloading = false;
-    m_downloadInProgress = false;
-}
-
-void SingleDownload::registerError(Error* error)
+void
+SingleDownload::registerError(Error* error)
 {
     m_error.setMessage(error->errorString());
     emit errorFound(m_error);
     emit errorChanged();
 }
 
-void SingleDownload::setProgress(qulonglong received, qulonglong total)
+void
+SingleDownload::onFinished(const QString& path)
+{
+    m_completed = true;
+    m_downloading = false;
+    m_downloadInProgress = false;
+
+    // unbind the download so that we have no memory leaks due to the connections
+    unbindDownload(m_download);
+    m_download->deleteLater();
+    m_download = nullptr;
+    emit finished(path);
+}
+
+void
+SingleDownload::onProgress(qulonglong received, qulonglong total)
 {
     if (total > 0) {
         qulonglong result = (received * 100);
         m_progress = static_cast<int>(result / total);
         emit progressChanged();
     }
+    emit progressReceived(received, total);
 }
 
-void SingleDownload::setDownloadPaused(bool)
+void
+SingleDownload::onPaused(bool wasPaused)
 {
     m_downloading = false;
+    emit paused(wasPaused);
 }
 
-void SingleDownload::setDownloadStarted(bool)
+void
+SingleDownload::onResumed(bool wasResumed) {
+    m_downloading = true;
+    emit resumed(wasResumed);
+}
+
+void
+SingleDownload::onStarted(bool wasStarted)
 {
     m_downloading = true;
+    emit started(wasStarted);
 }
 
-void SingleDownload::setDownloadCanceled(bool)
+void
+SingleDownload::onCanceled(bool wasCanceled)
 {
     m_completed = false;
     m_downloading = false;
     m_downloadInProgress = false;
+
+    // unbind the download so that we have no memory leaks due to the connections
+    unbindDownload(m_download);
+    m_download->deleteLater();
+    m_download = nullptr;
+    emit canceled(wasCanceled);
+}
+
+bool
+SingleDownload::allowMobileDownload() const {
+    if (m_download == nullptr) {
+            return m_mobile;
+    } else {
+        return m_download->isMobileDownloadAllowed();
+    }
+}
+
+void
+SingleDownload::setAllowMobileDownload(bool value) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_mobile = value;
+    } else {
+        m_download->allowMobileDownload(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit allowMobileDownloadChanged();
+        }
+    }
+}
+
+qulonglong
+SingleDownload::throttle() const {
+    if (m_download == nullptr) {
+        return m_throttle;
+    } else {
+        return m_download->throttle();
+    }
+}
+
+void
+SingleDownload::setThrottle(qulonglong value) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_throttle = value;
+    } else {
+        m_download->setThrottle(value);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit throttleChanged();
+        }
+    }
+}
+
+QString
+SingleDownload::downloadId() const {
+    if (m_download == nullptr) {
+        return "";
+    } else {
+        return m_download->id();
+    }
+}
+
+QVariantMap
+SingleDownload::headers() const {
+    if (m_download == nullptr) {
+        return m_headers;
+    } else {
+        // convert the QMap<QString, QString> into a QMap<QString, QVariant>
+        auto headers = m_download->headers();
+        QVariantMap result;
+        foreach(const QString& key, headers.keys()) {
+            result[key] = headers[key]; // automatic conversion
+        }
+        return result;
+    }
+}
+
+void
+SingleDownload::setHeaders(QVariantMap headers) {
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_headers = headers;
+    } else {
+        QMap<QString, QString> stringMap;
+        // convert the QVariantMap in a QMap<QString, QString> and make sure
+        // that the variants can be converted to strings.
+        foreach(const QString& key, headers.keys()) {
+            auto data = headers[key];
+            if (data.canConvert<QString>()) {
+                stringMap[key] = data.toString();
+            } else {
+                m_error.setType("Headers Conversion Error");
+                auto msg = QString(
+                    "Could not convert data in header '%1' to string.").arg(key);
+                m_error.setMessage(msg);
+                emit errorFound(m_error);
+                emit errorChanged();
+                return;
+            }
+        }
+
+        m_download->setHeaders(stringMap);
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit headersChanged();
+        }
+    }
 }
 
 /*!
@@ -285,6 +510,14 @@ void SingleDownload::setDownloadCanceled(bool)
 
     This property provides the unique identifier that represents the download
     within the download manager.
+*/
+
+/*!
+    \qmlproperty QVariantMap SingleDownload::headers
+
+    This property allows to get and set the headers that will be used to perform
+    the download request. All headers must be strings or at least QVariant should
+    be able to convert them to strings.
 */
 
 }

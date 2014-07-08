@@ -24,11 +24,14 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QString>
+
 #include <ubuntu/transfers/visibility.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include "download_interface.h"
-#include "download_pendingcall_watcher.h"
-#include "error.h"
+
+#include <ubuntu/download_manager/download_interface.h>
+#include <ubuntu/download_manager/download_pendingcall_watcher.h>
+#include <ubuntu/download_manager/error.h>
+
 #include "download.h"
 
 class QDBusConnection;
@@ -61,6 +64,8 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     bool isMobileDownloadAllowed();
 
     void setDestinationDir(const QString& path);
+    void setHeaders(QMap<QString, QString> headers);
+    QMap<QString, QString> headers();
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 

@@ -19,6 +19,7 @@
 #include "test_base_download.h"
 
 using ::testing::Mock;
+using ::testing::Return;
 
 void
 TestBaseDownload::init() {
@@ -138,6 +139,81 @@ TestBaseDownload::testCancelNotQueued() {
 
     down->cancel();
     QVERIFY(Mock::VerifyAndClearExpectations(down.data()));
+}
+
+void
+TestBaseDownload::testSetHeaders_data() {
+    QTest::addColumn<QMap<QString, QString> >("headers");
+
+    QMap<QString, QString> first;
+    first["name"] = "first";
+    QTest::newRow("First row") << first;
+
+    QMap<QString, QString> second;
+    second["name"] = "first";
+    second["test"] = "second";
+    QTest::newRow("Second row") << second;
+
+    QMap<QString, QString> last;
+    last["text"] = "hello";
+    last["name"] = "first";
+    last["test"] = "second";
+    QTest::newRow("Last row") << last;
+}
+
+void
+TestBaseDownload::testSetHeaders() {
+    // use a typedef to make the macro happy
+    typedef QMap<QString, QString> StringMap;
+    QFETCH(StringMap, headers);
+
+    QScopedPointer<MockDownload> down(
+        new MockDownload(_id, _path, _isConfined, _rootPath, _url,
+            _metadata, _headers));
+
+    EXPECT_CALL(*down.data(), state())
+        .Times(1)
+        .WillOnce(Return(Transfer::IDLE));
+
+    down->setHeaders(headers);
+
+    auto downHeaders = down->headers();
+    foreach(auto key, headers.keys()) {
+        QVERIFY(downHeaders.contains(key));
+        QCOMPARE(headers[key], downHeaders[key]);
+    }
+}
+
+void
+TestBaseDownload::testSetHeadersWrongState_data() {
+    QTest::addColumn<Transfer::State>("state");
+
+    QTest::newRow("START") << Transfer::START;
+    QTest::newRow("PAUSE") << Transfer::PAUSE;
+    QTest::newRow("RESUME") << Transfer::RESUME;
+    QTest::newRow("CANCEL") << Transfer::CANCEL;
+    QTest::newRow("FINISH") << Transfer::FINISH;
+    QTest::newRow("ERROR") << Transfer::ERROR;
+}
+
+void
+TestBaseDownload::testSetHeadersWrongState() {
+    QFETCH(Transfer::State, state);
+
+    QMap<QString, QString> newHeaders;
+    newHeaders["test"] = "test";
+
+    QScopedPointer<MockDownload> down(
+        new MockDownload(_id, _path, _isConfined, _rootPath, _url,
+            _metadata, _headers));
+
+    EXPECT_CALL(*down.data(), state())
+        .Times(1)
+        .WillOnce(Return(state));
+
+    down->setHeaders(newHeaders);
+    // assert that the headers have not been set and that we have none
+    QCOMPARE(0, down->headers().count());
 }
 
 QTEST_MAIN(TestBaseDownload)

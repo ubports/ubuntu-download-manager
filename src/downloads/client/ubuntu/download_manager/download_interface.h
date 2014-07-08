@@ -50,6 +50,12 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QLatin1String("cancel"), argumentList);
     }
 
+    inline QDBusPendingReply<StringMap> headers()
+    {
+        QList<QVariant> argumentList;
+        return asyncCallWithArgumentList(QLatin1String("headers"), argumentList);
+    }
+
     inline QDBusPendingReply<bool> isGSMDownloadAllowed()
     {
         QList<QVariant> argumentList;
@@ -85,6 +91,13 @@ public Q_SLOTS: // METHODS
         QList<QVariant> argumentList;
         argumentList << QVariant::fromValue(path);
         return asyncCallWithArgumentList(QLatin1String("setDestinationDir"), argumentList);
+    }
+
+    inline QDBusPendingReply<> setHeaders(StringMap headers)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(headers);
+        return asyncCallWithArgumentList(QLatin1String("setHeaders"), argumentList);
     }
 
     inline QDBusPendingReply<> setThrottle(qulonglong speed)

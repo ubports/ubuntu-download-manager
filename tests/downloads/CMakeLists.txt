@@ -14,11 +14,6 @@
 #
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
-if(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
-add_custom_target(tests-data ALL
-        COMMAND cp -r ${CMAKE_SOURCE_DIR}/tests/data ${CMAKE_CURRENT_BINARY_DIR}/data
-)
-endif(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
-
-add_subdirectory(common)
-add_subdirectory(downloads)
+add_subdirectory(client)
+add_subdirectory(daemon)
+add_subdirectory(qml)

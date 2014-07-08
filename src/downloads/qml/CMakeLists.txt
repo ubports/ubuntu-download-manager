@@ -3,16 +3,16 @@ set(TARGET UbuntuDownloadManager)
 
 set(plugin_SRCS
     backend.cpp
-    ubuntu_download_manager.cpp
     download_error.cpp
     single_download.cpp
+    ubuntu_download_manager.cpp
 )
 
 set(plugin_HDRS
     backend.h
-    ubuntu_download_manager.h
     download_error.h
     single_download.h
+    ubuntu_download_manager.h
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/common/public)

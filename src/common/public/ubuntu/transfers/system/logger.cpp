@@ -118,6 +118,7 @@ Logger::setupLogging(const QString logDir) {
         google::SetLogDestination(google::ERROR, toStdString(path).c_str());
         google::SetLogDestination(google::WARNING, toStdString(path).c_str());
         google::SetLogDestination(google::INFO, toStdString(path).c_str());
+        google::SetLogDestination(google::FATAL, toStdString(path).c_str());
     }
 }
 

@@ -16,42 +16,27 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOAD_ERROR_H
-#define DOWNLOAD_ERROR_H
+#ifndef LOCAL_TREE_TESTCASE_H
+#define LOCAL_TREE_TESTCASE_H
 
 #include <QObject>
-#include <QString>
+#include <QUrl>
 
-namespace Ubuntu {
+#include <ubuntu/download_manager/logging/logger.h>
+#include "daemon_testcase.h"
 
-namespace DownloadManager {
-
-class DownloadError : public QObject
-{
+class LocalTreeTestCase : public DaemonTestCase {
     Q_OBJECT
-    Q_PROPERTY(QString type READ type NOTIFY typeChanged)
-    Q_PROPERTY(QString message READ message NOTIFY messageChanged)
 
-public:
-    explicit DownloadError(QObject *parent = 0);
+ public:
+    LocalTreeTestCase(const QString& testName,
+                      QObject* parent);
+    QUrl largeFileUrl();
+    QUrl smallFileUrl();
 
-    QString type() const { return m_type; }
-    QString message() const { return m_message; }
+ protected slots:  // NOLINT(whitespace/indent)
 
-    void setType(QString type) { m_type = type; emit typeChanged(); }
-    void setMessage(QString message) { m_message = message; emit messageChanged(); }
-
-signals:
-    void typeChanged();
-    void messageChanged();
-
-private:
-    QString m_message;
-    QString m_type;
-
+    void init() override;
 };
 
-}
-}
-
-#endif // DOWNLOAD_ERROR_H
+#endif // LOCAL_TREE_TESTCASE_H

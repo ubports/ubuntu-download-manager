@@ -16,25 +16,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef LOCAL_TREE_TESTCASE_H
-#define LOCAL_TREE_TESTCASE_H
+#ifndef FAKE_CLIENT_ERROR_H
+#define FAKE_CLIENT_ERROR_H
 
-#include <QObject>
-#include <QUrl>
-#include "daemon_testcase.h"
+#include <ubuntu/download_manager/error.h>
+#include <gmock/gmock.h>
 
-class LocalTreeTestCase : public DaemonTestCase {
-    Q_OBJECT
+using namespace Ubuntu::DownloadManager;
 
+class MockError : public Error {
  public:
-    LocalTreeTestCase(const QString& testName,
-                      QObject* parent);
-    QUrl largeFileUrl();
-    QUrl smallFileUrl();
+    MockError(Type type, QObject* parent = 0)
+        : Error(type, parent) {}
 
- protected slots:  // NOLINT(whitespace/indent)
-
-    void init() override;
+    MOCK_METHOD0(errorString, QString());
 };
 
-#endif // LOCAL_TREE_TESTCASE_H
+#endif
