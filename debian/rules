@@ -31,4 +31,4 @@ dh_auto_install:
 	dh_install --fail-missing
 
 %:
-	dh  $@
+	dh  $@ --parallel
