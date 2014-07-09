@@ -141,7 +141,7 @@ FileUpload::startTransfer() {
         emit started(false);
     }
 
-    _reply = _requestFactory->post(buildRequest(), _currentData);
+    _reply = _requestFactory->put(buildRequest(), _currentData);
     _reply->setReadBufferSize(throttle());
 
     connectToReplySignals();
