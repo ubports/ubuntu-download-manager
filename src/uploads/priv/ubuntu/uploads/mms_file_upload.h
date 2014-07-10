@@ -43,7 +43,7 @@ class MmsFileUpload : public FileUpload {
                   const QMap<QString, QString>& headers,
                   const QNetworkProxy& proxy,
                   QObject* parent = 0);
-    ~MmsFileUpload();
+    virtual ~MmsFileUpload();
 };
 
 }  // Daemon

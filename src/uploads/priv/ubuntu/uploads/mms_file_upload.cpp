@@ -42,7 +42,7 @@ MmsFileUpload::MmsFileUpload(const QString& id,
 }
 
 MmsFileUpload::~MmsFileUpload() {
-    delete _requestFactory;
+    _requestFactory->deleteLater();
 }
 
 }  // Daemon

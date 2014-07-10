@@ -40,6 +40,7 @@ class RequestFactory : public QObject {
  public:
     virtual NetworkReply* get(const QNetworkRequest& request);
     virtual NetworkReply* post(const QNetworkRequest& request, File* data);
+    virtual NetworkReply* put(const QNetworkRequest& request, File* data);
 
     // mainly for testing purposes
     virtual QList<QSslCertificate> acceptedCertificates();
