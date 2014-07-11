@@ -179,20 +179,20 @@ FileUpload::setThrottle(qulonglong speed) {
 }
 
 QNetworkRequest
+FileUpload::setRequestHeaders(QNetworkRequest request) {
+    request.setHeader(QNetworkRequest::ContentLengthHeader,
+        _currentData->size());
+    return request;
+}
+
+QNetworkRequest
 FileUpload::buildRequest() {
     QNetworkRequest request = QNetworkRequest(_url);
     foreach(const QString& header, _headers.keys()) {
         QString data = _headers[header];
         request.setRawHeader(header.toUtf8(), data.toUtf8());
     }
-    // very important we must ensure that we do not decompress any download
-    // else we will have an error in the checksum for example #1224678
-    request.setHeader(QNetworkRequest::ContentTypeHeader,
-        CONTENT_TYPE_HEADER);
-    request.setHeader(QNetworkRequest::ContentLengthHeader,
-        _currentData->size());
-
-    return request;
+    return setRequestHeaders(request);
 }
 
 void

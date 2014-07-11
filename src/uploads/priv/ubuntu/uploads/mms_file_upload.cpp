@@ -19,6 +19,10 @@
 #include <ubuntu/transfers/system/apn_request_factory.h>
 #include "mms_file_upload.h"
 
+namespace {
+    const QString& MMS_CONTENT_TYPE = "application/vnd.wap.mms-message";
+}
+
 namespace Ubuntu {
 
 namespace UploadManager {
@@ -26,7 +30,7 @@ namespace UploadManager {
 namespace Daemon {
 
 MmsFileUpload::MmsFileUpload(const QString& id,
-		    const QString& appId,
+                    const QString& appId,
                     const QString& path,
                     bool isConfined,
                     const QUrl& url,
@@ -43,6 +47,14 @@ MmsFileUpload::MmsFileUpload(const QString& id,
 
 MmsFileUpload::~MmsFileUpload() {
     _requestFactory->deleteLater();
+}
+
+QNetworkRequest 
+MmsFileUpload::setRequestHeaders(QNetworkRequest request) {
+    auto r = FileUpload::setRequestHeaders(request);
+    r.setHeader(QNetworkRequest::ContentTypeHeader,
+        MMS_CONTENT_TYPE);
+    return r;
 }
 
 }  // Daemon

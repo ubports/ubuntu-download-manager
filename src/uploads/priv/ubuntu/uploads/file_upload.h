@@ -76,6 +76,7 @@ class FileUpload : public Transfer {
     RequestFactory* _requestFactory;
 
  private:
+    virtual QNetworkRequest setRequestHeaders(QNetworkRequest request);
     QNetworkRequest buildRequest();
     void cleanUpCurrentData();
     void connectToReplySignals();

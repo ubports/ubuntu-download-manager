@@ -44,6 +44,8 @@ class MmsFileUpload : public FileUpload {
                   const QNetworkProxy& proxy,
                   QObject* parent = 0);
     virtual ~MmsFileUpload();
+ private:
+    QNetworkRequest setRequestHeaders(QNetworkRequest request) override;
 };
 
 }  // Daemon
