@@ -180,8 +180,6 @@ FileUpload::setThrottle(qulonglong speed) {
 
 QNetworkRequest
 FileUpload::setRequestHeaders(QNetworkRequest request) {
-    request.setHeader(QNetworkRequest::ContentLengthHeader,
-        _currentData->size());
     return request;
 }
 
