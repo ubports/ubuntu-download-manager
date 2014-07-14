@@ -20,7 +20,7 @@
 #include <ubuntu/transfers/system/logger.h>
 #include "file_upload.h"
 
-#define UP_LOG(LEVEL) LOG(LEVEL) << "Download ID{" << objectName() << "}"
+#define UP_LOG(LEVEL) LOG(LEVEL) << "Upload ID{" << objectName() << "}"
 
 namespace {
     const QString CONTENT_TYPE_HEADER = "multipart/form-data;";
@@ -135,9 +135,9 @@ FileUpload::startTransfer() {
         return;
     }
 
-    bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
+    bool canRead = _currentData->open(QIODevice::ReadOnly);
 
-    if (!canWrite) {
+    if (!canRead) {
         emit started(false);
     }
 
@@ -192,7 +192,9 @@ FileUpload::buildRequest() {
         QString data = _headers[header];
         request.setRawHeader(header.toUtf8(), data.toUtf8());
     }
-    return setRequestHeaders(request);
+    auto r = setRequestHeaders(request);
+    DLOG(INFO) << "Headers are:" << r.rawHeaderList();
+    return r;
 }
 
 void
@@ -261,7 +263,9 @@ FileUpload::onUploadProgress(qint64 currentProgress, qint64) {
 
 void
 FileUpload::onError(QNetworkReply::NetworkError code) {
-    UP_LOG(ERROR) << _url << " ERROR:" << ":" << code;
+    UP_LOG(ERROR) << _url << " ERROR:" << ":" << code << " " << 
+        QString(_reply->readAll());
+
     QString msg;
     QString errStr;
 

@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_LOGGING_H
 #define DOWNLOADER_LIB_LOGGING_H
 
+#include <QByteArray>
 #include <QFile>
 #include <QObject>
 #include <QString>
@@ -45,6 +46,7 @@ std::ostream& operator<<(std::ostream &out, const QList<QSslError>& errors);
 std::ostream& operator<<(std::ostream &out, const QDBusError& error);
 std::ostream& operator<<(std::ostream &out, const QVariantMap& map);
 std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map);
+std::ostream& operator<<(std::ostream &out, const QList<QByteArray>& strs);
 
 namespace Ubuntu {
 
