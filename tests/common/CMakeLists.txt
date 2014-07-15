@@ -8,11 +8,17 @@ set(SOURCES
 )
 
 set(HEADERS
+        apparmor.h
         base_testcase.h
         daemon_testcase.h
         local_tree_testcase.h
         matchers.h
+        process.h
+        process_factory.h
+	request_factory.h
+        system_network_info.h
         testing_interface.h
+	uuid_factory.h
 )
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
@@ -50,6 +56,7 @@ target_link_libraries(${TARGET}
         ${GMOCK_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
 	udm-common
+	udm-priv-common
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 )

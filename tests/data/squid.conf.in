@@ -1,0 +1,116 @@
+auth_param basic casesensitive on
+# Use a default auth using ncsa and the passed generated file.
+auth_param basic program ${auth_process} ${auth_file}
+#Recommended minimum configuration:
+acl localhost src 127.0.0.1/32
+acl to_localhost dst 127.0.0.0/32
+#
+# Example rule allowing access from your local networks.
+# Adapt to list your (internal) IP networks from where browsing
+# should be allowed
+acl all src all
+acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
+acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
+acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
+#
+acl SSL_ports port 443		# https
+acl SSL_ports port 563		# snews
+acl SSL_ports port 873		# rsync
+acl Safe_ports port 80		# http
+acl Safe_ports port 21		# ftp
+acl Safe_ports port 443		# https
+acl Safe_ports port 70		# gopher
+acl Safe_ports port 210		# wais
+acl Safe_ports port 1025-65535	# unregistered ports
+acl Safe_ports port 280		# http-mgmt
+acl Safe_ports port 488		# gss-http
+acl Safe_ports port 591		# filemaker
+acl Safe_ports port 777		# multiling http
+acl Safe_ports port 631		# cups
+acl Safe_ports port 873		# rsync
+acl Safe_ports port 901		# SWAT
+acl purge method PURGE
+acl CONNECT method CONNECT
+
+# make an acl for users that have auth
+acl password proxy_auth REQUIRED myportname ${auth_port_number}
+acl auth_port_connected myportname ${auth_port_number}
+acl nonauth_port_connected myportname ${noauth_port_number}
+
+# Settings used for the tests:
+# Allow users connected to the nonauth port
+# Allow users authenticated AND connected to the auth port
+http_access allow nonauth_port_connected
+http_access allow password
+
+#Recommended minimum configuration:
+#
+# Only allow purge requests from localhost
+http_access allow purge localhost
+http_access deny purge
+# Deny requests to unknown ports
+http_access deny !Safe_ports
+# Deny CONNECT to other than SSL ports
+http_access deny CONNECT !SSL_ports
+# Example rule allowing access from your local networks.
+# Adapt localnet in the ACL section to list your (internal) IP networks
+# from where browsing should be allowed
+#http_access allow localnet
+http_access allow localhost
+
+# And finally deny all other access to this proxy
+http_access deny all
+
+icp_access allow localnet
+icp_access deny all
+
+# Squid normally listens to port 3128 but we are going to listento two
+# different ports, one for auth one for nonauth.
+http_port ${noauth_port_number}
+http_port ${auth_port_number}
+
+#We recommend you to use at least the following line.
+hierarchy_stoplist cgi-bin ?
+
+# Default cache settings.
+cache_dir ufs ${spool_temp} 1000 16 256
+
+# access log settings
+access_log ${squid_temp}access.log squid
+
+# cache log settings
+cache_log ${squid_temp}cache.log
+
+# cache store log settings
+cache_store_log ${squid_temp}store.log
+
+# mime table conf
+# mime_table /usr/share/squid/mime.conf
+
+#Default pid file name
+pid_filename ${squid_temp}squid.pid
+
+# debug options (Full debugging)
+debug_options ALL,1
+
+#Default netdb_filename
+
+#Suggested default:
+refresh_pattern ^ftp:		1440	20%	10080
+refresh_pattern ^gopher:	1440	0%	1440
+refresh_pattern -i (/cgi-bin/|\?) 0	0%	0
+refresh_pattern (Release|Packages(.gz)*)$	0	20%	2880
+# example line deb packages
+refresh_pattern .		0	20%	4320
+
+# Don't upgrade ShoutCast responses to HTTP
+acl shoutcast rep_header X-HTTP09-First-Line ^ICY.[0-9]
+
+# Apache mod_gzip and mod_deflate known to be broken so don't trust
+# Apache to signal ETag correctly on such responses
+acl apache rep_header Server ^Apache
+
+hosts_file /etc/hosts
+
+# Leave coredumps in the first cache dir
+coredump_dir ${spool_temp}squid

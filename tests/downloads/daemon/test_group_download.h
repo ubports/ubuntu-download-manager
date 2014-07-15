@@ -22,12 +22,13 @@
 #include <QObject>
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/downloads/group_download.h>
+#include <process_factory.h>
+#include <request_factory.h>
+#include <system_network_info.h>
+
 #include "base_testcase.h"
 #include "factory.h"
 #include "file_manager.h"
-#include "process_factory.h"
-#include "request_factory.h"
-#include "system_network_info.h"
 
 using namespace Ubuntu::DownloadManager;
 using namespace Ubuntu::DownloadManager::Daemon;

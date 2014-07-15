@@ -14,55 +14,19 @@
 #
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
-set(DAEMON_TESTS
-	test_apn_request_factory
-	test_apparmor
-        test_base_download
-	test_cancel_download_transition
-        test_daemon
-	test_download
-        test_download_factory
-	test_download_manager
-	test_downloads_db
-	test_file_download_sm
-	test_filename_mutex
-	test_final_state
-        test_group_download
-        test_metadata
-	test_mms_download
-	test_network_error_transition
-	test_resume_download_transition
-	test_ssl_error_transition
-	test_start_download_transition
-	test_stop_request_transition
-        test_transfers_queue
+set(UPLOAD_DAEMON_TESTS
+        test_upload_factory
 )
 
-foreach(test ${DAEMON_TESTS})
+foreach(test ${UPLOAD_DAEMON_TESTS})
         # set the sources per test
-        set(${test}_DAEMON_SOURCES
+        set(${test}_UPLOAD_DAEMON_SOURCES
+                squid.cpp
                 ${test}.cpp
         )
 
-        set(${test}_DAEMON_HEADERS
-                application.h
-                cryptographic_hash.h
-		database.h
-                dbus_connection.h
-		dbus_proxy.h
-		dbus_proxy_factory.h
-		download.h
-                factory.h
-                file_manager.h
-                filename_mutex.h
-		manager.h
-		network_reply.h
-		pending_reply.h
-                queue.h
-                sm_file_download.h
-                timer.h
-                transfer.h
-                ${test}.h
+        set(${test}_UPLOAD_DAEMON_HEADERS
+                squid.h
         )
 
 endforeach(test)
@@ -81,15 +45,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
-include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
-include_directories(${CMAKE_SOURCE_DIR}/src/downloads/client)
-include_directories(${CMAKE_SOURCE_DIR}/src/downloads/priv)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/common)
+include_directories(${CMAKE_SOURCE_DIR}/src/uploads/priv)
 include_directories(${CMAKE_SOURCE_DIR}/tests/common)
 
 link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
-set(DAEMON_TESTS_LIBS
+set(UPLOAD_DAEMON_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
         ${Qt5Core_LIBRARIES}
@@ -100,21 +63,21 @@ set(DAEMON_TESTS_LIBS
         ${GTEST_BOTH_LIBRARIES}
 	udm-common
 	udm-priv-common
-	ubuntu-download-manager-common
-	ubuntu-download-manager-priv
+	ubuntu-upload-manager-common
+	ubuntu-upload-manager-priv
         ubuntu-download-manager-test-lib
 )
 
 
-foreach(test ${DAEMON_TESTS})
+foreach(test ${UPLOAD_DAEMON_TESTS})
         # set targets, linked libs and test
         add_executable(${test}_daemon
-                ${${test}_DAEMON_SOURCES}
-                ${${test}_DAEMON_HEADERS}
+                ${${test}_UPLOAD_DAEMON_SOURCES}
+                ${${test}_UPLOAD_DAEMON_HEADERS}
         )
 
         target_link_libraries(${test}_daemon
-                ${DAEMON_TESTS_LIBS}
+                ${UPLOAD_DAEMON_TESTS_LIBS}
         )
 
 

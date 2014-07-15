@@ -16,11 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_DOWNLOAD_FACTORY_H
-#define TEST_DOWNLOAD_FACTORY_H
+#ifndef TEST_UPLOAD_FACTORY_H
+#define TEST_UPLOAD_FACTORY_H
 
 #include <QObject>
-#include <ubuntu/downloads/factory.h>
+#include <ubuntu/uploads/factory.h>
 #include <apparmor.h>
 #include <process_factory.h>
 #include <request_factory.h>
@@ -31,34 +31,26 @@
 
 using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::Transfers::Tests;
-using namespace Ubuntu::DownloadManager;
-using namespace Ubuntu::DownloadManager::Daemon;
+using namespace Ubuntu::UploadManager;
+using namespace Ubuntu::UploadManager::Daemon;
 
-class TestDownloadFactory : public BaseTestCase {
+class TestUploadFactory : public BaseTestCase {
     Q_OBJECT
 
  public:
-    explicit TestDownloadFactory(QObject *parent = 0)
-        : BaseTestCase("TestDownloadFactory", parent) {}
+    explicit TestUploadFactory(QObject *parent = 0)
+        : BaseTestCase("TestUploadFactory", parent) {}
 
  private slots:  // NOLINT(whitespace/indent)
 
     void init() override;
     void cleanup() override;
-
-    void testCreateDownload();
-    void testCreateDownloadWithHash();
-    void testCreateMmsDownload();
-    void testCreateGroupDownload();
-    void testCreateDownloadWithValidUuid();
-    void testCreateDownloadWithHashAndUuid();
-    void testCreateGroupDownloadWithValidUuid();
-    void testCreateDownloadForGroup();
-    void testCreateDownloadForGroupWithHash();
+    void testCreateUpload();
+    void testCreateMmsUpload();
 
  private:
     MockAppArmor* _apparmor;
-    Factory* _downFactory;
+    Factory* _upFactory;
 };
 
-#endif  // TEST_DOWNLOAD_FACTORY_H
+#endif  // TEST_UPLOAD_FACTORY_H
