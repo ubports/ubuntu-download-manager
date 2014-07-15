@@ -38,6 +38,7 @@
     </signal>
 
     <signal name="finished">
+        <arg name="path" type="s" direction="out"/>
     </signal>
 
     <signal name="error">
