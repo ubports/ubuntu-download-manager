@@ -43,12 +43,13 @@ FileUpload::FileUpload(const QString& id,
                const QString& appId,
                const QString& path,
                bool isConfined,
+               const QString& rootPath,
                const QUrl& url,
                const QString& filePath,
                const QVariantMap& metadata,
                const QMap<QString, QString>& headers,
                QObject* parent)
-    : Transfer(id, appId, path, isConfined, parent),
+    : Transfer(id, appId, path, isConfined, rootPath, parent),
       _url(url),
       _filePath(filePath),
       _metadata(metadata),
@@ -304,8 +305,9 @@ FileUpload::onError(QNetworkReply::NetworkError code) {
 void
 FileUpload::onFinished() {
     setState(Transfer::FINISH);
+    // TODO: write the response
     UP_LOG(INFO) << "EMIT finished";
-    emit finished();
+    emit finished("");
     _reply->deleteLater();
     _reply = nullptr;
 }

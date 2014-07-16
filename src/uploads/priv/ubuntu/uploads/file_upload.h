@@ -50,6 +50,7 @@ class FileUpload : public Transfer {
                const QString& appId,
                const QString& path,
                bool isConfined,
+               const QString& rootPath,
                const QUrl& url,
                const QString& filePath,
                const QVariantMap& metadata,
@@ -88,7 +89,7 @@ class FileUpload : public Transfer {
     void onSslErrors(const QList<QSslError>&);
 
  signals:
-    void finished();
+    void finished(const QString& path);
     void error(const QString& error);
     void authError(AuthErrorStruct error);
     void httpError(HttpErrorStruct error);
@@ -105,6 +106,7 @@ class FileUpload : public Transfer {
     QObject* _adaptor = nullptr;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
+    File* _reponseData = nullptr;
 };
 
 }  // Daemon

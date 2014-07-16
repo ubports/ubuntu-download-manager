@@ -78,7 +78,7 @@ Factory::createUpload(const QString& dbusOwner,
         getSecurityDetails(dbusOwner, metadata));
     auto dbusPath = details->dbusPath.arg("upload");
     auto upload = new FileUpload(details->id, details->appId,
-            dbusPath, details->isConfined, url,
+            dbusPath, details->isConfined, details->localPath, url,
 	    filePath, metadata, headers);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);
@@ -100,7 +100,8 @@ Factory::createMmsUpload(const QString& dbusOwner,
         getSecurityDetails(dbusOwner, metadata));
     auto dbusPath = details->dbusPath.arg("upload");
     auto upload = new MmsFileUpload(details->id, "", dbusPath,
-        details->isConfined, url, filePath, metadata, headers, proxy);
+        details->isConfined, details->localPath, url, filePath,
+        metadata, headers, proxy);
     auto adaptor = new UploadAdaptor(upload);
     upload->setAdaptor(adaptor);
     return upload;

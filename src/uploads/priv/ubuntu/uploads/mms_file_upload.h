@@ -37,6 +37,7 @@ class MmsFileUpload : public FileUpload {
                   const QString& appId,
                   const QString& path,
                   bool isConfined,
+                  const QString& rootPath,
                   const QUrl& url,
                   const QString& filePath,
                   const QVariantMap& metadata,

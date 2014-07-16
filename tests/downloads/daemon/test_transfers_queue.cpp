@@ -41,9 +41,9 @@ TestTransferQueue::init() {
     _networkInfo = new MockSystemNetworkInfo();
     SystemNetworkInfo::setInstance(_networkInfo);
     _first = new MockTransfer(UuidUtils::getDBusString(QUuid::createUuid()),
-        "first-path", _isConfined);
+        "first-path", _isConfined, "/root/path");
     _second = new MockTransfer(UuidUtils::getDBusString(QUuid::createUuid()),
-        "second-path", _isConfined);
+        "second-path", _isConfined, "/root/path");
     _q = new Queue();
 }
 

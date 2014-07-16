@@ -33,8 +33,9 @@ class MockTransfer : public Transfer {
     MockTransfer(const QString& id,
              const QString& path,
              bool isConfined,
+             const QString& rootPath,
              QObject* parent = 0)
-        : Transfer(id, "", path, isConfined, parent) {}
+        : Transfer(id, "", path, isConfined, rootPath, parent) {}
 
     MOCK_CONST_METHOD0(transferId, QString());
     MOCK_CONST_METHOD0(path, QString());

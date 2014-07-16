@@ -54,10 +54,6 @@ class Download : public Transfer {
 
     virtual ~Download();
 
-    QString rootPath() const {
-        return _rootPath;
-    }
-
     QObject* adaptor() const {
         return _adaptor;
     }
@@ -101,7 +97,6 @@ class Download : public Transfer {
     virtual void emitError(const QString& error);
 
  private:
-    QString _rootPath;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
     QObject* _adaptor = nullptr;
