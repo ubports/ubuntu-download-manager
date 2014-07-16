@@ -242,9 +242,9 @@ FileUpload::emitError(const QString& errorStr) {
 }
 
 void
-FileUpload::onUploadProgress(qint64 currentProgress, qint64) {
+FileUpload::onUploadProgress(qint64 currentProgress, qint64 total) {
     _progress = currentProgress;
-    emit progress(_progress, _currentData->size());
+    emit progress(_progress, total);
 }
 
 void

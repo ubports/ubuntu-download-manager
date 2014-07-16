@@ -52,8 +52,6 @@ class TestFileUpload : public BaseTestCase {
     void testSetThrottlePresentReply();
     void testFinishedEmitted();
     void testUploadProgressEmitted();
-    void testOnFinishedResponseOnDisk();
-    void testOnFinishedUplodFileNotDeleted();
 
  private:
     void verifyMocks();

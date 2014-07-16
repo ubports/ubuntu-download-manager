@@ -226,6 +226,76 @@ void
 TestFileUpload::testFinishedEmitted() {
     // fake the finish of the upload and ensure that we do get the signal
     auto file = new MockFile("test");
+    auto responseFile = new MockFile("response");
+    auto reply = new MockNetworkReply();
+    QByteArray responseData(5000, 'f');
+
+    // mocks expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+        .Times(2)
+        .WillOnce(Return(file))
+        .WillOnce(Return(responseFile));
+
+    EXPECT_CALL(*file, open(_))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, close())
+        .Times(1);
+
+    EXPECT_CALL(*responseFile, open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*responseFile, write(responseData))
+        .Times(1);
+
+    EXPECT_CALL(*responseFile, close())
+        .Times(1);
+
+    EXPECT_CALL(*_reqFactory, post(RequestDoesNotHaveHeader("Content-Length"), _))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, setReadBufferSize(_))
+        .Times(1);
+
+    EXPECT_CALL(*reply, readAll())
+        .Times(1)
+        .WillOnce(Return(responseData));
+
+    auto upload = new FileUpload(_id, _appId, _path, _isConfined, _rootPath,
+        _url, _filePath, _metadata, _headers);
+
+    SignalBarrier startSpy(upload, SIGNAL(started(bool)));
+
+    upload->start();  // change state
+    upload->startTransfer();
+
+    // emit the finished signal from the reply
+
+    QVERIFY(startSpy.ensureSignalEmitted());
+    QTRY_COMPARE(startSpy.count(), 1);
+
+    QList<QVariant> arguments = startSpy.takeFirst();
+    QVERIFY(arguments.at(0).toBool());
+
+    SignalBarrier finishSpy(upload, SIGNAL(finished(const QString&)));
+
+    reply->finished();
+
+    QVERIFY(finishSpy.ensureSignalEmitted());
+    QTRY_COMPARE(finishSpy.count(), 1);
+
+    delete upload;
+
+    verifyMocks();
+}
+
+void
+TestFileUpload::testUploadProgressEmitted() {
+    // emit the process signal an test that it does work
+    auto file = new MockFile("test");
     auto reply = new MockNetworkReply();
 
     // mocks expectations
@@ -240,7 +310,7 @@ TestFileUpload::testFinishedEmitted() {
     EXPECT_CALL(*file, close())
         .Times(1);
 
-    EXPECT_CALL(*_reqFactory, post(RequestDoesNotHaveHeader("Content-Length"), _))
+    EXPECT_CALL(*_reqFactory, post(_, _))
         .Times(1)
         .WillOnce(Return(reply));
 
@@ -250,35 +320,27 @@ TestFileUpload::testFinishedEmitted() {
     auto upload = new FileUpload(_id, _appId, _path, _isConfined, _rootPath,
         _url, _filePath, _metadata, _headers);
 
-    SignalBarrier spy(upload, SIGNAL(started(bool)));
+    SignalBarrier startSpy(upload, SIGNAL(started(bool)));
 
     upload->start();  // change state
     upload->startTransfer();
 
-    QVERIFY(spy.ensureSignalEmitted());
-    QTRY_COMPARE(spy.count(), 1);
+    QVERIFY(startSpy.ensureSignalEmitted());
+    QTRY_COMPARE(startSpy.count(), 1);
 
-    QList<QVariant> arguments = spy.takeFirst();
+    QList<QVariant> arguments = startSpy.takeFirst();
     QVERIFY(arguments.at(0).toBool());
+
+    SignalBarrier progressSpy(upload, SIGNAL(progress(qulonglong, qulonglong)));
+
+    reply->uploadProgress(12, 90);
+
+    QVERIFY(progressSpy.ensureSignalEmitted());
+    QTRY_COMPARE(progressSpy.count(), 1);
 
     delete upload;
 
     verifyMocks();
-}
-
-void
-TestFileUpload::testUploadProgressEmitted() {
-    QFAIL("Not implemented.");
-}
-
-void
-TestFileUpload::testOnFinishedResponseOnDisk() {
-    QFAIL("Not implemented.");
-}
-
-void
-TestFileUpload::testOnFinishedUplodFileNotDeleted() {
-    QFAIL("Not implemented.");
 }
 
 QTEST_MAIN(TestFileUpload)
