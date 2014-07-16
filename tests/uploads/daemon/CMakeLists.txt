@@ -16,6 +16,7 @@
 
 set(UPLOAD_DAEMON_TESTS
         test_upload_factory
+        test_file_upload
 )
 
 foreach(test ${UPLOAD_DAEMON_TESTS})

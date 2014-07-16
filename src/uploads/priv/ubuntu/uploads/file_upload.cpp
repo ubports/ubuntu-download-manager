@@ -16,8 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDir>
 #include <QFileInfo>
 #include <ubuntu/transfers/system/logger.h>
+#include <ubuntu/transfers/system/filename_mutex.h>
+
 #include "file_upload.h"
 
 #define UP_LOG(LEVEL) LOG(LEVEL) << "Upload ID{" << objectName() << "}"
@@ -29,6 +32,7 @@ namespace {
     const QString AUTH_ERROR = "AUTHENTICATION ERROR";
     const QString PROXY_AUTH_ERROR = "PROXY_AUTHENTICATION ERROR";
     const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
+    const QString RESPONSE_EXTENSION = ".response";
 }
 
 namespace Ubuntu {
@@ -63,13 +67,16 @@ FileUpload::FileUpload(const QString& id,
         setLastError(QString("Path is not absolute: '%1'").arg(filePath));
     }
 
-    if (!info.exists()) {
+    if (isValid() && !info.exists()) {
         UP_LOG(INFO) << "Path does not exist: " << filePath;
         setIsValid(false);
         setLastError(QString("Path does not exist: '%1'").arg(filePath));
-    } else {
+    }
+
+    if (isValid()) {
         _currentData = FileManager::instance()->createFile(filePath);
     }
+
     _requestFactory = RequestFactory::instance();
 }
 
@@ -110,7 +117,6 @@ FileUpload::cancelTransfer() {
     }
 
     // remove current data and metadata
-    cleanUpCurrentData();
     emit canceled(true);
 }
 
@@ -140,6 +146,7 @@ FileUpload::startTransfer() {
 
     if (!canRead) {
         emit started(false);
+        return;
     }
 
     _reply = _requestFactory->post(buildRequest(), _currentData);
@@ -197,25 +204,6 @@ FileUpload::buildRequest() {
 }
 
 void
-FileUpload::cleanUpCurrentData() {
-    bool success = true;
-    QFile::FileError error = QFile::NoError;
-    if (_currentData != nullptr) {
-        success = _currentData->remove();
-
-        if (!success)
-            error = _currentData->error();
-
-        _currentData->deleteLater();
-        _currentData = nullptr;
-    }
-
-    if (!success)
-        UP_LOG(WARNING) << "Error " << error <<
-            "removing file with path" << _filePath;
-}
-
-void
 FileUpload::connectToReplySignals() {
     if (_reply != nullptr) {
         connect(_reply, &NetworkReply::uploadProgress,
@@ -249,7 +237,6 @@ FileUpload::emitError(const QString& errorStr) {
     disconnectFromReplySignals();
     _reply->deleteLater();
     _reply = nullptr;
-    cleanUpCurrentData();
     setState(Transfer::ERROR);
     emit error(errorStr);
 }
@@ -262,7 +249,7 @@ FileUpload::onUploadProgress(qint64 currentProgress, qint64) {
 
 void
 FileUpload::onError(QNetworkReply::NetworkError code) {
-    UP_LOG(ERROR) << _url << " ERROR:" << ":" << code << " " << 
+    UP_LOG(ERROR) << _url << " ERROR:" << ":" << code << " " <<
         QString(_reply->readAll());
 
     QString msg;
@@ -302,12 +289,34 @@ FileUpload::onError(QNetworkReply::NetworkError code) {
     emitError(errStr);
 }
 
+QString
+FileUpload::writeResponseToDisk() {
+    QFileInfo fi(_filePath);
+    auto desiredPath = rootPath() + QDir::separator() +
+        fi.fileName() + RESPONSE_EXTENSION;
+    auto responsePath = FileNameMutex::instance()->lockFileName(desiredPath);
+    QScopedPointer<File> f(FileManager::instance()->createFile(responsePath));
+
+    bool canWrite = f->open(QIODevice::ReadWrite | QFile::Append);
+    if (!canWrite) {
+        emit error("Could not write to response in disk.");
+    }
+
+    f->write(_reply->readAll());
+    f->close();
+    FileNameMutex::instance()->unlockFileName(desiredPath);
+    return responsePath;
+}
+
 void
 FileUpload::onFinished() {
     setState(Transfer::FINISH);
-    // TODO: write the response
+    // it is important to write the response of the upload to a file for the
+    // client to process it
+    auto path = writeResponseToDisk();
+
     UP_LOG(INFO) << "EMIT finished";
-    emit finished("");
+    emit finished(path);
     _reply->deleteLater();
     _reply = nullptr;
 }

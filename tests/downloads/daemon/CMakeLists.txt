@@ -53,10 +53,8 @@ foreach(test ${DAEMON_TESTS})
 		dbus_proxy_factory.h
 		download.h
                 factory.h
-                file_manager.h
                 filename_mutex.h
 		manager.h
-		network_reply.h
 		pending_reply.h
                 queue.h
                 sm_file_download.h

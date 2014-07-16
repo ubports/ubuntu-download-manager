@@ -11,8 +11,10 @@ set(HEADERS
         apparmor.h
         base_testcase.h
         daemon_testcase.h
+	file_manager.h
         local_tree_testcase.h
         matchers.h
+	network_reply.h
         process.h
         process_factory.h
 	request_factory.h

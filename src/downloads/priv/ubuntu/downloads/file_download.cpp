@@ -210,6 +210,7 @@ FileDownload::startTransfer() {
 
     if (!canWrite) {
         emit started(false);
+        return;
     }
 
     DOWN_LOG(INFO) << "Network is accessible, performing download request";

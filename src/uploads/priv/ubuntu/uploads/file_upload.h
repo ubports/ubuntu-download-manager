@@ -79,12 +79,12 @@ class FileUpload : public Transfer {
 
  private:
     QNetworkRequest buildRequest();
-    void cleanUpCurrentData();
     void connectToReplySignals();
     void disconnectFromReplySignals();
     void emitError(const QString& error);
     void onUploadProgress(qint64 currentProgress, qint64);
     void onError(QNetworkReply::NetworkError);
+    QString writeResponseToDisk();
     void onFinished();
     void onSslErrors(const QList<QSslError>&);
 
@@ -106,7 +106,6 @@ class FileUpload : public Transfer {
     QObject* _adaptor = nullptr;
     NetworkReply* _reply = nullptr;
     File* _currentData = nullptr;
-    File* _reponseData = nullptr;
 };
 
 }  // Daemon
