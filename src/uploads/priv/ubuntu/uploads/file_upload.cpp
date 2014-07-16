@@ -23,7 +23,7 @@
 
 #include "file_upload.h"
 
-#define UP_LOG(LEVEL) LOG(LEVEL) << "Upload ID{" << objectName() << "}"
+#define UP_LOG(LEVEL) LOG(LEVEL) << "Upload ID{" << objectName() << " } "
 
 namespace {
     const QString CONTENT_TYPE_HEADER = "multipart/form-data;";

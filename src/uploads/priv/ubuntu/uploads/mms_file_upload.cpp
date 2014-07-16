@@ -46,6 +46,23 @@ MmsFileUpload::MmsFileUpload(const QString& id,
     setAddToQueue(false);
 }
 
+MmsFileUpload::MmsFileUpload(const QString& id,
+                  const QString& appId,
+                  const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
+                  const QUrl& url,
+                  const QString& filePath,
+                  const QVariantMap& metadata,
+                  const QMap<QString, QString>& headers,
+                  RequestFactory* requestFactory,
+                  QObject* parent)
+    : FileUpload(id, appId, path, isConfined, rootPath, url, filePath,
+                   metadata, headers, parent) {
+    _requestFactory = requestFactory;
+    setAddToQueue(false);
+}
+
 MmsFileUpload::~MmsFileUpload() {
     _requestFactory->deleteLater();
 }

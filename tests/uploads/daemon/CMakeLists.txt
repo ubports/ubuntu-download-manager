@@ -15,8 +15,9 @@
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
 set(UPLOAD_DAEMON_TESTS
-        test_upload_factory
         test_file_upload
+	test_mms_upload
+        test_upload_factory
 )
 
 foreach(test ${UPLOAD_DAEMON_TESTS})

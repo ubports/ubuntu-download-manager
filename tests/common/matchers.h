@@ -101,7 +101,7 @@ MATCHER_P(RequestHasHeader, value, "Returns if the request does not have a given
     }
 }
 
-MATCHER_P2(RequestHasHeaderWithValue, header, value, "Returns if the request does not have a given header.") {
+MATCHER_P2(RequestHasHeaderWithValue, header, value, "Returns if the request does have a given value in a header.") {
     auto request = static_cast<QNetworkRequest>(arg);
     auto headerS = static_cast<QString>(header);
     auto valueS = static_cast<QString>(value);
