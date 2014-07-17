@@ -227,7 +227,7 @@ TestFileUpload::testFinishedEmitted() {
     // fake the finish of the upload and ensure that we do get the signal
     auto file = new MockFile("test");
     auto responseFile = new MockFile("response");
-    auto reply = new MockNetworkReply();
+    QScopedPointer<MockNetworkReply> reply(new MockNetworkReply());
     QByteArray responseData(5000, 'f');
 
     // mocks expectations
@@ -255,12 +255,12 @@ TestFileUpload::testFinishedEmitted() {
 
     EXPECT_CALL(*_reqFactory, post(RequestDoesNotHaveHeader("Content-Length"), _))
         .Times(1)
-        .WillOnce(Return(reply));
+        .WillOnce(Return(reply.data()));
 
-    EXPECT_CALL(*reply, setReadBufferSize(_))
+    EXPECT_CALL(*reply.data(), setReadBufferSize(_))
         .Times(1);
 
-    EXPECT_CALL(*reply, readAll())
+    EXPECT_CALL(*reply.data(), readAll())
         .Times(1)
         .WillOnce(Return(responseData));
 
