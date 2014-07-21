@@ -50,6 +50,7 @@ class FileUpload : public Transfer {
                const QString& appId,
                const QString& path,
                bool isConfined,
+               const QString& rootPath,
                const QUrl& url,
                const QString& filePath,
                const QVariantMap& metadata,
@@ -78,17 +79,17 @@ class FileUpload : public Transfer {
 
  private:
     QNetworkRequest buildRequest();
-    void cleanUpCurrentData();
     void connectToReplySignals();
     void disconnectFromReplySignals();
     void emitError(const QString& error);
     void onUploadProgress(qint64 currentProgress, qint64);
     void onError(QNetworkReply::NetworkError);
+    QString writeResponseToDisk();
     void onFinished();
     void onSslErrors(const QList<QSslError>&);
 
  signals:
-    void finished();
+    void finished(const QString& path);
     void error(const QString& error);
     void authError(AuthErrorStruct error);
     void httpError(HttpErrorStruct error);

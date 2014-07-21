@@ -33,15 +33,33 @@ MmsFileUpload::MmsFileUpload(const QString& id,
                     const QString& appId,
                     const QString& path,
                     bool isConfined,
+                    const QString& rootPath,
                     const QUrl& url,
                     const QString& filePath,
                     const QVariantMap& metadata,
                     const QMap<QString, QString>& headers,
                     const QNetworkProxy& proxy,
                     QObject* parent)
-    : FileUpload(id, appId, path, isConfined, url, filePath,
+    : FileUpload(id, appId, path, isConfined, rootPath, url, filePath,
                    metadata, headers, parent){
     _requestFactory = new ApnRequestFactory(proxy);
+    setAddToQueue(false);
+}
+
+MmsFileUpload::MmsFileUpload(const QString& id,
+                  const QString& appId,
+                  const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
+                  const QUrl& url,
+                  const QString& filePath,
+                  const QVariantMap& metadata,
+                  const QMap<QString, QString>& headers,
+                  RequestFactory* requestFactory,
+                  QObject* parent)
+    : FileUpload(id, appId, path, isConfined, rootPath, url, filePath,
+                   metadata, headers, parent) {
+    _requestFactory = requestFactory;
     setAddToQueue(false);
 }
 
@@ -49,7 +67,7 @@ MmsFileUpload::~MmsFileUpload() {
     _requestFactory->deleteLater();
 }
 
-QNetworkRequest 
+QNetworkRequest
 MmsFileUpload::setRequestHeaders(QNetworkRequest request) {
     auto r = FileUpload::setRequestHeaders(request);
     r.setHeader(QNetworkRequest::ContentTypeHeader,

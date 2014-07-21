@@ -46,6 +46,7 @@ class MockNetworkReply : public NetworkReply {
     MOCK_CONST_METHOD0(errorString, QString());
 
     using NetworkReply::downloadProgress;
+    using NetworkReply::uploadProgress;
     using NetworkReply::error;
     using NetworkReply::finished;
     using NetworkReply::sslErrors;

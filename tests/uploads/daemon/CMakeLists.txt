@@ -15,6 +15,8 @@
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
 set(UPLOAD_DAEMON_TESTS
+        test_file_upload
+        test_mms_upload
         test_upload_factory
 )
 
@@ -53,18 +55,18 @@ link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
 set(UPLOAD_DAEMON_TESTS_LIBS
-	${NIH_DBUS_LIBRARIES}
-	${GLOG_LIBRARIES}
+        ${NIH_DBUS_LIBRARIES}
+        ${GLOG_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
         ${Qt5DBus_LIBRARIES}
-	${Qt5Test_LIBRARIES}
+        ${Qt5Test_LIBRARIES}
         ${GMOCK_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
-	udm-common
-	udm-priv-common
-	ubuntu-upload-manager-common
-	ubuntu-upload-manager-priv
+        udm-common
+        udm-priv-common
+        ubuntu-upload-manager-common
+        ubuntu-upload-manager-priv
         ubuntu-download-manager-test-lib
 )
 

@@ -22,9 +22,9 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+#include <network_reply.h>
 #include "filename_mutex.h"
 #include "matchers.h"
-#include "network_reply.h"
 #include "process.h"
 #include "test_download.h"
 
@@ -1983,7 +1983,7 @@ TestDownload::testSetRawHeadersResume() {
     QByteArray data;  // empty data to ensure we do not send the range header
     auto file = new MockFile("test");
     QScopedPointer<MockNetworkReply> firstReply(new MockNetworkReply());
-    auto secondReply= new MockNetworkReply();
+    auto secondReply = new MockNetworkReply();
     qint64 size = 300;
 
     // write the expectations of the reply which is what we are

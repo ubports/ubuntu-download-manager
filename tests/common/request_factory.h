@@ -40,6 +40,7 @@ class MockRequestFactory : public RequestFactory {
         : RequestFactory(parent) {}
 
     MOCK_METHOD1(get, NetworkReply*(const QNetworkRequest&));
+    MOCK_METHOD2(post, NetworkReply*(const QNetworkRequest&, File*));
     MOCK_METHOD0(acceptedCertificates, QList<QSslCertificate>());
     MOCK_METHOD1(setAcceptedCertificates,
         void(const QList<QSslCertificate>&));

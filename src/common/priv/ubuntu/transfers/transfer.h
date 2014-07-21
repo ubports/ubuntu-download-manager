@@ -44,12 +44,14 @@ class Transfer : public QObject {
              const QString& appId,
              const QString& path,
              bool isConfined,
+             const QString& rootPath,
              QObject* parent = 0);
 
     virtual QString transferId() const;
     virtual QString transferAppId() const;
     virtual QString path() const;
     virtual bool isConfined() const;
+    virtual QString rootPath() const;
     virtual Transfer::State state() const;
     virtual void setState(Transfer::State state);
     virtual bool canTransfer();
@@ -103,6 +105,7 @@ class Transfer : public QObject {
     Transfer::State _state;
     QString _dbusPath;
     bool _isConfined;
+    QString _rootPath;
     System::SystemNetworkInfo* _networkInfo;
 };
 

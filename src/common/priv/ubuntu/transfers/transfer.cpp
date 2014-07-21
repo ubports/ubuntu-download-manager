@@ -27,6 +27,7 @@ Transfer::Transfer(const QString& id,
          const QString& appId,
          const QString& path,
          bool isConfined,
+         const QString& rootPath,
          QObject* parent)
     : QObject(parent),
       _id(id),
@@ -35,7 +36,8 @@ Transfer::Transfer(const QString& id,
       _allowMobileData(true),
       _state(Transfer::IDLE),
       _dbusPath(path),
-      _isConfined(isConfined) {
+      _isConfined(isConfined),
+      _rootPath(rootPath) {
     _networkInfo = System::SystemNetworkInfo::instance();
     setObjectName(id);
 }
@@ -59,6 +61,12 @@ bool
 Transfer::isConfined() const {
     return _isConfined;
 }
+
+QString
+Transfer::rootPath() const {
+    return _rootPath;
+}
+
 
 Transfer::State
 Transfer::state() const {

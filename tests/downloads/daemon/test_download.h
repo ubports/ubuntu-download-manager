@@ -25,13 +25,13 @@
 #include <ubuntu/downloads/file_download.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+#include <file_manager.h>
 #include <process_factory.h>
 #include <request_factory.h>
 #include <system_network_info.h>
 
 #include "base_testcase.h"
 #include "cryptographic_hash.h"
-#include "file_manager.h"
 
 using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::Transfers::Tests;

@@ -46,7 +46,7 @@ BaseTestCase::testDirectory() {
     pathComponents << dataPath << objectName();
     QString path = pathComponents.join(QDir::separator());
 
-    if (!QDir().exists(path)) 
+    if (!QDir().exists(path))
         QDir().mkpath(path);
 
     return path;
@@ -57,9 +57,11 @@ BaseTestCase::dataDirectory() {
     // get the file name and use it to get the data path that is in the
     // same dir
     QDir dir(".");
+    dir.cdUp();
+    dir.cdUp();
     dir.makeAbsolute();
 
-    return dir.path() + "/tests/data";
+    return dir.path() + "/data";
 }
 
 bool

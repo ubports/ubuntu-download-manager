@@ -34,8 +34,7 @@ Download::Download(const QString& id,
                    const QVariantMap& metadata,
                    const QMap<QString, QString>& headers,
                    QObject* parent)
-    : Transfer(id, appId, path, isConfined, parent),
-      _rootPath(rootPath),
+    : Transfer(id, appId, path, isConfined, rootPath, parent),
       _metadata(metadata),
       _headers(headers) {
 }

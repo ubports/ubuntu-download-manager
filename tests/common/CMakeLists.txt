@@ -11,14 +11,16 @@ set(HEADERS
         apparmor.h
         base_testcase.h
         daemon_testcase.h
+        file_manager.h
         local_tree_testcase.h
         matchers.h
+        network_reply.h
         process.h
         process_factory.h
-	request_factory.h
+        request_factory.h
         system_network_info.h
         testing_interface.h
-	uuid_factory.h
+        uuid_factory.h
 )
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
@@ -42,21 +44,21 @@ link_directories(${NIH_DBUS_LIBDIR})
 link_directories(${GLOG_DBUS_LIBDIR})
 
 add_library(${TARGET} STATIC
-	${HEADERS}
-	${SOURCES}
+    ${HEADERS}
+    ${SOURCES}
 )
 
 target_link_libraries(${TARGET}
-	${NIH_DBUS_LIBRARIES}
-	${GLOG_LIBRARIES}
+    ${NIH_DBUS_LIBRARIES}
+    ${GLOG_LIBRARIES}
         ${Qt5Core_LIBRARIES}
         ${Qt5Sql_LIBRARIES}
         ${Qt5DBus_LIBRARIES}
-	${Qt5Test_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
         ${GMOCK_LIBRARY}
         ${GTEST_BOTH_LIBRARIES}
-	udm-common
-	udm-priv-common
-	ubuntu-download-manager-common
-	ubuntu-download-manager-client
+    udm-common
+    udm-priv-common
+    ubuntu-download-manager-common
+    ubuntu-download-manager-client
 )

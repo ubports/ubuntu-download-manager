@@ -37,11 +37,24 @@ class MmsFileUpload : public FileUpload {
                   const QString& appId,
                   const QString& path,
                   bool isConfined,
+                  const QString& rootPath,
                   const QUrl& url,
                   const QString& filePath,
                   const QVariantMap& metadata,
                   const QMap<QString, QString>& headers,
                   const QNetworkProxy& proxy,
+                  QObject* parent = 0);
+
+    MmsFileUpload(const QString& id,
+                  const QString& appId,
+                  const QString& path,
+                  bool isConfined,
+                  const QString& rootPath,
+                  const QUrl& url,
+                  const QString& filePath,
+                  const QVariantMap& metadata,
+                  const QMap<QString, QString>& headers,
+                  RequestFactory* requestFactory,
                   QObject* parent = 0);
     virtual ~MmsFileUpload();
  private:

@@ -101,6 +101,17 @@ MATCHER_P(RequestHasHeader, value, "Returns if the request does not have a given
     }
 }
 
+MATCHER_P2(RequestHasHeaderWithValue, header, value, "Returns if the request does have a given value in a header.") {
+    auto request = static_cast<QNetworkRequest>(arg);
+    auto headerS = static_cast<QString>(header);
+    auto valueS = static_cast<QString>(value);
+    if (!request.hasRawHeader(headerS.toUtf8())) {
+        return false;
+    } else {
+        return valueS.toUtf8() == request.rawHeader(headerS.toUtf8());
+    }
+}
+
 MATCHER_P(StringListEq, value, "Returns if the string lists are eq.") {
     auto list = static_cast<QStringList>(arg);
     auto expectedList = static_cast<QStringList>(value);
