@@ -75,6 +75,12 @@ RequestFactory::post(const QNetworkRequest& request, File* data) {
     return buildRequest(qreply);
 }
 
+NetworkReply*
+RequestFactory::put(const QNetworkRequest& request, File* data) {
+    auto qreply = _nam->put(request, data->device());
+    return buildRequest(qreply);
+}
+
 QList<QSslCertificate>
 RequestFactory::acceptedCertificates() {
     return _certs;

@@ -83,6 +83,13 @@ std::ostream& operator<<(std::ostream &out, const QMap<QString, QString>& map) {
     return out;
 }
 
+std::ostream& operator<<(std::ostream &out, const QList<QByteArray>& strs) {
+    foreach(QByteArray str, strs) {
+        out << " " << QString(str).toStdString();
+    }
+    return out;
+}
+
 namespace {
     const QString LOG_NAME = "ubuntu-download-manager.log";
 }

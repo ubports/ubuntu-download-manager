@@ -93,6 +93,7 @@ Factory::createMmsUpload(const QString& dbusOwner,
                          int port) {
     QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
         port);
+    DLOG(INFO) << "Proxy created for " << hostname << ":" << port;
     QVariantMap metadata;
     QMap<QString, QString> headers;
     QScopedPointer<SecurityDetails> details(

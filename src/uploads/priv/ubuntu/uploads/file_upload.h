@@ -73,6 +73,7 @@ class FileUpload : public Transfer {
     virtual void setThrottle(qulonglong speed) override;
 
  protected:
+    virtual QNetworkRequest setRequestHeaders(QNetworkRequest request);
     RequestFactory* _requestFactory;
 
  private:

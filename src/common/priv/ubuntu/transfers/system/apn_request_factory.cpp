@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <ubuntu/transfers/system/logger.h>
+
 #include "apn_proxy.h"
 #include "apn_request_factory.h"
 
@@ -30,6 +32,7 @@ ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
                                      QObject* parent)
     : RequestFactory(stoppable, parent) {
     _nam->setProxy(proxy);
+    DLOG(INFO) << "Nam configured with proxy";
 }
 
 }  // System
