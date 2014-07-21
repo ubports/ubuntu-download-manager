@@ -90,6 +90,10 @@ std::ostream& operator<<(std::ostream &out, const QList<QByteArray>& strs) {
     return out;
 }
 
+namespace {
+    const QString LOG_NAME = "ubuntu-download-manager.log";
+}
+
 namespace Ubuntu {
 
 namespace Transfers {
@@ -100,30 +104,28 @@ static bool _init = false;
 
 void
 Logger::setupLogging(const QString logDir) {
-    auto appName = QCoreApplication::instance()->applicationName();
     auto path = logDir;
-
     if (path == "" ){
-        path = getLogDir() + QDir::separator() + appName + ".log";
+        path = getLogDir() + QDir::separator() + LOG_NAME;
     } else {
         bool wasCreated = QDir().mkpath(logDir);
         if (wasCreated) {
-            path = QDir(logDir).absoluteFilePath(appName + ".log");
+            path = QDir(logDir).absoluteFilePath(LOG_NAME);
         } else {
             qCritical() << "Could not create the logging path" << logDir;
-            path = getLogDir() + QDir::separator() + appName + ".log";
+            path = getLogDir() + QDir::separator() + LOG_NAME;
         }
     }
 
+    auto appName = QCoreApplication::instance()->applicationName();
+
     if (!_init) {
         _init = true;
-        auto pathStr = path.toStdString().c_str();
-
-        google::InitGoogleLogging(appName.toStdString().c_str());
-        google::SetLogDestination(google::ERROR, pathStr);
-        google::SetLogDestination(google::WARNING, pathStr);
-        google::SetLogDestination(google::INFO, pathStr);
-        google::SetLogDestination(google::FATAL, pathStr);
+        google::InitGoogleLogging(toStdString(appName).c_str());
+        google::SetLogDestination(google::ERROR, toStdString(path).c_str());
+        google::SetLogDestination(google::WARNING, toStdString(path).c_str());
+        google::SetLogDestination(google::INFO, toStdString(path).c_str());
+        google::SetLogDestination(google::FATAL, toStdString(path).c_str());
     }
 }
 
@@ -135,10 +137,9 @@ Logger::setLogLevel(QtMsgType level) {
 
 QString
 Logger::getLogDir() {
-    auto appName = QCoreApplication::instance()->applicationName();
     QString path = ""; 
     if (getuid() == 0) {
-        path = "/var/log/" + appName;
+        path = "/var/log/ubuntu-download-manager";
     } else {
         path = QStandardPaths::writableLocation(
             QStandardPaths::CacheLocation);
@@ -154,8 +155,8 @@ Logger::getLogDir() {
 
 std::string
 Logger::toStdString(const QString& str) {
-    // was added later in qt and we do not want to break ABI
-    return str.toStdString();
+    std::string utf8_text = str.toUtf8().constData();
+    return utf8_text;
 }
 
 }  // System
