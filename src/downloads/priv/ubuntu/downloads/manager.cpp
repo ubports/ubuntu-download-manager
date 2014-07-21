@@ -45,7 +45,7 @@ DownloadManager::DownloadManager(Application* app,
     RequestFactory::setStoppable(_stoppable);
     _downloadFactory = new Factory(this);
     _db = DownloadsDb::instance();
-    _downloadsQueue = new Queue(this);
+    _queue = new Queue(this);
     init();
 }
 
@@ -58,14 +58,14 @@ DownloadManager::DownloadManager(Application* app,
     : BaseManager(app, stoppable, parent),
       _throttle(0),
       _downloadFactory(downloadFactory),
-      _downloadsQueue(queue) {
+      _queue(queue) {
     _db = DownloadsDb::instance();
     _conn = connection;
     init();
 }
 
 DownloadManager::~DownloadManager() {
-    delete _downloadsQueue;
+    delete _queue;
     delete _downloadFactory;
 }
 
@@ -81,10 +81,10 @@ DownloadManager::init() {
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
-    CHECK(connect(_downloadsQueue, &Queue::transferRemoved,
+    CHECK(connect(_queue, &Queue::transferRemoved,
         this, &DownloadManager::onDownloadsChanged))
             << "Could not connect to signal";
-    CHECK(connect(_downloadsQueue, &Queue::transferAdded,
+    CHECK(connect(_queue, &Queue::transferAdded,
         this, &DownloadManager::onDownloadsChanged))
             << "Could not connect to signal";
 }
@@ -116,7 +116,7 @@ DownloadManager::setAcceptedCertificates(const QList<QSslCertificate>& certs) {
 void
 DownloadManager::onDownloadsChanged(QString path) {
     LOG(INFO) << __PRETTY_FUNCTION__ << path;
-    emit sizeChanged(_downloadsQueue->size());
+    emit sizeChanged(_queue->size());
 }
 
 QString
@@ -141,7 +141,7 @@ DownloadManager::registerDownload(Download* download) {
             << "could not be stored in the db";
     }
     _db->connectToDownload(download);
-    _downloadsQueue->add(download);
+    _queue->add(download);
     auto path = download->path();
     qDebug() << "ADDED TO Q";
     _conn->registerObject(path, download);
@@ -240,7 +240,7 @@ DownloadManager::defaultThrottle() {
 void
 DownloadManager::setDefaultThrottle(qulonglong speed) {
     _throttle = speed;
-    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
+    QHash<QString, Transfer*> downloads = _queue->transfers();
     foreach(const QString& path, downloads.keys()) {
         downloads[path]->setThrottle(speed);
     }
@@ -249,7 +249,7 @@ DownloadManager::setDefaultThrottle(qulonglong speed) {
 void
 DownloadManager::allowGSMDownload(bool allowed) {
     _allowMobileData = allowed;
-    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
+    QHash<QString, Transfer*> downloads = _queue->transfers();
     foreach(const QString& path, downloads.keys()) {
         downloads[path]->allowGSMData(allowed);
     }
@@ -270,7 +270,7 @@ DownloadManager::getAllDownloads() {
     QList<QDBusObjectPath> paths;
     if (appArmor->isConfined(appId)) {
         LOG(INFO) << "Returning downloads for api with id" << appId;
-        auto transfers = _downloadsQueue->transfers();
+        auto transfers = _queue->transfers();
         foreach(const QString& path, transfers.keys()) {
             auto t = transfers[path];
             if (t->transferAppId() == appId)
@@ -278,7 +278,7 @@ DownloadManager::getAllDownloads() {
         }
     } else {
         LOG(INFO) << "Returning all downloads for unconfined app";
-        foreach(const QString& path, _downloadsQueue->paths())
+        foreach(const QString& path, _queue->paths())
             paths << QDBusObjectPath(path);
     }
     return paths;
@@ -295,7 +295,7 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
     auto isConfined = appArmor->isConfined(appId);
 
     QList<QDBusObjectPath> paths;
-    QHash<QString, Transfer*> downloads = _downloadsQueue->transfers();
+    QHash<QString, Transfer*> downloads = _queue->transfers();
     foreach(const QString& path, downloads.keys()) {
         auto down = qobject_cast<Download*>(downloads[path]);
         if (down != nullptr) {

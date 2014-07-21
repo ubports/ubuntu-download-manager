@@ -80,7 +80,6 @@ class UploadManager : public BaseManager {
 
  signals:
     void uploadCreated(const QDBusObjectPath& path);
-    void sizeChanged(int size);
 
  private:
     typedef std::function<FileUpload*(QString)> UploadCreationFunc;

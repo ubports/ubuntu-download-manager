@@ -72,10 +72,12 @@ UploadManager::init() {
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 
-    connect(_queue, &Queue::transferRemoved,
-        this, &UploadManager::onUploadsChanged);
-    connect(_queue, &Queue::transferAdded,
-        this, &UploadManager::onUploadsChanged);
+    CHECK(connect(_queue, &Queue::transferRemoved,
+        this, &UploadManager::onUploadsChanged))
+            << "Could not connect to signal";
+    CHECK(connect(_queue, &Queue::transferAdded,
+        this, &UploadManager::onUploadsChanged))
+            << "Could not connect to signal";
 }
 
 UploadManager::~UploadManager() {
