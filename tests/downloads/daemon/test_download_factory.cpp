@@ -48,7 +48,7 @@ TestDownloadFactory::cleanup() {
 void
 TestDownloadFactory::testCreateDownload() {
     auto id = QString("id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -64,7 +64,7 @@ TestDownloadFactory::testCreateDownload() {
         QUrl(), QVariantMap(), QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
@@ -74,7 +74,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
     auto hash = QString("my-hash");
     auto algo = QString("Md5");
     auto id = QString("id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -89,7 +89,7 @@ TestDownloadFactory::testCreateDownloadWithHash() {
         hash, algo, QVariantMap(), QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     // no need to worry about the pointer because it will be
     // deleted by the QScopedPointer
@@ -106,10 +106,8 @@ TestDownloadFactory::testCreateMmsDownload() {
     QString algo = "Md5";
     QString hostname = "http://hostname.com";
     int port = 88;
-    QString username = "username";
-    QString password = "password";
     auto id = QString("id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -130,7 +128,7 @@ TestDownloadFactory::testCreateMmsDownload() {
 void
 TestDownloadFactory::testCreateGroupDownload() {
     auto id = QString("id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -147,7 +145,7 @@ TestDownloadFactory::testCreateGroupDownload() {
         true, QVariantMap(), QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     auto group = qobject_cast<GroupDownload*>(download.data());
     QVERIFY(group != nullptr);
@@ -161,7 +159,7 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
     QString id = UuidUtils::getDBusString(QUuid::createUuid());
     QVariantMap metadata;
     metadata["objectpath"] = id;
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -175,7 +173,7 @@ TestDownloadFactory::testCreateDownloadWithValidUuid() {
         metadata, QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
@@ -188,7 +186,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
     QString hash = "my-hash";
     QString algo = "Md5";
 
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -203,7 +201,7 @@ TestDownloadFactory::testCreateDownloadWithHashAndUuid() {
         hash, algo, metadata, QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     // not to worry, QSCopedPointer will take care of the pointer
     auto single = reinterpret_cast<FileDownload*>(download.data());
@@ -221,7 +219,7 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
 
     QVariantMap metadata;
     metadata["objectpath"] = id;
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     auto details = new SecurityDetails(id);
     details->dbusPath = busPath;
     details->localPath = "/local/path";
@@ -236,14 +234,14 @@ TestDownloadFactory::testCreateGroupDownloadWithValidUuid() {
         true, metadata, QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
 
 void
 TestDownloadFactory::testCreateDownloadForGroup() {
     auto id = QString("my id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     QPair<QString, QString> pair(id, busPath);
 
     EXPECT_CALL(*_apparmor, getDBusPath())
@@ -253,7 +251,7 @@ TestDownloadFactory::testCreateDownloadForGroup() {
         true, "", QUrl(), QVariantMap(), QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
     QVERIFY(Mock::VerifyAndClearExpectations(_apparmor));
 }
 
@@ -262,7 +260,7 @@ TestDownloadFactory::testCreateDownloadForGroupWithHash() {
     QString hash = "my-hash";
     QString algo = "Md5";
     auto id = QString("my id");
-    auto busPath = QString("/com/dbus/path");
+    auto busPath = QString("/com/dbus/path/%1");
     QPair<QString, QString> pair(id, busPath);
 
     EXPECT_CALL(*_apparmor, getDBusPath())
@@ -274,7 +272,7 @@ TestDownloadFactory::testCreateDownloadForGroupWithHash() {
         QMap<QString, QString>()));
 
     QCOMPARE(download->transferId(), id);
-    QCOMPARE(download->path(), busPath);
+    QCOMPARE(download->path(), busPath.arg("download"));
 
     auto single = reinterpret_cast<FileDownload*>(download.data());
     QCOMPARE(hash, single->hash());

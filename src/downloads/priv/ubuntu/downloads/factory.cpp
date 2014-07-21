@@ -79,8 +79,9 @@ Factory::createDownload(const QString& dbusOwner,
                         const QMap<QString, QString>& headers) {
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
+    auto dbusPath = details->dbusPath.arg("download");
     auto down = new FileDownload(details->id, details->appId,
-        details->dbusPath, details->isConfined, details->localPath, url, metadata, headers);
+        dbusPath, details->isConfined, details->localPath, url, metadata, headers);
     auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -95,8 +96,9 @@ Factory::createDownload(const QString& dbusOwner,
                         const QMap<QString, QString>& headers) {
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
+    auto dbusPath = details->dbusPath.arg("download");
     auto down = new FileDownload(details->id, details->appId,
-        details->dbusPath, details->isConfined, details->localPath,
+        dbusPath, details->isConfined, details->localPath,
         url, hash, algo, metadata, headers);
     auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -112,8 +114,9 @@ Factory::createDownload(const QString& dbusOwner,
                         StringMap headers) {
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
+    auto dbusPath = details->dbusPath.arg("download");
     auto down = new GroupDownload(details->id, details->appId,
-        details->dbusPath, details->isConfined, details->localPath,
+        dbusPath, details->isConfined, details->localPath,
         downloads, algo, allowed3G, metadata, headers, this);
     auto adaptor = new GroupDownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -131,8 +134,9 @@ Factory::createMmsDownload(const QString& dbusOwner,
     QMap<QString, QString> headers;
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
+    auto dbusPath = details->dbusPath.arg("download");
     auto down = new MmsFileDownload(details->id, details->appId,
-        details->dbusPath, details->isConfined, details->localPath,
+        dbusPath, details->isConfined, details->localPath,
         url, metadata, headers, proxy);
     auto adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
@@ -146,8 +150,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
     auto idAndPath = _apparmor->getDBusPath();
-    auto down = new FileDownload(idAndPath.first, "", idAndPath.second,
-        isConfined, rootPath, url, metadata, headers);
+    auto down = new FileDownload(idAndPath.first, "",
+        idAndPath.second.arg("download"), isConfined, rootPath, url,
+        metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
@@ -162,8 +167,9 @@ Factory::createDownloadForGroup(bool isConfined,
                                 const QVariantMap& metadata,
                                 const QMap<QString, QString>& headers) {
     auto idAndPath = _apparmor->getDBusPath();
-    auto down = new FileDownload(idAndPath.first, "", idAndPath.second,
-        isConfined, rootPath, url, hash, algo, metadata, headers);
+    auto down = new FileDownload(idAndPath.first, "",
+        idAndPath.second.arg("download"), isConfined, rootPath, url, hash,
+        algo, metadata, headers);
     DownloadAdaptor* adaptor = new DownloadAdaptor(down);
     down->setAdaptor(adaptor);
     return down;
