@@ -88,7 +88,7 @@ class DownloadManager : public BaseManager {
 
  protected:
     Queue* queue() {
-        return _downloadsQueue;
+        return _queue;
     }
 
     virtual QDBusObjectPath registerDownload(Download* download);
@@ -113,7 +113,7 @@ class DownloadManager : public BaseManager {
     Application* _app = nullptr;
     qulonglong _throttle;
     Factory* _downloadFactory = nullptr;
-    Queue* _downloadsQueue = nullptr;
+    Queue* _queue = nullptr;
     DownloadsDb* _db = nullptr;
     DBusConnection* _conn = nullptr;
     bool _stoppable = false;

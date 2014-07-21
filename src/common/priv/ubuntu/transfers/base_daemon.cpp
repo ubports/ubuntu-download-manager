@@ -156,7 +156,7 @@ BaseDaemon::onTimeout() {
 }
 
 void
-BaseDaemon::onDownloadManagerSizeChanged(int size) {
+BaseDaemon::onSizeChanged(int size) {
     TRACE << size;
     bool isActive = _shutDownTimer->isActive();
 
@@ -227,7 +227,7 @@ BaseDaemon::init() {
     // connect to the download manager changes
     CHECK(connect(_manager,
         &BaseManager::sizeChanged,
-        this, &BaseDaemon::onDownloadManagerSizeChanged))
+        this, &BaseDaemon::onSizeChanged))
                 << "Could not connect to signal";
 }
 

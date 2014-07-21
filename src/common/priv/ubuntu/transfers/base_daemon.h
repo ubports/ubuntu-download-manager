@@ -80,7 +80,7 @@ class BaseDaemon : public QObject {
     void init();
     void parseCommandLine();
     void onTimeout();
-    void onDownloadManagerSizeChanged(int);
+    void onSizeChanged(int);
 
  private:
     QString _path = "";
