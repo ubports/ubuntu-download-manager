@@ -1,3 +1,13 @@
+ubuntu-download-manager (0.7+14.10.20140725-0ubuntu1) utopic; urgency=low
+
+  [ Manuel de la Peña ]
+  * Fix bug 1346196 by using human readable strings. (LP: #1346196)
+
+  [ Manuel de la Pena ]
+  * Fix bug 1346196 by using human readable strings. (LP: #1346196)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 25 Jul 2014 15:47:28 +0000
+
 ubuntu-download-manager (0.7+14.10.20140721-0ubuntu1) utopic; urgency=medium
 
   [ Manuel de la Pena ]
