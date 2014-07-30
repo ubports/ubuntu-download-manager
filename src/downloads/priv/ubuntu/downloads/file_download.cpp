@@ -775,17 +775,17 @@ QString
 FileDownload::filenameFromHTTPContentDisposition(const QString& value) {
     auto keyValuePairs = value.split(';');
 
-    foreach(const QString& valuePair, keyValuePairs) { 
+    foreach(const QString& valuePair, keyValuePairs) {
         int valueStartPos = valuePair.indexOf('=');
 
         if (valueStartPos < 0)
             continue;
 
         auto pair = valuePair.split('=');
-        if (pair[0].isEmpty() || pair[0] != "filename")
+        if (pair.size() != 2 || pair[0].isEmpty() || pair[0] != "filename")
             continue;
-            
-        auto value = pair[0].replace("\"", "") // remove ""
+
+        auto value = pair[1].replace("\"", "") // remove ""
             .replace("'", "") // remove '
             .simplified();  // remove white spaces
         return value;
