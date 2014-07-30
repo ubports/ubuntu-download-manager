@@ -444,6 +444,8 @@ FileDownload::onDownloadCompleted() {
 
         if (contentDisposition.contains("filename")) {
             auto serverName = filenameFromHTTPContentDisposition(contentDisposition);
+            DOWN_LOG(INFO) << "Server name " << serverName;
+
             if (!serverName.isEmpty()) {
                 QFileInfo fiContentDisposition(serverName);
                 auto filename = fiContentDisposition.fileName();
@@ -451,9 +453,11 @@ FileDownload::onDownloadCompleted() {
                 QFileInfo fiFilePath(_filePath);
                 auto currentFileName = fiFilePath.fileName();
                 auto newPath = _filePath.replace(currentFileName, filename);
+
                 // unlock the old path and lock the new one
                 _fileNameMutex->unlockFileName(_filePath);
                 _filePath = _fileNameMutex->lockFileName(newPath);
+                DOWN_LOG(INFO) << "Content disposition based file path is '" << serverName << "'";
             }
         }
     }
