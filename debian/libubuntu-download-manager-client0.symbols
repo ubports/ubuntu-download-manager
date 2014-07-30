@@ -28,9 +28,6 @@ libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVE
  (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::DownloadsList::qt_metacast(char const*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::DownloadsList::staticMetaObject@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::DownloadsList::~DownloadsList()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::GroupDownload::qt_metacast(char const*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::GroupDownload::staticMetaObject@Base" 0.4+14.10.20140618
@@ -62,9 +59,6 @@ libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVE
  (c++)"Ubuntu::DownloadManager::Manager::createSystemManager(QString const&, QObject*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Manager::createSessionManager(QString const&, QObject*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Manager::downloadsWithMetadataFound(QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Manager::~Manager()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Download::processing(QString const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Download::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Download::qt_metacast(char const*)@Base" 0.4+14.10.20140618
@@ -76,9 +70,6 @@ libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVE
  (c++)"Ubuntu::DownloadManager::Download::canceled(bool)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Download::finished(QString const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::Download::progress(unsigned long long, unsigned long long)@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::Download::~Download()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::AuthError::errorString()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::AuthError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::AuthError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
