@@ -48,6 +48,7 @@ namespace {
     const QString AUTH_ERROR = "AUTHENTICATION ERROR";
     const QString PROXY_AUTH_ERROR = "PROXY_AUTHENTICATION ERROR";
     const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
+    const QByteArray CONTENT_DISPOSITION = "Content-Disposition";
 }
 
 namespace Ubuntu {
@@ -433,6 +434,30 @@ void
 FileDownload::onDownloadCompleted() {
     TRACE << _url;
 
+    // check if we have the content-type header, if we do we are going to change the
+    // file path that will be used by the download, do not do it if the app is
+    // unconfined
+    if ((_reply->hasRawHeader(CONTENT_DISPOSITION) && (
+            isConfined() || !metadata().contains(Metadata::LOCAL_PATH_KEY)))) {
+        QString contentDisposition = _reply->rawHeader(CONTENT_DISPOSITION);
+        DOWN_LOG(INFO) << "Content-Disposition header" << contentDisposition;
+
+        if (contentDisposition.contains("filename")) {
+            auto serverName = filenameFromHTTPContentDisposition(contentDisposition);
+            if (!serverName.isEmpty()) {
+                QFileInfo fiContentDisposition(serverName);
+                auto filename = fiContentDisposition.fileName();
+                // replace the filename of the current _filePath with the new one
+                QFileInfo fiFilePath(_filePath);
+                auto currentFileName = fiFilePath.fileName();
+                auto newPath = _filePath.replace(currentFileName, filename);
+                // unlock the old path and lock the new one
+                _fileNameMutex->unlockFileName(_filePath);
+                _filePath = _fileNameMutex->lockFileName(newPath);
+            }
+        }
+    }
+
     // if the hash is present we check it
     if (!_hash.isEmpty()) {
         emit processing(filePath());
@@ -723,11 +748,11 @@ FileDownload::emitFinished() {
         DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
         QFile tempFile(_tempFilePath);
-	auto r = tempFile.rename(_filePath);
-	if (!r) {
+    auto r = tempFile.rename(_filePath);
+    if (!r) {
             DOWN_LOG(WARNING) << "Could not rename '" << _tempFilePath << "' to '"
                 << _filePath << "' due to " << tempFile.errorString();
-	}
+    }
     }
 
     setState(Download::FINISH);
@@ -741,9 +766,32 @@ void
 FileDownload::unlockFilePath() {
     if (!isConfined() && metadata().contains(Metadata::LOCAL_PATH_KEY)) {
         _fileNameMutex->unlockFileName(_tempFilePath);
-	} else {
+    } else {
         _fileNameMutex->unlockFileName(_filePath);
     }
+}
+
+QString
+FileDownload::filenameFromHTTPContentDisposition(const QString& value) {
+    auto keyValuePairs = value.split(';');
+
+    foreach(const QString& valuePair, keyValuePairs) { 
+        int valueStartPos = valuePair.indexOf('=');
+
+        if (valueStartPos < 0)
+            continue;
+
+        auto pair = valuePair.split('=');
+        if (pair[0].isEmpty() || pair[0] != "filename")
+            continue;
+            
+        auto value = pair[0].replace("\"", "") // remove ""
+            .replace("'", "") // remove '
+            .simplified();  // remove white spaces
+        return value;
+    }
+
+    return QString();
 }
 
 void

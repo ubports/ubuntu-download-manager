@@ -44,6 +44,8 @@ class MockNetworkReply : public NetworkReply {
     MOCK_CONST_METHOD1(attribute,
         QVariant(QNetworkRequest::Attribute code));
     MOCK_CONST_METHOD0(errorString, QString());
+    MOCK_CONST_METHOD1(hasRawHeader, bool(const QByteArray&));
+    MOCK_CONST_METHOD1(rawHeader, QByteArray(const QByteArray&));
 
     using NetworkReply::downloadProgress;
     using NetworkReply::uploadProgress;

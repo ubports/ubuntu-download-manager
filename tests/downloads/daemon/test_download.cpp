@@ -1244,6 +1244,10 @@ TestDownload::testOnSuccessNoHash() {
         .Times(1)
         .WillOnce(Return(QVariant(200)));
 
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -1308,6 +1312,10 @@ TestDownload::testOnSuccessHashError() {
     EXPECT_CALL(*reply.data(), attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -1394,6 +1402,10 @@ TestDownload::testOnSuccessHash() {
     EXPECT_CALL(*reply.data(), attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -2113,6 +2125,10 @@ TestDownload::testProcessExecutedNoParams() {
         .Times(1)
         .WillOnce(Return(QVariant(200)));
 
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -2219,6 +2235,10 @@ TestDownload::testProcessExecutedWithParams() {
     EXPECT_CALL(*reply, attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -2327,6 +2347,10 @@ TestDownload::testProcessExecutedWithParamsFile() {
         .Times(1)
         .WillOnce(Return(QVariant(200)));
 
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -2415,6 +2439,10 @@ TestDownload::testProcessFinishedWithError() {
     EXPECT_CALL(*reply.data(), attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -2526,6 +2554,10 @@ TestDownload::testProcessError() {
         .Times(1)
         .WillOnce(Return(QVariant(200)));
 
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -2626,6 +2658,10 @@ TestDownload::testProcessFinishedCrash() {
     EXPECT_CALL(*reply.data(), attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -3115,6 +3151,10 @@ TestDownload::testProcessingJustOnce() {
         .Times(1)
         .WillOnce(Return(QVariant(200)));
 
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -3450,6 +3490,10 @@ TestDownload::testSingleRedirect() {
         .Times(1)
         .WillOnce(Return(QVariant()));
 
+    EXPECT_CALL(*secondReply.data(), hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(2)
@@ -3604,6 +3648,10 @@ TestDownload::testProcessFinishUnlocksPath() {
     EXPECT_CALL(*reply, attribute(_))
         .Times(1)
         .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(1)
+        .WillOnce(Return(false));
 
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
@@ -3782,5 +3830,6 @@ TestDownload::testSetLocalDirectoryStarted() {
     QCOMPARE(original, download->filePath());
     verifyMocks();
 }
+
 
 QTEST_MAIN(TestDownload)

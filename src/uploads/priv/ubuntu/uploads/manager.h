@@ -28,6 +28,7 @@
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/base_manager.h>
+#include <functional>
 #include "factory.h"
 
 namespace Ubuntu {

@@ -131,6 +131,7 @@ class FileDownload : public Download, public QDBusContext {
     void initFileNames();
     void emitFinished();
     void unlockFilePath();
+    QString filenameFromHTTPContentDisposition(const QString& value);
 
  private:
     bool _downloading = false;

@@ -26,6 +26,7 @@
 #include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/download_manager/metatypes.h>
+#include <functional>
 #include "ubuntu/transfers/base_manager.h"
 #include "ubuntu/transfers/system/application.h"
 #include "download.h"
