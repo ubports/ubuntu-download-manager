@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.8) UNRELEASED; urgency=medium
+
+  * Read the content-dispostion header so that files downloaded use a more
+    decent filename.
+
+ -- Manuel de la Pena <mandel@mark-v>  Wed, 30 Jul 2014 12:41:35 +0200
+
 ubuntu-download-manager (0.7+14.10.20140721-0ubuntu1) utopic; urgency=medium
 
   [ Manuel de la Pena ]
