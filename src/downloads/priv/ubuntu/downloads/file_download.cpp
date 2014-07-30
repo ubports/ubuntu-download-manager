@@ -752,11 +752,11 @@ FileDownload::emitFinished() {
         DOWN_LOG(INFO) << "Rename '" << _tempFilePath << "' to '"
             << _filePath << "'";
         QFile tempFile(_tempFilePath);
-    auto r = tempFile.rename(_filePath);
-    if (!r) {
+        auto r = tempFile.rename(_filePath);
+        if (!r) {
             DOWN_LOG(WARNING) << "Could not rename '" << _tempFilePath << "' to '"
                 << _filePath << "' due to " << tempFile.errorString();
-    }
+        }
     }
 
     setState(Download::FINISH);
@@ -786,7 +786,7 @@ FileDownload::filenameFromHTTPContentDisposition(const QString& value) {
             continue;
 
         auto pair = valuePair.split('=');
-        if (pair.size() != 2 || pair[0].isEmpty() || pair[0] != "filename")
+        if (pair.size() != 2 || pair[0].isEmpty() || pair[0].simplified() != "filename")
             continue;
 
         auto value = pair[1].replace("\"", "") // remove ""
