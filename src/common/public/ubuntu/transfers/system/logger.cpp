@@ -91,7 +91,7 @@ std::ostream& operator<<(std::ostream &out, const QList<QByteArray>& strs) {
 }
 
 namespace {
-    const QString LOG_NAME = "ubuntu-download-manager.log";
+    const QString LOG_NAME = QCoreApplication::instance()->applicationName() + ".log";
 }
 
 namespace Ubuntu {
@@ -139,7 +139,7 @@ QString
 Logger::getLogDir() {
     QString path = ""; 
     if (getuid() == 0) {
-        path = "/var/log/ubuntu-download-manager";
+        path = "/var/log/" + QCoreApplication::instance()->applicationName();
     } else {
         path = QStandardPaths::writableLocation(
             QStandardPaths::CacheLocation);
