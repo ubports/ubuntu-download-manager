@@ -45,6 +45,8 @@ class NetworkReply : public QObject {
     virtual bool canIgnoreSslErrors(const QList<QSslError>& errors);
     virtual QVariant attribute(QNetworkRequest::Attribute code) const;
     virtual QString errorString() const;
+    virtual bool hasRawHeader(const QByteArray& headerName) const;
+    virtual QByteArray rawHeader(const QByteArray& headerName) const;
 
  signals:
     // signals forwarded from the real reply object

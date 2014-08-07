@@ -119,6 +119,16 @@ NetworkReply::errorString() const {
     return _reply->errorString();
 }
 
+bool
+NetworkReply::hasRawHeader(const QByteArray& headerName) const {
+    return _reply->hasRawHeader(headerName);
+}
+
+QByteArray
+NetworkReply::rawHeader(const QByteArray& headerName) const {
+    return _reply->rawHeader(headerName);
+}
+
 }  // System
 
 }  // Transfers
