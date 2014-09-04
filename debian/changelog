@@ -1,7 +1,7 @@
 ubuntu-download-manager (0.9) UNRELEASED; urgency=medium
 
   * Add new properties that can be used to filter the downloads shown in the
-    indicator. 
+    indicator. This changes the ABI.
 
  -- Manuel de la Pena <manuel.delapena@canonical.com>  Thu, 04 Sep 2014 13:36:59 +0200
 
