@@ -41,6 +41,9 @@ namespace Daemon {
 
 class Download : public Transfer {
     Q_OBJECT
+    Q_PROPERTY(QString ClickPackage READ clickPackage)
+    Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
+    Q_PROPERTY(QString Title READ title)
 
  public:
     Download(const QString& id,
@@ -95,9 +98,14 @@ class Download : public Transfer {
 
  protected:
     virtual void emitError(const QString& error);
+    virtual QString clickPackage() const;
+    virtual bool showInIndicator() const;
+    virtual QString title() const;
+
+ protected:
+    QVariantMap _metadata;
 
  private:
-    QVariantMap _metadata;
     QMap<QString, QString> _headers;
     QObject* _adaptor = nullptr;
 };

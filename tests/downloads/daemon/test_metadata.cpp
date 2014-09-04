@@ -120,7 +120,8 @@ TestMetadata::testHashLocalPathFalse() {
     QVERIFY(!metadata.hasLocalPath());
 }
 
-void TestMetadata::testObjectPath_data() {
+void
+TestMetadata::testObjectPath_data() {
     QTest::addColumn<QString>("objectPath");
 
     QTest::newRow("/com/canonica/si") << "/com/canonical/si";
@@ -128,7 +129,8 @@ void TestMetadata::testObjectPath_data() {
     QTest::newRow("/com/data/download") << "/com/data/download";
 }
 
-void TestMetadata::testObjectPath() {
+void
+TestMetadata::testObjectPath() {
     QFETCH(QString, objectPath);
 
     Metadata metadata;
@@ -136,7 +138,8 @@ void TestMetadata::testObjectPath() {
     QCOMPARE(objectPath, metadata.objectPath());
 }
 
-void TestMetadata::testSetObjectPath_data() {
+void
+TestMetadata::testSetObjectPath_data() {
     QTest::addColumn<QString>("objectPath");
 
     QTest::newRow("/com/canonica/si") << "/com/canonical/si";
@@ -144,7 +147,8 @@ void TestMetadata::testSetObjectPath_data() {
     QTest::newRow("/com/data/download") << "/com/data/download";
 }
 
-void TestMetadata::testSetObjectPath() {
+void
+TestMetadata::testSetObjectPath() {
     QFETCH(QString, objectPath);
 
     Metadata metadata;
@@ -152,16 +156,165 @@ void TestMetadata::testSetObjectPath() {
     QCOMPARE(metadata[Metadata::OBJECT_PATH_KEY].toString(), objectPath);
 }
 
-void TestMetadata::testHasObjectPathTrue() {
+void
+TestMetadata::testHasObjectPathTrue() {
     Metadata metadata;
     metadata.setObjectPath("command");
 
     QVERIFY(metadata.hasObjectPath());
 }
 
-void TestMetadata::testHasObjectPathFalse() {
+void
+TestMetadata::testHasObjectPathFalse() {
     Metadata metadata;
     QVERIFY(!metadata.hasObjectPath());
+}
+
+void
+TestMetadata::testTitle_data() {
+    QTest::addColumn<QString>("title");
+
+    QTest::newRow("Profile image") << "Profile image";
+    QTest::newRow("Americana.mp3") << "Americana.mp3";
+    QTest::newRow("Test title") << "Test title";
+}
+
+void
+TestMetadata::testTitle() {
+    QFETCH(QString, title);
+
+    Metadata metadata;
+    metadata[Metadata::TITLE_KEY] = title;
+    QCOMPARE(title, metadata.title());
+}
+
+void
+TestMetadata::testSetTitle_data() {
+    QTest::addColumn<QString>("title");
+
+    QTest::newRow("Profile image") << "Profile image";
+    QTest::newRow("Americana.mp3") << "Americana.mp3";
+    QTest::newRow("Test title") << "Test title";
+}
+
+void
+TestMetadata::testSetTitle() {
+    QFETCH(QString, title);
+
+    Metadata metadata;
+    metadata.setTitle(title);
+    QCOMPARE(metadata[Metadata::TITLE_KEY].toString(), title);
+}
+
+void
+TestMetadata::testHasTitleTrue() {
+    Metadata metadata;
+    metadata.setTitle("tlte");
+
+    QVERIFY(metadata.hasTitle());
+}
+
+void
+TestMetadata::testHasTitleFalse() {
+    Metadata metadata;
+    QVERIFY(!metadata.hasTitle());
+}
+
+void
+TestMetadata::testIndicator_data() {
+    QTest::addColumn<bool>("show");
+
+    QTest::newRow("True") << true;
+    QTest::newRow("False") << false;
+}
+
+void
+TestMetadata::testIndicator() {
+    QFETCH(bool, show);
+
+    Metadata metadata;
+    metadata[Metadata::SHOW_IN_INDICATOR_KEY] = show;
+    QCOMPARE(show, metadata.showInIndicator());
+}
+
+void
+TestMetadata::testSetIndicator_data() {
+    QTest::addColumn<bool>("show");
+
+    QTest::newRow("True") << true;
+    QTest::newRow("False") << false;
+}
+
+void
+TestMetadata::testSetIndicator() {
+    QFETCH(bool, show);
+
+    Metadata metadata;
+    metadata.setShowInIndicator(show);
+    QCOMPARE(metadata[Metadata::SHOW_IN_INDICATOR_KEY].toBool(), show);
+}
+
+void
+TestMetadata::testHasIndicatorTrue() {
+    Metadata metadata;
+    metadata.setShowInIndicator(true);
+
+    QVERIFY(metadata.hasShowInIndicator());
+}
+
+void
+TestMetadata::testHasIndicatorFasle() {
+    Metadata metadata;
+    QVERIFY(!metadata.hasShowInIndicator());
+}
+
+void
+TestMetadata::testClick_data() {
+    QTest::addColumn<QString>("click");
+
+    QTest::newRow("My click") << "My click";
+    QTest::newRow("Maps") << "Maps";
+    QTest::newRow("Test") << "Test";
+}
+
+void
+TestMetadata::testClick() {
+    QFETCH(QString, click);
+
+    Metadata metadata;
+    metadata[Metadata::CLICK_PACKAGE_KEY] = click;
+    QCOMPARE(click, metadata.clickPackage());
+}
+
+void
+TestMetadata::testSetClick_data() {
+    QTest::addColumn<QString>("click");
+
+    QTest::newRow("My click") << "My click";
+    QTest::newRow("Maps") << "Maps";
+    QTest::newRow("Test") << "Test";
+}
+
+void
+TestMetadata::testSetClick() {
+    QFETCH(QString, click);
+
+    Metadata metadata;
+    metadata.setClickPackage(click);
+    QCOMPARE(metadata[Metadata::CLICK_PACKAGE_KEY].toString(), click);
+}
+
+void
+TestMetadata::testHasClickTrue() {
+    Metadata metadata;
+    metadata.setClickPackage("test");
+    QVERIFY(metadata.hasClickPackage());
+}
+
+void
+TestMetadata::testHasClickFalse() {
+    Metadata metadata;
+    QVERIFY(!metadata.hasClickPackage());
 }
 
 QTEST_MAIN(TestMetadata)

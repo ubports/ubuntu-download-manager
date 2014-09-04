@@ -17,6 +17,7 @@
  */
 
 #include <QStringList>
+#include "ubuntu/transfers/metadata.h"
 #include "ubuntu/transfers/system/logger.h"
 #include "download.h"
 
@@ -55,6 +56,24 @@ Download::emitError(const QString& errorStr) {
     qDebug() << __PRETTY_FUNCTION__ << errorStr;
     setState(Download::ERROR);
     emit error(errorStr);
+}
+
+QString
+Download::clickPackage() const {
+    return (_metadata.contains(Metadata::CLICK_PACKAGE_KEY))?
+        _metadata.value(Metadata::CLICK_PACKAGE_KEY).toString():"";
+}
+
+bool
+Download::showInIndicator() const {
+    return (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY))?
+        _metadata.value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():true;
+}
+
+QString
+Download::title() const {
+    return (_metadata.contains(Metadata::TITLE_KEY))?
+        _metadata.value(Metadata::TITLE_KEY).toString():"";
 }
 
 }  // Daemon

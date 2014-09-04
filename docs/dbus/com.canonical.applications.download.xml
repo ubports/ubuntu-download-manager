@@ -14,6 +14,10 @@
         <arg name="data" type="a{sv}" direction="out" />
     </method>
 
+    <method name="throttle">
+        <arg name="speed" type="t" direction="out"/>
+    </method>
+
     <method name="setThrottle">
         <arg name="speed" type="t" direction="in"/>
     </method>
@@ -26,10 +30,6 @@
     <method name="setHeaders">
         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="StringMap"/>
         <arg name="headers" type="a{ss}" direction="in"/>
-    </method>
-
-    <method name="throttle">
-        <arg name="speed" type="t" direction="out"/>
     </method>
 
     <method name="setDestinationDir">
@@ -101,6 +101,12 @@
     <signal name="processing">
         <arg name="path" type="s" direction="out"/>
     </signal>
+
+    <property access="read" type="b" name="ShowInIndicator" />
+
+    <property access="read" type="s" name="Title" />
+
+    <property access="read" type="s" name="ClickPackage" />
 
  </interface>
 </node>

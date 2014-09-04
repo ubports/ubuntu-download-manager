@@ -61,6 +61,7 @@ class TestMmsDownload : public BaseTestCase {
 
     void testNetworkAccessManager();
     void testAddToQueue();
+    void testShowInIndicator();
 
 };
 
