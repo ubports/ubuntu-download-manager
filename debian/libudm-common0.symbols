@@ -74,6 +74,18 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::Transfers::Metadata::setClickPackage(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::setShowInIndicator(bool)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::setTitle(QString const&)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::TITLE_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::clickPackage() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasClickPackage() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::showInIndicator() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasShowInIndicator() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::title() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasTitle() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::setCommand(QString const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Metadata::COMMAND_KEY@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Metadata::setLocalPath(QString const&)@Base" 0.4+14.10.20140618
