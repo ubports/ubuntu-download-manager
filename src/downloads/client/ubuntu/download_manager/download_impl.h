@@ -66,11 +66,12 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void setDestinationDir(const QString& path);
     void setHeaders(QMap<QString, QString> headers);
     QMap<QString, QString> headers();
+    QVariantMap metadata();
+    void setMetadata(QVariantMap map);
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 
     QString id() const;
-    QVariantMap metadata();
     qulonglong progress();
     qulonglong totalSize();
 

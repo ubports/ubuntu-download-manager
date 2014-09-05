@@ -128,6 +128,11 @@ class LoggerPrivate {
         log(lvl, fmtMsg);
     }
 
+    void log(Logger::Level lvl, const QString& msg, QVariantMap map) {
+        auto fmtMsg = msg.arg(toString(map));
+        log(lvl, fmtMsg);
+    }
+
     void log(Logger::Level lvl, const QString& msg, DownloadStruct downStruct) {
         QStringList list;
 

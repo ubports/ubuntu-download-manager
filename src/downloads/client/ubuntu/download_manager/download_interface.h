@@ -36,6 +36,18 @@ public:
 
     ~DownloadInterface();
 
+    Q_PROPERTY(QString ClickPackage READ clickPackage)
+    inline QString clickPackage() const
+    { return qvariant_cast< QString >(property("ClickPackage")); }
+
+    Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
+    inline bool showInIndicator() const
+    { return qvariant_cast< bool >(property("ShowInIndicator")); }
+
+    Q_PROPERTY(QString Title READ title)
+    inline QString title() const
+    { return qvariant_cast< QString >(property("Title")); }
+
 public Q_SLOTS: // METHODS
     inline QDBusPendingReply<> allowGSMDownload(bool allowed)
     {
@@ -98,6 +110,13 @@ public Q_SLOTS: // METHODS
         QList<QVariant> argumentList;
         argumentList << QVariant::fromValue(headers);
         return asyncCallWithArgumentList(QLatin1String("setHeaders"), argumentList);
+    }
+
+    inline QDBusPendingReply<> setMetadata(const QVariantMap &data)
+    {
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(data);
+        return asyncCallWithArgumentList(QLatin1String("setMetadata"), argumentList);
     }
 
     inline QDBusPendingReply<> setThrottle(qulonglong speed)

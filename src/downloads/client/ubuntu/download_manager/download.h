@@ -132,6 +132,14 @@ class Download : public QObject {
     virtual void setHeaders(QMap<QString, QString> headers) = 0;
 
     /*!
+        \fn void setMetadata(QVariantMap map)
+        \since 0.9
+
+        Allows to set the metadata to be used for the download request.
+    */
+    virtual void setMetadata(QVariantMap map) = 0;
+
+    /*!
         \fn QMap<QString, QString> headers()
         \since 0.4
 
