@@ -3,6 +3,7 @@ set(TARGET UbuntuDownloadManager)
 
 set(plugin_SRCS
     backend.cpp
+    metadata.cpp
     download_error.cpp
     single_download.cpp
     ubuntu_download_manager.cpp
@@ -10,6 +11,7 @@ set(plugin_SRCS
 
 set(plugin_HDRS
     backend.h
+    metadata.h
     download_error.h
     single_download.h
     ubuntu_download_manager.h
