@@ -252,6 +252,39 @@ DownloadImpl::setHeaders(QMap<QString, QString> headers) {
     }
 }
 
+QVariantMap
+DownloadImpl::metadata() {
+    Logger::log(Logger::Debug, QString("Download{%1} metadata()").arg(_id));
+    QDBusPendingReply<QVariantMap> reply =
+        _dbusInterface->metadata();
+    // block the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download metadata");
+        QVariantMap emptyResult;
+        setLastError(reply.error());
+        return emptyResult;
+    } else {
+        auto result = reply.value();
+        return result;
+    }
+}
+
+void
+DownloadImpl::setMetadata(QVariantMap map) {
+    Logger::log(Logger::Debug,
+        QString("Download {%1} setMetadata(%2)").arg(_id), map);
+
+    QDBusPendingReply<> reply =
+        _dbusInterface->setMetadata(map);
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error setting the download metadata");
+        setLastError(reply.error());
+    }
+}
+
 QMap<QString, QString>
 DownloadImpl::headers() {
     Logger::log(Logger::Debug, QString("Download{%1} headers()").arg(_id));
@@ -305,24 +338,6 @@ DownloadImpl::throttle() {
 QString
 DownloadImpl::id() const {
     return _id;
-}
-
-QVariantMap
-DownloadImpl::metadata() {
-    Logger::log(Logger::Debug, QString("Download{%1} metadata()").arg(_id));
-    QDBusPendingReply<QVariantMap> reply =
-        _dbusInterface->metadata();
-    // block the call is fast enough
-    reply.waitForFinished();
-    if (reply.isError()) {
-        Logger::log(Logger::Error, "Error querying the download metadata");
-        QVariantMap emptyResult;
-        setLastError(reply.error());
-        return emptyResult;
-    } else {
-        auto result = reply.value();
-        return result;
-    }
 }
 
 qulonglong

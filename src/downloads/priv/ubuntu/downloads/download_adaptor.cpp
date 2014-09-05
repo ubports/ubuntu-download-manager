@@ -119,6 +119,12 @@ void DownloadAdaptor::setHeaders(StringMap headers)
     QMetaObject::invokeMethod(parent(), "setHeaders", Q_ARG(StringMap, headers));
 }
 
+void DownloadAdaptor::setMetadata(const QVariantMap &data)
+{
+    // handle method call com.canonical.applications.Download.setMetadata
+    QMetaObject::invokeMethod(parent(), "setMetadata", Q_ARG(QVariantMap, data));
+}
+
 void DownloadAdaptor::setThrottle(qulonglong speed)
 {
     // handle method call com.canonical.applications.Download.setThrottle

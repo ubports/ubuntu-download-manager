@@ -44,6 +44,10 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
 "      <arg direction=\"out\" type=\"a{sv}\" name=\"data\"/>\n"
 "    </method>\n"
+"    <method name=\"setMetadata\">\n"
+"      <annotation value=\"QVariantMap\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
+"      <arg direction=\"in\" type=\"a{sv}\" name=\"data\"/>\n"
+"    </method>\n"
 "    <method name=\"throttle\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"speed\"/>\n"
 "    </method>\n"
@@ -142,6 +146,7 @@ public Q_SLOTS: // METHODS
     void resume();
     void setDestinationDir(const QString &path);
     void setHeaders(StringMap headers);
+    void setMetadata(const QVariantMap &data);
     void setThrottle(qulonglong speed);
     void start();
     qulonglong throttle();

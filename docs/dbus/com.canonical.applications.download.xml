@@ -14,6 +14,11 @@
         <arg name="data" type="a{sv}" direction="out" />
     </method>
 
+    <method name="setMetadata">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+        <arg name="data" type="a{sv}" direction="in" />
+    </method>
+
     <method name="throttle">
         <arg name="speed" type="t" direction="out"/>
     </method>
