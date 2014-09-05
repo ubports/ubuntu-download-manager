@@ -746,8 +746,7 @@ FileDownload::init() {
     _connected = networkInfo->isOnline();
     _downloading = false;
 
-    // online unconfined applications are allows to set the click package name
-    // in the metadata
+    // applications that are confined are not allowed to set the click metadata.
     if (isConfined() && _metadata.contains(Metadata::CLICK_PACKAGE_KEY)) {
         _metadata.remove(Metadata::CLICK_PACKAGE_KEY);
     }
