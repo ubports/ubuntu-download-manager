@@ -44,6 +44,7 @@ class MockDownload : public Download {
     MOCK_METHOD0(throttle, qulonglong());
     MOCK_CONST_METHOD0(id, QString());
     MOCK_METHOD0(metadata, QVariantMap());
+    MOCK_METHOD1(setMetadata, void(QVariantMap));
     MOCK_METHOD0(progress, qulonglong());
     MOCK_METHOD0(totalSize, qulonglong());
     MOCK_CONST_METHOD0(isError, bool());

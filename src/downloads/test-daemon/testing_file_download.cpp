@@ -175,6 +175,15 @@ TestingFileDownload::metadata() const {
     return _down->metadata();
 }
 
+void
+TestingFileDownload::setMetadata(QVariantMap metadata) const {
+    if (calledFromDBus() && _returnErrors) {
+        sendErrorReply(QDBusError::InvalidMember,
+        "metadata");
+    }
+    return _down->setMetadata(metadata);
+}
+
 Ubuntu::DownloadManager::Daemon::Download::State
 TestingFileDownload::state() const {
     return _down->state();
