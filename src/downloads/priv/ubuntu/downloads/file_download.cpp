@@ -25,6 +25,7 @@
 #include <QSslError>
 #include <glog/logging.h>
 #include <map>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/cryptographic_hash.h>
 #include <ubuntu/transfers/system/logger.h>
@@ -36,6 +37,12 @@
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
 
+namespace {
+    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
+    const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
+    const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
+    const QString TITLE_PROPERTY = "Title";
+}
 
 std::ostream& operator<<(std::ostream &out, QNetworkReply::NetworkError err) {
     static std::map<QNetworkReply::NetworkError, std::string> errorsMap {
@@ -409,6 +416,102 @@ FileDownload::setHeaders(StringMap headers) {
         if (calledFromDBus()) {
             sendErrorReply(QDBusError::NotSupported,
                 "The path cannot be changed in a started download.");
+        }
+    }
+}
+
+QVariant
+FileDownload::get(const QString& interfaceName,
+                  const QString& propertyName) {
+    // only deal with the download internface
+    if (interfaceName == PROPERTIES_INTERFACE) {
+        if (propertyName != CLICK_PACKAGE_PROPERTY
+            && propertyName != SHOW_INDICATOR_PROPERTY
+            && propertyName != TITLE_PROPERTY) {
+            // we do not know the property
+
+            if (calledFromDBus()) {
+                sendErrorReply(QDBusError::UnknownMethod,
+                    "Property not known");
+            }
+
+            return QVariant();
+        }
+
+        if (propertyName == CLICK_PACKAGE_PROPERTY){
+            return (_metadata.contains(Metadata::CLICK_PACKAGE_KEY))?
+                _metadata.value(Metadata::CLICK_PACKAGE_KEY):QVariant("");
+        }
+
+        if (propertyName == SHOW_INDICATOR_PROPERTY){
+            return (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY))?
+                _metadata.value(Metadata::SHOW_IN_INDICATOR_KEY):QVariant(true);
+        }
+
+        if (propertyName == TITLE_PROPERTY){
+            return (_metadata.contains(Metadata::TITLE_KEY))?
+                _metadata.value(Metadata::TITLE_KEY).toString():QVariant("");
+        }
+
+    } else {
+        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::UnknownInterface,
+                "Interface is not known");
+        }
+    }
+    return QVariant();
+}
+
+QVariantMap
+FileDownload::getAll(const QString &interfaceName) {
+    // only deal with the download internface
+    QVariantMap result;
+    if (interfaceName == PROPERTIES_INTERFACE) {
+
+        if (_metadata.contains(Metadata::CLICK_PACKAGE_KEY)){
+            result[CLICK_PACKAGE_PROPERTY] = _metadata[Metadata::CLICK_PACKAGE_KEY];
+        }
+
+        if (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY)){
+            result[SHOW_INDICATOR_PROPERTY] =
+                _metadata[Metadata::SHOW_IN_INDICATOR_KEY];
+        }
+
+        if (_metadata.contains(Metadata::TITLE_KEY)){
+            result[TITLE_PROPERTY] = _metadata[Metadata::TITLE_KEY];
+        }
+
+        return result;
+    } else {
+        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::UnknownInterface,
+                "Interface is not known");
+        }
+        return result;
+    }
+}
+
+void
+FileDownload::set(const QString& interfaceName,
+                  const QString& propertyName,
+                  const QVariant& value) {
+    Q_UNUSED(propertyName);
+    Q_UNUSED(value);
+
+    // only deal with the download internface
+    if (interfaceName == PROPERTIES_INTERFACE) {
+        if (calledFromDBus()) {
+            // ATM all the properties are read only
+            sendErrorReply(QDBusError::InvalidArgs,
+                "Property is readonly");
+        }
+    } else {
+        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::UnknownInterface,
+                "Interface is not known");
         }
     }
 }
