@@ -205,7 +205,7 @@ TestManager::testGetAllDownloadsSignalsEmittedCallbacks() {
 
     // ensure that all of the are created
     QVERIFY(managerSpy.ensureSignalEmitted());
-    QTRY_COMPARE(count, managerSpy.count());
+    QTRY_COMPARE_WITH_TIMEOUT(count, managerSpy.count(), 10000);
     _man->getAllDownloads(cb, cb);
 
     QVERIFY(listSpy.ensureSignalEmitted());
@@ -256,7 +256,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmitted() {
     }
     // ensure that all of the are created
     QVERIFY(managerSpy.ensureSignalEmitted());
-    QTRY_COMPARE(count + metadataCount, managerSpy.count());
+    QTRY_COMPARE_WITH_TIMEOUT(count + metadataCount, managerSpy.count(), 10000);
     _man->getAllDownloadsWithMetadata(key, value);
 
     QVERIFY(listSpy.ensureSignalEmitted());

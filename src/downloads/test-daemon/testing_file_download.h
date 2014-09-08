@@ -53,6 +53,7 @@ class TestingFileDownload : public FileDownload {
     bool isGSMDownloadAllowed() override;
 
     QVariantMap metadata() const override;
+    void setMetadata(QVariantMap metadata) const;
 
     Ubuntu::DownloadManager::Daemon::Download::State state() const override;
 
