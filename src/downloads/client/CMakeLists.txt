@@ -9,12 +9,13 @@ set(SOURCES
         ubuntu/download_manager/download_pendingcall_watcher.cpp
         ubuntu/download_manager/error.cpp
         ubuntu/download_manager/group_download.cpp
+        ubuntu/download_manager/logging/logger.cpp
         ubuntu/download_manager/manager.cpp
         ubuntu/download_manager/manager_impl.cpp
         ubuntu/download_manager/manager_interface.cpp
         ubuntu/download_manager/manager_pendingcall_watcher.cpp
-        ubuntu/download_manager/logging/logger.cpp
         ubuntu/download_manager/pending_call_watcher.cpp
+        ubuntu/download_manager/properties_interface.cpp
 )
 
 set(PUBLIC_HEADERS
@@ -35,6 +36,7 @@ set(PRIVATE_HEADERS
         ubuntu/download_manager/manager_interface.h
         ubuntu/download_manager/manager_pendingcall_watcher.h
         ubuntu/download_manager/pending_call_watcher.h
+        ubuntu/download_manager/properties_interface.cpp
 )
 
 include_directories(${Qt5DBus_INCLUDE_DIRS})

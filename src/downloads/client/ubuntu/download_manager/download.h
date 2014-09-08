@@ -48,6 +48,9 @@ class Error;
 */
 class Download : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
+    Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showIndicatorChanged)
+    Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
 
  public:
     explicit Download(QObject* parent = 0)
@@ -211,6 +214,36 @@ class Download : public QObject {
     */
     virtual Error* error() const = 0;
 
+    /*!
+        \fn QString clickPackage()
+
+        Returns the value of the click package property of the download.
+        The property shows the id of a download that represents a new click
+        application being downloaded. Only unconfined applications are allowed
+        to set this property.
+    */
+    virtual QString clickPackage() const = 0;
+
+    /*!
+        \fn bool showInIndicator()
+
+        Returns the value of the show in indicator property of the download.
+        The property states if the download will be shown in the systems transfer
+        indicator. Confined applications are allowed to set this property to false
+        via the metadata to hide their downloads from being shown in the indicator.
+    */
+    virtual bool showInIndicator() const = 0;
+
+    /*!
+        \fn QString title()
+
+        Returns the value of the title property of the download. The title of the
+        download is the string that will be shown in the transfer indicator while
+        the download is in progress. Confined applications are allowed to set the
+        propertys value via the metadata.
+    */
+    virtual QString title() const = 0;
+
  signals:
 
     /*!
@@ -287,6 +320,30 @@ class Download : public QObject {
         notifies if the start action was successful via \a success.
     */
     void started(bool success);
+
+    /*!
+        \fn void Download::clickPackagedChanged(const QString& click)
+
+        This signal is emitted whenever the click property of a download has
+        been updated.
+    */
+    void clickPackagedChanged(const QString& click);
+
+    /*!
+        \fn void Download::showIndicatorChanged(bool shown)
+
+        This signal is emitted whenever the show in indicator property of the
+        download has been updated.
+    */
+    void showIndicatorChanged(bool shown);
+
+    /*!
+        \fn void Download::titleChanged(const QString& title)
+
+        This signal is emitted whenever the title property of the download
+        has been updated.
+    */
+    void titleChanged(const QString& title);
 
 };
 
