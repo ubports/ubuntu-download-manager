@@ -190,6 +190,8 @@ class TestDownload: public BaseTestCase {
     void testGetTitle();
     void testGetAll_data();
     void testGetAll();
+    void testPropertiesChangedEmitted_data();
+    void testPropertiesChangedEmitted();
 
  private:
     QString _id;

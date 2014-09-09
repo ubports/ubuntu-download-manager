@@ -38,7 +38,7 @@
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
 
 namespace {
-    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
+    const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
     const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
     const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
     const QString TITLE_PROPERTY = "Title";
@@ -420,11 +420,33 @@ FileDownload::setHeaders(StringMap headers) {
     }
 }
 
+void
+FileDownload::setMetadata(const QVariantMap& metadata) {
+    // we check the values of the metadata and record if they properties are
+    // updated
+    QVariantMap signalData;
+    if (metadata.contains(Metadata::TITLE_KEY)) {
+        signalData[TITLE_PROPERTY] = metadata[Metadata::TITLE_KEY];
+    }
+    if (metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY)) {
+        signalData[SHOW_INDICATOR_PROPERTY] = metadata[Metadata::SHOW_IN_INDICATOR_KEY];
+    }
+    if (metadata.contains(Metadata::CLICK_PACKAGE_KEY)) {
+        signalData[CLICK_PACKAGE_PROPERTY] = metadata[Metadata::CLICK_PACKAGE_KEY];
+    }
+    // set the metadata and emit the properties signal
+    Download::setMetadata(metadata);
+    if (signalData.count() > 0) {
+        emit PropertiesChanged(DOWNLOAD_INTERFACE, signalData, QStringList());
+    }
+}
+
+
 QVariant
 FileDownload::get(const QString& interfaceName,
                   const QString& propertyName) {
     // only deal with the download internface
-    if (interfaceName == PROPERTIES_INTERFACE) {
+    if (interfaceName == DOWNLOAD_INTERFACE) {
         if (propertyName != CLICK_PACKAGE_PROPERTY
             && propertyName != SHOW_INDICATOR_PROPERTY
             && propertyName != TITLE_PROPERTY) {
@@ -467,7 +489,7 @@ QVariantMap
 FileDownload::getAll(const QString &interfaceName) {
     // only deal with the download internface
     QVariantMap result;
-    if (interfaceName == PROPERTIES_INTERFACE) {
+    if (interfaceName == DOWNLOAD_INTERFACE) {
 
         if (_metadata.contains(Metadata::CLICK_PACKAGE_KEY)){
             result[CLICK_PACKAGE_PROPERTY] = _metadata[Metadata::CLICK_PACKAGE_KEY];
@@ -501,7 +523,7 @@ FileDownload::set(const QString& interfaceName,
     Q_UNUSED(value);
 
     // only deal with the download internface
-    if (interfaceName == PROPERTIES_INTERFACE) {
+    if (interfaceName == DOWNLOAD_INTERFACE) {
         if (calledFromDBus()) {
             // ATM all the properties are read only
             sendErrorReply(QDBusError::InvalidArgs,

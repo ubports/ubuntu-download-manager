@@ -97,6 +97,7 @@ class FileDownload : public Download, public QDBusContext {
     virtual void setThrottle(qulonglong speed) override;
     virtual void setDestinationDir(const QString& path);
     virtual void setHeaders(StringMap headers) override;
+    virtual void setMetadata(const QVariantMap& metadata) override;
 
     // freedesktop.or properties methods
     virtual QVariant get(const QString& interfaceName,
