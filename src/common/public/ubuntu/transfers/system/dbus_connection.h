@@ -19,6 +19,7 @@
 #ifndef DOWNLOADER_LIB_DBUS_CONNECTION_H
 #define DOWNLOADER_LIB_DBUS_CONNECTION_H
 
+#include <QMutex>
 #include <QObject>
 #include <QtDBus/QDBusConnection>
 
@@ -31,8 +32,6 @@ namespace System {
 class DBusConnection : public QObject {
     Q_OBJECT
  public:
-    explicit DBusConnection(QObject* parent = 0);
-    DBusConnection(QDBusConnection conn, QObject* parent = 0);
 
     virtual bool registerService(const QString& serviceName);
     virtual bool unregisterService(const QString& serviceName);
@@ -40,9 +39,27 @@ class DBusConnection : public QObject {
         QDBusConnection::RegisterOptions options = QDBusConnection::ExportAdaptors);  // NOLINT(whitespace/line_length)
     virtual void unregisterObject(const QString& path,
         QDBusConnection::UnregisterMode mode = QDBusConnection::UnregisterNode);
+    virtual bool send(const QDBusMessage& message) const;
     virtual QDBusConnection connection();
 
+    // we will only have a single connection in the system
+    static DBusConnection* instance();
+    static DBusConnection* instance(QDBusConnection conn);
+
+    // only used for testing purposes
+    static void setInstance(DBusConnection* instance);
+    static void deleteInstance();
+
+ protected:
+    explicit DBusConnection(QObject* parent = 0);
+    DBusConnection(QDBusConnection conn, QObject* parent = 0);
+
  private:
+    // singleton vars
+    static DBusConnection* _instance;
+    static QMutex _mutex;
+
+    // instance vars
     QDBusConnection _conn;
 };
 

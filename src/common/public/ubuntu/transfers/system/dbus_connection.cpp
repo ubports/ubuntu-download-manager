@@ -24,9 +24,13 @@ namespace Transfers {
 
 namespace System {
 
+DBusConnection* DBusConnection::_instance = nullptr;
+QMutex DBusConnection::_mutex;
+
 DBusConnection::DBusConnection(QObject* parent)
-    : QObject(parent),
-     _conn(QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "DBUS")) {
+    : DBusConnection(
+         QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "DBUS"),
+         parent) {
 }
 
 DBusConnection::DBusConnection(QDBusConnection conn, QObject* parent)
@@ -57,9 +61,49 @@ DBusConnection::unregisterObject(const QString& path,
     return _conn.unregisterObject(path, mode);
 }
 
+bool
+DBusConnection::send(const QDBusMessage& message) const {
+    return _conn.send(message);
+}
+
 QDBusConnection
 DBusConnection::connection() {
     return _conn;
+}
+
+DBusConnection*
+DBusConnection::instance() {
+    return instance(
+        QDBusConnection::connectToBus(QDBusConnection::ActivationBus, "DBUS")
+    );
+}
+
+DBusConnection*
+DBusConnection::instance(QDBusConnection conn) {
+    if(_instance == nullptr) {
+        _mutex.lock();
+        if(_instance == nullptr)
+            _instance = new DBusConnection(conn);
+        _mutex.unlock();
+    }
+    return _instance;
+}
+
+void
+DBusConnection::setInstance(DBusConnection* instance) {
+    _instance = instance;
+}
+
+void
+DBusConnection::deleteInstance() {
+    if(_instance != nullptr) {
+        _mutex.lock();
+        if(_instance != nullptr) {
+            delete _instance;
+            _instance = nullptr;
+        }
+        _mutex.unlock();
+    }
 }
 
 }  // System

@@ -17,9 +17,9 @@
 
 set(CLIENT_TESTS
         test_client_download
-        test_download_manager_watch
-        test_download_watch
-        test_client_manager
+	#        test_download_manager_watch
+	#        test_download_watch
+	#        test_client_manager
 )
 
 foreach(test ${CLIENT_TESTS})
