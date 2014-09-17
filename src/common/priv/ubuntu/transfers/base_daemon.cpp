@@ -51,7 +51,7 @@ BaseDaemon::BaseDaemon(ManagerFactory* managerFactory,
       _adaptorFactory(adaptorFactory) {
 
     _app = new Application();
-    _conn = new DBusConnection();
+    _conn = DBusConnection::instance();
     _shutDownTimer = new Timer();
     init();
 }
@@ -74,7 +74,6 @@ BaseDaemon::BaseDaemon(ManagerFactory* managerFactory,
 BaseDaemon::~BaseDaemon() {
     // no need to delete the adaptor because the interface is its parent
     delete _app;
-    delete _conn;
     delete _manager;
     delete _shutDownTimer;
     delete _managerFactory;

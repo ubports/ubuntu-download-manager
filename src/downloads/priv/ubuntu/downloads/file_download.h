@@ -19,7 +19,7 @@
 #ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 #define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
 
-#include <QtDBus/QDBusContext>
+#include <QDBusContext>
 #include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
@@ -99,25 +99,13 @@ class FileDownload : public Download, public QDBusContext {
     virtual void setHeaders(StringMap headers) override;
     virtual void setMetadata(const QVariantMap& metadata) override;
 
-    // freedesktop.or properties methods
-    virtual QVariant get(const QString& interfaceName,
-                             const QString& propertyName);
-    virtual QVariantMap getAll(const QString &interfaceName);
-    virtual void set(const QString& interfaceName,
-             const QString& propertyName,
-             const QVariant& value);
-
  signals:
     void finished(const QString& path);
     void authError(AuthErrorStruct error);
     void httpError(HttpErrorStruct error);
     void networkError(NetworkErrorStruct error);
     void processError(ProcessErrorStruct error);
-
-    // freedesktop.org properties signals
-    void PropertiesChanged(const QString& interface_name,
-                           const QVariantMap& changed_properties,
-                           const QStringList& invalidated_properties);
+    void propertiesChanged(const QVariantMap& changes);
 
  protected:
     void emitError(const QString& error) override;
@@ -142,6 +130,7 @@ class FileDownload : public Download, public QDBusContext {
     void onProcessFinished(int exitCode,
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
+    void onPropertiesChanged(const QVariantMap& changes);
     void initFileNames();
     void emitFinished();
     void unlockFilePath();

@@ -297,7 +297,9 @@ DownloadImpl::setMetadata(QVariantMap map) {
     // block, the call should be fast enough
     reply.waitForFinished();
     if (reply.isError()) {
+        qDebug() << "Error setting metadata";
         Logger::log(Logger::Error, "Error setting the download metadata");
+        qDebug() << reply.error();
         setLastError(reply.error());
     }
 }

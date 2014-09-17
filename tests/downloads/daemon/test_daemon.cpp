@@ -43,9 +43,9 @@ void
 TestDaemon::testStart() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     // set mock expectations
@@ -54,12 +54,12 @@ TestDaemon::testStart() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
@@ -76,12 +76,12 @@ TestDaemon::testStart() {
     EXPECT_CALL(*app, exit(_)).Times(0);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -93,9 +93,9 @@ TestDaemon::testStartPath() {
     QStringList args;
     QString myPath = "com.canonical.tests";
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     // set mock expectations
@@ -104,15 +104,15 @@ TestDaemon::testStartPath() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(myPath))
             .Times(1)
             .WillRepeatedly(Return(true));
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*factory, createManager(app, conn, _, _))
+    EXPECT_CALL(*factory, createManager(app, conn.data(), _, _))
         .Times(1)
         .WillRepeatedly(Return(man));
 
@@ -125,11 +125,11 @@ TestDaemon::testStartPath() {
     EXPECT_CALL(*app, exit(_)).Times(0);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start(myPath);
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -140,20 +140,20 @@ void
 TestDaemon::testStartFailServiceRegister() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     EXPECT_CALL(*app, arguments())
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(false));
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(0);
 
     EXPECT_CALL(*factory, createManager(_, _, _, _))
@@ -169,12 +169,12 @@ TestDaemon::testStartFailServiceRegister() {
     EXPECT_CALL(*app, exit(_)).Times(1);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -185,24 +185,24 @@ void
 TestDaemon::testStartFailObjectRegister() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     EXPECT_CALL(*app, arguments())
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(false));
 
-    EXPECT_CALL(*factory, createManager(app, conn, _, _))
+    EXPECT_CALL(*factory, createManager(app, conn.data(), _, _))
         .Times(1)
         .WillRepeatedly(Return(man));
 
@@ -212,12 +212,12 @@ TestDaemon::testStartFailObjectRegister() {
     EXPECT_CALL(*app, exit(_)).Times(1);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -228,25 +228,25 @@ void
 TestDaemon::testTimerStop() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     EXPECT_CALL(*app, arguments())
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*factory, createManager(app, conn, _, _))
+    EXPECT_CALL(*factory, createManager(app, conn.data(), _, _))
         .Times(1)
         .WillRepeatedly(Return(man));
 
@@ -264,13 +264,13 @@ TestDaemon::testTimerStop() {
         .Times(1);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
     daemon->start();
 
     man->sizeChanged(1);
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -282,25 +282,25 @@ void
 TestDaemon::testTimerStart() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     EXPECT_CALL(*app, arguments())
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*factory, createManager(app, conn, _, _))
+    EXPECT_CALL(*factory, createManager(app, conn.data(), _, _))
         .Times(1)
         .WillRepeatedly(Return(man));
 
@@ -319,14 +319,14 @@ TestDaemon::testTimerStart() {
         .Times(1);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
     daemon->start();
 
     man->sizeChanged(1);
     man->sizeChanged(0);
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -337,9 +337,9 @@ void
 TestDaemon::testTimeoutExit() {
     QStringList args;
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     // set mock expectations
@@ -348,12 +348,12 @@ TestDaemon::testTimeoutExit() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
@@ -370,13 +370,13 @@ TestDaemon::testTimeoutExit() {
     EXPECT_CALL(*app, exit(_)).Times(1);  // we must exit the app
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
     timer->timeout();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -389,9 +389,9 @@ TestDaemon::testDisableTimeout() {
     args << "-disable-timeout";
 
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     // set mock expectations
@@ -400,12 +400,12 @@ TestDaemon::testDisableTimeout() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
@@ -422,12 +422,12 @@ TestDaemon::testDisableTimeout() {
     EXPECT_CALL(*app, exit(_)).Times(0);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
@@ -440,9 +440,9 @@ TestDaemon::testSelfSignedCertsMissingPath() {
     QStringList args;
     args << "-self-signed-certs";
     auto timer = new MockTimer();
-    auto conn = new MockDBusConnection();
+    QScopedPointer<MockDBusConnection> conn(new MockDBusConnection());
     auto app = new MockApplication();
-    auto man = new MockDownloadManager(app, conn);
+    auto man = new MockDownloadManager(app, conn.data());
     auto factory = new MockDownloadManagerFactory();
 
     // set mock expectations
@@ -451,12 +451,12 @@ TestDaemon::testSelfSignedCertsMissingPath() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn,
+    EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
             .Times(1)
             .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*conn, registerObject(_, _, _))
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(true));
 
@@ -473,12 +473,12 @@ TestDaemon::testSelfSignedCertsMissingPath() {
     EXPECT_CALL(*app, exit(_)).Times(0);
 
     QScopedPointer<Daemon::DownloadDaemon> daemon(
-        new Daemon::DownloadDaemon(factory, app, conn, timer, this));
+        new Daemon::DownloadDaemon(factory, app, conn.data(), timer, this));
 
     daemon->start();
 
     QVERIFY(Mock::VerifyAndClearExpectations(timer));
-    QVERIFY(Mock::VerifyAndClearExpectations(conn));
+    QVERIFY(Mock::VerifyAndClearExpectations(conn.data()));
     QVERIFY(Mock::VerifyAndClearExpectations(app));
     QVERIFY(Mock::VerifyAndClearExpectations(man));
     QVERIFY(Mock::VerifyAndClearExpectations(factory));
