@@ -31,8 +31,12 @@ ApnRequestFactory::ApnRequestFactory(const QNetworkProxy& proxy,
                                      bool stoppable,
                                      QObject* parent)
     : RequestFactory(stoppable, parent) {
-    _nam->setProxy(proxy);
-    DLOG(INFO) << "Nam configured with proxy";
+    if (proxy.hostName().isEmpty()) {
+        DLOG(INFO) << "Nam configured with no proxy";
+    } else {
+        _nam->setProxy(proxy);
+        DLOG(INFO) << "Nam configured with proxy";
+    }
 }
 
 }  // System
