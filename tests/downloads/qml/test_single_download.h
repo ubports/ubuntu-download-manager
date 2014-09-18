@@ -21,11 +21,32 @@
 
 #include <QObject>
 #include <base_testcase.h>
+#include <gmock/gmock.h>
+
 #include "download.h"
 #include "manager.h"
 #include "testable_single_download.h"
 
 using namespace Ubuntu::DownloadManager;
+
+MATCHER_P(MetadataEq, value, "Returns if the metadata is equal.") {
+    auto argMap = static_cast<QVariantMap>(arg);
+    auto valueMap = static_cast<Metadata*>(value);
+
+    bool areEqual = true;
+
+    if (argMap.contains("title")) {
+        areEqual &= argMap["title"].toString() == valueMap->title();
+    } else {
+        areEqual &= valueMap->title().isEmpty();
+    }
+
+    if (argMap.contains("indicator-shown")) {
+        areEqual &= argMap["indicator-shown"].toBool() == valueMap->showInIndicator();
+    }
+
+    return areEqual;
+}
 
 class TestSingleDownload : public BaseTestCase {
     Q_OBJECT
@@ -53,6 +74,10 @@ class TestSingleDownload : public BaseTestCase {
     void testSetHeadersNullptr();
     void testSetHeadersError();
     void testSetHeadersSuccess();
+    void testSetMetadataNullptr();
+    void testSetMetadataToNullptr();
+    void testSetMetadataError();
+    void testSetMetadataSuccess();
 
  private:
     void verifyMocks();
@@ -61,8 +86,8 @@ class TestSingleDownload : public BaseTestCase {
     QString _url;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    MockDownload* _down; 
-    MockManager* _man; 
+    MockDownload* _down;
+    MockManager* _man;
 };
 
 #endif

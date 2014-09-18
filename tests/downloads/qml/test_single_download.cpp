@@ -351,5 +351,83 @@ TestSingleDownload::testSetHeadersSuccess() {
     verifyMocks();
 }
 
+void
+TestSingleDownload::testSetMetadataNullptr() {
+    QScopedPointer<TestableSingleDownload> singleDownload(
+        new TestableSingleDownload(nullptr, _man));
+    auto metadata = new Metadata();
+
+    // ensure we do not crash
+    singleDownload->setMetadata(metadata);
+    verifyMocks();
+}
+
+void
+TestSingleDownload::testSetMetadataToNullptr() {
+    QScopedPointer<TestableSingleDownload> singleDownload(
+        new TestableSingleDownload(_down, _man));
+
+    // ensure we do not crash
+    singleDownload->setMetadata(nullptr);
+    verifyMocks();
+}
+
+void
+TestSingleDownload::testSetMetadataError() {
+    QScopedPointer<MockError> err(new MockError(Error::DBus));
+    QScopedPointer<TestableSingleDownload> singleDownload(
+        new TestableSingleDownload(_down, _man));
+
+    auto metadata = new Metadata();
+
+    EXPECT_CALL(*_down, setMetadata(_))
+        .Times(1);
+
+    EXPECT_CALL(*_down, isError())
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*_down, error())
+        .Times(1)
+        .WillOnce(Return(err.data()));
+
+    EXPECT_CALL(*err.data(), errorString())
+        .Times(1)
+        .WillOnce(Return(QString("My error")));
+
+    // ensure that the diff signals are emitted
+    SignalBarrier spy(singleDownload.data(), SIGNAL(errorChanged()));
+
+    singleDownload->setMetadata(metadata);
+
+    QVERIFY(spy.ensureSignalEmitted());
+    verifyMocks();
+}
+
+void
+TestSingleDownload::testSetMetadataSuccess() {
+    auto metadata = new Metadata();
+    metadata->setTitle("My download");
+    metadata->setShowInIndicator(true);
+
+    QScopedPointer<TestableSingleDownload> singleDownload(
+        new TestableSingleDownload(_down, _man));
+
+    EXPECT_CALL(*_down, setMetadata(MetadataEq(metadata)))
+        .Times(1);
+
+    EXPECT_CALL(*_down, isError())
+        .Times(1)
+        .WillOnce(Return(false));
+
+    // ensure that the diff signals are emitted
+    SignalBarrier spy(singleDownload.data(), SIGNAL(metadataChanged()));
+
+    singleDownload->setMetadata(metadata);
+
+    QVERIFY(spy.ensureSignalEmitted());
+    verifyMocks();
+}
+
 QTEST_MAIN(TestSingleDownload)
 #include "moc_test_single_download.cpp"

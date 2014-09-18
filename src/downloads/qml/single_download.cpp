@@ -432,14 +432,14 @@ SingleDownload::headers() const {
     }
 }
 
-Metadata
+Metadata*
 SingleDownload::metadata() const {
     if (m_download == nullptr) {
         return m_metadata;
     } else {
         // convert the QMap<QString, QString> into a QMap<QString, QVariant>
         auto metadata = m_download->metadata();
-        Metadata result(metadata);
+        auto result = new Metadata(metadata);
         return result;
     }
 }
@@ -483,12 +483,17 @@ SingleDownload::setHeaders(QVariantMap headers) {
 }
 
 void
-SingleDownload::setMetadata(Metadata metadata) {
+SingleDownload::setMetadata(Metadata* metadata) {
+    if (metadata == nullptr) {
+        m_metadata = nullptr;
+        return;
+    }
+
     if (m_download == nullptr) {
         m_dirty = true;
         m_metadata = metadata;
     } else {
-        m_download->setMetadata(metadata.map());
+        m_download->setMetadata(metadata->map());
         if (m_download->isError()) {
             // set the error details and emit the signals
             auto err = m_download->error();
@@ -497,7 +502,7 @@ SingleDownload::setMetadata(Metadata metadata) {
             emit errorFound(m_error);
             emit errorChanged();
         } else {
-            emit headersChanged();
+            emit metadataChanged();
         }
     }
 }

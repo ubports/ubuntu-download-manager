@@ -29,6 +29,8 @@ namespace Transfers {
 class Metadata : public QVariantMap {
 
  public:
+    Metadata();
+    Metadata(const QVariantMap map);
 
     static const QString COMMAND_KEY;
     static const QString COMMAND_FILE_KEY;

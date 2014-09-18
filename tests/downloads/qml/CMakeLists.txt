@@ -16,6 +16,7 @@
 
 set(QML_TESTS
 	test_single_download
+	test_metadata
 )
 
 foreach(test ${QML_TESTS})
