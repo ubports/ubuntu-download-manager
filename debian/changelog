@@ -5,6 +5,13 @@ ubuntu-download-manager (0.9) UNRELEASED; urgency=medium
 
  -- Manuel de la Pena <manuel.delapena@canonical.com>  Thu, 04 Sep 2014 13:36:59 +0200
 
+ubuntu-download-manager (0.8+14.10.20140916-0ubuntu1) 14.09; urgency=low
+
+  [ Sergio Schvezov ]
+  * Don't set the proxy if the proxy hostname is empty (LP: #1362008)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Sep 2014 02:33:45 +0000
+
 ubuntu-download-manager (0.8+14.10.20140807-0ubuntu1) utopic; urgency=medium
 
   [ Manuel de la Pena ]
