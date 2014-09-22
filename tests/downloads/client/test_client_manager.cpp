@@ -169,7 +169,7 @@ TestManager::testGetAllDownloadsSignalsEmitted() {
     _man->getAllDownloads();
 
     QVERIFY(listSpy.ensureSignalEmitted());
-    QTRY_COMPARE(1, listSpy.count());
+    QTRY_COMPARE_WITH_TIMEOUT(1, listSpy.count(), 20000);
     auto downs = listSpy.takeFirst().at(0).value<DownloadsList*>();
     QCOMPARE(count, downs->downloads().count());
 
@@ -256,7 +256,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmitted() {
     }
     // ensure that all of the are created
     QVERIFY(managerSpy.ensureSignalEmitted());
-    QTRY_COMPARE_WITH_TIMEOUT(count + metadataCount, managerSpy.count(), 10000);
+    QTRY_COMPARE_WITH_TIMEOUT(count + metadataCount, managerSpy.count(), 20000);
     _man->getAllDownloadsWithMetadata(key, value);
 
     QVERIFY(listSpy.ensureSignalEmitted());
@@ -318,7 +318,7 @@ TestManager::testGetAllDownloadsMetadataSignalsEmittedCallbacks() {
     }
     // ensure that all of the are created
     QVERIFY(managerSpy.ensureSignalEmitted());
-    QTRY_COMPARE_WITH_TIMEOUT(count + metadataCount, managerSpy.count(), 10000);
+    QTRY_COMPARE_WITH_TIMEOUT(count + metadataCount, managerSpy.count(), 20000);
     _man->getAllDownloadsWithMetadata(key, value, cb, cb);
 
     QVERIFY(listSpy.ensureSignalEmitted());
