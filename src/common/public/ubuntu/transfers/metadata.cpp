@@ -30,6 +30,13 @@ const QString Metadata::TITLE_KEY = "title";
 const QString Metadata::SHOW_IN_INDICATOR_KEY = "indicator-shown";
 const QString Metadata::CLICK_PACKAGE_KEY = "click-package";
 
+Metadata::Metadata() {
+}
+
+Metadata::Metadata(const QVariantMap map)
+    : QVariantMap(map) {
+}
+
 QString
 Metadata::command() const {
     return (contains(Metadata::COMMAND_KEY))?

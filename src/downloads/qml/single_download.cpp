@@ -1,7 +1,25 @@
-#include <QDebug>
-#include "single_download.h"
+/*
+ * Copyright 2014 Canonical Ltd.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of version 3 of the GNU Lesser General Public
+ * License as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ */
+
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
+
+#include "single_download.h"
 
 namespace Ubuntu {
 
@@ -414,6 +432,18 @@ SingleDownload::headers() const {
     }
 }
 
+Metadata*
+SingleDownload::metadata() const {
+    if (m_download == nullptr) {
+        return m_metadata;
+    } else {
+        // convert the QMap<QString, QString> into a QMap<QString, QVariant>
+        auto metadata = m_download->metadata();
+        auto result = new Metadata(metadata);
+        return result;
+    }
+}
+
 void
 SingleDownload::setHeaders(QVariantMap headers) {
     if (m_download == nullptr) {
@@ -448,6 +478,31 @@ SingleDownload::setHeaders(QVariantMap headers) {
             emit errorChanged();
         } else {
             emit headersChanged();
+        }
+    }
+}
+
+void
+SingleDownload::setMetadata(Metadata* metadata) {
+    if (metadata == nullptr) {
+        m_metadata = nullptr;
+        return;
+    }
+
+    if (m_download == nullptr) {
+        m_dirty = true;
+        m_metadata = metadata;
+    } else {
+        m_download->setMetadata(metadata->map());
+        if (m_download->isError()) {
+            // set the error details and emit the signals
+            auto err = m_download->error();
+            m_error.setType(getErrorType(err->type()));
+            m_error.setMessage(err->errorString());
+            emit errorFound(m_error);
+            emit errorChanged();
+        } else {
+            emit metadataChanged();
         }
     }
 }
@@ -518,6 +573,13 @@ SingleDownload::setHeaders(QVariantMap headers) {
     This property allows to get and set the headers that will be used to perform
     the download request. All headers must be strings or at least QVariant should
     be able to convert them to strings.
+*/
+
+/*!
+    \qmlproperty QVariantMap SingleDownload:metadata:
+
+    This property allows to get and set the metadata that will be linked to 
+    the download request. 
 */
 
 }
