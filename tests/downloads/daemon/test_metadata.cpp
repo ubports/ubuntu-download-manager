@@ -317,5 +317,36 @@ TestMetadata::testHasClickFalse() {
     QVERIFY(!metadata.hasClickPackage());
 }
 
+void
+TestMetadata::testSetDeflate_data() {
+    QTest::addColumn<bool>("deflate");
+
+    QTest::newRow("True") << true;
+    QTest::newRow("False") << false;
+}
+
+void
+TestMetadata::testSetDeflate() {
+    QFETCH(bool, deflate);
+
+    Metadata metadata;
+    metadata.setDeflate(deflate);
+    QCOMPARE(metadata[Metadata::DEFLATE_KEY].toBool(), deflate);
+}
+
+void
+TestMetadata::testHasDeflateTrue() {
+    Metadata metadata;
+    metadata.setDeflate(true);
+
+    QVERIFY(metadata.hasDeflate());
+}
+
+void
+TestMetadata::testHasDeflateFalse() {
+    Metadata metadata;
+    QVERIFY(!metadata.hasDeflate());
+}
+
 QTEST_MAIN(TestMetadata)
 #include "moc_test_metadata.cpp"

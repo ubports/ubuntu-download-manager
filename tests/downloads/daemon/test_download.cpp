@@ -3860,4 +3860,86 @@ TestDownload::testSetLocalDirectoryStarted() {
     verifyMocks();
 }
 
+void
+TestDownload::testDeflateConstructorError() {
+    // create a download that has a hash AND deflate set to true
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::DEFLATE_KEY] = true;
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, "hash", "Sha256", metadata, _headers));
+
+    QVERIFY(!download->isValid());
+    verifyMocks();
+}
+
+void
+TestDownload::testDeflateConstructorNoError() {
+    // create a download that has a hash AND deflate set to true
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::DEFLATE_KEY] = false;
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, "hash", "Sha256", metadata, _headers));
+
+    QVERIFY(download->isValid());
+    verifyMocks();
+}
+
+void
+TestDownload::testDeflateOnRequest() {
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::DEFLATE_KEY] = true;
+    QString header("Accept-Encoding");
+    auto file = new MockFile("test");
+    auto reply = new MockNetworkReply();
+
+    // write the expectations of the reply which is what we are
+    // really testing
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    // assert that we do have gzip and deflate in the content-encoding header
+    EXPECT_CALL(*_reqFactory, get(RequestDoesNotHaveHeader(header)))
+        .Times(1)
+        .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, setReadBufferSize(_))
+        .Times(1);
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+        .Times(1)
+        .WillOnce(Return(file));
+
+    EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, remove())
+        .Times(0);
+
+    EXPECT_CALL(*file, close())
+        .Times(1);
+
+    auto download = new FileDownload(_id, _appId, _path,
+        _isConfined, _rootPath, _url, metadata, _headers);
+
+    download->start();  // change state
+    download->startTransfer();
+
+    delete download;
+
+    QVERIFY(Mock::VerifyAndClearExpectations(file));
+    QVERIFY(Mock::VerifyAndClearExpectations(reply));
+    verifyMocks();
+}
+
 QTEST_MAIN(TestDownload)

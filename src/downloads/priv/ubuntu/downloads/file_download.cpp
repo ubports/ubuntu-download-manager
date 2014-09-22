@@ -39,6 +39,7 @@
 #include <ubuntu/transfers/system/filename_mutex.h>
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
@@ -584,6 +585,11 @@ FileDownload::onDownloadCompleted() {
 
         if (contentDisposition.contains("filename")) {
             auto serverName = filenameFromHTTPContentDisposition(contentDisposition);
+            if (_metadata.contains(Metadata::DEFLATE_KEY)
+                    && _metadata[Metadata::DEFLATE_KEY].toBool()) {
+                DOWN_LOG(INFO) << "Removing compress extension" << serverName;
+                serverName = QFileInfo(serverName).baseName();
+            }
             DOWN_LOG(INFO) << "Server name " << serverName;
 
             if (!serverName.isEmpty()) {
@@ -827,6 +833,17 @@ FileDownload::init() {
         setIsValid(false);
         setLastError(QString("Invalid URL: '%1'").arg(_url.toString()));
     }
+
+    // ensure that if we are going to deflate the download that the hash is set
+    // to be empty. The reason for this is that if we deflate the hash wont be
+    // correctly checked
+    if (!_hash.isEmpty() && _metadata.contains(Metadata::DEFLATE_KEY)
+            && _metadata[Metadata::DEFLATE_KEY].toBool()) {
+        setIsValid(false);
+        setLastError(QString(
+            "Downloads that are set to be deflated cannot have a has: '%1'").arg(
+                _hash));
+    }
 }
 
 void
@@ -995,9 +1012,12 @@ FileDownload::buildRequest() {
             continue;
         request.setRawHeader(header.toUtf8(), data.toUtf8());
     }
-    // very important we must ensure that we do not decompress any download
-    // else we will have an error in the checksum for example #1224678
-    request.setRawHeader("Accept-Encoding", "identity");
+    if (!_metadata.contains(Metadata::DEFLATE_KEY) ||
+            !_metadata[Metadata::DEFLATE_KEY].toBool()) {
+        // very important we must ensure that we do not decompress any download
+        // else we will have an error in the checksum for example #1224678
+        request.setRawHeader("Accept-Encoding", "identity");
+    }
     return request;
 }
 

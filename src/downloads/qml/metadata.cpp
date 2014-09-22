@@ -57,6 +57,19 @@ Metadata::setShowInIndicator(bool shown) {
     }
 }
 
+bool
+Metadata::deflate() const {
+    return _metadata.deflate();
+}
+
+void
+Metadata::setDeflate(bool deflate) {
+    if (deflate != _metadata.deflate()) {
+        _metadata.setDeflate(deflate);
+        emit deflateChanged();
+    }
+}
+
 QVariantMap
 Metadata::map() const {
     return QVariantMap(_metadata);

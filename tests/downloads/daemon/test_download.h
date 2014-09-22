@@ -181,6 +181,11 @@ class TestDownload: public BaseTestCase {
     void testSetLocalDirectoryNotDir();
     void testSetLocalDirectoryStarted();
 
+    // tests related to the deflate option
+    void testDeflateConstructorError();
+    void testDeflateConstructorNoError();
+    void testDeflateOnRequest();
+
  private:
     QString _id;
     QString _appId;

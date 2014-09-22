@@ -28,6 +28,7 @@ class Metadata : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(bool showInIndicator READ showInIndicator NOTIFY showIndicatorChanged)
+    Q_PROPERTY(bool deflate READ deflate NOTIFY deflateChanged)
 
  public:
     explicit Metadata(QObject* parent=0);
@@ -39,11 +40,15 @@ class Metadata : public QObject {
     bool showInIndicator() const;
     void setShowInIndicator(bool shown);
 
+    bool deflate() const;
+    void setDeflate(bool deflate);
+
     QVariantMap map() const;
 
  signals:
     void titleChanged();
     void showIndicatorChanged();
+    void deflateChanged();
 
  private:
     Transfers::Metadata _metadata;
