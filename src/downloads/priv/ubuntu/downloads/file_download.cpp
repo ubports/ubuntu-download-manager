@@ -841,7 +841,7 @@ FileDownload::init() {
             && _metadata[Metadata::DEFLATE_KEY].toBool()) {
         setIsValid(false);
         setLastError(QString(
-            "Downloads that are set to be deflated cannot have a has: '%1'").arg(
+            "Downloads that are set to be deflated cannot have a hash: '%1'").arg(
                 _hash));
     }
 }
