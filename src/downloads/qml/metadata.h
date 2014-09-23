@@ -27,8 +27,8 @@ namespace DownloadManager {
 class Metadata : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
-    Q_PROPERTY(bool showInIndicator READ showInIndicator NOTIFY showIndicatorChanged)
-    Q_PROPERTY(bool deflate READ deflate NOTIFY deflateChanged)
+    Q_PROPERTY(bool showInIndicator READ showInIndicator WRITE setShowInIndicator NOTIFY showIndicatorChanged)
+    Q_PROPERTY(bool deflate READ deflate WRITE setDeflate NOTIFY deflateChanged)
 
  public:
     explicit Metadata(QObject* parent=0);
