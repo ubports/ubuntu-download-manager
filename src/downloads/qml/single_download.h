@@ -43,7 +43,7 @@ class SingleDownload : public QObject
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloadingChanged)
     Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
     Q_PROPERTY(QVariantMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
-    Q_PROPERTY(Metadata* metadata READ metadata WRITE setMetadata NOTIFY metadataChanged)
+    Q_PROPERTY(Ubuntu::DownloadManager::Metadata* metadata READ metadata WRITE setMetadata NOTIFY metadataChanged)
 
  public:
     explicit SingleDownload(QObject *parent = 0);
@@ -167,7 +167,7 @@ private:
     bool m_mobile = false;
     qulonglong m_throttle = 0;
     QVariantMap m_headers;
-    Metadata* m_metadata;
+    Metadata* m_metadata = nullptr;
     DownloadError m_error;
     Download* m_download = nullptr;
     Manager* m_manager = nullptr;
