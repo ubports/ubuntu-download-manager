@@ -450,18 +450,15 @@ DownloadImpl::onPropertiesChanged(const QString& interfaceName,
     // just take care of the property changes from the download interface
     if (interfaceName == DownloadInterface::staticInterfaceName()) {
         if (changedProperties.contains(CLICK_PACKAGE_PROPERTY)) {
-            emit clickPackagedChanged(
-                changedProperties[CLICK_PACKAGE_PROPERTY].toString());
+            emit clickPackagedChanged();
         }
 
         if (changedProperties.contains(SHOW_INDICATOR_PROPERTY)) {
-            emit showIndicatorChanged(
-                changedProperties[SHOW_INDICATOR_PROPERTY].toBool());
+            emit showInIndicatorChanged();
         }
 
         if (changedProperties.contains(TITLE_PROPERTY)) {
-            emit titleChanged(
-                changedProperties[TITLE_PROPERTY].toString());
+            emit titleChanged();
         }
     }
 }

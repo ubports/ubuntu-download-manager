@@ -64,7 +64,7 @@ class MockDownload : public Download {
     using Download::resumed;
     using Download::started;
     using Download::clickPackagedChanged;
-    using Download::showIndicatorChanged;
+    using Download::showInIndicatorChanged;
     using Download::titleChanged;
 };
 
