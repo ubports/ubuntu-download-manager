@@ -193,7 +193,7 @@ TestDownload::testSetMetadata_data() {
 
     QMap<QString, QVariant> second;
     second["title"] = "my title";
-    second["click"] = "clcik app";
+    second["click"] = "click app";
     QTest::newRow("Second row") << second;
 
     QMap<QString, QVariant> last;
