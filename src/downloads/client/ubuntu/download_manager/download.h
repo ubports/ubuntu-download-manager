@@ -49,7 +49,7 @@ class Error;
 class Download : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
-    Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showIndicatorChanged)
+    Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showInIndicatorChanged)
     Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
 
  public:
@@ -240,7 +240,7 @@ class Download : public QObject {
         Returns the value of the title property of the download. The title of the
         download is the string that will be shown in the transfer indicator while
         the download is in progress. Confined applications are allowed to set the
-        propertys value via the metadata.
+        properties value via the metadata.
     */
     virtual QString title() const = 0;
 
@@ -327,7 +327,7 @@ class Download : public QObject {
         This signal is emitted whenever the click property of a download has
         been updated.
     */
-    void clickPackagedChanged(const QString& click);
+    void clickPackagedChanged();
 
     /*!
         \fn void Download::showIndicatorChanged(bool shown)
@@ -335,7 +335,8 @@ class Download : public QObject {
         This signal is emitted whenever the show in indicator property of the
         download has been updated.
     */
-    void showIndicatorChanged(bool shown);
+    void showInIndicatorChanged();
+
 
     /*!
         \fn void Download::titleChanged(const QString& title)
@@ -343,7 +344,7 @@ class Download : public QObject {
         This signal is emitted whenever the title property of the download
         has been updated.
     */
-    void titleChanged(const QString& title);
+    void titleChanged();
 
 };
 
