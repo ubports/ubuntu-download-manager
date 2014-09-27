@@ -43,6 +43,7 @@ class MockFile : public File {
     MOCK_METHOD1(open, bool(QIODevice::OpenMode));
     MOCK_METHOD0(readAll, QByteArray());
     MOCK_METHOD0(remove, bool());
+    MOCK_METHOD1(isDir, bool(const QString&));
     MOCK_METHOD0(reset, bool());
     MOCK_CONST_METHOD0(size, qint64());
     MOCK_METHOD1(write, qint64(const QByteArray&));

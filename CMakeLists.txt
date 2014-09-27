@@ -46,7 +46,7 @@ find_package(Qt5Network REQUIRED)
 find_package(Qt5SystemInfo REQUIRED)
 find_package(Qt5Sql REQUIRED)
 find_package(Qt5Test REQUIRED)
-find_package(Boost COMPONENTS log REQUIRED)
+find_package(Boost COMPONENTS log program_options REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(DBUS REQUIRED dbus-1)

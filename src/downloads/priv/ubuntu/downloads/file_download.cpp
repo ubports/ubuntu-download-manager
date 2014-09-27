@@ -40,6 +40,7 @@
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 
+#include "header_parser.h"
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
@@ -159,6 +160,7 @@ namespace {
     const QString PROXY_AUTH_ERROR = "PROXY_AUTHENTICATION ERROR";
     const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
     const QByteArray CONTENT_DISPOSITION = "Content-Disposition";
+    const QByteArray CONTENT_TYPE = "Content-Type";
 }
 
 namespace Ubuntu {
@@ -574,56 +576,21 @@ FileDownload::onRedirect(QUrl redirect) {
 void
 FileDownload::onDownloadCompleted() {
     TRACE << _url;
+    // ensure that if content-disposition is present we will use it
+    updateFileNamePerContentDisposition();
 
-    // check if we have the content-type header, if we do we are going to change the
-    // file path that will be used by the download, do not do it if the app is
-    // unconfined
-    if ((_reply->hasRawHeader(CONTENT_DISPOSITION) && (
-            isConfined() || !_metadata.contains(Metadata::LOCAL_PATH_KEY)))) {
-        QString contentDisposition = _reply->rawHeader(CONTENT_DISPOSITION);
-        DOWN_LOG(INFO) << "Content-Disposition header" << contentDisposition;
-
-        if (contentDisposition.contains("filename")) {
-            auto serverName = filenameFromHTTPContentDisposition(contentDisposition);
-            if (_metadata.contains(Metadata::DEFLATE_KEY)
-                    && _metadata[Metadata::DEFLATE_KEY].toBool()) {
-                DOWN_LOG(INFO) << "Removing compress extension" << serverName;
-                serverName = QFileInfo(serverName).baseName();
-            }
-            DOWN_LOG(INFO) << "Server name " << serverName;
-
-            if (!serverName.isEmpty()) {
-                QFileInfo fiContentDisposition(serverName);
-                auto filename = fiContentDisposition.fileName();
-                // replace the filename of the current _filePath with the new one
-                QFileInfo fiFilePath(_filePath);
-                auto currentFileName = fiFilePath.fileName();
-                auto newPath = _filePath.replace(currentFileName, filename);
-
-                // unlock the old path and lock the new one
-                _fileNameMutex->unlockFileName(_filePath);
-                _filePath = _fileNameMutex->lockFileName(newPath);
-                DOWN_LOG(INFO) << "Content disposition based file path is '" << serverName << "'";
-            }
-        }
+    if(!hashIsValid()) {
+        emitError(HASH_ERROR);
+        return;
     }
 
-    // if the hash is present we check it
-    if (!_hash.isEmpty()) {
-        emit processing(filePath());
-        _currentData->reset();
-        auto hashFactory = CryptographicHashFactory::instance();
-        QScopedPointer<CryptographicHash> hash(
-            hashFactory->createCryptographicHash(_algo, this));
-        // addData is smart enough to not load the entire file in memory
-        hash->addData(_currentData->device());
-        QString fileSig = QString(hash->result().toHex());
-
-        if (fileSig != _hash) {
-            DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
-            emitError(HASH_ERROR);
-            return;
-        }
+    // if the download was set to be deflated and the content type is correct
+    // we will do our best to deflate the file
+    if (_metadata.contains(Metadata::DEFLATE_KEY)
+            && _metadata[Metadata::DEFLATE_KEY].toBool()
+            && _reply->hasRawHeader(CONTENT_TYPE)
+	    && HeaderParser::isDeflatableContentType(
+                _reply->rawHeader(CONTENT_TYPE))){
     }
 
     // there are two possible cases, the first, we do not have the metadata
@@ -889,6 +856,26 @@ FileDownload::flushFile() {
     return flushed;
 }
 
+bool
+FileDownload::hashIsValid() {
+    // if the hash is present we check it
+    if (!_hash.isEmpty()) {
+        emit processing(filePath());
+        _currentData->reset();
+        auto hashFactory = CryptographicHashFactory::instance();
+        QScopedPointer<CryptographicHash> hash(
+            hashFactory->createCryptographicHash(_algo, this));
+        // addData is smart enough to not load the entire file in memory
+        hash->addData(_currentData->device());
+        QString fileSig = QString(hash->result().toHex());
+	if (fileSig != _hash) {
+            DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
+            return false;
+	}
+    }
+    return true;
+}
+
 void
 FileDownload::initFileNames() {
     // the mutex will ensure that we do not have race conditions about
@@ -953,27 +940,37 @@ FileDownload::unlockFilePath() {
     }
 }
 
-QString
-FileDownload::filenameFromHTTPContentDisposition(const QString& value) {
-    auto keyValuePairs = value.split(';');
+void
+FileDownload::updateFileNamePerContentDisposition() {
+    // check if we have the content-type header, if we do we are going to change the
+    // file path that will be used by the download, do not do it if the app is
+    // unconfined
+    if ((_reply->hasRawHeader(CONTENT_DISPOSITION) && (
+            isConfined() || !_metadata.contains(Metadata::LOCAL_PATH_KEY)))) {
+        auto contentDisposition = _reply->rawHeader(CONTENT_DISPOSITION);
+        DOWN_LOG(INFO) << "Content-Disposition header" << contentDisposition;
 
-    foreach(const QString& valuePair, keyValuePairs) {
-        int valueStartPos = valuePair.indexOf('=');
+        if (contentDisposition.contains("filename")) {
+            auto serverName = HeaderParser::fileNameFromContentDisposition(
+                contentDisposition);
+            DOWN_LOG(INFO) << "Server name " << serverName;
 
-        if (valueStartPos < 0)
-            continue;
+            if (!serverName.isEmpty()) {
+                QFileInfo fiContentDisposition(serverName);
+                auto filename = fiContentDisposition.fileName();
+                // replace the filename of the current _filePath with the new one
+                QFileInfo fiFilePath(_filePath);
+                auto currentFileName = fiFilePath.fileName();
+                auto newPath = _filePath.replace(currentFileName, filename);
 
-        auto pair = valuePair.split('=');
-        if (pair.size() != 2 || pair[0].isEmpty() || pair[0].simplified() != "filename")
-            continue;
-
-        auto value = pair[1].replace("\"", "") // remove ""
-            .replace("'", "") // remove '
-            .simplified();  // remove white spaces
-        return value;
+                // unlock the old path and lock the new one
+                _fileNameMutex->unlockFileName(_filePath);
+                _filePath = _fileNameMutex->lockFileName(newPath);
+                DOWN_LOG(INFO) << "Content disposition based file path is '"
+                    << serverName << "'";
+            }
+        }
     }
-
-    return QString();
 }
 
 void

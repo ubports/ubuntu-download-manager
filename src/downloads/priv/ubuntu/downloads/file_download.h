@@ -114,12 +114,20 @@ class FileDownload : public Download, public QDBusContext {
     RequestFactory* _requestFactory;
 
  private:
+    // helper methods
     QNetworkRequest buildRequest();
     void cleanUpCurrentData();
     void connectToReplySignals();
     void disconnectFromReplySignals();
+    void emitFinished();
     bool flushFile();
+    bool hashIsValid();
     void init();
+    void initFileNames();
+    void unlockFilePath();
+    void updateFileNamePerContentDisposition();
+
+    // slots used to react to signals
     void onDownloadProgress(qint64 currentProgress, qint64);
     void onError(QNetworkReply::NetworkError);
     void onRedirect(QUrl redirect);
@@ -131,10 +139,7 @@ class FileDownload : public Download, public QDBusContext {
                            QProcess::ExitStatus exitStatus);
     void onOnlineStateChanged(bool);
     void onPropertiesChanged(const QVariantMap& changes);
-    void initFileNames();
-    void emitFinished();
-    void unlockFilePath();
-    QString filenameFromHTTPContentDisposition(const QString& value);
+
 
  private:
     bool _downloading = false;
