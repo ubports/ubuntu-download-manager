@@ -30,4 +30,4 @@ target_link_libraries(${TARGET}
 	udm-priv-common
 )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${TARGET} DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/helpers)
+install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}/ubuntu-download-manager)
