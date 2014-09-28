@@ -211,7 +211,7 @@ TestDownload::testSetMetadata() {
     qDebug() << metadata;
     _down->setMetadata(metadata);
 
-    SignalBarrier spy(_down, SIGNAL(titleChanged(QString)));
+    SignalBarrier spy(_down, SIGNAL(titleChanged()));
 
     auto currentMetadata = _down->metadata();
 
