@@ -160,6 +160,7 @@ Depends: ${misc:Depends},
          libudm-common0 (= ${binary:Version}),
          libudm-priv-common0 (= ${binary:Version}),
          libubuntu-download-manager-common0 (= ${binary:Version}),
+         unzip
 Description: Ubuntu Download Manager - daemon
  Ubuntu Download Manager performs downloads from a centralized location.
  .
