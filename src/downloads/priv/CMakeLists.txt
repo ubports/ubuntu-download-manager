@@ -53,6 +53,8 @@ include_directories(${CMAKE_SOURCE_DIR}/src/common/public)
 include_directories(${CMAKE_SOURCE_DIR}/src/common/priv)
 include_directories(${CMAKE_SOURCE_DIR}/src/downloads/common)
 
+add_definitions(-DHELPER_DIR="${CMAKE_INSTALL_LIBEXECDIR}/ubuntu-download-manager")
+
 add_library(${TARGET} STATIC
 	${HEADERS}
 	${SOURCES}

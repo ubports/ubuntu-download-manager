@@ -70,6 +70,19 @@ Metadata::setDeflate(bool deflate) {
     }
 }
 
+bool
+Metadata::extract() const {
+    return _metadata.extract();
+}
+
+void
+Metadata::setExtract(bool extract) {
+    if (extract != _metadata.extract()) {
+        _metadata.setExtract(extract);
+        emit extractChanged();
+    }
+}
+
 QVariantMap
 Metadata::map() const {
     return QVariantMap(_metadata);
