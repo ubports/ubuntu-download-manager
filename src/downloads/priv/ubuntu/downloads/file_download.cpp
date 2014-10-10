@@ -749,7 +749,6 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
-        emitFinished();
         // remove the file because that is the contract that we have with
         // the clients
         auto fileMan = FileManager::instance();
@@ -763,6 +762,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
             LOG(INFO) << "Removing '" << _filePath << "'";
             fileMan->remove(_filePath);
         }
+        emitFinished();
     } else {
         auto standardOut = p->readAllStandardOutput();
         auto standardErr = p->readAllStandardError();
