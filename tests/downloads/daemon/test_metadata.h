@@ -67,6 +67,10 @@ class TestMetadata : public BaseTestCase {
     void testSetClick();
     void testHasClickTrue();
     void testHasClickFalse();
+    void testSetDeflate_data();
+    void testSetDeflate();
+    void testHasDeflateTrue();
+    void testHasDeflateFalse();
 };
 
 #endif // TEST_METADATA_H

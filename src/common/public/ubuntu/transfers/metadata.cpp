@@ -29,6 +29,7 @@ const QString Metadata::OBJECT_PATH_KEY = "objectpath";
 const QString Metadata::TITLE_KEY = "title";
 const QString Metadata::SHOW_IN_INDICATOR_KEY = "indicator-shown";
 const QString Metadata::CLICK_PACKAGE_KEY = "click-package";
+const QString Metadata::DEFLATE_KEY = "deflate";
 
 Metadata::Metadata() {
 }
@@ -131,6 +132,22 @@ Metadata::setClickPackage(const QString& click) {
 bool
 Metadata::hasClickPackage() const {
     return contains(Metadata::CLICK_PACKAGE_KEY);
+}
+
+bool
+Metadata::deflate() const {
+    return (contains(Metadata::DEFLATE_KEY))?
+        value(Metadata::DEFLATE_KEY).toBool():false;
+}
+
+void
+Metadata::setDeflate(bool deflate) {
+    insert(Metadata::DEFLATE_KEY, deflate);
+}
+
+bool
+Metadata::hasDeflate() const {
+    return contains(Metadata::DEFLATE_KEY);
 }
 
 }  // DownloadManager

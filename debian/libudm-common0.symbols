@@ -101,6 +101,10 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::Metadata::LOCAL_PATH_KEY@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Metadata::OBJECT_PATH_KEY@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Metadata::COMMAND_FILE_KEY@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::Transfers::Metadata::setDeflate(bool)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::DEFLATE_KEY@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasDeflate() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::deflate() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getCode() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getPhrase() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::getCode() const@Base" 0.4+14.10.20140618

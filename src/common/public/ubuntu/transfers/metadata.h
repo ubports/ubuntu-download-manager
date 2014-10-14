@@ -39,6 +39,7 @@ class Metadata : public QVariantMap {
     static const QString TITLE_KEY;
     static const QString SHOW_IN_INDICATOR_KEY;
     static const QString CLICK_PACKAGE_KEY;
+    static const QString DEFLATE_KEY;
 
     // accessors to simplify the use of the metadata
     QString command() const;
@@ -64,6 +65,10 @@ class Metadata : public QVariantMap {
     QString clickPackage() const;
     void setClickPackage(const QString& click);
     bool hasClickPackage() const;
+
+    bool deflate() const;
+    void setDeflate(bool deflate);
+    bool hasDeflate() const;
 };
 
 }  // DownloadManager

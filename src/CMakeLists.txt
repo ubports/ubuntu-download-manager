@@ -16,4 +16,5 @@
 
 add_subdirectory(common)
 add_subdirectory(downloads)
+add_subdirectory(extractor)
 add_subdirectory(uploads)

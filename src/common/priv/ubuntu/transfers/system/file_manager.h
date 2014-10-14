@@ -69,6 +69,7 @@ class FileManager : public QObject {
     virtual bool remove(const QString& path);
     virtual bool exists(const QString& path);
     virtual bool rename(const QString& oldName, const QString& newName);
+    virtual bool isDir(const QString& path);
 
     static FileManager* instance();
 

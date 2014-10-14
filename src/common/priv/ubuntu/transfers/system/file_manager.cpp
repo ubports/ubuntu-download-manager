@@ -17,6 +17,7 @@
  */
 
 #include <QFile>
+#include <QFileInfo>
 #include <QTemporaryFile>
 #include "file_manager.h"
 
@@ -125,6 +126,11 @@ FileManager::exists(const QString& path) {
 bool
 FileManager::rename(const QString& oldName, const QString& newName) {
     return QFile::rename(oldName, newName);
+}
+
+bool
+FileManager::isDir(const QString& path) {
+    return QFileInfo(path).isDir();
 }
 
 FileManager* FileManager::instance() {
