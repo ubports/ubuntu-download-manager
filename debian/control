@@ -3,6 +3,7 @@ Section: net
 Priority: optional
 Build-Depends: cmake,
                debhelper (>= 9),
+               dh-apparmor,
                doxygen,
                dbus-test-runner,
                google-mock,
@@ -161,6 +162,7 @@ Depends: ${misc:Depends},
          libudm-priv-common0 (= ${binary:Version}),
          libubuntu-download-manager-common0 (= ${binary:Version}),
          unzip
+Suggests: apparmor
 Description: Ubuntu Download Manager - daemon
  Ubuntu Download Manager performs downloads from a centralized location.
  .

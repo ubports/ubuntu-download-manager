@@ -1,0 +1,14 @@
+#include <tunables/global>
+
+profile udm-extractor /usr/lib/*/ubuntu-download-manager/udm-extractor {
+  #include <abstractions/base>
+
+  # Supported uncompressors
+  /usr/bin/unzip ixr,
+
+  # Where the compressed files are stored
+  owner @{HOME}/.cache/*/HubIncoming/** r,
+
+  # Where to uncompress the files
+  owner @{HOME}/.cache/*/HubIncoming/** w,
+}
