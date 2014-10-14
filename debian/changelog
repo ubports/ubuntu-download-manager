@@ -1,4 +1,4 @@
-ubuntu-download-manager (0.9ubuntu1) UNRELEASED; urgency=medium
+ubuntu-download-manager (0.9+14.10.20141014.1-0ubuntu1) 14.09; urgency=medium
 
   [ Manuel de la Pena ]
   * Add new properties that can be used to filter the downloads shown in the
@@ -9,8 +9,29 @@ ubuntu-download-manager (0.9ubuntu1) UNRELEASED; urgency=medium
   * debian/libubuntu-download-manager-client0.symbols: auto-update to
     released version
   * debian/libudm-common0.symbols: auto-update to released version
+  * New rebuild forced
 
- -- Manuel de la Pena <manuel.delapena@canonical.com>  Sat, 27 Sep 2014 15:14:46 +0200
+  [ Manuel de la Peña ]
+  * Provide the required properties to let the indicator know if a
+    download should me shown.
+  * Expose the new metadata object to the qml users.
+
+  [ Michael Sheldon ]
+  * Add "extract" property to metadata, allowing applications to request
+    that a zipped file be unzipped after downloading.
+
+  [ Jamie Strandboge ]
+  * [ Jamie Strandboge ] * Add enforcing AppArmor profile -
+    debian/control: + Build-Depends on dh-apparmor + have ubuntu-
+    download-manager Suggests apparmor - debian/ubuntu-download-
+    manager.install: install profile - debian/rules: add
+    override_dh_installdeb to add profile to ubuntu-upload-manager
+
+  [ CI bot ]
+  * Implement code so that the PropertiesChanged signal from the
+    freedekstop.org properties interface is emitted.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 14 Oct 2014 16:08:13 +0000
 
 ubuntu-download-manager (0.8+14.10.20140916-0ubuntu1) 14.09; urgency=low
 
