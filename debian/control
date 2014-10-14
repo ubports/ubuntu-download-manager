@@ -18,8 +18,7 @@ Build-Depends: cmake,
                libgoogle-glog-dev,
                qtdeclarative5-dev,
                qtdeclarative5-dev-tools,
-               qtdeclarative5-test-plugin,
-               unzip
+               qtdeclarative5-test-plugin
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
