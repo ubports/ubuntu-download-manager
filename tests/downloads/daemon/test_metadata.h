@@ -49,6 +49,24 @@ class TestMetadata : public BaseTestCase {
     void testSetObjectPath();
     void testHasObjectPathTrue();
     void testHasObjectPathFalse();
+    void testTitle_data();
+    void testTitle();
+    void testSetTitle_data();
+    void testSetTitle();
+    void testHasTitleTrue();
+    void testHasTitleFalse();
+    void testIndicator_data();
+    void testIndicator();
+    void testSetIndicator_data();
+    void testSetIndicator();
+    void testHasIndicatorTrue();
+    void testHasIndicatorFasle();
+    void testClick_data();
+    void testClick();
+    void testSetClick_data();
+    void testSetClick();
+    void testHasClickTrue();
+    void testHasClickFalse();
 };
 
 #endif // TEST_METADATA_H

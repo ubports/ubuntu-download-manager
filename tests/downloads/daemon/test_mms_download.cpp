@@ -69,4 +69,29 @@ TestMmsDownload::testAddToQueue() {
     QVERIFY(!down->addToQueue());
 }
 
+void
+TestMmsDownload::testShowInIndicator() {
+    QString id = "id of the download";
+    QString appId = "MY APP";
+    QString path = "my-file";
+    bool isConfined = false;
+    QString rootPath = "/root/path/to/use";
+    QUrl url("http://example.com");
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    QMap<QString, QString> headers;
+    QString hostname = "http://example.com";
+    int port = 80;
+    QString username = "username";
+    QString password = "password";
+    QNetworkProxy proxy(QNetworkProxy::HttpProxy, hostname,
+        port, username, password);
+
+    QScopedPointer<PublicMmsFileDownload> down(
+        new PublicMmsFileDownload(id, appId, path, isConfined, rootPath,
+            url, metadata, headers, proxy));
+    auto downMetadata = down->metadata();
+    QVERIFY(!downMetadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY].toBool());
+}
+
 QTEST_MAIN(TestMmsDownload)

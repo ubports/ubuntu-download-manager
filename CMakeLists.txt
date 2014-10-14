@@ -31,7 +31,7 @@ execute_process(
 )
 
 set(UDM_VERSION_MAJOR 0)
-set(UDM_VERSION_MINOR 7)
+set(UDM_VERSION_MINOR 9)
 set(UDM_VERSION_PATCH 0)
 
 find_package(Gtest REQUIRED)

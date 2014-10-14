@@ -34,6 +34,9 @@ class Metadata : public QVariantMap {
     static const QString COMMAND_FILE_KEY;
     static const QString LOCAL_PATH_KEY;
     static const QString OBJECT_PATH_KEY;
+    static const QString TITLE_KEY;
+    static const QString SHOW_IN_INDICATOR_KEY;
+    static const QString CLICK_PACKAGE_KEY;
 
     // accessors to simplify the use of the metadata
     QString command() const;
@@ -47,6 +50,18 @@ class Metadata : public QVariantMap {
     QString objectPath() const;
     void setObjectPath(const QString& path);
     bool hasObjectPath() const;
+
+    QString title() const;
+    void setTitle(const QString& title);
+    bool hasTitle() const;
+
+    bool showInIndicator() const;
+    void setShowInIndicator(bool shown);
+    bool hasShowInIndicator() const;
+
+    QString clickPackage() const;
+    void setClickPackage(const QString& click);
+    bool hasClickPackage() const;
 };
 
 }  // DownloadManager

@@ -54,6 +54,8 @@ class TestDownload: public BaseTestCase {
     // constructors tests
     void testNoHashConstructor();
     void testHashConstructor();
+    void testConfinedNoClickMetadata();
+    void testUnconfinedWithClickMetadata();
 
     // data function to be used for the accessor tests
     void testNoHashConstructor_data();

@@ -39,6 +39,8 @@ MmsFileDownload::MmsFileDownload(const QString& id,
                    metadata, headers, parent){
     _requestFactory = new ApnRequestFactory(proxy);
     setAddToQueue(false);
+    // mms downloads should by default not be shown in the indicator.
+    _metadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = false;
 }
 
 MmsFileDownload::~MmsFileDownload() {

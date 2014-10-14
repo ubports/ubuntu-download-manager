@@ -532,7 +532,7 @@ FileDownload::onDownloadCompleted() {
     // file path that will be used by the download, do not do it if the app is
     // unconfined
     if ((_reply->hasRawHeader(CONTENT_DISPOSITION) && (
-            isConfined() || !metadata().contains(Metadata::LOCAL_PATH_KEY)))) {
+            isConfined() || !_metadata.contains(Metadata::LOCAL_PATH_KEY)))) {
         QString contentDisposition = _reply->rawHeader(CONTENT_DISPOSITION);
         DOWN_LOG(INFO) << "Content-Disposition header" << contentDisposition;
 
@@ -579,7 +579,7 @@ FileDownload::onDownloadCompleted() {
     // means we are done here else we execute the command AND raise the
     // finish signals once the command was done (or an error occurred in
     // the command execution.
-    if (metadata().contains(Metadata::COMMAND_KEY)) {
+    if (_metadata.contains(Metadata::COMMAND_KEY)) {
         // just emit processing if we DO NOT have a hash because else we
         // already emitted it.
         if (_hash.isEmpty()) {
@@ -587,7 +587,7 @@ FileDownload::onDownloadCompleted() {
         }
         // toStringList will return an empty list if it cannot be converted
         QStringList commandData =
-            metadata()[Metadata::COMMAND_KEY].toStringList();
+            _metadata[Metadata::COMMAND_KEY].toStringList();
         if (commandData.count() == 0) {
             DOWN_LOG(ERROR) << "COMMAND DATA MISSING";
             emitError(COMMAND_ERROR);
@@ -746,6 +746,11 @@ FileDownload::init() {
     _connected = networkInfo->isOnline();
     _downloading = false;
 
+    // applications that are confined are not allowed to set the click metadata.
+    if (isConfined() && _metadata.contains(Metadata::CLICK_PACKAGE_KEY)) {
+        _metadata.remove(Metadata::CLICK_PACKAGE_KEY);
+    }
+
     // connect to the network changed signals
     CHECK(connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
         this, &FileDownload::onOnlineStateChanged))
@@ -815,10 +820,8 @@ FileDownload::initFileNames() {
         _basename = UuidUtils::getDBusString(uuidFactory->createUuid());
     }
 
-    auto metadataMap = metadata();
-
-    if (!isConfined() && metadataMap.contains(Metadata::LOCAL_PATH_KEY)) {
-        _filePath = metadataMap[Metadata::LOCAL_PATH_KEY].toString();
+    if (!isConfined() && _metadata.contains(Metadata::LOCAL_PATH_KEY)) {
+        _filePath = _metadata[Metadata::LOCAL_PATH_KEY].toString();
         _tempFilePath = _fileNameMutex->lockFileName(
             _filePath + TEMP_EXTENSION);
 
@@ -862,7 +865,7 @@ FileDownload::emitFinished() {
 
 void
 FileDownload::unlockFilePath() {
-    if (!isConfined() && metadata().contains(Metadata::LOCAL_PATH_KEY)) {
+    if (!isConfined() && _metadata.contains(Metadata::LOCAL_PATH_KEY)) {
         _fileNameMutex->unlockFileName(_tempFilePath);
     } else {
         _fileNameMutex->unlockFileName(_filePath);

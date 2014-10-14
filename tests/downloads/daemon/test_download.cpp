@@ -20,6 +20,7 @@
 #include <QNetworkRequest>
 #include <QSslError>
 #include <ubuntu/download_manager/metatypes.h>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include <network_reply.h>
@@ -173,6 +174,34 @@ TestDownload::testHashConstructor() {
     QCOMPARE(download->progress(), 0ULL);
     QCOMPARE(download->totalSize(), 0ULL);
     verifyMocks();
+}
+
+void
+TestDownload::testConfinedNoClickMetadata() {
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "click";
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        true, _rootPath, _url, metadata, _headers));
+    auto downMetadata = download->metadata();
+    QVERIFY(!downMetadata.contains(Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY));
+}
+
+void
+TestDownload::testUnconfinedWithClickMetadata() {
+    QVariantMap metadata;
+    metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "click";
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
+    auto downMetadata = download->metadata();
+    QVERIFY(downMetadata.contains(Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY));
 }
 
 void
