@@ -205,10 +205,18 @@ TestDownload::testSetMetadata_data() {
 
 void
 TestDownload::testSetMetadata() {
+    returnDBusErrors(false);
     QFETCH(QVariantMap, metadata);
 
+    qDebug() << metadata;
     _down->setMetadata(metadata);
+
+    SignalBarrier spy(_down, SIGNAL(titleChanged()));
+
     auto currentMetadata = _down->metadata();
+
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(1, spy.count());
 
     foreach(auto key, metadata.keys()) {
         QCOMPARE(currentMetadata[key], metadata[key]);

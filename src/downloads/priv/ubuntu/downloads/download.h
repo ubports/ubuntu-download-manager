@@ -24,6 +24,7 @@
 #include <QProcess>
 #include <QSharedPointer>
 #include <ubuntu/transfers/transfer.h>
+#include <ubuntu/transfers/metadata.h>
 #include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/transfers/system/process_factory.h"
 #include "ubuntu/transfers/system/request_factory.h"
@@ -57,10 +58,11 @@ class Download : public Transfer {
 
     virtual ~Download();
 
-    QObject* adaptor() const {
-        return _adaptor;
+    QObject* adaptor(const QString& interface) const {
+        return _adaptors[interface];
     }
-    void setAdaptor(QObject* adaptor);
+
+    void setAdaptor(const QString& interface, QObject* adaptor);
 
     virtual bool pausable() {
         return true;
@@ -86,7 +88,8 @@ class Download : public Transfer {
     virtual void setHeaders(StringMap headers) {
         _headers = headers;
     }
-    virtual void setMetadata(const QVariantMap &data) {
+
+    virtual void setMetadata(const QVariantMap& data) {
         _metadata = data;
     }
 
@@ -110,7 +113,7 @@ class Download : public Transfer {
 
  private:
     QMap<QString, QString> _headers;
-    QObject* _adaptor = nullptr;
+    QMap<QString, QObject*> _adaptors;
 };
 
 }  // Daemon

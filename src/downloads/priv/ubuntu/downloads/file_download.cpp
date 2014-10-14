@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDBusConnection>
+#include <QDBusMessage>
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QDir>
@@ -23,9 +25,13 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QSslError>
+
 #include <glog/logging.h>
+
 #include <map>
+
 #include <ubuntu/transfers/metadata.h>
+#include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/cryptographic_hash.h>
 #include <ubuntu/transfers/system/logger.h>
@@ -38,7 +44,9 @@
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
 
 namespace {
+    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
     const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
+    const QString PROPERTIES_CHANGED = "PropertiesChanged";
     const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
     const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
     const QString TITLE_PROPERTY = "Title";
@@ -421,121 +429,34 @@ FileDownload::setHeaders(StringMap headers) {
 }
 
 void
-FileDownload::setMetadata(const QVariantMap& metadata) {
-    // we check the values of the metadata and record if they properties are
-    // updated
-    QVariantMap signalData;
-    if (metadata.contains(Metadata::TITLE_KEY)) {
-        signalData[TITLE_PROPERTY] = metadata[Metadata::TITLE_KEY];
-    }
-    if (metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY)) {
-        signalData[SHOW_INDICATOR_PROPERTY] = metadata[Metadata::SHOW_IN_INDICATOR_KEY];
-    }
-    if (metadata.contains(Metadata::CLICK_PACKAGE_KEY)) {
-        signalData[CLICK_PACKAGE_PROPERTY] = metadata[Metadata::CLICK_PACKAGE_KEY];
-    }
-    // set the metadata and emit the properties signal
-    Download::setMetadata(metadata);
-    if (signalData.count() > 0) {
-        emit PropertiesChanged(DOWNLOAD_INTERFACE, signalData, QStringList());
-    }
-}
+FileDownload::setMetadata(const QVariantMap& data) {
+    TRACE << data;
 
-
-QVariant
-FileDownload::get(const QString& interfaceName,
-                  const QString& propertyName) {
-    // only deal with the download internface
-    if (interfaceName == DOWNLOAD_INTERFACE) {
-        if (propertyName != CLICK_PACKAGE_PROPERTY
-            && propertyName != SHOW_INDICATOR_PROPERTY
-            && propertyName != TITLE_PROPERTY) {
-            // we do not know the property
-
-            if (calledFromDBus()) {
-                sendErrorReply(QDBusError::UnknownMethod,
-                    "Property not known");
-            }
-
-            return QVariant();
-        }
-
-        if (propertyName == CLICK_PACKAGE_PROPERTY){
-            return (_metadata.contains(Metadata::CLICK_PACKAGE_KEY))?
-                _metadata.value(Metadata::CLICK_PACKAGE_KEY):QVariant("");
-        }
-
-        if (propertyName == SHOW_INDICATOR_PROPERTY){
-            return (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY))?
-                _metadata.value(Metadata::SHOW_IN_INDICATOR_KEY):QVariant(true);
-        }
-
-        if (propertyName == TITLE_PROPERTY){
-            return (_metadata.contains(Metadata::TITLE_KEY))?
-                _metadata.value(Metadata::TITLE_KEY).toString():QVariant("");
-        }
-
-    } else {
-        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
-        if (calledFromDBus()) {
-            sendErrorReply(QDBusError::UnknownInterface,
-                "Interface is not known");
+    // we want to emit the changed signals for those keys that represent
+    // properties
+    QVariantMap changes;
+    if (data.contains(Metadata::TITLE_KEY)) {
+        if (data[Metadata::TITLE_KEY] != _metadata[Metadata::TITLE_KEY]) {
+            changes[TITLE_PROPERTY] = data[Metadata::TITLE_KEY];
         }
     }
-    return QVariant();
-}
 
-QVariantMap
-FileDownload::getAll(const QString &interfaceName) {
-    // only deal with the download internface
-    QVariantMap result;
-    if (interfaceName == DOWNLOAD_INTERFACE) {
-
-        if (_metadata.contains(Metadata::CLICK_PACKAGE_KEY)){
-            result[CLICK_PACKAGE_PROPERTY] = _metadata[Metadata::CLICK_PACKAGE_KEY];
-        }
-
-        if (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY)){
-            result[SHOW_INDICATOR_PROPERTY] =
-                _metadata[Metadata::SHOW_IN_INDICATOR_KEY];
-        }
-
-        if (_metadata.contains(Metadata::TITLE_KEY)){
-            result[TITLE_PROPERTY] = _metadata[Metadata::TITLE_KEY];
-        }
-
-        return result;
-    } else {
-        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
-        if (calledFromDBus()) {
-            sendErrorReply(QDBusError::UnknownInterface,
-                "Interface is not known");
-        }
-        return result;
-    }
-}
-
-void
-FileDownload::set(const QString& interfaceName,
-                  const QString& propertyName,
-                  const QVariant& value) {
-    Q_UNUSED(propertyName);
-    Q_UNUSED(value);
-
-    // only deal with the download internface
-    if (interfaceName == DOWNLOAD_INTERFACE) {
-        if (calledFromDBus()) {
-            // ATM all the properties are read only
-            sendErrorReply(QDBusError::InvalidArgs,
-                "Property is readonly");
-        }
-    } else {
-        DOWN_LOG(WARNING) << "Trying to set get property from wrong interface.";
-        if (calledFromDBus()) {
-            sendErrorReply(QDBusError::UnknownInterface,
-                "Interface is not known");
+    if (data.contains(Metadata::SHOW_IN_INDICATOR_KEY)) {
+        if (data[Metadata::SHOW_IN_INDICATOR_KEY]
+                != _metadata[Metadata::SHOW_IN_INDICATOR_KEY]) {
+            changes[SHOW_INDICATOR_PROPERTY] = data[Metadata::SHOW_IN_INDICATOR_KEY];
         }
     }
+
+    if (data.contains(Metadata::CLICK_PACKAGE_KEY)) {
+        if (data[Metadata::CLICK_PACKAGE_KEY]
+                != _metadata[Metadata::CLICK_PACKAGE_KEY]) {
+            changes[CLICK_PACKAGE_PROPERTY] = data[Metadata::CLICK_PACKAGE_KEY];
+        }
+    }
+
+    Download::setMetadata(data);
+    emit propertiesChanged(changes);
 }
 
 void
@@ -864,6 +785,20 @@ FileDownload::onOnlineStateChanged(bool online) {
 }
 
 void
+FileDownload::onPropertiesChanged(const QVariantMap& changes) {
+    qDebug() << "Emit freedesktop.org changes";
+    auto signal = QDBusMessage::createSignal(
+        path(), PROPERTIES_INTERFACE, PROPERTIES_CHANGED);
+    signal << DOWNLOAD_INTERFACE;
+    signal << changes;
+
+    QStringList invalid;
+    signal << invalid;
+
+    DBusConnection::instance()->send(signal);
+}
+
+void
 FileDownload::init() {
     _requestFactory = RequestFactory::instance();
     _fileNameMutex = FileNameMutex::instance();
@@ -879,6 +814,10 @@ FileDownload::init() {
     // connect to the network changed signals
     CHECK(connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
         this, &FileDownload::onOnlineStateChanged))
+            << "Could not connect to signal";
+
+    CHECK(connect(this, &FileDownload::propertiesChanged,
+        this, &FileDownload::onPropertiesChanged))
             << "Could not connect to signal";
 
     initFileNames();

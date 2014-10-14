@@ -41,19 +41,20 @@ Download::Download(const QString& id,
 }
 
 Download::~Download() {
-    if (_adaptor != nullptr) {
-        _adaptor->deleteLater();
+    // loop over the adaptors and call their deleteLater to ensure all
+    // signals are dealt with
+    foreach(const QString& interface, _adaptors.keys()) {
+        _adaptors[interface]->deleteLater();
     }
 }
 
 void
-Download::setAdaptor(QObject* adaptor) {
-    _adaptor = adaptor;
+Download::setAdaptor(const QString& interface, QObject* adaptor) {
+    _adaptors[interface] = adaptor;
 }
 
 void
 Download::emitError(const QString& errorStr) {
-    qDebug() << __PRETTY_FUNCTION__ << errorStr;
     setState(Download::ERROR);
     emit error(errorStr);
 }

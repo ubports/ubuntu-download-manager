@@ -62,8 +62,13 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QDBusConnection, QObject*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::DBusConnection::DBusConnection(QObject*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::Transfers::System::DBusConnection::~DBusConnection()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::Transfers::System::DBusConnection::setInstance(Ubuntu::Transfers::System::DBusConnection*)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::deleteInstance()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::_mutex@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::instance(QDBusConnection)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::instance()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::_instance@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::System::DBusConnection::send(QDBusMessage const&) const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::System::Logger::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::qt_metacast(char const*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::setLogLevel(QtMsgType)@Base" 0.4+14.10.20140618
@@ -74,6 +79,9 @@ libudm-common.so.0 libudm-common0 #MINVER#
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::~Logger()@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::Transfers::Metadata::Metadata()@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::Metadata(QMap<QString, QVariant>)@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::Metadata()@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::setClickPackage(QString const&)@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::setShowInIndicator(bool)@Base" 0replaceme

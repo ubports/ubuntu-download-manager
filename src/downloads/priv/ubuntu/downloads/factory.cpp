@@ -27,6 +27,11 @@
 #include "mms_file_download.h"
 #include "factory.h"
 
+namespace {
+    const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
+    const QString GROUP_INTERFACE = "com.canonical.applications.GroupDownload";
+    const QString PROPERTY_INTERFACE = "org.freedesktop.DBus.Properties";
+}
 
 namespace Ubuntu {
 
@@ -82,8 +87,8 @@ Factory::createDownload(const QString& dbusOwner,
     auto dbusPath = details->dbusPath.arg("download");
     auto down = new FileDownload(details->id, details->appId,
         dbusPath, details->isConfined, details->localPath, url, metadata, headers);
-    auto adaptor = new DownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new DownloadAdaptor(down);
+    down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
     return down;
 }
 
@@ -100,8 +105,8 @@ Factory::createDownload(const QString& dbusOwner,
     auto down = new FileDownload(details->id, details->appId,
         dbusPath, details->isConfined, details->localPath,
         url, hash, algo, metadata, headers);
-    auto adaptor = new DownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new DownloadAdaptor(down);
+    down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
     return down;
 }
 
@@ -118,8 +123,8 @@ Factory::createDownload(const QString& dbusOwner,
     auto down = new GroupDownload(details->id, details->appId,
         dbusPath, details->isConfined, details->localPath,
         downloads, algo, allowed3G, metadata, headers, this);
-    auto adaptor = new GroupDownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new GroupDownloadAdaptor(down);
+    down->setAdaptor(GROUP_INTERFACE, downAdaptor);
     return down;
 }
 
@@ -138,8 +143,8 @@ Factory::createMmsDownload(const QString& dbusOwner,
     auto down = new MmsFileDownload(details->id, details->appId,
         dbusPath, details->isConfined, details->localPath,
         url, metadata, headers, proxy);
-    auto adaptor = new DownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new DownloadAdaptor(down);
+    down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
     return down;
 }
 
@@ -153,8 +158,8 @@ Factory::createDownloadForGroup(bool isConfined,
     auto down = new FileDownload(idAndPath.first, "",
         idAndPath.second.arg("download"), isConfined, rootPath, url,
         metadata, headers);
-    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new DownloadAdaptor(down);
+    down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
     return down;
 }
 
@@ -170,8 +175,8 @@ Factory::createDownloadForGroup(bool isConfined,
     auto down = new FileDownload(idAndPath.first, "",
         idAndPath.second.arg("download"), isConfined, rootPath, url, hash,
         algo, metadata, headers);
-    DownloadAdaptor* adaptor = new DownloadAdaptor(down);
-    down->setAdaptor(adaptor);
+    auto downAdaptor = new DownloadAdaptor(down);
+    down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
     return down;
 }
 
