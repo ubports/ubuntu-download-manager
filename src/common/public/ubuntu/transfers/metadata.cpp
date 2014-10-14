@@ -30,6 +30,7 @@ const QString Metadata::TITLE_KEY = "title";
 const QString Metadata::SHOW_IN_INDICATOR_KEY = "indicator-shown";
 const QString Metadata::CLICK_PACKAGE_KEY = "click-package";
 const QString Metadata::DEFLATE_KEY = "deflate";
+const QString Metadata::EXTRACT_KEY = "extract";
 
 Metadata::Metadata() {
 }
@@ -148,6 +149,22 @@ Metadata::setDeflate(bool deflate) {
 bool
 Metadata::hasDeflate() const {
     return contains(Metadata::DEFLATE_KEY);
+}
+
+bool
+Metadata::extract() const {
+    return (contains(Metadata::EXTRACT_KEY))?
+        value(Metadata::EXTRACT_KEY).toBool():false;
+}
+
+void
+Metadata::setExtract(bool extract) {
+    insert(Metadata::EXTRACT_KEY, extract);
+}
+
+bool
+Metadata::hasExtract() const {
+    return contains(Metadata::EXTRACT_KEY);
 }
 
 }  // DownloadManager

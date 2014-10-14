@@ -160,6 +160,7 @@ SingleDownload::bindDownload(Download* download)
         setAllowMobileDownload(m_mobile);
         setThrottle(m_throttle);
         setHeaders(m_headers);
+        setMetadata(m_metadata);
 
         // is not really needed but we do it to be consistent
         m_dirty = false;

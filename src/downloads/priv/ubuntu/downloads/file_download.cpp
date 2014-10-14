@@ -593,12 +593,52 @@ FileDownload::onDownloadCompleted() {
                 _reply->rawHeader(CONTENT_TYPE))){
     }
 
-    // there are two possible cases, the first, we do not have the metadata
-    // info to execute a command once the download was finished and that
-    // means we are done here else we execute the command AND raise the
-    // finish signals once the command was done (or an error occurred in
-    // the command execution.
-    if (_metadata.contains(Metadata::COMMAND_KEY)) {
+
+    // there are three possible cases, in the first case we are requested 
+    // to extract the file, in which case we start a special helper process.
+    // In the second case we are requested to execute a specific command, in
+    // either of these two cases we only raise the finished signal once the
+    // processing is complete. Or in the third case we have no special requests
+    // and we indicate that the download is finished.
+    if (_metadata.contains(Metadata::EXTRACT_KEY)
+            && _metadata[Metadata::EXTRACT_KEY].toBool()
+            && _reply->hasRawHeader(CONTENT_TYPE)
+            && _reply->rawHeader(CONTENT_TYPE) == "application/zip") {
+
+        Process* postDownloadProcess =
+                ProcessFactory::instance()->createProcess();
+
+        CHECK(connect(postDownloadProcess, &Process::finished,
+                this, &FileDownload::onProcessFinished))
+                    << "Could not connect to signal";
+        CHECK(connect(postDownloadProcess, &Process::error,
+                this, &FileDownload::onProcessError))
+                    << "Could not connect to signal";
+
+        DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
+            << "' to '" << _filePath << "'";
+
+        auto fileMan = FileManager::instance();
+        if (fileMan->exists(_tempFilePath)) {
+            LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
+                << _filePath << "'";
+            fileMan->rename(_tempFilePath, _filePath);
+        }
+
+        QFileInfo fileInfo(filePath());
+
+        QString command = HELPER_DIR + QString(QDir::separator()) + "udm-extractor";
+        QStringList args;
+        args << "--unzip";
+        args << "--path";
+        args << filePath();
+        args << "--destination";
+        args << fileInfo.dir().absolutePath();
+
+        DOWN_LOG(INFO) << "Executing" << command << args;
+        postDownloadProcess->start(command, args);
+        return;
+    } else if (_metadata.contains(Metadata::COMMAND_KEY)) {
         // just emit processing if we DO NOT have a hash because else we
         // already emitted it.
         if (_hash.isEmpty()) {
@@ -709,7 +749,6 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
         // remove the file since we are done with it
         cleanUpCurrentData();
-        emitFinished();
         // remove the file because that is the contract that we have with
         // the clients
         auto fileMan = FileManager::instance();
@@ -723,6 +762,7 @@ FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
             LOG(INFO) << "Removing '" << _filePath << "'";
             fileMan->remove(_filePath);
         }
+        emitFinished();
     } else {
         auto standardOut = p->readAllStandardOutput();
         auto standardErr = p->readAllStandardError();
@@ -928,7 +968,17 @@ FileDownload::emitFinished() {
     unlockFilePath();
 
     DOWN_LOG(INFO) << "EMIT finished" << filePath();
-    emit finished(_filePath);
+
+    if (_metadata.contains(Metadata::EXTRACT_KEY)
+        && _metadata[Metadata::EXTRACT_KEY].toBool()) {
+        // If we're finishing an extracted download then the returned file 
+        // path should be the directory we extracted the file into, as the
+        // download itself will have been cleaned up.
+        QFileInfo fileInfo(_filePath);
+        emit finished(fileInfo.dir().absolutePath());
+    } else {
+        emit finished(_filePath);
+    }
 }
 
 void
