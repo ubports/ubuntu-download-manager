@@ -1,8 +1,14 @@
 ubuntu-download-manager (0.9ubuntu1) UNRELEASED; urgency=medium
 
+  [ Manuel de la Pena ]
   * Add new properties that can be used to filter the downloads shown in the
     indicator. This changes the ABI.
   * Add helper extractor.
+
+  [ Ubuntu daily release ]
+  * debian/libubuntu-download-manager-client0.symbols: auto-update to
+    released version
+  * debian/libudm-common0.symbols: auto-update to released version
 
  -- Manuel de la Pena <manuel.delapena@canonical.com>  Sat, 27 Sep 2014 15:14:46 +0200
 
