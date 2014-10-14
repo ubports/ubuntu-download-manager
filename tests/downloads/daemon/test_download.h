@@ -181,6 +181,18 @@ class TestDownload: public BaseTestCase {
     void testSetLocalDirectoryNotDir();
     void testSetLocalDirectoryStarted();
 
+    // freedesktop.org properties
+    void testGetClick_data();
+    void testGetClick();
+    void testGetShowIndicator_data();
+    void testGetShowIndicator();
+    void testGetTitle_data();
+    void testGetTitle();
+    void testGetAll_data();
+    void testGetAll();
+    void testPropertiesChangedEmitted_data();
+    void testPropertiesChangedEmitted();
+
  private:
     QString _id;
     QString _appId;

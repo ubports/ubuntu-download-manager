@@ -49,6 +49,8 @@ class TestDownload : public LocalTreeTestCase {
     void testSetHeadersError();
     void testMetadata();
     void testMetadataError();
+    void testSetMetadata_data();
+    void testSetMetadata();
     void testProgressError();
     void testTotalSizeError();
     void testAuthErrorRaised_data();

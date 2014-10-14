@@ -88,6 +88,7 @@ class Logger {
     static void log(Level lvl, const QString& msg);
     static void log(Level lvl, const QStringList& msg);
     static void log(Level lvl, const QString& msg, QMap<QString, QString> map);
+    static void log(Level lvl, const QString& msg, QMap<QString, QVariant> map);
     static void log(Level lvl, const QString& msg, DownloadStruct downStruct);
     /*! \endcond
      */

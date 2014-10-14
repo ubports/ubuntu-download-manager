@@ -86,6 +86,9 @@ class Download : public Transfer {
     virtual void setHeaders(StringMap headers) {
         _headers = headers;
     }
+    virtual void setMetadata(const QVariantMap &data) {
+        _metadata = data;
+    }
 
     // slots to be implemented by the children
     virtual qulonglong progress() = 0;

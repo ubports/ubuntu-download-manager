@@ -97,6 +97,15 @@ class FileDownload : public Download, public QDBusContext {
     virtual void setThrottle(qulonglong speed) override;
     virtual void setDestinationDir(const QString& path);
     virtual void setHeaders(StringMap headers) override;
+    virtual void setMetadata(const QVariantMap& metadata) override;
+
+    // freedesktop.or properties methods
+    virtual QVariant get(const QString& interfaceName,
+                             const QString& propertyName);
+    virtual QVariantMap getAll(const QString &interfaceName);
+    virtual void set(const QString& interfaceName,
+             const QString& propertyName,
+             const QVariant& value);
 
  signals:
     void finished(const QString& path);
@@ -104,6 +113,11 @@ class FileDownload : public Download, public QDBusContext {
     void httpError(HttpErrorStruct error);
     void networkError(NetworkErrorStruct error);
     void processError(ProcessErrorStruct error);
+
+    // freedesktop.org properties signals
+    void PropertiesChanged(const QString& interface_name,
+                           const QVariantMap& changed_properties,
+                           const QStringList& invalidated_properties);
 
  protected:
     void emitError(const QString& error) override;

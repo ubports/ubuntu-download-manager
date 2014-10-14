@@ -19,6 +19,12 @@
 #include <ubuntu/download_manager/logging/logger.h>
 #include "download_impl.h"
 
+namespace {
+    const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
+    const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
+    const QString TITLE_PROPERTY = "Title";
+}
+
 namespace Ubuntu {
 
 namespace DownloadManager {
@@ -35,6 +41,9 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
       _servicePath(servicePath) {
 
     _dbusInterface = new DownloadInterface(servicePath,
+        _id, conn);
+
+    _propertiesInterface = new PropertiesInterface(servicePath,
         _id, conn);
 
     // fwd all the signals but the error one
@@ -119,6 +128,13 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
         Logger::log(Logger::Critical,
             "Could not connect to signal &DownloadInterface::authError");
     }
+
+    connected = connect(_propertiesInterface, &PropertiesInterface::PropertiesChanged,
+        this, &DownloadImpl::onPropertiesChanged);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &PropertiesInterface::PropertiesChanged");
+    }
 }
 
 DownloadImpl::DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent)
@@ -131,6 +147,7 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn, Error* err, QObject* par
 DownloadImpl::~DownloadImpl() {
     delete _lastError;
     delete _dbusInterface;
+    delete _propertiesInterface;
 }
 
 void
@@ -252,6 +269,39 @@ DownloadImpl::setHeaders(QMap<QString, QString> headers) {
     }
 }
 
+QVariantMap
+DownloadImpl::metadata() {
+    Logger::log(Logger::Debug, QString("Download{%1} metadata()").arg(_id));
+    QDBusPendingReply<QVariantMap> reply =
+        _dbusInterface->metadata();
+    // block the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download metadata");
+        QVariantMap emptyResult;
+        setLastError(reply.error());
+        return emptyResult;
+    } else {
+        auto result = reply.value();
+        return result;
+    }
+}
+
+void
+DownloadImpl::setMetadata(QVariantMap map) {
+    Logger::log(Logger::Debug,
+        QString("Download {%1} setMetadata(%2)").arg(_id), map);
+
+    QDBusPendingReply<> reply =
+        _dbusInterface->setMetadata(map);
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error setting the download metadata");
+        setLastError(reply.error());
+    }
+}
+
 QMap<QString, QString>
 DownloadImpl::headers() {
     Logger::log(Logger::Debug, QString("Download{%1} headers()").arg(_id));
@@ -307,24 +357,6 @@ DownloadImpl::id() const {
     return _id;
 }
 
-QVariantMap
-DownloadImpl::metadata() {
-    Logger::log(Logger::Debug, QString("Download{%1} metadata()").arg(_id));
-    QDBusPendingReply<QVariantMap> reply =
-        _dbusInterface->metadata();
-    // block the call is fast enough
-    reply.waitForFinished();
-    if (reply.isError()) {
-        Logger::log(Logger::Error, "Error querying the download metadata");
-        QVariantMap emptyResult;
-        setLastError(reply.error());
-        return emptyResult;
-    } else {
-        auto result = reply.value();
-        return result;
-    }
-}
-
 qulonglong
 DownloadImpl::progress() {
     Logger::log(Logger::Debug, QString("Download{%1} progress()").arg(_id));
@@ -369,6 +401,21 @@ DownloadImpl::error() const {
     return _lastError;
 }
 
+QString
+DownloadImpl::clickPackage() const {
+    return _dbusInterface->clickPackage();
+}
+
+bool
+DownloadImpl::showInIndicator() const {
+    return _dbusInterface->showInIndicator();
+}
+
+QString
+DownloadImpl::title() const {
+    return _dbusInterface->title();
+}
+
 void
 DownloadImpl::onHttpError(HttpErrorStruct errStruct) {
     auto err = new HttpError(errStruct, this);
@@ -391,6 +438,27 @@ void
 DownloadImpl::onAuthError(AuthErrorStruct errStruct) {
     auto err = new AuthError(errStruct, this);
     setLastError(err);
+}
+
+void
+DownloadImpl::onPropertiesChanged(const QString& interfaceName,
+                                  const QVariantMap& changedProperties,
+                                  const QStringList& invalidatedProperties) {
+    Q_UNUSED(invalidatedProperties);
+    // just take care of the property changes from the download interface
+    if (interfaceName == DownloadInterface::staticInterfaceName()) {
+        if (changedProperties.contains(CLICK_PACKAGE_PROPERTY)) {
+            emit clickPackagedChanged();
+        }
+
+        if (changedProperties.contains(SHOW_INDICATOR_PROPERTY)) {
+            emit showInIndicatorChanged();
+        }
+
+        if (changedProperties.contains(TITLE_PROPERTY)) {
+            emit titleChanged();
+        }
+    }
 }
 
 }  // DownloadManager

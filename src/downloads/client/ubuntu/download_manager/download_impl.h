@@ -31,6 +31,7 @@
 #include <ubuntu/download_manager/download_interface.h>
 #include <ubuntu/download_manager/download_pendingcall_watcher.h>
 #include <ubuntu/download_manager/error.h>
+#include <ubuntu/download_manager/properties_interface.h>
 
 #include "download.h"
 
@@ -66,16 +67,21 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void setDestinationDir(const QString& path);
     void setHeaders(QMap<QString, QString> headers);
     QMap<QString, QString> headers();
+    QVariantMap metadata();
+    void setMetadata(QVariantMap map);
     void setThrottle(qulonglong speed);
     qulonglong throttle();
 
     QString id() const;
-    QVariantMap metadata();
     qulonglong progress();
     qulonglong totalSize();
 
     bool isError() const;
     Error* error() const;
+
+    QString clickPackage() const;
+    bool showInIndicator() const;
+    QString title() const;
 
  protected:
     DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent = 0);
@@ -91,12 +97,16 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void onNetworkError(NetworkErrorStruct);
     void onProcessError(ProcessErrorStruct);
     void onAuthError(AuthErrorStruct);
+    void onPropertiesChanged(const QString& interfaceName,
+                             const QVariantMap& changedProperties,
+                             const QStringList& invalidatedProperties);
 
  private:
     QString _id;
     bool _isError = false;
     Error* _lastError = nullptr;
     DownloadInterface* _dbusInterface = nullptr;
+    PropertiesInterface* _propertiesInterface = nullptr;
     QDBusConnection _conn;
     QString _servicePath;
 

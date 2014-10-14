@@ -3800,7 +3800,7 @@ TestDownload::testSetLocalDirectoryNotAbsolute() {
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
-    
+
     auto original = download->filePath();
     download->setDestinationDir(path);
     QCOMPARE(original, download->filePath());
@@ -3815,7 +3815,7 @@ TestDownload::testSetLocalDirectoryNotPresent() {
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
-    
+
     auto original = download->filePath();
     download->setDestinationDir(path);
     QCOMPARE(original, download->filePath());
@@ -3835,7 +3835,7 @@ TestDownload::testSetLocalDirectoryNotDir() {
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
-    
+
     auto original = download->filePath();
     download->setDestinationDir(path);
     QCOMPARE(original, download->filePath());
@@ -3852,7 +3852,7 @@ TestDownload::testSetLocalDirectoryStarted() {
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
-    
+
     auto original = download->filePath();
     download->start();  // change state
     download->setDestinationDir(path);
@@ -3860,5 +3860,206 @@ TestDownload::testSetLocalDirectoryStarted() {
     verifyMocks();
 }
 
+void
+TestDownload::testGetClick_data() {
+    QTest::addColumn<QVariantMap>("metadata");
+
+    // create a number of headers to assert that thy are added in the request
+    QVariantMap first, second, third;
+
+    // add headers to be added except range
+    first[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Maps";
+
+    QTest::newRow("First row") << first;
+
+    second[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Email";
+
+    QTest::newRow("Second row") << second;
+
+    third[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Calendar";
+
+    QTest::newRow("Third row") << third;
+}
+
+void
+TestDownload::testGetClick() {
+    QFETCH(QVariantMap, metadata);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
+
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY],
+        download->get("com.canonical.applications.Download", "ClickPackage"));
+    verifyMocks();
+}
+
+void
+TestDownload::testGetShowIndicator_data() {
+    QTest::addColumn<QVariantMap>("metadata");
+
+    QVariantMap first, second, third;
+
+    first[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+
+    QTest::newRow("First row") << first;
+
+    second[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = false;
+
+    QTest::newRow("Second row") << second;
+}
+
+void
+TestDownload::testGetShowIndicator() {
+    QFETCH(QVariantMap, metadata);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY],
+        download->get("com.canonical.applications.Download", "ShowInIndicator"));
+    verifyMocks();
+}
+
+void
+TestDownload::testGetTitle_data() {
+    QTest::addColumn<QVariantMap>("metadata");
+
+    QVariantMap first, second, third;
+
+    first[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Image from imgur";
+
+    QTest::newRow("First row") << first;
+
+    second[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Update";
+
+    QTest::newRow("Second row") << second;
+
+    third[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Flickr image";
+
+    QTest::newRow("Third row") << third;
+}
+
+void
+TestDownload::testGetTitle() {
+    QFETCH(QVariantMap, metadata);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::TITLE_KEY],
+        download->get("com.canonical.applications.Download", "Title"));
+    verifyMocks();
+}
+
+void
+TestDownload::testGetAll_data() {
+    QTest::addColumn<QVariantMap>("metadata");
+
+    QVariantMap first, second, third;
+
+    first[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Image from imgur";
+    first[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    first[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Maps";
+
+    QTest::newRow("First row") << first;
+
+    second[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Update";
+    second[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    second[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Tiwtter";
+
+    QTest::newRow("Second row") << second;
+
+    third[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Flickr image";
+    third[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    second[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Facebok";
+
+    QTest::newRow("Third row") << third;
+}
+
+void
+TestDownload::testGetAll() {
+    QFETCH(QVariantMap, metadata);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, metadata, _headers));
+    // verify all the data
+    auto properties = download->getAll("com.canonical.applications.Download");
+
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::TITLE_KEY],
+            properties["Title"]);
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY],
+            properties["ShowInIndicator"]);
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY],
+            properties["ClickPackage"]);
+}
+
+void
+TestDownload::testPropertiesChangedEmitted_data() {
+    QTest::addColumn<QVariantMap>("metadata");
+
+    QVariantMap first, second, third;
+
+    first[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Image from imgur";
+    first[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    first[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Maps";
+
+    QTest::newRow("First row") << first;
+
+    second[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Update";
+    second[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    second[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Tiwtter";
+
+    QTest::newRow("Second row") << second;
+
+    third[Ubuntu::Transfers::Metadata::TITLE_KEY] = "Flickr image";
+    third[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY] = true;
+    second[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "Facebok";
+
+    QTest::newRow("Third row") << third;
+}
+
+void
+TestDownload::testPropertiesChangedEmitted() {
+    QFETCH(QVariantMap, metadata);
+
+    EXPECT_CALL(*_networkInfo, isOnline())
+        .WillRepeatedly(Return(true));
+
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+        false, _rootPath, _url, _metadata, _headers));
+
+    SignalBarrier spy(download.data(),
+        SIGNAL(PropertiesChanged(const QString&,
+                const QVariantMap&, const QStringList&)));
+
+    download->setMetadata(metadata);
+
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(spy.count(), 1);
+    QList<QVariant> arguments = spy.takeFirst();
+    QCOMPARE(arguments.at(0).toString(),
+            QString("com.canonical.applications.Download"));
+    // grab the changed values and assert that they are correct
+    auto updatedData = arguments.at(1).toMap();
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::TITLE_KEY],
+        updatedData["Title"]);
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::SHOW_IN_INDICATOR_KEY],
+        updatedData["ShowInIndicator"]);
+    QCOMPARE(metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY],
+        updatedData["ClickPackage"]);
+
+    // Ensure that the invalid map is empty
+    QCOMPARE(arguments.at(2).toList().count(), 0);
+}
 
 QTEST_MAIN(TestDownload)

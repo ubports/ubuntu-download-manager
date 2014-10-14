@@ -184,6 +184,38 @@ TestDownload::testMetadataError() {
 }
 
 void
+TestDownload::testSetMetadata_data() {
+    QTest::addColumn<QMap<QString, QVariant> >("metadata");
+
+    QMap<QString, QVariant> first;
+    first["title"] = "my title";
+    QTest::newRow("First row") << first;
+
+    QMap<QString, QVariant> second;
+    second["title"] = "my title";
+    second["click"] = "click app";
+    QTest::newRow("Second row") << second;
+
+    QMap<QString, QVariant> last;
+    last["title"] = "hello";
+    last["click"] = "foo";
+    last["show"] = false;
+    QTest::newRow("Last row") << last;
+}
+
+void
+TestDownload::testSetMetadata() {
+    QFETCH(QVariantMap, metadata);
+
+    _down->setMetadata(metadata);
+    auto currentMetadata = _down->metadata();
+
+    foreach(auto key, metadata.keys()) {
+        QCOMPARE(currentMetadata[key], metadata[key]);
+    }
+}
+
+void
 TestDownload::testProgressError() {
     returnDBusErrors(true);
     _down->progress();
