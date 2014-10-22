@@ -23,7 +23,6 @@
 #include <QStringList>
 #include <QList>
 #include <QPair>
-#include <QSharedPointer>
 #include "transfer.h"
 
 namespace Ubuntu {

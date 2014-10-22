@@ -22,7 +22,6 @@
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QProcess>
-#include <QSharedPointer>
 #include <ubuntu/transfers/transfer.h>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/download_manager/metatypes.h>
