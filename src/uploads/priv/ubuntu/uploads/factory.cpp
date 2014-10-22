@@ -32,11 +32,6 @@ namespace UploadManager {
 
 namespace Daemon {
 
-Factory::Factory(QObject* parent)
-    : QObject(parent) {
-    _apparmor = new AppArmor(this);
-}
-
 Factory::Factory(AppArmor* apparmor,
                  QObject* parent)
     : QObject(parent),

@@ -43,7 +43,7 @@ UploadManager::UploadManager(Application* app,
       _throttle(0) {
     _conn = connection;
     RequestFactory::setStoppable(_stoppable);
-    _factory = new Factory(this);
+    _factory = new Factory(new System::AppArmor(connection), this);
     _queue = new Queue(this);
     init();
 }

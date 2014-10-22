@@ -19,6 +19,7 @@
 #include <QDBusMessage>
 #include <QScopedPointer>
 #include <ubuntu/transfers/system/apparmor.h>
+#include "dbus_connection.h"
 #include "dbus_proxy.h"
 #include "pending_reply.h"
 #include "test_apparmor.h"
@@ -62,7 +63,7 @@ TestAppArmor::testAppIdError() {
         .Times(1)
         .WillOnce(Return(true));
 
-    QScopedPointer<AppArmor> appArmor(new AppArmor());
+    QScopedPointer<AppArmor> appArmor(new AppArmor(new MockDBusConnection()));
 
     auto appId = appArmor->appId(caller);
     QCOMPARE(QString(), appId);
@@ -97,7 +98,7 @@ TestAppArmor::testAppId() {
         .Times(1)
         .WillOnce(Return(expectedAppId));
 
-    QScopedPointer<AppArmor> appArmor(new AppArmor());
+    QScopedPointer<AppArmor> appArmor(new AppArmor(new MockDBusConnection()));
 
     auto appId = appArmor->appId(caller);
     QCOMPARE(expectedAppId, appId);
@@ -115,7 +116,7 @@ TestAppArmor::testIsConfinedEmptyString() {
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
-    QScopedPointer<AppArmor> appArmor(new AppArmor());
+    QScopedPointer<AppArmor> appArmor(new AppArmor(new MockDBusConnection()));
     bool isConfined = appArmor->isConfined(caller);
 
     QVERIFY(!isConfined);
@@ -132,7 +133,7 @@ TestAppArmor::testIsConfinedUnconfinedString() {
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
-    QScopedPointer<AppArmor> appArmor(new AppArmor());
+    QScopedPointer<AppArmor> appArmor(new AppArmor(new MockDBusConnection()));
     bool isConfined = appArmor->isConfined(AppArmor::UNCONFINED_ID);
 
     QVERIFY(!isConfined);
@@ -150,7 +151,7 @@ TestAppArmor::testIsConfinedAppIdString() {
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
-    QScopedPointer<AppArmor> appArmor(new AppArmor());
+    QScopedPointer<AppArmor> appArmor(new AppArmor(new MockDBusConnection()));
     bool isConfined = appArmor->isConfined(caller);
 
     QVERIFY(isConfined);

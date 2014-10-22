@@ -44,7 +44,7 @@ TestDownloadManager::init() {
     _q = new MockDownloadQueue();
     _requestFactory = new MockRequestFactory();
     RequestFactory::setInstance(_requestFactory);
-    _factory = new MockDownloadFactory();
+    _factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
     _man = new DownloadManager(_app, _conn, _factory, _q);
     _dbusProxyFactory = new MockDBusProxyFactory();
     DBusProxyFactory::setInstance(_dbusProxyFactory );
@@ -423,7 +423,7 @@ TestDownloadManager::testSetSelfSignedCerts() {
 void
 TestDownloadManager::testStoppable() {
     auto q = new MockDownloadQueue();
-    auto factory = new MockDownloadFactory();
+    auto factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
 
     QScopedPointer<DownloadManager> man(
         new DownloadManager(_app, _conn, factory, q, true));
@@ -438,7 +438,7 @@ TestDownloadManager::testStoppable() {
 void
 TestDownloadManager::testNotStoppable() {
     auto q = new MockDownloadQueue();
-    auto factory = new MockDownloadFactory();
+    auto factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
 
     QScopedPointer<DownloadManager> man(
         new DownloadManager(_app, _conn, factory, q, false));

@@ -17,6 +17,7 @@
  */
 
 #include <ubuntu/uploads/mms_file_upload.h>
+#include "dbus_connection.h"
 #include "test_upload_factory.h"
 
 using ::testing::_;
@@ -26,7 +27,7 @@ using ::testing::Return;
 void
 TestUploadFactory::init() {
     BaseTestCase::init();
-    _apparmor = new MockAppArmor();
+    _apparmor = new MockAppArmor(new MockDBusConnection());
     _upFactory = new Factory(_apparmor);
 }
 

@@ -11,6 +11,7 @@ set(HEADERS
         apparmor.h
         base_testcase.h
         daemon_testcase.h
+        dbus_connection.h
         file_manager.h
         local_tree_testcase.h
         matchers.h
