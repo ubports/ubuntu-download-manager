@@ -50,12 +50,12 @@ add_library(${TARGET} STATIC
 target_link_libraries(${TARGET}
     ${NIH_DBUS_LIBRARIES}
     ${GLOG_LIBRARIES}
-        ${Qt5Core_LIBRARIES}
-        ${Qt5Sql_LIBRARIES}
-        ${Qt5DBus_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5DBus_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-        ${GMOCK_LIBRARY}
-        ${GTEST_BOTH_LIBRARIES}
+    ${GMOCK_LIBRARY}
+    ${GTEST_BOTH_LIBRARIES}
     udm-common
     udm-priv-common
     ubuntu-download-manager-common
