@@ -20,7 +20,7 @@
 #define UBUNTU_GENERAL_LIB_TRANSFER_H
 
 #include <QObject>
-#include "ubuntu/transfers/system/system_network_info.h"
+#include "ubuntu/transfers/system/network_session.h"
 
 namespace Ubuntu {
 
@@ -106,7 +106,7 @@ class Transfer : public QObject {
     QString _dbusPath;
     bool _isConfined;
     QString _rootPath;
-    System::SystemNetworkInfo* _networkInfo;
+    System::NetworkSession* _networkSession;
 };
 
 }  // Transfers

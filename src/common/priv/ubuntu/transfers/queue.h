@@ -24,6 +24,8 @@
 #include <QList>
 #include <QPair>
 #include <QSharedPointer>
+
+#include "ubuntu/transfers/system/network_session.h"
 #include "transfer.h"
 
 namespace Ubuntu {
@@ -55,7 +57,7 @@ class Queue : public QObject {
  private:
     void onManagedTransferStateChanged();
     void onUnmanagedTransferStateChanged();
-    void onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode);
+    void onSessionTypeChanged(QNetworkConfiguration::BearerType type);
     void remove(const QString& path);
     void updateCurrentTransfer();
 

@@ -24,7 +24,7 @@
 #include <ubuntu/downloads/group_download.h>
 #include <process_factory.h>
 #include <request_factory.h>
-#include <system_network_info.h>
+#include <network_session.h>
 
 #include "base_testcase.h"
 #include "factory.h"
@@ -97,7 +97,7 @@ private:
     bool _isGSMDownloadAllowed;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    MockSystemNetworkInfo* _networkInfo;
+    MockNetworkSession* _networkSession;
     MockDownloadFactory* _factory;
     MockFileManager* _fileManager;
 };

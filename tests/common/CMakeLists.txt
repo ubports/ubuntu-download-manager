@@ -18,7 +18,6 @@ set(HEADERS
         process.h
         process_factory.h
         request_factory.h
-        system_network_info.h
         testing_interface.h
         uuid_factory.h
 )

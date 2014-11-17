@@ -56,7 +56,7 @@ void
 TestGroupDownload::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     FileManager::deleteInstance();
     delete _factory;
 }

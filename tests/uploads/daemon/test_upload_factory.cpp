@@ -34,7 +34,7 @@ void
 TestUploadFactory::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     delete _upFactory;
     FileManager::deleteInstance();
     RequestFactory::deleteInstance();

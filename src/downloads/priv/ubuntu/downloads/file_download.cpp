@@ -815,8 +815,7 @@ void
 FileDownload::init() {
     _requestFactory = RequestFactory::instance();
     _fileNameMutex = FileNameMutex::instance();
-    SystemNetworkInfo* networkInfo = SystemNetworkInfo::instance();
-    _connected = networkInfo->isOnline();
+    _connected = NetworkSession::instance()->isOnline();
     _downloading = false;
 
     // applications that are confined are not allowed to set the click metadata.
@@ -825,7 +824,7 @@ FileDownload::init() {
     }
 
     // connect to the network changed signals
-    CHECK(connect(networkInfo, &SystemNetworkInfo::onlineStateChanged,
+    CHECK(connect(NetworkSession::instance(), &NetworkSession::onlineStateChanged,
         this, &FileDownload::onOnlineStateChanged))
             << "Could not connect to signal";
 

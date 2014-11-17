@@ -28,7 +28,7 @@
 #include <file_manager.h>
 #include <process_factory.h>
 #include <request_factory.h>
-#include <system_network_info.h>
+#include <network_session.h>
 
 #include "base_testcase.h"
 #include "cryptographic_hash.h"
@@ -196,13 +196,13 @@ class TestDownload: public BaseTestCase {
     QString _path;
     QUrl _url;
     QString _algo;
-    MockSystemNetworkInfo* _networkInfo;
+    MockNetworkSession* _networkSession;
     MockRequestFactory* _reqFactory;
     MockProcessFactory* _processFactory;
     MockFileManager* _fileManager;
     MockCryptographicHashFactory* _cryptoFactory;
 };
 
-Q_DECLARE_METATYPE(QNetworkInfo::NetworkMode)
+Q_DECLARE_METATYPE(QNetworkConfiguration::BearerType)
 
 #endif  // TEST_APP_DOWNLOAD_H

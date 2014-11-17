@@ -16,6 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <network_session.h>
+
 #include "test_daemon.h"
 
 using namespace Ubuntu::DownloadManager;
@@ -34,7 +36,7 @@ TestDaemon::init() {
 void
 TestDaemon::cleanup() {
     DefaultValue<QStringList>::Clear();
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     RequestFactory::deleteInstance();
     BaseTestCase::cleanup();
 }

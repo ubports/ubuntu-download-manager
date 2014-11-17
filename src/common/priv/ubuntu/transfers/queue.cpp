@@ -19,7 +19,7 @@
 #include <QSignalMapper>
 #include <glog/logging.h>
 #include "ubuntu/transfers/system/logger.h"
-#include "ubuntu/transfers/system/system_network_info.h"
+#include "ubuntu/transfers/system/network_session.h"
 #include "queue.h"
 
 namespace Ubuntu {
@@ -29,9 +29,9 @@ namespace Transfers {
 Queue::Queue(QObject* parent)
     : QObject(parent),
       _current("") {
-    CHECK(connect(SystemNetworkInfo::instance(),
-        &SystemNetworkInfo::currentNetworkModeChanged,
-        this, &Queue::onCurrentNetworkModeChanged))
+    CHECK(connect(NetworkSession::instance(),
+        &NetworkSession::sessionTypeChanged,
+        this, &Queue::onSessionTypeChanged))
             << "Could not connect to signal";
 }
 
@@ -160,9 +160,9 @@ Queue::onUnmanagedTransferStateChanged() {
 }
 
 void
-Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-    TRACE << mode;
-    if (mode != QNetworkInfo::UnknownMode) {
+Queue::onSessionTypeChanged(QNetworkConfiguration::BearerType type) {
+    TRACE << type;
+    if (type != QNetworkConfiguration::BearerUnknown) {
         updateCurrentTransfer();
     }
 }
