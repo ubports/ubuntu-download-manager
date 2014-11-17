@@ -51,7 +51,6 @@ set(HEADERS
 	ubuntu/transfers/system/uuid_utils.h
 )
 
-include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Sql_INCLUDE_DIRS})
@@ -81,7 +80,6 @@ target_link_libraries(${TARGET}
 	${GLOG_LIBRARIES}
 	${Qt5Network_LIBRARIES}
 	${Qt5Sql_LIBRARIES}
-	${Qt5SystemInfo_LIBRARIES}
 	${Qt5Core_LIBRARIES}
 	${Qt5DBus_LIBRARIES}
 	udm-common

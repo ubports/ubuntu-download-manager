@@ -35,7 +35,6 @@ endforeach(test)
 
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
-include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Test_INCLUDE_DIRS})
