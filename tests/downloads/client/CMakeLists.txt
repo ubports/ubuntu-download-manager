@@ -82,7 +82,7 @@ if(DBUS_RUNNER)
                         ${CLIENT_TESTS_LIBS}
                 )
 
-                ADD_TEST(NAME client_${test} COMMAND dbus-test-runner -m 180 --task=${CMAKE_CURRENT_BINARY_DIR}/${test}_client -c)
+                ADD_TEST(NAME client_${test} COMMAND dbus-test-runner -m 360 --task=${CMAKE_CURRENT_BINARY_DIR}/${test}_client -c)
 
         endforeach(test)
 else(DBUS_RUNNER)

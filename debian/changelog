@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.9+14.10.20141014.1-0ubuntu2) UNRELEASED; urgency=medium
+
+  * Fix issues with the network detection. Because of the new approach two
+    dependencies have been dropped. 
+
+ -- Manuel de la Pena <manuel.delapena@canonical.com>  Mon, 17 Nov 2014 23:27:52 +0100
+
 ubuntu-download-manager (0.9+14.10.20141014.1-0ubuntu1) 14.09; urgency=medium
 
   [ Manuel de la Pena ]
