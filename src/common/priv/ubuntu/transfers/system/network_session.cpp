@@ -93,11 +93,14 @@ NetworkSession::deleteInstance() {
 void
 NetworkSession::onDefaultConfigurationChanged(const QNetworkConfiguration& config,
                                               bool isSeamless) {
+    LOG(INFO) << "Connection default configuration changed type is " << config.bearerType();
+
     // as an application, we alwayes perform the migration
     emit sessionTypeChanged(config.bearerTypeFamily());
     _session->migrate();
 
     if (!isSeamless) {
+        LOG(INFO) << "Transition is not seamless";
         // TODO: We need to test if it is required to pause all downloads and
         // resume them accordingly, probably atm only the current one needs to deal
         // with this use case.
