@@ -33,8 +33,6 @@ NetworkSession::NetworkSession(QObject* parent)
     : QObject(parent) {
     _configManager = new QNetworkConfigurationManager();
     _session = new QNetworkSession(_configManager->defaultConfiguration());
-    _session->open();
-    _session->waitForOpened();
     // connect to the default config changed signal, that way we can emit that the
     // connection type changed and perform the migration.
     CHECK(connect(_session, &QNetworkSession::preferredConfigurationChanged, this,
@@ -44,6 +42,8 @@ NetworkSession::NetworkSession(QObject* parent)
     CHECK(connect(_configManager, &QNetworkConfigurationManager::onlineStateChanged,
                 this, &NetworkSession::onlineStateChanged))
              << "Could not connect to signal";
+    _session->open();
+    _session->waitForOpened();
 }
 
 NetworkSession::~NetworkSession() {
