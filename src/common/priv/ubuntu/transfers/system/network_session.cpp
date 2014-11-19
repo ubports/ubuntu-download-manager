@@ -32,7 +32,13 @@ QMutex NetworkSession::_mutex;
 NetworkSession::NetworkSession(QObject* parent)
     : QObject(parent) {
     _configManager = new QNetworkConfigurationManager();
-    _session = new QNetworkSession(_configManager->defaultConfiguration());
+    auto config = _configManager->defaultConfiguration();
+
+    LOG(INFO) << "Default configuration used '"
+        << config.identifier().toStdString() << "'";
+
+    _session = new QNetworkSession(config);
+
     // connect to the default config changed signal, that way we can emit that the
     // connection type changed and perform the migration.
     CHECK(connect(_session, &QNetworkSession::preferredConfigurationChanged, this,
@@ -42,8 +48,17 @@ NetworkSession::NetworkSession(QObject* parent)
     CHECK(connect(_configManager, &QNetworkConfigurationManager::onlineStateChanged,
                 this, &NetworkSession::onlineStateChanged))
              << "Could not connect to signal";
+
     _session->open();
-    _session->waitForOpened();
+	qDebug() << "Is session opened? " << _session->isOpen();
+
+    if (!_session->isOpen() && _session->waitForOpened(-1)) {
+        LOG(FATAL) << "QNetworkSession could not be opened with config id:'"
+				<< config.identifier().toStdString() << "' name: '"
+				<< config.name().toStdString() << "' type :'"
+				<< config.bearerTypeName().toStdString() << "' due to: '"
+				<< _session->errorString().toStdString() << "'";
+    }
 }
 
 NetworkSession::~NetworkSession() {
@@ -95,6 +110,7 @@ NetworkSession::deleteInstance() {
 void
 NetworkSession::onDefaultConfigurationChanged(const QNetworkConfiguration& config,
                                               bool isSeamless) {
+    qDebug() << "Connection default configuration changed type is " << config.bearerType();
     LOG(INFO) << "Connection default configuration changed type is " << config.bearerType();
 
     // as an application, we alwayes perform the migration
