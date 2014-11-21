@@ -16,9 +16,17 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDBusConnection>
 #include <glog/logging.h>
 
 #include "network_session.h"
+
+namespace {
+    const QString NM_PATH = "org.freedesktop.NetworkManager";
+    const QString NM_OBJ_PATH = "/org/freedesktop/NetworkManager";
+    const QString NM_INTERFACE = "org.freedesktop.NetworkManager";
+    const QString NM_PROPERTY = "PrimaryConnectionType";
+}
 
 namespace Ubuntu {
 
@@ -32,38 +40,30 @@ QMutex NetworkSession::_mutex;
 NetworkSession::NetworkSession(QObject* parent)
     : QObject(parent) {
     _configManager = new QNetworkConfigurationManager();
-    auto config = _configManager->defaultConfiguration();
-
-    LOG(INFO) << "Default configuration used '"
-        << config.identifier().toStdString() << "'";
-
-    _session = new QNetworkSession(config);
-
-    // connect to the default config changed signal, that way we can emit that the
-    // connection type changed and perform the migration.
-    CHECK(connect(_session, &QNetworkSession::preferredConfigurationChanged, this,
-        &NetworkSession::onDefaultConfigurationChanged))
-             << "Could not connect to signal";
 
     CHECK(connect(_configManager, &QNetworkConfigurationManager::onlineStateChanged,
                 this, &NetworkSession::onlineStateChanged))
              << "Could not connect to signal";
 
-    _session->open();
-	qDebug() << "Is session opened? " << _session->isOpen();
+    _properties = new FreefreedesktopProperties(NM_PATH, NM_OBJ_PATH,
+            QDBusConnection::systemBus());
 
-    if (!_session->isOpen() && _session->waitForOpened(-1)) {
-        LOG(FATAL) << "QNetworkSession could not be opened with config id:'"
-				<< config.identifier().toStdString() << "' name: '"
-				<< config.name().toStdString() << "' type :'"
-				<< config.bearerTypeName().toStdString() << "' due to: '"
-				<< _session->errorString().toStdString() << "'";
+    // get the property type for the very first time
+    QDBusPendingReply<QDBusVariant> reply = _properties->Get(NM_INTERFACE, NM_PROPERTY);
+    reply.waitForFinished();
+    if (!reply.isError()) {
+        qDebug() << "Connection type is " << reply.value().variant();
     }
+
+
+    CHECK(connect(_properties, &FreefreedesktopProperties::PropertiesChanged,
+                this, &NetworkSession::onPropertiesChanged))
+             << "Could not connect to signal";
 }
 
 NetworkSession::~NetworkSession() {
+    delete _properties;
     delete _configManager;
-    delete _session;
 }
 
 bool
@@ -73,7 +73,7 @@ NetworkSession::isOnline() {
 
 QNetworkConfiguration::BearerType
 NetworkSession::sessionType() {
-    return _session->configuration().bearerTypeFamily();
+    return _sessionType;
 }
 
 NetworkSession*
@@ -108,20 +108,17 @@ NetworkSession::deleteInstance() {
 }
 
 void
-NetworkSession::onDefaultConfigurationChanged(const QNetworkConfiguration& config,
-                                              bool isSeamless) {
-    qDebug() << "Connection default configuration changed type is " << config.bearerType();
-    LOG(INFO) << "Connection default configuration changed type is " << config.bearerType();
+NetworkSession::onPropertiesChanged(const QString& interfaceName,
+                                    const QVariantMap& changedProperties,
+                                    const QStringList& invalidatedProperties) {
+    Q_UNUSED(invalidatedProperties);
+    if (interfaceName == NM_INTERFACE) {
+        if (changedProperties.contains(NM_PROPERTY)) {
+        }
 
-    // as an application, we alwayes perform the migration
-    emit sessionTypeChanged(config.bearerTypeFamily());
-    _session->migrate();
-
-    if (!isSeamless) {
-        LOG(INFO) << "Transition is not seamless";
-        // TODO: We need to test if it is required to pause all downloads and
-        // resume them accordingly, probably atm only the current one needs to deal
-        // with this use case.
+        foreach(const QString& key, changedProperties.keys()) {
+            qDebug() << "Property changed " << key << changedProperties[key];
+        }
     }
 }
 

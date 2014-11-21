@@ -180,7 +180,7 @@ Q_SIGNALS: // SIGNALS
 
 namespace org {
   namespace freedesktop {
-    typedef ::DBusProxy DBus;
+    typedef ::DBusProxy DBusProxy;
   }
 }
 #endif

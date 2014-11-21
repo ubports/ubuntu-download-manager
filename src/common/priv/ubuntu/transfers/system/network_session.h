@@ -20,9 +20,10 @@
 #define TRANSFERS_LIB_NETWORK_SESSION_H
 
 #include <QMutex>
-#include <QNetworkSession>
 #include <QNetworkConfigurationManager>
 #include <QObject>
+
+#include "properties_interface.h"
 
 namespace Ubuntu {
 
@@ -53,16 +54,19 @@ class NetworkSession : public QObject {
     explicit NetworkSession(QObject* parent=0);
 
  private:
-    void onDefaultConfigurationChanged(const QNetworkConfiguration& config,
-                                       bool isSeamless);
+    void onPropertiesChanged(const QString& interfaceName,
+                             const QVariantMap& changedProperties,
+                             const QStringList& invalidatedProperties);
 
  private:
     // used for the singleton
     static NetworkSession* _instance;
     static QMutex _mutex;
 
+    FreefreedesktopProperties* _properties = nullptr;
     QNetworkConfigurationManager* _configManager = nullptr;
-    QNetworkSession* _session = nullptr;
+    QNetworkConfiguration::BearerType _sessionType =
+        QNetworkConfiguration::BearerUnknown;
 };
 
 }
