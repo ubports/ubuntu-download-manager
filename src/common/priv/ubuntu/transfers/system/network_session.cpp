@@ -119,6 +119,11 @@ NetworkSession::convertNMString(const QString& str) {
     if (str.contains("wireless")) {
         return QNetworkConfiguration::BearerWLAN;
     }
+
+    if (str.contains("ethernet")) {
+        return QNetworkConfiguration::BearerEthernet;
+    }
+
     if (str == "gsm") {
         return QNetworkConfiguration::Bearer3G;
     }
