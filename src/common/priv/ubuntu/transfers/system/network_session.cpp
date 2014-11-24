@@ -134,7 +134,11 @@ void
 NetworkSession::onPropertiesChanged(const QVariantMap& changedProperties) {
     if (changedProperties.contains(NM_PROPERTY)) {
 	auto nmStr = changedProperties[NM_PROPERTY].toString();
-        emit sessionTypeChanged(convertNMString(nmStr));
+	auto type = convertNMString(nmStr);
+	if (type != _sessionType) {
+            _sessionType = type;
+            emit sessionTypeChanged(type);
+	}
     }
 
 }
