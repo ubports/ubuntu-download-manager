@@ -16,7 +16,9 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <ubuntu/transfers/system/logger.h>
+
 #include "transfer.h"
 
 namespace Ubuntu {

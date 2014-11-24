@@ -16,7 +16,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
+#include <QScopedPointer>
 #include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusPendingReply>
+
 #include <glog/logging.h>
 
 #include "network_session.h"
@@ -25,6 +30,7 @@ namespace {
     const QString NM_PATH = "org.freedesktop.NetworkManager";
     const QString NM_OBJ_PATH = "/org/freedesktop/NetworkManager";
     const QString NM_INTERFACE = "org.freedesktop.NetworkManager";
+    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
     const QString NM_PROPERTY = "PrimaryConnectionType";
 }
 
@@ -45,24 +51,26 @@ NetworkSession::NetworkSession(QObject* parent)
                 this, &NetworkSession::onlineStateChanged))
              << "Could not connect to signal";
 
-    _properties = new FreefreedesktopProperties(NM_PATH, NM_OBJ_PATH,
-            QDBusConnection::systemBus());
+    _nm = new NMInterface(NM_PATH, NM_OBJ_PATH, QDBusConnection::systemBus());
 
-    // get the property type for the very first time
-    QDBusPendingReply<QDBusVariant> reply = _properties->Get(NM_INTERFACE, NM_PROPERTY);
+    CHECK(connect(_nm, &NMInterface::PropertiesChanged,
+        this, &NetworkSession::onPropertiesChanged))
+	    << "Could not connect to signal";
+
+    QScopedPointer<QDBusInterface> interface(new QDBusInterface(NM_PATH, NM_OBJ_PATH,
+        PROPERTIES_INTERFACE, QDBusConnection::systemBus()));
+
+    QDBusPendingReply<QDBusVariant> reply =
+        interface->call("Get", NM_INTERFACE, NM_PROPERTY);
+
     reply.waitForFinished();
     if (!reply.isError()) {
         qDebug() << "Connection type is " << reply.value().variant();
     }
 
-
-    CHECK(connect(_properties, &FreefreedesktopProperties::PropertiesChanged,
-                this, &NetworkSession::onPropertiesChanged))
-             << "Could not connect to signal";
 }
 
 NetworkSession::~NetworkSession() {
-    delete _properties;
     delete _configManager;
 }
 
@@ -108,17 +116,12 @@ NetworkSession::deleteInstance() {
 }
 
 void
-NetworkSession::onPropertiesChanged(const QString& interfaceName,
-                                    const QVariantMap& changedProperties,
-                                    const QStringList& invalidatedProperties) {
-    Q_UNUSED(invalidatedProperties);
-    if (interfaceName == NM_INTERFACE) {
-        if (changedProperties.contains(NM_PROPERTY)) {
-        }
+NetworkSession::onPropertiesChanged(const QVariantMap& changedProperties) {
+    foreach(const QString& key, changedProperties.keys()) {
+        qDebug() << "Property changed " << key << changedProperties[key];
+    }
 
-        foreach(const QString& key, changedProperties.keys()) {
-            qDebug() << "Property changed " << key << changedProperties[key];
-        }
+    if (changedProperties.contains(NM_PROPERTY)) {
     }
 }
 

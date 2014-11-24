@@ -23,7 +23,7 @@
 #include <QNetworkConfigurationManager>
 #include <QObject>
 
-#include "properties_interface.h"
+#include "nm_interface.h"
 
 namespace Ubuntu {
 
@@ -54,17 +54,15 @@ class NetworkSession : public QObject {
     explicit NetworkSession(QObject* parent=0);
 
  private:
-    void onPropertiesChanged(const QString& interfaceName,
-                             const QVariantMap& changedProperties,
-                             const QStringList& invalidatedProperties);
+    void onPropertiesChanged(const QVariantMap& changedProperties);
 
  private:
     // used for the singleton
     static NetworkSession* _instance;
     static QMutex _mutex;
 
-    FreefreedesktopProperties* _properties = nullptr;
     QNetworkConfigurationManager* _configManager = nullptr;
+    NMInterface* _nm = nullptr;
     QNetworkConfiguration::BearerType _sessionType =
         QNetworkConfiguration::BearerUnknown;
 };

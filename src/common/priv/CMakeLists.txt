@@ -16,9 +16,9 @@ set(SOURCES
 	ubuntu/transfers/system/filename_mutex.cpp
 	ubuntu/transfers/system/network_reply.cpp
 	ubuntu/transfers/system/network_session.cpp
+	ubuntu/transfers/system/nm_interface.cpp
 	ubuntu/transfers/system/process.cpp
 	ubuntu/transfers/system/process_factory.cpp
-	ubuntu/transfers/system/properties_interface.cpp
 	ubuntu/transfers/system/request_factory.cpp
 	ubuntu/transfers/system/timer.cpp
 	ubuntu/transfers/system/uuid_factory.cpp
@@ -43,10 +43,10 @@ set(HEADERS
 	ubuntu/transfers/system/filename_mutex.h
 	ubuntu/transfers/system/network_reply.h
 	ubuntu/transfers/system/network_session.h
+	ubuntu/transfers/system/nm_interface.h
 	ubuntu/transfers/system/pending_reply.h
 	ubuntu/transfers/system/process.h
 	ubuntu/transfers/system/process_factory.h
-	ubuntu/transfers/system/properties_interface.h
 	ubuntu/transfers/system/request_factory.h
 	ubuntu/transfers/system/timer.h
 	ubuntu/transfers/system/uuid_factory.h

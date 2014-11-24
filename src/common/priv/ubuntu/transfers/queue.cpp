@@ -16,8 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QSignalMapper>
 #include <glog/logging.h>
+
 #include "ubuntu/transfers/system/logger.h"
 #include "ubuntu/transfers/system/network_session.h"
 #include "queue.h"
