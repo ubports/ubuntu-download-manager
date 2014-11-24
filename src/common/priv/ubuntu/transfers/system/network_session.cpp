@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QScopedPointer>
 #include <QDBusConnection>
 #include <QDBusInterface>
@@ -65,7 +64,7 @@ NetworkSession::NetworkSession(QObject* parent)
 
     reply.waitForFinished();
     if (!reply.isError()) {
-        qDebug() << "Connection type is " << reply.value().variant();
+        _sessionType = convertNMString(reply.value().variant().toString());
     }
 
 }
@@ -115,14 +114,24 @@ NetworkSession::deleteInstance() {
     }
 }
 
+QNetworkConfiguration::BearerType
+NetworkSession::convertNMString(const QString& str) {
+    if (str.contains("wireless")) {
+        return QNetworkConfiguration::BearerWLAN;
+    }
+    if (str == "gsm") {
+        return QNetworkConfiguration::Bearer3G;
+    }
+    return QNetworkConfiguration::BearerUnknown;
+}
+
 void
 NetworkSession::onPropertiesChanged(const QVariantMap& changedProperties) {
-    foreach(const QString& key, changedProperties.keys()) {
-        qDebug() << "Property changed " << key << changedProperties[key];
+    if (changedProperties.contains(NM_PROPERTY)) {
+	auto nmStr = changedProperties[NM_PROPERTY].toString();
+        emit sessionTypeChanged(convertNMString(nmStr));
     }
 
-    if (changedProperties.contains(NM_PROPERTY)) {
-    }
 }
 
 }

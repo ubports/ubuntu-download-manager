@@ -54,6 +54,7 @@ class NetworkSession : public QObject {
     explicit NetworkSession(QObject* parent=0);
 
  private:
+    QNetworkConfiguration::BearerType convertNMString(const QString& str);
     void onPropertiesChanged(const QVariantMap& changedProperties);
 
  private:

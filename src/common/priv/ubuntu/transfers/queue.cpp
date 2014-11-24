@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <QSignalMapper>
 #include <glog/logging.h>
 
@@ -101,7 +100,6 @@ Queue::onManagedTransferStateChanged() {
     // get the appdownload that emited the signal and
     // decide what to do with it
     auto transfer = qobject_cast<Transfer*>(sender());
-    qDebug() << "State changed" << transfer;
     switch (transfer->state()) {
         case Transfer::START:
             // only start the transfer in the update method
@@ -115,9 +113,7 @@ Queue::onManagedTransferStateChanged() {
             break;
         case Transfer::RESUME:
             // only resume the transfer in the update method
-            qDebug() << "State changed to resume.";
             if (_current.isEmpty()) {
-                qDebug() << "There is no current download present.";
                 updateCurrentTransfer();
             }
             break;
@@ -199,7 +195,6 @@ Queue::updateCurrentTransfer() {
                 && (state == Transfer::START
                     || state == Transfer::RESUME)) {
             _current = path;
-            qDebug() << _current;
             if (state == Transfer::START)
                 transfer->startTransfer();
             else
