@@ -26,7 +26,7 @@
 #include <ubuntu/downloads/file_download.h>
 #include <apparmor.h>
 #include <request_factory.h>
-#include <system_network_info.h>
+#include <network_session.h>
 
 #include "application.h"
 #include "base_testcase.h"

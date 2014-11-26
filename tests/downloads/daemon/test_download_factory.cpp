@@ -22,6 +22,7 @@
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/file_manager.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+#include <network_session.h>
 #include "test_download_factory.h"
 
 using ::testing::_;
@@ -39,7 +40,7 @@ void
 TestDownloadFactory::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     delete _downFactory;
     FileManager::deleteInstance();
     RequestFactory::deleteInstance();

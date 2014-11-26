@@ -7,10 +7,8 @@ Build-Depends: cmake,
                doxygen,
                dbus-test-runner,
                google-mock,
-               qt5-qmake,
                qt5-default,
                qtbase5-dev,
-               qtsystems5-dev,
                libboost-log-dev,
                libboost-program-options-dev,
                libdbus-1-dev,
@@ -19,7 +17,8 @@ Build-Depends: cmake,
                libgoogle-glog-dev,
                qtdeclarative5-dev,
                qtdeclarative5-dev-tools,
-               qtdeclarative5-test-plugin
+               qtdeclarative5-test-plugin,
+               network-manager
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image

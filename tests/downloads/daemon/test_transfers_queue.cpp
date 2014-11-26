@@ -38,8 +38,8 @@ TestTransferQueue::init() {
     BaseTestCase::init();
     _isConfined = true;
     _rootPath = "/random/root/path";
-    _networkInfo = new MockSystemNetworkInfo();
-    SystemNetworkInfo::setInstance(_networkInfo);
+    _networkInfo = new MockNetworkSession();
+    NetworkSession::setInstance(_networkInfo);
     _first = new MockTransfer(UuidUtils::getDBusString(QUuid::createUuid()),
         "first-path", _isConfined, "/root/path");
     _second = new MockTransfer(UuidUtils::getDBusString(QUuid::createUuid()),
@@ -51,7 +51,7 @@ void
 TestTransferQueue::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     delete _first;
     delete _second;
     delete _q;

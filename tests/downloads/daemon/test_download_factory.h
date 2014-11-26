@@ -24,7 +24,6 @@
 #include <apparmor.h>
 #include <process_factory.h>
 #include <request_factory.h>
-#include <system_network_info.h>
 
 #include "uuid_factory.h"
 #include "base_testcase.h"

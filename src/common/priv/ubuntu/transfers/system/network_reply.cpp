@@ -16,8 +16,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <ubuntu/transfers/system/logger.h>
+#include <QNetworkSession>
+
 #include <glog/logging.h>
+#include <ubuntu/transfers/system/logger.h>
+
 #include "network_reply.h"
 
 namespace Ubuntu {

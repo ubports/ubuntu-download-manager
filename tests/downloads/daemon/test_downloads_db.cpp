@@ -24,7 +24,7 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <ubuntu/transfers/system/system_network_info.h>
+#include <ubuntu/transfers/system/network_session.h>
 #include <ubuntu/downloads/file_download.h>
 #include "test_downloads_db.h"
 
@@ -59,7 +59,7 @@ TestDownloadsDb::cleanup() {
     _db = nullptr;
 
     QFile::remove(dbFile);
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     FileManager::deleteInstance();
     FileNameMutex::deleteInstance();
 }

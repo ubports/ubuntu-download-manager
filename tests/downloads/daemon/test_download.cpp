@@ -50,8 +50,8 @@ TestDownload::init() {
     _path = "random path to dbus";
     _url = QUrl("http://ubuntu.com/data.txt");
     _algo = "Sha256";
-    _networkInfo = new MockSystemNetworkInfo();
-    SystemNetworkInfo::setInstance(_networkInfo);
+    _networkSession = new MockNetworkSession();
+    NetworkSession::setInstance(_networkSession);
     _reqFactory = new MockRequestFactory();
     RequestFactory::setInstance(_reqFactory);
     _processFactory = new MockProcessFactory();
@@ -64,7 +64,7 @@ TestDownload::init() {
 
 void
 TestDownload::verifyMocks() {
-    QVERIFY(Mock::VerifyAndClearExpectations(_networkInfo));
+    QVERIFY(Mock::VerifyAndClearExpectations(_networkSession));
     QVERIFY(Mock::VerifyAndClearExpectations(_reqFactory));
     QVERIFY(Mock::VerifyAndClearExpectations(_processFactory));
     QVERIFY(Mock::VerifyAndClearExpectations(_fileManager));
@@ -75,7 +75,7 @@ void
 TestDownload::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
     FileManager::deleteInstance();
@@ -107,7 +107,7 @@ TestDownload::testNoHashConstructor() {
     QFETCH(QString, path);
     QFETCH(QUrl, url);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
@@ -158,7 +158,7 @@ TestDownload::testHashConstructor() {
     QFETCH(QString, hash);
     QFETCH(QString, algo);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(id, appId, path,
@@ -181,7 +181,7 @@ TestDownload::testConfinedNoClickMetadata() {
     QVariantMap metadata;
     metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "click";
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -195,7 +195,7 @@ TestDownload::testUnconfinedWithClickMetadata() {
     QVariantMap metadata;
     metadata[Ubuntu::Transfers::Metadata::CLICK_PACKAGE_KEY] = "click";
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -220,7 +220,7 @@ TestDownload::testPath() {
     // create an app download and assert that the returned data is correct
     QFETCH(QString, path);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, path,
@@ -245,7 +245,7 @@ TestDownload::testUrl() {
     // create an app download and assert that the returned data is correct
     QFETCH(QUrl, url);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -278,7 +278,7 @@ TestDownload::testProgress() {
     auto file = new MockFile("test");
     auto reply = new MockNetworkReply();
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -366,7 +366,7 @@ TestDownload::testProgressNotKnownSize() {
     auto file = new MockFile("test");
     auto reply = new MockNetworkReply();
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -440,7 +440,7 @@ TestDownload::testTotalSize() {
     auto file = new MockFile("test");
     auto reply = new MockNetworkReply();
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -511,7 +511,7 @@ TestDownload::testTotalSize() {
 
 void
 TestDownload::testTotalSizeNoProgress() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -533,7 +533,7 @@ TestDownload::testSetThrottleNoReply_data() {
 void
 TestDownload::testSetThrottleNoReply() {
     QFETCH(qulonglong, speed);
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -560,7 +560,7 @@ TestDownload::testSetThrottle() {
     auto file = new MockFile("test");
     auto reply = new MockNetworkReply();
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -614,7 +614,7 @@ void
 TestDownload::testSetGSMDownloadSame() {
     QFETCH(bool, value);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -641,7 +641,7 @@ TestDownload::testSetGSMDownloadDiff() {
     QFETCH(bool, oldValue);
     QFETCH(bool, newValue);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -659,40 +659,35 @@ void
 TestDownload::testCanDownloadGSM_data() {
     QTest::addColumn<QVariant>("mode");
 
-    QVariant gsmMode, cdmaMode, wCdmaMode, wlanMode, ethernetMode,
-        bluetoothMode, wimaxMode, lteMode, tdscdmaMode;
+    QVariant unknown, twoG, ethernet, wlan, bluetooth, threeG, fourG;
 
-    gsmMode.setValue(QNetworkInfo::GsmMode);
-    cdmaMode.setValue(QNetworkInfo::CdmaMode);
-    wCdmaMode.setValue(QNetworkInfo::WcdmaMode);
-    wlanMode.setValue(QNetworkInfo::WlanMode);
-    ethernetMode.setValue(QNetworkInfo::EthernetMode);
-    bluetoothMode.setValue(QNetworkInfo::BluetoothMode);
-    wimaxMode.setValue(QNetworkInfo::WimaxMode);
-    lteMode.setValue(QNetworkInfo::LteMode);
-    tdscdmaMode.setValue(QNetworkInfo::TdscdmaMode);
+    unknown.setValue(QNetworkConfiguration::BearerUnknown);
+    twoG.setValue(QNetworkConfiguration::Bearer2G);
+    ethernet.setValue(QNetworkConfiguration::BearerEthernet);
+    wlan.setValue(QNetworkConfiguration::BearerWLAN);
+    bluetooth.setValue(QNetworkConfiguration::BearerBluetooth);
+    threeG.setValue(QNetworkConfiguration::Bearer3G);
+    fourG.setValue(QNetworkConfiguration::Bearer4G);
 
-    QTest::newRow("GSM Mode") << gsmMode;
-    QTest::newRow("CDMA Mode") << cdmaMode;
-    QTest::newRow("WCDMA Mode") << wCdmaMode;
-    QTest::newRow("Wlan Mode") << wlanMode;
-    QTest::newRow("Ethernet Mode") << ethernetMode;
-    QTest::newRow("Bluetooth Mode") << bluetoothMode;
-    QTest::newRow("WIMAX Mode") << wimaxMode;
-    QTest::newRow("LTE Mode") << lteMode;
-    QTest::newRow("TDSCDMA Mode") << tdscdmaMode;
+    QTest::newRow("Unknown Mode") << unknown;
+    QTest::newRow("2G Mode") << twoG;
+    QTest::newRow("Ethernet Mode") << ethernet;
+    QTest::newRow("WLAN Mode") << wlan;
+    QTest::newRow("Bluetooth Mode") << bluetooth;
+    QTest::newRow("3G Mode") << threeG;
+    QTest::newRow("4G Mode") << fourG;
 }
 
 void
 TestDownload::testCanDownloadGSM() {
     QFETCH(QVariant, mode);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*_networkInfo, currentNetworkMode())
+    EXPECT_CALL(*_networkSession, sessionType())
         .Times(1)
-        .WillOnce(Return(mode.value<QNetworkInfo::NetworkMode>()));
+        .WillOnce(Return(mode.value<QNetworkConfiguration::BearerType>()));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
@@ -706,30 +701,23 @@ TestDownload::testCanDownloadNoGSM_data() {
     QTest::addColumn<QVariant>("mode");
     QTest::addColumn<bool>("result");
 
-    QVariant unknownMode, gsmMode, cdmaMode, wCdmaMode, wlanMode, ethernetMode,
-        bluetoothMode, wimaxMode, lteMode, tdscdmaMode;
+    QVariant unknown, twoG, ethernet, wlan, bluetooth, threeG, fourG;
 
-    unknownMode.setValue(QNetworkInfo::UnknownMode);
-    gsmMode.setValue(QNetworkInfo::GsmMode);
-    cdmaMode.setValue(QNetworkInfo::CdmaMode);
-    wCdmaMode.setValue(QNetworkInfo::WcdmaMode);
-    wlanMode.setValue(QNetworkInfo::WlanMode);
-    ethernetMode.setValue(QNetworkInfo::EthernetMode);
-    bluetoothMode.setValue(QNetworkInfo::BluetoothMode);
-    wimaxMode.setValue(QNetworkInfo::WimaxMode);
-    lteMode.setValue(QNetworkInfo::LteMode);
-    tdscdmaMode.setValue(QNetworkInfo::TdscdmaMode);
+    unknown.setValue(QNetworkConfiguration::BearerUnknown);
+    twoG.setValue(QNetworkConfiguration::Bearer2G);
+    ethernet.setValue(QNetworkConfiguration::BearerEthernet);
+    wlan.setValue(QNetworkConfiguration::BearerWLAN);
+    bluetooth.setValue(QNetworkConfiguration::BearerBluetooth);
+    threeG.setValue(QNetworkConfiguration::Bearer3G);
+    fourG.setValue(QNetworkConfiguration::Bearer4G);
 
-    QTest::newRow("Unknown Mode") << unknownMode << false;
-    QTest::newRow("GSM Mode") << gsmMode << false;
-    QTest::newRow("CDMA Mode") << cdmaMode << false;
-    QTest::newRow("WCDMA Mode") << wCdmaMode << false;
-    QTest::newRow("Wlan Mode") << wlanMode << true;
-    QTest::newRow("Ethernet Mode") << ethernetMode << true;
-    QTest::newRow("Bluetooth Mode") << bluetoothMode << true;
-    QTest::newRow("WIMAX Mode") << wimaxMode << false;
-    QTest::newRow("LTE Mode") << lteMode << false;
-    QTest::newRow("TDSCDMA Mode") << tdscdmaMode << false;
+    QTest::newRow("Unknown Mode") << unknown << false;
+    QTest::newRow("2G Mode") << twoG << false;
+    QTest::newRow("Ethernet Mode") << ethernet << true;
+    QTest::newRow("WLAN Mode") << wlan << true;
+    QTest::newRow("Bluetooth Mode") << bluetooth << true;
+    QTest::newRow("3G Mode") << threeG << false;
+    QTest::newRow("4G Mode") << fourG << false;
 }
 
 void
@@ -737,12 +725,12 @@ TestDownload::testCanDownloadNoGSM() {
     QFETCH(QVariant, mode);
     QFETCH(bool, result);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
-    EXPECT_CALL(*_networkInfo, currentNetworkMode())
+    EXPECT_CALL(*_networkSession, sessionType())
         .Times(1)
-        .WillOnce(Return(mode.value<QNetworkInfo::NetworkMode>()));
+        .WillOnce(Return(mode.value<QNetworkConfiguration::BearerType>()));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
         _isConfined, _rootPath, _url, _metadata, _headers));
@@ -754,7 +742,7 @@ TestDownload::testCanDownloadNoGSM() {
 
 void
 TestDownload::testCancel() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -770,7 +758,7 @@ TestDownload::testCancel() {
 
 void
 TestDownload::testPause() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -786,7 +774,7 @@ TestDownload::testPause() {
 
 void
 TestDownload::testResume() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -802,7 +790,7 @@ TestDownload::testResume() {
 
 void
 TestDownload::testStart() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -824,7 +812,7 @@ TestDownload::testCancelDownload() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -875,7 +863,7 @@ TestDownload::testCancelDownloadNotStarted() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -904,7 +892,7 @@ TestDownload::testPauseDownload() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -968,7 +956,7 @@ TestDownload::testPauseDownload() {
 
 void
 TestDownload::testPauseDownloadNotStarted() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -995,7 +983,7 @@ TestDownload::testResumeRunning() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1054,7 +1042,7 @@ TestDownload::testResumeDownload() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1149,7 +1137,7 @@ TestDownload::testStartDownload() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1202,7 +1190,7 @@ TestDownload::testStartDownloadAlreadyStarted() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1259,7 +1247,7 @@ TestDownload::testOnSuccessNoHash() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1328,7 +1316,7 @@ TestDownload::testOnSuccessHashError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1418,7 +1406,7 @@ TestDownload::testOnSuccessHash() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1517,7 +1505,7 @@ TestDownload::testOnHttpError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1582,7 +1570,7 @@ TestDownload::testOnSslError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1650,7 +1638,7 @@ TestDownload::testOnNetworkError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1714,7 +1702,7 @@ TestDownload::testOnAuthError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1784,7 +1772,7 @@ TestDownload::testOnProxyAuthError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -1877,7 +1865,7 @@ TestDownload::testSetRawHeadersStart() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(RequestHeadersEq(headers)))
@@ -1952,7 +1940,7 @@ TestDownload::testSetRawHeadersWithRangeStart() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory,
@@ -2030,7 +2018,7 @@ TestDownload::testSetRawHeadersResume() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QPair<QString, QString> rangeHeader("Range", QString::number(size));
@@ -2140,7 +2128,7 @@ TestDownload::testProcessExecutedNoParams() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2251,7 +2239,7 @@ TestDownload::testProcessExecutedWithParams() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2362,7 +2350,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2455,7 +2443,7 @@ TestDownload::testProcessFinishedWithError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2569,7 +2557,7 @@ TestDownload::testProcessError() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2674,7 +2662,7 @@ TestDownload::testProcessFinishedCrash() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -2764,7 +2752,7 @@ TestDownload::testSetRawHeaderAcceptEncoding() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QPair<QString, QString> encodingHeader("Accept-Encoding",
@@ -2822,7 +2810,7 @@ TestDownload::testSslErrorsIgnored() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QPair<QString, QString> encodingHeader("Accept-Encoding",
@@ -2887,7 +2875,7 @@ TestDownload::testSslErrorsNotIgnored() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QPair<QString, QString> encodingHeader("Accept-Encoding",
@@ -2942,7 +2930,7 @@ TestDownload::testSslErrorsNotIgnored() {
 
 void
 TestDownload::testLocalPathConfined() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // assert that the root path used is not the one in the metadata
@@ -2959,7 +2947,7 @@ TestDownload::testLocalPathConfined() {
 
 void
 TestDownload::testLocalPathNotConfined() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QVariantMap metadata;
@@ -2975,7 +2963,7 @@ TestDownload::testLocalPathNotConfined() {
 
 void
 TestDownload::testInvalidUrl() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -2987,7 +2975,7 @@ TestDownload::testInvalidUrl() {
 
 void
 TestDownload::testValidUrl() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -2999,7 +2987,7 @@ TestDownload::testValidUrl() {
 
 void
 TestDownload::testInvalidHashAlgorithm() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3025,7 +3013,7 @@ TestDownload::testValidHashAlgorithm_data() {
 void
 TestDownload::testValidHashAlgorithm() {
     QFETCH(QString, algo);
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3036,7 +3024,7 @@ TestDownload::testValidHashAlgorithm() {
 
 void
 TestDownload::testInvalidFilePresent() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // create a file so that we get an error
@@ -3057,7 +3045,7 @@ TestDownload::testInvalidFilePresent() {
 
 void
 TestDownload::testValidFileNotPresent() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QString filePath = testDirectory() + QDir::separator() + "test_file.jpg";
@@ -3073,7 +3061,7 @@ TestDownload::testValidFileNotPresent() {
 
 void
 TestDownload::testDownloadPresent() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // create a download and get the filename to use, then write it
@@ -3108,7 +3096,7 @@ TestDownload::testDownloadPresentSeveralFiles_data() {
 
 void
 TestDownload::testDownloadPresentSeveralFiles() {
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QFETCH(int, count);
@@ -3166,7 +3154,7 @@ TestDownload::testProcessingJustOnce() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -3253,7 +3241,7 @@ TestDownload::testFileSystemErrorProgress() {
     QScopedPointer<MockFile> file(new MockFile("test"));
     QScopedPointer<MockNetworkReply> reply(new MockNetworkReply());
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -3326,7 +3314,7 @@ TestDownload::testFileSystemErrorPause() {
     QScopedPointer<MockFile> file(new MockFile("test"));
     QScopedPointer<MockNetworkReply> reply(new MockNetworkReply());
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // set expectations to get the request and the reply correctly
@@ -3409,7 +3397,7 @@ TestDownload::testRedirectCycle() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -3495,7 +3483,7 @@ TestDownload::testSingleRedirect() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -3664,7 +3652,7 @@ TestDownload::testProcessFinishUnlocksPath() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     EXPECT_CALL(*_reqFactory, get(_))
@@ -3780,7 +3768,7 @@ TestDownload::testSetLocalDirectory() {
     auto path = testDirectory() + QDir::separator() + "test";
     QDir().mkpath(path);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3795,7 +3783,7 @@ TestDownload::testSetLocalDirectory() {
 void
 TestDownload::testSetLocalDirectoryNotAbsolute() {
     auto path = QString("./path");
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3810,7 +3798,7 @@ TestDownload::testSetLocalDirectoryNotAbsolute() {
 void
 TestDownload::testSetLocalDirectoryNotPresent() {
     auto path = QString("/not/present/path");
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3830,7 +3818,7 @@ TestDownload::testSetLocalDirectoryNotDir() {
     file.write(QByteArray(100, 'w'));
     file.close();
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3847,7 +3835,7 @@ TestDownload::testSetLocalDirectoryStarted() {
     auto path = testDirectory() + QDir::separator() + "test";
     QDir().mkpath(path);
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3866,7 +3854,7 @@ TestDownload::testDeflateConstructorError() {
     QVariantMap metadata;
     metadata[Ubuntu::Transfers::Metadata::DEFLATE_KEY] = true;
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3882,7 +3870,7 @@ TestDownload::testDeflateConstructorNoError() {
     QVariantMap metadata;
     metadata[Ubuntu::Transfers::Metadata::DEFLATE_KEY] = false;
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
@@ -3903,7 +3891,7 @@ TestDownload::testDeflateOnRequest() {
     // write the expectations of the reply which is what we are
     // really testing
 
-    EXPECT_CALL(*_networkInfo, isOnline())
+    EXPECT_CALL(*_networkSession, isOnline())
         .WillRepeatedly(Return(true));
 
     // assert that we do have gzip and deflate in the content-encoding header

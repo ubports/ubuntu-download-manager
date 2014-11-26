@@ -18,13 +18,11 @@ set(HEADERS
         process.h
         process_factory.h
         request_factory.h
-        system_network_info.h
         testing_interface.h
         uuid_factory.h
 )
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
-include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Test_INCLUDE_DIRS})
@@ -51,12 +49,12 @@ add_library(${TARGET} STATIC
 target_link_libraries(${TARGET}
     ${NIH_DBUS_LIBRARIES}
     ${GLOG_LIBRARIES}
-        ${Qt5Core_LIBRARIES}
-        ${Qt5Sql_LIBRARIES}
-        ${Qt5DBus_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5DBus_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-        ${GMOCK_LIBRARY}
-        ${GTEST_BOTH_LIBRARIES}
+    ${GMOCK_LIBRARY}
+    ${GTEST_BOTH_LIBRARIES}
     udm-common
     udm-priv-common
     ubuntu-download-manager-common

@@ -22,7 +22,6 @@
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/apparmor.h>
-#include <ubuntu/transfers/system/system_network_info.h>
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include "download.h"
 

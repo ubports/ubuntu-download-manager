@@ -20,7 +20,7 @@
 #include <ubuntu/download_manager/download_struct.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
 #include <ubuntu/transfers/system/process_factory.h>
-#include <ubuntu/transfers/system/system_network_info.h>
+#include <ubuntu/transfers/system/network_session.h>
 #include <gmock/gmock.h>
 #include "dbus_proxy.h"
 #include "download.h"
@@ -54,7 +54,7 @@ void
 TestDownloadManager::cleanup() {
     BaseTestCase::cleanup();
 
-    SystemNetworkInfo::deleteInstance();
+    NetworkSession::deleteInstance();
     RequestFactory::deleteInstance();
     ProcessFactory::deleteInstance();
     DownloadsDb::deleteInstance();

@@ -219,6 +219,7 @@ DaemonTestCase::httpServerDir() {
 
 void
 DaemonTestCase::startHttpServer() {
+    qDebug() << "Start http server";
     auto serverDir = httpServerDir();
     _httpServer = new QProcess();
     _httpServer->setWorkingDirectory(serverDir);

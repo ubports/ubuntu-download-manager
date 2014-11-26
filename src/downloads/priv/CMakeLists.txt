@@ -42,7 +42,6 @@ set(HEADERS
 	ubuntu/downloads/state_machines/state.h
 )
 
-include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Sql_INCLUDE_DIRS})

@@ -28,7 +28,6 @@
 #include <ubuntu/download_manager/metatypes.h>
 #include "ubuntu/transfers/system/process_factory.h"
 #include "ubuntu/transfers/system/request_factory.h"
-#include "ubuntu/transfers/system/system_network_info.h"
 
 
 namespace Ubuntu {

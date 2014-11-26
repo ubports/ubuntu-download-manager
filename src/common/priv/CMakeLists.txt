@@ -15,10 +15,11 @@ set(SOURCES
 	ubuntu/transfers/system/file_manager.cpp
 	ubuntu/transfers/system/filename_mutex.cpp
 	ubuntu/transfers/system/network_reply.cpp
+	ubuntu/transfers/system/network_session.cpp
+	ubuntu/transfers/system/nm_interface.cpp
 	ubuntu/transfers/system/process.cpp
 	ubuntu/transfers/system/process_factory.cpp
 	ubuntu/transfers/system/request_factory.cpp
-	ubuntu/transfers/system/system_network_info.cpp
 	ubuntu/transfers/system/timer.cpp
 	ubuntu/transfers/system/uuid_factory.cpp
 	ubuntu/transfers/system/uuid_utils.cpp
@@ -41,17 +42,17 @@ set(HEADERS
 	ubuntu/transfers/system/file_manager.h
 	ubuntu/transfers/system/filename_mutex.h
 	ubuntu/transfers/system/network_reply.h
+	ubuntu/transfers/system/network_session.h
+	ubuntu/transfers/system/nm_interface.h
 	ubuntu/transfers/system/pending_reply.h
 	ubuntu/transfers/system/process.h
 	ubuntu/transfers/system/process_factory.h
 	ubuntu/transfers/system/request_factory.h
-	ubuntu/transfers/system/system_network_info.h
 	ubuntu/transfers/system/timer.h
 	ubuntu/transfers/system/uuid_factory.h
 	ubuntu/transfers/system/uuid_utils.h
 )
 
-include_directories(${Qt5SystemInfo_INCLUDE_DIRS})
 include_directories(${Qt5DBus_INCLUDE_DIRS})
 include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${Qt5Sql_INCLUDE_DIRS})
@@ -81,7 +82,6 @@ target_link_libraries(${TARGET}
 	${GLOG_LIBRARIES}
 	${Qt5Network_LIBRARIES}
 	${Qt5Sql_LIBRARIES}
-	${Qt5SystemInfo_LIBRARIES}
 	${Qt5Core_LIBRARIES}
 	${Qt5DBus_LIBRARIES}
 	udm-common

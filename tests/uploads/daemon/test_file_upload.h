@@ -23,7 +23,6 @@
 #include <ubuntu/uploads/file_upload.h>
 #include <file_manager.h>
 #include <request_factory.h>
-#include <system_network_info.h>
 
 #include "uuid_factory.h"
 #include "base_testcase.h"

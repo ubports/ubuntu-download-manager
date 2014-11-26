@@ -18,8 +18,9 @@
 
 #include <QSignalMapper>
 #include <glog/logging.h>
+
 #include "ubuntu/transfers/system/logger.h"
-#include "ubuntu/transfers/system/system_network_info.h"
+#include "ubuntu/transfers/system/network_session.h"
 #include "queue.h"
 
 namespace Ubuntu {
@@ -29,9 +30,9 @@ namespace Transfers {
 Queue::Queue(QObject* parent)
     : QObject(parent),
       _current("") {
-    CHECK(connect(SystemNetworkInfo::instance(),
-        &SystemNetworkInfo::currentNetworkModeChanged,
-        this, &Queue::onCurrentNetworkModeChanged))
+    CHECK(connect(NetworkSession::instance(),
+        &NetworkSession::sessionTypeChanged,
+        this, &Queue::onSessionTypeChanged))
             << "Could not connect to signal";
 }
 
@@ -99,7 +100,6 @@ Queue::onManagedTransferStateChanged() {
     // get the appdownload that emited the signal and
     // decide what to do with it
     auto transfer = qobject_cast<Transfer*>(sender());
-    qDebug() << "State changed" << transfer;
     switch (transfer->state()) {
         case Transfer::START:
             // only start the transfer in the update method
@@ -113,9 +113,7 @@ Queue::onManagedTransferStateChanged() {
             break;
         case Transfer::RESUME:
             // only resume the transfer in the update method
-            qDebug() << "State changed to resume.";
             if (_current.isEmpty()) {
-                qDebug() << "There is no current download present.";
                 updateCurrentTransfer();
             }
             break;
@@ -160,9 +158,9 @@ Queue::onUnmanagedTransferStateChanged() {
 }
 
 void
-Queue::onCurrentNetworkModeChanged(QNetworkInfo::NetworkMode mode) {
-    TRACE << mode;
-    if (mode != QNetworkInfo::UnknownMode) {
+Queue::onSessionTypeChanged(QNetworkConfiguration::BearerType type) {
+    TRACE << type;
+    if (type != QNetworkConfiguration::BearerUnknown) {
         updateCurrentTransfer();
     }
 }
@@ -197,7 +195,6 @@ Queue::updateCurrentTransfer() {
                 && (state == Transfer::START
                     || state == Transfer::RESUME)) {
             _current = path;
-            qDebug() << _current;
             if (state == Transfer::START)
                 transfer->startTransfer();
             else

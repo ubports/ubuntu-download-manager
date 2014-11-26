@@ -23,7 +23,7 @@
 #include <ubuntu/transfers/queue.h>
 #include <process_factory.h>
 #include <request_factory.h>
-#include <system_network_info.h>
+#include <network_session.h>
 
 #include "base_testcase.h"
 #include "transfer.h"
@@ -73,7 +73,7 @@ class TestTransferQueue : public BaseTestCase {
  private:
     bool _isConfined;
     QString _rootPath;
-    MockSystemNetworkInfo* _networkInfo;
+    MockNetworkSession* _networkInfo;
     MockTransfer* _first;
     MockTransfer* _second;
     Queue* _q;

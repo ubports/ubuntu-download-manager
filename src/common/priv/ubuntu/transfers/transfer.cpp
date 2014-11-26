@@ -17,6 +17,9 @@
  */
 
 #include <ubuntu/transfers/system/logger.h>
+
+#include <glog/logging.h>
+
 #include "transfer.h"
 
 namespace Ubuntu {
@@ -38,7 +41,7 @@ Transfer::Transfer(const QString& id,
       _dbusPath(path),
       _isConfined(isConfined),
       _rootPath(rootPath) {
-    _networkInfo = System::SystemNetworkInfo::instance();
+    _networkSession = System::NetworkSession::instance();
     setObjectName(id);
 }
 
@@ -84,22 +87,22 @@ Transfer::setState(Transfer::State state) {
 bool
 Transfer::canTransfer() {
     TRACE;
-    QNetworkInfo::NetworkMode mode = _networkInfo->currentNetworkMode();
+    auto mode = _networkSession->sessionType();
     switch (mode) {
-        case QNetworkInfo::UnknownMode:
-            qWarning() << "Network Mode unknown!";
-            return _allowMobileData;
+        case QNetworkConfiguration::BearerUnknown:
+            LOG(WARNING) << "Network Mode unknown!";
+	    if (_networkSession->isError())
+                return true;
+	    else
+                return _allowMobileData;
             break;
-        case QNetworkInfo::GsmMode:
-        case QNetworkInfo::CdmaMode:
-        case QNetworkInfo::WcdmaMode:
-        case QNetworkInfo::WimaxMode:
-        case QNetworkInfo::TdscdmaMode:
-        case QNetworkInfo::LteMode:
+        case QNetworkConfiguration::Bearer2G:
+        case QNetworkConfiguration::Bearer3G:
+        case QNetworkConfiguration::Bearer4G:
             return _allowMobileData;
-        case QNetworkInfo::WlanMode:
-        case QNetworkInfo::EthernetMode:
-        case QNetworkInfo::BluetoothMode:
+        case QNetworkConfiguration::BearerEthernet:
+        case QNetworkConfiguration::BearerWLAN:
+        case QNetworkConfiguration::BearerBluetooth:
             return true;
         default:
             return false;
