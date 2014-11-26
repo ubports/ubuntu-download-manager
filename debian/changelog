@@ -1,10 +1,14 @@
-ubuntu-download-manager (0.9+14.10.20141014.1-0ubuntu3) UNRELEASED; urgency=medium
+ubuntu-download-manager (0.9+15.04.20141126-0ubuntu1) vivid; urgency=medium
 
+  [ Manuel de la Pena ]
   * Fix issues with the network detection. Because of the new approach two
     dependencies have been dropped. 
   * Add network manager as dependency.
 
- -- Manuel de la Pena <manuel.delapena@canonical.com>  Wed, 26 Nov 2014 12:47:31 +0100
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Nov 2014 12:57:08 +0000
 
 ubuntu-download-manager (0.9+14.10.20141014.1-0ubuntu1) 14.09; urgency=medium
 
