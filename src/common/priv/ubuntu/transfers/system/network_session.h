@@ -37,6 +37,7 @@ class NetworkSession : public QObject {
  public:
     ~NetworkSession();
 
+    virtual bool isError();
     virtual bool isOnline();
     virtual QNetworkConfiguration::BearerType sessionType();
 
@@ -66,6 +67,8 @@ class NetworkSession : public QObject {
     NMInterface* _nm = nullptr;
     QNetworkConfiguration::BearerType _sessionType =
         QNetworkConfiguration::BearerUnknown;
+    bool _error = false;
+    QString _errorMsg = QString::null;
 };
 
 }

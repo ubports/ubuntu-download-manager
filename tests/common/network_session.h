@@ -39,6 +39,10 @@ class MockNetworkSession : public NetworkSession {
     MOCK_METHOD0(sessionType, QNetworkConfiguration::BearerType());
     MOCK_METHOD0(isOnline, bool());
 
+    bool isError() override {
+        return false;
+    }
+
 };
 
 }  // Ubuntu

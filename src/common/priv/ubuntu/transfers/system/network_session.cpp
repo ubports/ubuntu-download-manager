@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <QScopedPointer>
 #include <QDBusConnection>
 #include <QDBusInterface>
@@ -64,13 +65,23 @@ NetworkSession::NetworkSession(QObject* parent)
 
     reply.waitForFinished();
     if (!reply.isError()) {
+	LOG(INFO) << "Connection type " << reply.value().variant().toString().toStdString();
         _sessionType = convertNMString(reply.value().variant().toString());
+    } else {
+	_error = true;
+	_errorMsg = reply.error().message();
+	LOG(ERROR) << _errorMsg.toStdString();
     }
 
 }
 
 NetworkSession::~NetworkSession() {
     delete _configManager;
+}
+
+bool
+NetworkSession::isError() {
+    return _error;
 }
 
 bool
@@ -134,6 +145,7 @@ void
 NetworkSession::onPropertiesChanged(const QVariantMap& changedProperties) {
     if (changedProperties.contains(NM_PROPERTY)) {
 	auto nmStr = changedProperties[NM_PROPERTY].toString();
+	LOG(INFO) << "Connection type " << nmStr.toStdString();
 	auto type = convertNMString(nmStr);
 	if (type != _sessionType) {
             _sessionType = type;

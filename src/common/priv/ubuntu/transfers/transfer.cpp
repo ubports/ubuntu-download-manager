@@ -18,6 +18,8 @@
 
 #include <ubuntu/transfers/system/logger.h>
 
+#include <glog/logging.h>
+
 #include "transfer.h"
 
 namespace Ubuntu {
@@ -88,8 +90,11 @@ Transfer::canTransfer() {
     auto mode = _networkSession->sessionType();
     switch (mode) {
         case QNetworkConfiguration::BearerUnknown:
-            qWarning() << "Network Mode unknown!";
-            return _allowMobileData;
+            LOG(WARNING) << "Network Mode unknown!";
+	    if (_networkSession->isError())
+                return true;
+	    else
+                return _allowMobileData;
             break;
         case QNetworkConfiguration::Bearer2G:
         case QNetworkConfiguration::Bearer3G:
