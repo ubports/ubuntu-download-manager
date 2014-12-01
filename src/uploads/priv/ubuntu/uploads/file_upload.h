@@ -22,7 +22,6 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
-#include <QSharedPointer>
 #include <QUrl>
 #include <ubuntu/transfers/errors/auth_error_struct.h>
 #include <ubuntu/transfers/errors/http_error_struct.h>

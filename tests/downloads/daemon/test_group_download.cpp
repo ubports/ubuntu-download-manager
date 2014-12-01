@@ -21,6 +21,8 @@
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/downloads/group_download.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
+#include "apparmor.h"
+#include "dbus_connection.h"
 #include "download.h"
 #include "matchers.h"
 #include "test_group_download.h"
@@ -41,7 +43,7 @@ TestGroupDownload::init() {
     _rootPath = "/random/dbus/path";
     _algo = "Md5";
     _isGSMDownloadAllowed = true;
-    _factory = new MockDownloadFactory();
+    _factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
     _fileManager = new MockFileManager();
     FileManager::setInstance(_fileManager);
 }

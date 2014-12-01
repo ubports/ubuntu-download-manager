@@ -43,7 +43,7 @@ DownloadManager::DownloadManager(Application* app,
       _throttle(0) {
     _conn = connection;
     RequestFactory::setStoppable(_stoppable);
-    _downloadFactory = new Factory(this);
+    _downloadFactory = new Factory(new System::AppArmor(connection), this);
     _db = DownloadsDb::instance();
     _queue = new Queue(this);
     init();
@@ -264,7 +264,7 @@ QList<QDBusObjectPath>
 DownloadManager::getAllDownloads() {
     // filter per app id if owner is not "" and the app is confined else
     // return all downloads
-    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor());
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
     auto owner = getCaller();
     auto appId = appArmor->appId(owner);
     QList<QDBusObjectPath> paths;
@@ -289,7 +289,7 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value) {
     // filter per app id if owner is not "" and the app is confined else
     // return all downloads
-    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor());
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
     auto owner = getCaller();
     auto appId = appArmor->appId(owner);
     auto isConfined = appArmor->isConfined(appId);

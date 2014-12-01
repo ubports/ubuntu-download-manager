@@ -18,7 +18,6 @@
 
 #include <QDebug>
 #include <QtDBus/QDBusConnection>
-#include <QSharedPointer>
 #include <QSslCertificate>
 #include <glog/logging.h>
 #include "ubuntu/transfers/system/application.h"

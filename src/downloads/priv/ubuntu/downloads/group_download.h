@@ -22,7 +22,6 @@
 #include <QCryptographicHash>
 #include <QList>
 #include <QObject>
-#include <QSharedPointer>
 #include <ubuntu/download_manager/group_download_struct.h>
 #include "ubuntu/transfers/system/file_manager.h"
 #include "download.h"

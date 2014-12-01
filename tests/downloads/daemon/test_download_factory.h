@@ -21,12 +21,12 @@
 
 #include <QObject>
 #include <ubuntu/downloads/factory.h>
-#include <apparmor.h>
-#include <process_factory.h>
-#include <request_factory.h>
 
-#include "uuid_factory.h"
 #include "base_testcase.h"
+#include "apparmor.h"
+#include "process_factory.h"
+#include "request_factory.h"
+#include "uuid_factory.h"
 
 using namespace Ubuntu::Transfers::System;
 using namespace Ubuntu::Transfers::Tests;

@@ -23,7 +23,6 @@
 #include <QFile>
 #include <QNetworkReply>
 #include <QProcess>
-#include <QSharedPointer>
 #include <QUrl>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/errors/auth_error_struct.h>

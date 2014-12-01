@@ -22,7 +22,10 @@
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/file_manager.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <network_session.h>
+
+#include "network_session.h"
+#include "dbus_connection.h"
+
 #include "test_download_factory.h"
 
 using ::testing::_;
@@ -32,7 +35,7 @@ using ::testing::Return;
 void
 TestDownloadFactory::init() {
     BaseTestCase::init();
-    _apparmor = new MockAppArmor();
+    _apparmor = new MockAppArmor(new MockDBusConnection());
     _downFactory = new Factory(_apparmor);
 }
 

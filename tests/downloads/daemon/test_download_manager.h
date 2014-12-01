@@ -24,10 +24,8 @@
 #include <QTest>
 #include <ubuntu/downloads/manager.h>
 #include <ubuntu/downloads/file_download.h>
-#include <apparmor.h>
-#include <request_factory.h>
-#include <network_session.h>
 
+#include "apparmor.h"
 #include "application.h"
 #include "base_testcase.h"
 #include "database.h"
@@ -35,6 +33,8 @@
 #include "dbus_proxy_factory.h"
 #include "factory.h"
 #include "queue.h"
+#include "network_session.h"
+#include "request_factory.h"
 #include "uuid_factory.h"
 
 using namespace Ubuntu::Transfers::Tests;

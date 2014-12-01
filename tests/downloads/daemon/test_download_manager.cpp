@@ -22,6 +22,7 @@
 #include <ubuntu/transfers/system/process_factory.h>
 #include <ubuntu/transfers/system/network_session.h>
 #include <gmock/gmock.h>
+
 #include "dbus_proxy.h"
 #include "download.h"
 #include "matchers.h"
@@ -44,7 +45,7 @@ TestDownloadManager::init() {
     _q = new MockDownloadQueue();
     _requestFactory = new MockRequestFactory();
     RequestFactory::setInstance(_requestFactory);
-    _factory = new MockDownloadFactory();
+    _factory = new MockDownloadFactory(new MockAppArmor(_conn));
     _man = new DownloadManager(_app, _conn, _factory, _q);
     _dbusProxyFactory = new MockDBusProxyFactory();
     DBusProxyFactory::setInstance(_dbusProxyFactory );
@@ -423,7 +424,7 @@ TestDownloadManager::testSetSelfSignedCerts() {
 void
 TestDownloadManager::testStoppable() {
     auto q = new MockDownloadQueue();
-    auto factory = new MockDownloadFactory();
+    auto factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
 
     QScopedPointer<DownloadManager> man(
         new DownloadManager(_app, _conn, factory, q, true));
@@ -438,7 +439,7 @@ TestDownloadManager::testStoppable() {
 void
 TestDownloadManager::testNotStoppable() {
     auto q = new MockDownloadQueue();
-    auto factory = new MockDownloadFactory();
+    auto factory = new MockDownloadFactory(new MockAppArmor(new MockDBusConnection()));
 
     QScopedPointer<DownloadManager> man(
         new DownloadManager(_app, _conn, factory, q, false));
@@ -456,7 +457,7 @@ TestDownloadManager::testGetAllDownloadsUnconfined() {
     auto dbusProxy = new MockDBusProxy();
     auto reply = new MockPendingReply<QString>();
 
-    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
@@ -500,7 +501,7 @@ TestDownloadManager::testGetAllDownloadsConfined() {
     auto dbusProxy = new MockDBusProxy();
     auto reply = new MockPendingReply<QString>();
 
-    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
@@ -569,7 +570,7 @@ TestDownloadManager::testAllDownloadsWithMetadataUnconfined() {
     auto dbusProxy = new MockDBusProxy();
     auto reply = new MockPendingReply<QString>();
 
-    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
@@ -648,7 +649,7 @@ TestDownloadManager::testAllDownloadsWithMetadataConfined() {
     auto dbusProxy = new MockDBusProxy();
     auto reply = new MockPendingReply<QString>();
 
-    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_))
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
         .Times(1)
         .WillOnce(Return(dbusProxy));
 
