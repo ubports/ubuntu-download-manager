@@ -1,3 +1,11 @@
+ubuntu-download-manager (0.9+15.04.20141202-0ubuntu1) vivid; urgency=low
+
+  [ Manuel de la Peña ]
+  * Fix wrong bus used to query apparmor profile breaking download-
+    manager.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 02 Dec 2014 09:37:19 +0000
+
 ubuntu-download-manager (0.9+15.04.20141126-0ubuntu1) vivid; urgency=medium
 
   [ Manuel de la Pena ]
