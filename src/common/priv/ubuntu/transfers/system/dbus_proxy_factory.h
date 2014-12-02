@@ -19,7 +19,6 @@
 #ifndef DOWNLOADER_LIB_DBUS_PROXY_FACTORY_H
 #define DOWNLOADER_LIB_DBUS_PROXY_FACTORY_H
 
-#include <QSharedPointer>
 #include <QObject>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include "dbus_proxy.h"
@@ -34,9 +33,8 @@ class DBusProxyFactory : public QObject {
     Q_OBJECT
 
  public:
-    virtual DBusProxy* createDBusProxy(QObject* parent=0);
     virtual DBusProxy* createDBusProxy(
-            QSharedPointer<DBusConnection> connection, QObject* parent=0);
+            DBusConnection* connection, QObject* parent=0);
 
     static DBusProxyFactory* instance();
     // only used for testing purposes

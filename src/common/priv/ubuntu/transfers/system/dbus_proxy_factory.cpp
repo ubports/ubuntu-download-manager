@@ -38,13 +38,7 @@ DBusProxyFactory::DBusProxyFactory(QObject* parent)
 }
 
 DBusProxy*
-DBusProxyFactory::createDBusProxy(QObject* parent) {
-    return new DBusProxy(DBUS_SERVICE_PATH, DBUS_OBJECT_PATH,
-        QDBusConnection::sessionBus(), parent);
-}
-
-DBusProxy*
-DBusProxyFactory::createDBusProxy(QSharedPointer<DBusConnection> connection,
+DBusProxyFactory::createDBusProxy(DBusConnection* connection,
                                   QObject* parent) {
     return new DBusProxy(DBUS_SERVICE_PATH, DBUS_OBJECT_PATH,
         connection->connection(), parent);

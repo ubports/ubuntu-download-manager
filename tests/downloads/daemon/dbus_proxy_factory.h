@@ -32,9 +32,8 @@ namespace Tests {
 
 class MockDBusProxyFactory : public DBusProxyFactory {
  public:
-    MOCK_METHOD1(createDBusProxy, DBusProxy*(QObject*));
     MOCK_METHOD2(createDBusProxy,
-        DBusProxy*(QSharedPointer<DBusConnection>, QObject*));
+        DBusProxy*(DBusConnection*, QObject*));
 };
 
 }  // Ubuntu

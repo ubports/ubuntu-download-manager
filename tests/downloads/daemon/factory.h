@@ -29,6 +29,8 @@ using namespace Ubuntu::DownloadManager::Daemon;
 class MockDownloadFactory : public Factory {
  public:
 
+    MockDownloadFactory(AppArmor* _apparmor, QObject *parent=0) : Factory(_apparmor, parent) {}
+
     MOCK_METHOD1(setAcceptedCertificates,
         void(const QList<QSslCertificate>&));
     MOCK_METHOD4(createDownload,

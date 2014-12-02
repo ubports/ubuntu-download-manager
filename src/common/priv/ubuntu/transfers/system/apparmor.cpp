@@ -39,13 +39,7 @@ namespace System {
 
 QString AppArmor::UNCONFINED_ID = "unconfined";
 
-AppArmor::AppArmor(QObject* parent)
-    : QObject(parent) {
-    _dbus = DBusProxyFactory::instance()->createDBusProxy(this);
-    _uuidFactory = new UuidFactory(this);
-}
-
-AppArmor::AppArmor(QSharedPointer<DBusConnection> connection,
+AppArmor::AppArmor(DBusConnection* connection,
                 QObject* parent)
     : QObject(parent) {
     _dbus = DBusProxyFactory::instance()->createDBusProxy(connection, this);

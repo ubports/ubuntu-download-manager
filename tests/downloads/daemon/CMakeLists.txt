@@ -48,7 +48,6 @@ foreach(test ${DAEMON_TESTS})
                 application.h
                 cryptographic_hash.h
 		database.h
-                dbus_connection.h
 		dbus_proxy.h
 		dbus_proxy_factory.h
 		download.h

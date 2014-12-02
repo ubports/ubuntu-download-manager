@@ -22,7 +22,6 @@
 #include <QObject>
 #include <QPair>
 #include <QString>
-#include <QSharedPointer>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include "dbus_proxy.h"
 #include "uuid_factory.h"
@@ -49,8 +48,7 @@ class AppArmor : public QObject {
     Q_OBJECT
 
  public:
-    explicit AppArmor(QObject *parent = 0);
-    AppArmor(QSharedPointer<DBusConnection> connection, QObject *parent = 0);
+    AppArmor(DBusConnection* connection, QObject *parent = 0);
     ~AppArmor();
 
     virtual QPair<QString, QString> getDBusPath();

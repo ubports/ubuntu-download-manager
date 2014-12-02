@@ -32,6 +32,8 @@ namespace Tests {
 
 class MockAppArmor : public AppArmor {
  public:
+    MockAppArmor(System::DBusConnection* _conn, QObject* parent=0) : AppArmor(_conn, parent) {}
+
     MOCK_METHOD0(getDBusPath, QPair<QString, QString>());
     MOCK_METHOD1(getSecurityDetails,
         SecurityDetails*(const QString&));
