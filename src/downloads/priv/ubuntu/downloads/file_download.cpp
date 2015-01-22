@@ -704,8 +704,9 @@ FileDownload::writeDataUri() {
     // we need to update the file name using the mime type extension (the file name should be ok already), nevertheless
     // we are going to write the data in the temp file so that the post processing of the download works correctky
     QFileInfo fiFilePath(_filePath);
+    auto currentFileName = fiFilePath.fileName();
     extension = (mimeType.isValid())?mimeType.suffixes()[0]:extension;
-    auto newPath = transferId() + "." + extension;
+    auto newPath = _filePath.replace(currentFileName, transferId() + "." + extension);
 
     // unlock the old path and lock the new one
     _fileNameMutex->unlockFileName(_filePath);
