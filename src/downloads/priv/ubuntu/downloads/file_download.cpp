@@ -244,7 +244,7 @@ FileDownload::cancelTransfer() {
 void
 FileDownload::pauseTransfer() {
     TRACE << _url;
-    if (_url.toString().startsWith(DATA_URI_PREFIX)) {
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
         DOWN_LOG(INFO) << "EMIT paused(false) since we are using a data uri";
         _downloading = false;
         emit paused(false);
@@ -292,7 +292,7 @@ FileDownload::resumeTransfer() {
 
     // it is not very probable, yet possible that we do reach this point with a data uri
 
-    if (_url.toString().startsWith(DATA_URI_PREFIX)) {
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
         DOWN_LOG(INFO) << "EMIT resumed(true)";
         _downloading = true;
         emit resumed(true);
@@ -341,7 +341,7 @@ FileDownload::startTransfer() {
     }
 
     // make a diff between a data uri and a "normal" download
-    if (_url.toString().startsWith(DATA_URI_PREFIX)) {
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
         DOWN_LOG(INFO) << "Performing a data uri download.";
         // we emit the signals and then write the data in the file system, which will emit the download finished signal
         // the signals are queued so they will happen in the correct order
@@ -625,8 +625,19 @@ FileDownload::writeDataUri() {
     // (as a sequence of octets) is represented using ASCII encoding for octets inside the range of safe URL
     // characters.  If <MIME-type> is omitted, it defaults to text/plain;charset=US-ASCII.
     // An example uri is:
+    //
     // data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
-    auto urlString = _url.toString().replace(DATA_URI_PREFIX, "");
+    // it can also be seen with the url prefixed as it happens in google images:
+    //
+    // http://images.google.com/data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+    QString urlString = QString::null;
+    auto urlStringParts = _url.toString().split(DATA_URI_PREFIX);
+    if (urlStringParts.count() > 1) {
+        urlString = urlStringParts[1];
+    } else {
+        urlString = urlStringParts[0];
+    }
+    DOWN_LOG(INFO) << "Data uri is " << urlString;
 
     QByteArray data;
     QMimeDatabase db;

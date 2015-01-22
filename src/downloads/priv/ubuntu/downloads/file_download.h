@@ -142,7 +142,6 @@ class FileDownload : public Download, public QDBusContext {
 
 
  private:
-    bool _isDataUri = false;
     bool _downloading = false;
     bool _connected = false;
     qulonglong _totalSize = 0;

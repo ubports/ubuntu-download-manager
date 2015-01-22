@@ -3965,6 +3965,39 @@ TestDownload::testDataUriIsValid() {
 }
 
 void
+TestDownload::testDataUriIsValidWithHttpPrefix() {
+    // perform the download and assert that the mime extension used is txt
+    auto file = new MockFile("test");
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    QUrl url("http://images.google.com/data:;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, _metadata, _headers));
+
+    QVERIFY(download->isValid());
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+            .Times(1)
+            .WillOnce(Return(file));
+
+    EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, write(_))
+            .Times(1)
+            .WillOnce(Return(0));
+
+    EXPECT_CALL(*file, close())
+            .Times(1);
+
+    download->startTransfer();
+    QVERIFY(download->filePath().endsWith("txt"));
+}
+
+void
 TestDownload::testDataUriMissingMimeType() {
     // perform the download and assert that the mime extension used is txt
     auto file = new MockFile("test");
