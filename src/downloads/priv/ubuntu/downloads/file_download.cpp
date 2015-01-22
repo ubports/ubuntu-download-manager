@@ -41,7 +41,6 @@
 #include <ubuntu/transfers/system/filename_mutex.h>
 #include <ubuntu/transfers/system/uuid_factory.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
-#include <QtGui/qstandarditemmodel.h>
 
 #include "header_parser.h"
 #include "file_download.h"
@@ -628,9 +627,6 @@ FileDownload::writeDataUri() {
     // An example uri is:
     // data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
     auto urlString = _url.toString().replace(DATA_URI_PREFIX, "");
-    LOG(INFO) << "################################################";
-    LOG(INFO) << urlString;
-    LOG(INFO) << "################################################";
 
     QByteArray data;
     QMimeDatabase db;
@@ -654,9 +650,6 @@ FileDownload::writeDataUri() {
             break;
         }
     }
-    LOG(INFO) << "################################################";
-    LOG(INFO) << urlString;
-    LOG(INFO) << "################################################";
     if (!mimeType.isValid()) {
         LOG(INFO) << "MIME TYPE IS NOT VALID";
         if (!urlString.startsWith(';')) {
