@@ -637,7 +637,6 @@ FileDownload::writeDataUri() {
     } else {
         urlString = urlStringParts[0];
     }
-    DOWN_LOG(INFO) << "Data uri is " << urlString;
 
     QByteArray data;
     QMimeDatabase db;
