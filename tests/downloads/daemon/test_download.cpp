@@ -1262,7 +1262,8 @@ TestDownload::testOnSuccessNoHash() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -1331,7 +1332,8 @@ TestDownload::testOnSuccessHashError() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -1421,7 +1423,8 @@ TestDownload::testOnSuccessHash() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2143,7 +2146,8 @@ TestDownload::testProcessExecutedNoParams() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply, hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2196,6 +2200,7 @@ TestDownload::testProcessExecutedNoParams() {
     QVERIFY(Mock::VerifyAndClearExpectations(reply));
     QVERIFY(Mock::VerifyAndClearExpectations(process.data()));
     verifyMocks();
+    delete reply;
 }
 
 void
@@ -2254,7 +2259,8 @@ TestDownload::testProcessExecutedWithParams() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply, hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2307,6 +2313,8 @@ TestDownload::testProcessExecutedWithParams() {
     QVERIFY(Mock::VerifyAndClearExpectations(reply));
     QVERIFY(Mock::VerifyAndClearExpectations(process.data()));
     verifyMocks();
+
+    delete reply;
 }
 
 void
@@ -2365,7 +2373,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply, hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2426,6 +2435,8 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QVERIFY(Mock::VerifyAndClearExpectations(reply));
     QVERIFY(Mock::VerifyAndClearExpectations(process.data()));
     verifyMocks();
+
+    delete reply;
 }
 
 void
@@ -2458,7 +2469,8 @@ TestDownload::testProcessFinishedWithError() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2572,7 +2584,8 @@ TestDownload::testProcessError() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -2677,7 +2690,8 @@ TestDownload::testProcessFinishedCrash() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -3169,7 +3183,8 @@ TestDownload::testProcessingJustOnce() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply, hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -3234,6 +3249,8 @@ TestDownload::testProcessingJustOnce() {
     QVERIFY(Mock::VerifyAndClearExpectations(file));
     QVERIFY(Mock::VerifyAndClearExpectations(reply));
     verifyMocks();
+
+    delete reply;
 }
 
 void
@@ -3508,7 +3525,8 @@ TestDownload::testSingleRedirect() {
         .WillOnce(Return(QVariant()));
 
     EXPECT_CALL(*secondReply.data(), hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -3667,7 +3685,8 @@ TestDownload::testProcessFinishUnlocksPath() {
         .WillOnce(Return(QVariant(200)));
 
     EXPECT_CALL(*reply, hasRawHeader(_))
-        .Times(1)
+        .Times(2)
+        .WillOnce(Return(false))
         .WillOnce(Return(false));
 
     // file system expectations
@@ -3722,6 +3741,8 @@ TestDownload::testProcessFinishUnlocksPath() {
     QVERIFY(Mock::VerifyAndClearExpectations(mutex));
     verifyMocks();
     FileNameMutex::deleteInstance();
+
+    delete reply;
 }
 
 void
@@ -3927,6 +3948,227 @@ TestDownload::testDeflateOnRequest() {
 
     QVERIFY(Mock::VerifyAndClearExpectations(file));
     QVERIFY(Mock::VerifyAndClearExpectations(reply));
+    verifyMocks();
+}
+
+void
+TestDownload::testDataUriIsValid() {
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    QUrl url("data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, _metadata, _headers));
+
+    QVERIFY(download->isValid());
+    verifyMocks();
+}
+
+void
+TestDownload::testDataUriIsValidWithHttpPrefix() {
+    // perform the download and assert that the mime extension used is txt
+    auto file = new MockFile("test");
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    QUrl url("http://images.google.com/data:;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, _metadata, _headers));
+
+    QVERIFY(download->isValid());
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+            .Times(1)
+            .WillOnce(Return(file));
+
+    EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, write(_))
+            .Times(1)
+            .WillOnce(Return(0));
+
+    EXPECT_CALL(*file, close())
+            .Times(1);
+
+    download->startTransfer();
+    QVERIFY(download->filePath().endsWith("txt"));
+}
+
+void
+TestDownload::testDataUriMissingMimeType() {
+    // perform the download and assert that the mime extension used is txt
+    auto file = new MockFile("test");
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    QUrl url("data:;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, _metadata, _headers));
+
+    QVERIFY(download->isValid());
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+            .Times(1)
+            .WillOnce(Return(file));
+
+    EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, write(_))
+            .Times(1)
+            .WillOnce(Return(0));
+
+    EXPECT_CALL(*file, close())
+            .Times(1);
+
+    download->startTransfer();
+    QVERIFY(download->filePath().endsWith("txt"));
+}
+
+void
+TestDownload::testDataUriMimeType_data() {
+    QTest::addColumn<QString>("mime");
+    QTest::addColumn<QString>("extension");
+
+    QTest::newRow("Image gif") << "image/gif" << "gif";
+    QTest::newRow("Image ief") << "image/ief" << "ief";
+    QTest::newRow("Image jpg") << "image/jpeg" << "jpeg";
+    QTest::newRow("Image tiff") << "image/tiff" << "tiff";
+    QTest::newRow("Image rgb") << "image/x-rgb" << "rgb";
+    QTest::newRow("Image bitmap") << "image/x-xbitmap" << "x-xbitmap";
+    QTest::newRow("View MPG") << "video/mpeg" << "mpeg";
+
+}
+
+void
+TestDownload::testDataUriMimeType() {
+    QFETCH(QString, mime);
+    QFETCH(QString, extension);
+    auto file = new MockFile("test");
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    QUrl url("data:" + mime + ";base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<FileDownload> download(new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, _metadata, _headers));
+
+    QVERIFY(download->isValid());
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+            .Times(1)
+            .WillOnce(Return(file));
+
+    EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, write(_))
+            .Times(1)
+            .WillOnce(Return(0));
+
+    EXPECT_CALL(*file, close())
+            .Times(1);
+
+    download->startTransfer();
+    QVERIFY(download->filePath().endsWith(extension));
+}
+
+void
+TestDownload::testDataUriPostProcessing_data() {
+    QTest::addColumn<QString>("command");
+    QTest::addColumn<QVariantMap>("metadata");
+    QVariantMap first, second, third;
+    QStringList firstCommand, secondCommand, thirdCommand;
+
+    firstCommand << "touch";
+    first["post-download-command"] = firstCommand;
+
+    QTest::newRow("First row") << firstCommand[0] << first;
+
+    secondCommand << "sudo";
+    second["post-download-command"] = secondCommand;
+
+    QTest::newRow("Second row") << secondCommand[0] << second;
+
+    thirdCommand << "grep";
+    third["post-download-command"] = thirdCommand;
+
+    QTest::newRow("Third row") << thirdCommand[0] << third;
+}
+
+void
+TestDownload::testDataUriPostProcessing() {
+    QFETCH(QString, command);
+    QFETCH(QVariantMap, metadata);
+    QStringList args;  // not args
+
+    QUrl url("data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
+    QScopedPointer<MockFile> file(new MockFile("test"));
+    QScopedPointer<MockProcess> process(new MockProcess());
+
+    // write the expectations of the reply which is what we are
+    // really testing
+
+    EXPECT_CALL(*_networkSession, isOnline())
+            .WillRepeatedly(Return(true));
+
+    // file system expectations
+    EXPECT_CALL(*_fileManager, createFile(_))
+            .Times(1)
+            .WillOnce(Return(file.data()));
+
+    EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, write(_))
+            .Times(1)
+            .WillOnce(Return(0));
+
+    EXPECT_CALL(*file.data(), remove())
+            .Times(1)
+            .WillOnce(Return(true));
+
+    EXPECT_CALL(*_cryptoFactory, createCryptographicHash(_, _))
+            .Times(0);
+
+    // process factory and process expectation
+    EXPECT_CALL(*_processFactory, createProcess())
+            .Times(1)
+            .WillOnce(Return(process.data()));
+
+    EXPECT_CALL(*process.data(), start(command, StringListEq(args), _))
+            .Times(1);
+
+    auto download = new FileDownload(_id, _appId, _path,
+            _isConfined, _rootPath, url, metadata, _headers);
+
+    SignalBarrier spy(download, SIGNAL(finished(QString)));
+    SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
+
+    download->start();  // change state
+    download->startTransfer();
+
+    QVERIFY(startedSpy.ensureSignalEmitted());
+
+    // emit the finish signal and expect it to be raised
+    emit process->finished(0, QProcess::NormalExit);
+
+    QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
+    QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
+    QCOMPARE(download->state(), Download::FINISH);
+
+    delete download;
+
+    QVERIFY(Mock::VerifyAndClearExpectations(file.data()));
+    QVERIFY(Mock::VerifyAndClearExpectations(process.data()));
     verifyMocks();
 }
 

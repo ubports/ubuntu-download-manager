@@ -16,19 +16,21 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QBuffer>
-#include <QCryptographicHash>
-#include <QDir>
-#include <QStringList>
-#include <QFile>
-#include <QFileInfo>
-#include <QSslError>
+#include <map>
 
 #include <glog/logging.h>
 
-#include <map>
+#include <QBuffer>
+#include <QCryptographicHash>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QMimeDatabase>
+#include <QMimeType>
+#include <QStringList>
+#include <QSslError>
 
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
@@ -44,15 +46,6 @@
 #include "file_download.h"
 
 #define DOWN_LOG(LEVEL) LOG(LEVEL) << ((parent() != nullptr)?"GroupDownload {" + parent()->objectName() + " } ":"") << "Download ID{" << objectName() << " } "
-
-namespace {
-    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
-    const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
-    const QString PROPERTIES_CHANGED = "PropertiesChanged";
-    const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
-    const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
-    const QString TITLE_PROPERTY = "Title";
-}
 
 std::ostream& operator<<(std::ostream &out, QNetworkReply::NetworkError err) {
     static std::map<QNetworkReply::NetworkError, std::string> errorsMap {
@@ -148,7 +141,12 @@ std::ostream& operator<<(std::ostream &out, QNetworkReply::NetworkError err) {
 }
 
 namespace {
-
+    const QString PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
+    const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
+    const QString PROPERTIES_CHANGED = "PropertiesChanged";
+    const QString CLICK_PACKAGE_PROPERTY = "ClickPackage";
+    const QString SHOW_INDICATOR_PROPERTY = "ShowInIndicator";
+    const QString TITLE_PROPERTY = "Title";
     const QString DATA_FILE_NAME = "data.download";
     const QString NETWORK_ERROR = "NETWORK ERROR";
     const QString HASH_ERROR = "HASH ERROR";
@@ -161,6 +159,7 @@ namespace {
     const QString UNEXPECTED_ERROR = "UNEXPECTED_ERROR";
     const QByteArray CONTENT_DISPOSITION = "Content-Disposition";
     const QByteArray CONTENT_TYPE = "Content-Type";
+    const QString DATA_URI_PREFIX = "data:";
 }
 
 namespace Ubuntu {
@@ -245,31 +244,37 @@ FileDownload::cancelTransfer() {
 void
 FileDownload::pauseTransfer() {
     TRACE << _url;
-    if (_reply == nullptr) {
-        // cannot pause because is not running
-        DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
-        DOWN_LOG(INFO) << "EMIT paused(false)";
-        emit paused(false);
-        return;
-    }
-
-    DOWN_LOG(INFO) << "Pausing download" << _url;
-    // we need to disconnect the signals to ensure that they are not
-    // emitted due to the operation we are going to perform. We read
-    // the data in the reply and store it in a file
-    disconnectFromReplySignals();
-
-    // do abort before reading
-    _reply->abort();
-    _currentData->write(_reply->readAll());
-    if (!flushFile()) {
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
+        DOWN_LOG(INFO) << "EMIT paused(false) since we are using a data uri";
+        _downloading = false;
         emit paused(false);
     } else {
-        _reply->deleteLater();
-        _reply = nullptr;
-        DOWN_LOG(INFO) << "EMIT paused(true)";
-        _downloading = false;
-        emit paused(true);
+        if (_reply == nullptr) {
+            // cannot pause because is not running
+            DOWN_LOG(INFO) << "Cannot pause download because reply is NULL";
+            DOWN_LOG(INFO) << "EMIT paused(false)";
+            emit paused(false);
+            return;
+        }
+
+        DOWN_LOG(INFO) << "Pausing download" << _url;
+        // we need to disconnect the signals to ensure that they are not
+        // emitted due to the operation we are going to perform. We read
+        // the data in the reply and store it in a file
+        disconnectFromReplySignals();
+
+        // do abort before reading
+        _reply->abort();
+        _currentData->write(_reply->readAll());
+        if (!flushFile()) {
+            emit paused(false);
+        } else {
+            _reply->deleteLater();
+            _reply = nullptr;
+            DOWN_LOG(INFO) << "EMIT paused(true)";
+            _downloading = false;
+            emit paused(true);
+        }
     }
 }
 
@@ -285,23 +290,32 @@ FileDownload::resumeTransfer() {
         return;
     }
 
-    DOWN_LOG(INFO) << "Resuming download.";
-    QNetworkRequest request = buildRequest();
+    // it is not very probable, yet possible that we do reach this point with a data uri
 
-    // overrides the range header, we do not let clients set the range!!!
-    qint64 currentDataSize = _currentData->size();
-    QByteArray rangeHeaderValue = "bytes=" +
-        QByteArray::number(currentDataSize) + "-";
-    request.setRawHeader("Range", rangeHeaderValue);
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
+        DOWN_LOG(INFO) << "EMIT resumed(true)";
+        _downloading = true;
+        emit resumed(true);
+        writeDataUri();
+    } else {
+        DOWN_LOG(INFO) << "Resuming download.";
+        QNetworkRequest request = buildRequest();
 
-    _reply = _requestFactory->get(request);
-    _reply->setReadBufferSize(throttle());
+        // overrides the range header, we do not let clients set the range!!!
+        qint64 currentDataSize = _currentData->size();
+        QByteArray rangeHeaderValue = "bytes=" +
+                QByteArray::number(currentDataSize) + "-";
+        request.setRawHeader("Range", rangeHeaderValue);
 
-    connectToReplySignals();
+        _reply = _requestFactory->get(request);
+        _reply->setReadBufferSize(throttle());
 
-    DOWN_LOG(INFO) << "EMIT resumed(true)";
-    _downloading = true;
-    emit resumed(true);
+        connectToReplySignals();
+
+        DOWN_LOG(INFO) << "EMIT resumed(true)";
+        _downloading = true;
+        emit resumed(true);
+    }
 }
 
 void
@@ -326,16 +340,29 @@ FileDownload::startTransfer() {
         return;
     }
 
-    DOWN_LOG(INFO) << "Network is accessible, performing download request";
-    // signals should take care of calling deleteLater on the
-    // NetworkReply object
-    _reply = _requestFactory->get(buildRequest());
-    _reply->setReadBufferSize(throttle());
+    // make a diff between a data uri and a "normal" download
+    if (_url.toString().contains(DATA_URI_PREFIX)) {
+        DOWN_LOG(INFO) << "Performing a data uri download.";
+        // we emit the signals and then write the data in the file system, which will emit the download finished signal
+        // the signals are queued so they will happen in the correct order
 
-    connectToReplySignals();
-    DOWN_LOG(INFO) << "EMIT started(true)";
-    _downloading = true;
-    emit started(true);
+        DOWN_LOG(INFO) << "EMIT started(true)";
+        _downloading = true;
+        emit started(true);
+
+        writeDataUri();
+    } else {
+        DOWN_LOG(INFO) << "Performing a network download.";
+        // signals should take care of calling deleteLater on the
+        // NetworkReply object
+        _reply = _requestFactory->get(buildRequest());
+        _reply->setReadBufferSize(throttle());
+
+        connectToReplySignals();
+        DOWN_LOG(INFO) << "EMIT started(true)";
+        _downloading = true;
+        emit started(true);
+    }
 }
 
 qulonglong
@@ -472,7 +499,7 @@ FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
     if (!flushFile()) {
         return;
     }
-    qulonglong received = _currentData->size();
+    auto received = static_cast<qulonglong>(_currentData->size());
 
     if (bytesTotal == -1) {
         // we do not know the size of the download, simply return
@@ -481,12 +508,11 @@ FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
         return;
     } else {
         if (_totalSize == 0) {
-            qlonglong uBytestTotal = bytesTotal;
             // bytesTotal is different when we have resumed because we
             // are not counting the size that  we already downloaded,
             // therefore we only do this once
             // update the metadata
-            _totalSize = uBytestTotal;
+            _totalSize = static_cast<qulonglong>(bytesTotal);
         }
         emit Download::progress(received, _totalSize);
         return;
@@ -579,126 +605,122 @@ FileDownload::onDownloadCompleted() {
     // ensure that if content-disposition is present we will use it
     updateFileNamePerContentDisposition();
 
-    if(!hashIsValid()) {
-        emitError(HASH_ERROR);
-        return;
-    }
+    auto contentType = (_reply->hasRawHeader(CONTENT_TYPE))?
+            QString(_reply->rawHeader(CONTENT_TYPE)) : QString();
 
-    // if the download was set to be deflated and the content type is correct
-    // we will do our best to deflate the file
-    if (_metadata.contains(Metadata::DEFLATE_KEY)
-            && _metadata[Metadata::DEFLATE_KEY].toBool()
-            && _reply->hasRawHeader(CONTENT_TYPE)
-	    && HeaderParser::isDeflatableContentType(
-                _reply->rawHeader(CONTENT_TYPE))){
-    }
-
-
-    // there are three possible cases, in the first case we are requested 
-    // to extract the file, in which case we start a special helper process.
-    // In the second case we are requested to execute a specific command, in
-    // either of these two cases we only raise the finished signal once the
-    // processing is complete. Or in the third case we have no special requests
-    // and we indicate that the download is finished.
-    if (_metadata.contains(Metadata::EXTRACT_KEY)
-            && _metadata[Metadata::EXTRACT_KEY].toBool()
-            && _reply->hasRawHeader(CONTENT_TYPE)
-            && _reply->rawHeader(CONTENT_TYPE) == "application/zip") {
-
-        Process* postDownloadProcess =
-                ProcessFactory::instance()->createProcess();
-
-        CHECK(connect(postDownloadProcess, &Process::finished,
-                this, &FileDownload::onProcessFinished))
-                    << "Could not connect to signal";
-        CHECK(connect(postDownloadProcess, &Process::error,
-                this, &FileDownload::onProcessError))
-                    << "Could not connect to signal";
-
-        DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
-            << "' to '" << _filePath << "'";
-
-        auto fileMan = FileManager::instance();
-        if (fileMan->exists(_tempFilePath)) {
-            LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
-                << _filePath << "'";
-            fileMan->rename(_tempFilePath, _filePath);
-        }
-
-        QFileInfo fileInfo(filePath());
-
-        QString command = HELPER_DIR + QString(QDir::separator()) + "udm-extractor";
-        QStringList args;
-        args << "--unzip";
-        args << "--path";
-        args << filePath();
-        args << "--destination";
-        args << fileInfo.dir().absolutePath();
-
-        DOWN_LOG(INFO) << "Executing" << command << args;
-        postDownloadProcess->start(command, args);
-        return;
-    } else if (_metadata.contains(Metadata::COMMAND_KEY)) {
-        // just emit processing if we DO NOT have a hash because else we
-        // already emitted it.
-        if (_hash.isEmpty()) {
-            emit processing(filePath());
-        }
-        // toStringList will return an empty list if it cannot be converted
-        QStringList commandData =
-            _metadata[Metadata::COMMAND_KEY].toStringList();
-        if (commandData.count() == 0) {
-            DOWN_LOG(ERROR) << "COMMAND DATA MISSING";
-            emitError(COMMAND_ERROR);
-            return;
-        } else {
-            // first item of the string list is the command
-            // the rest is the arguments
-            DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
-                << "' to '" << _filePath << "'";
-
-            auto fileMan = FileManager::instance();
-            if (fileMan->exists(_tempFilePath)) {
-                LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
-                    << _filePath << "'";
-                fileMan->rename(_tempFilePath, _filePath);
-            }
-
-            QString command = commandData.at(0);
-            commandData.removeAt(0);
-            QStringList args;
-
-            foreach(const QString& arg, commandData) {
-                if (arg == Metadata::COMMAND_FILE_KEY)
-                    args << filePath();
-                else
-                    args << arg;
-            }
-
-            Process* postDownloadProcess =
-                ProcessFactory::instance()->createProcess();
-
-            // connect to signals so that we can tell the clients that
-            // the operation succeed
-
-            CHECK(connect(postDownloadProcess, &Process::finished,
-                this, &FileDownload::onProcessFinished))
-                    << "Could not connect to signal";
-            CHECK(connect(postDownloadProcess, &Process::error,
-                this, &FileDownload::onProcessError))
-                    << "Could not connect to signal";
-
-            DOWN_LOG(INFO) << "Executing" << command << args;
-            postDownloadProcess->start(command, args);
-            return;
-        }
-    } else {
-        emitFinished();
-    }
+    downloadPostProcessing(contentType);
 
     // clean the reply
     _reply->deleteLater();
     _reply = nullptr;
+}
+
+void
+FileDownload::writeDataUri() {
+    // the expected format of the data is as follows:
+    //
+    // data:[<MIME-type>][;charset=<encoding>][;base64],<data>
+    //
+    // The encoding is indicated by ;base64. If it is present the data is encoded as base64. Without it the data
+    // (as a sequence of octets) is represented using ASCII encoding for octets inside the range of safe URL
+    // characters.  If <MIME-type> is omitted, it defaults to text/plain;charset=US-ASCII.
+    // An example uri is:
+    //
+    // data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+
+    // HACK:
+    // it can also be seen with the url prefixed as it happens in google images:
+    //
+    // http://images.google.com/data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+    //
+    // this is due to a bug found in oxide:  https://bugs.launchpad.net/oxide/+bug/1413964 and should be removed
+    // whenever asap
+    QString urlString = QString::null;
+    auto urlStringParts = _url.toString().split(DATA_URI_PREFIX);
+    if (urlStringParts.count() > 1) {
+        urlString = urlStringParts[1];
+    } else {
+        urlString = urlStringParts[0];
+    }
+
+    QByteArray data;
+    QMimeDatabase db;
+    QMimeType mimeType;  // init to an invalid type
+    QString extension = QString::null;
+    bool isBase64 = false;
+
+    foreach(const QMimeType& type, db.allMimeTypes()) {
+        // we need to check for each of the aliases that a mime type has
+        foreach(const QString& alias, type.aliases()) {
+            if (urlString.startsWith(alias)) {
+                DOWN_LOG(INFO) << "Data mime type is " << alias.toStdString();
+                mimeType = type;
+                urlString = urlString.replace(alias + ";", "");
+                break;
+            }
+        }
+
+        // we could have set the mime type and jumped outside the previous loop
+        if (mimeType.isValid()) {
+            break;
+        }
+    }
+    if (!mimeType.isValid()) {
+        LOG(INFO) << "MIME TYPE IS NOT VALID";
+        if (!urlString.startsWith(';')) {
+            DOWN_LOG(INFO) << "Database does not have type yet it is present.";
+            auto parts = urlString.split(';');
+            extension = parts[0].split('/')[1];
+            urlString = parts[1];
+        } else {
+            //defaults to text/plain;charset=US-ASCII.
+            mimeType = db.mimeTypeForData("text/plain");
+            urlString = urlString.split(';')[1];
+        }
+    }
+
+    if (urlString.startsWith("base64,")) {
+        DOWN_LOG(INFO) << "Data uri is base64 encoded";
+        isBase64 = true;
+        urlString = urlString.replace("base64,", "");
+    } else {
+        auto parts = urlString.split(',');
+        if (parts.count() != 2) {
+            DOWN_LOG(WARNING) << "Data uri malformed.";
+        } else {
+            urlString = parts[1];
+        }
+    }
+    // load the data from the string and write it in the file system, the uuid will be used as the
+    // file name + the mime type extension
+    if (isBase64) {
+        QByteArray encoded;
+        encoded.append(urlString);
+        data = QByteArray::fromBase64(encoded);
+    } else {
+        QByteArray encoded;
+        encoded.append(urlString);
+        data = QByteArray::fromPercentEncoding(encoded);
+    }
+
+    _totalSize = static_cast<qulonglong>(data.size());
+
+    // we need to update the file name using the mime type extension (the file name should be ok already), nevertheless
+    // we are going to write the data in the temp file so that the post processing of the download works correctky
+    QFileInfo fiFilePath(_filePath);
+    auto currentFileName = fiFilePath.fileName();
+    extension = (mimeType.isValid())?mimeType.suffixes()[0]:extension;
+    auto newPath = _filePath.replace(currentFileName, transferId() + "." + extension);
+
+    // unlock the old path and lock the new one
+    _fileNameMutex->unlockFileName(_filePath);
+    _filePath = _fileNameMutex->lockFileName(newPath);
+
+    DOWN_LOG(INFO) << "Data uri file path is '" << _filePath << "'";
+    _currentData->write(data);
+
+    // deal with the post processing of the created file
+    downloadPostProcessing(mimeType.aliases()[0]);
 }
 
 void
@@ -907,10 +929,10 @@ FileDownload::hashIsValid() {
         // addData is smart enough to not load the entire file in memory
         hash->addData(_currentData->device());
         QString fileSig = QString(hash->result().toHex());
-	if (fileSig != _hash) {
+        if (fileSig != _hash) {
             DOWN_LOG(ERROR) << HASH_ERROR << fileSig << "!=" << _hash;
             return false;
-	}
+        }
     }
     return true;
 }
@@ -944,6 +966,115 @@ FileDownload::initFileNames() {
         auto desiredPath = rootPath() + QDir::separator() + _basename;
         _filePath = _fileNameMutex->lockFileName(desiredPath);
         _tempFilePath = _filePath + TEMP_EXTENSION;
+    }
+}
+
+void
+FileDownload::downloadPostProcessing(const QString& contentType) {
+    TRACE << _url;
+
+    if(!hashIsValid()) {
+        emitError(HASH_ERROR);
+        return;
+    }
+
+    // there are three possible cases, in the first case we are requested
+    // to extract the file, in which case we start a special helper process.
+    // In the second case we are requested to execute a specific command, in
+    // either of these two cases we only raise the finished signal once the
+    // processing is complete. Or in the third case we have no special requests
+    // and we indicate that the download is finished.
+    if (_metadata.contains(Metadata::EXTRACT_KEY)
+            && _metadata[Metadata::EXTRACT_KEY].toBool()
+            && contentType == "application/zip") {
+
+        auto postDownloadProcess = ProcessFactory::instance()->createProcess();
+
+        CHECK(connect(postDownloadProcess, &Process::finished,
+                this, &FileDownload::onProcessFinished))
+                << "Could not connect to signal";
+        CHECK(connect(postDownloadProcess, &Process::error,
+                this, &FileDownload::onProcessError))
+                << "Could not connect to signal";
+
+        DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
+                << "' to '" << _filePath << "'";
+
+        auto fileMan = FileManager::instance();
+        if (fileMan->exists(_tempFilePath)) {
+            LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
+                    << _filePath << "'";
+            fileMan->rename(_tempFilePath, _filePath);
+        }
+
+        QFileInfo fileInfo(filePath());
+
+        QString command = HELPER_DIR + QString(QDir::separator()) + "udm-extractor";
+        QStringList args;
+        args << "--unzip";
+        args << "--path";
+        args << filePath();
+        args << "--destination";
+        args << fileInfo.dir().absolutePath();
+
+        DOWN_LOG(INFO) << "Executing" << command << args;
+        postDownloadProcess->start(command, args);
+        return;
+    } else if (_metadata.contains(Metadata::COMMAND_KEY)) {
+        // just emit processing if we DO NOT have a hash because else we
+        // already emitted it.
+        if (_hash.isEmpty()) {
+            emit processing(filePath());
+        }
+        // toStringList will return an empty list if it cannot be converted
+        QStringList commandData =
+                _metadata[Metadata::COMMAND_KEY].toStringList();
+        if (commandData.count() == 0) {
+            DOWN_LOG(ERROR) << "COMMAND DATA MISSING";
+            emitError(COMMAND_ERROR);
+            return;
+        } else {
+            // first item of the string list is the command
+            // the rest is the arguments
+            DOWN_LOG(INFO) << "Renaming '" << _tempFilePath << "'"
+                    << "' to '" << _filePath << "'";
+
+            auto fileMan = FileManager::instance();
+            if (fileMan->exists(_tempFilePath)) {
+                LOG(INFO) << "Renaming: '" << _tempFilePath << "' to '"
+                        << _filePath << "'";
+                fileMan->rename(_tempFilePath, _filePath);
+            }
+
+            QString command = commandData.at(0);
+            commandData.removeAt(0);
+            QStringList args;
+
+            foreach(const QString& arg, commandData) {
+                if (arg == Metadata::COMMAND_FILE_KEY)
+                    args << filePath();
+                else
+                    args << arg;
+            }
+
+            auto postDownloadProcess = ProcessFactory::instance()->createProcess();
+
+            // connect to signals so that we can tell the clients that
+            // the operation succeed
+
+            CHECK(connect(postDownloadProcess, &Process::finished,
+                    this, &FileDownload::onProcessFinished))
+                    << "Could not connect to signal";
+            CHECK(connect(postDownloadProcess, &Process::error,
+                    this, &FileDownload::onProcessError))
+                    << "Could not connect to signal";
+
+            DOWN_LOG(INFO) << "Executing" << command << args;
+            postDownloadProcess->start(command, args);
+            return;
+        }
+    } else {
+        emitFinished();
     }
 }
 

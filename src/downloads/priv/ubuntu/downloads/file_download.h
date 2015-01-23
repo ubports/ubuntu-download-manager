@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
-#define DOWNLOADER_LIB_SINGLE_DOWNLOAD_H
+#pragma once
 
 #include <QDBusContext>
 #include <QFile>
@@ -123,8 +122,10 @@ class FileDownload : public Download, public QDBusContext {
     bool hashIsValid();
     void init();
     void initFileNames();
+    void downloadPostProcessing(const QString& contentType);
     void unlockFilePath();
     void updateFileNamePerContentDisposition();
+    void writeDataUri();
 
     // slots used to react to signals
     void onDownloadProgress(qint64 currentProgress, qint64);
@@ -161,5 +162,3 @@ class FileDownload : public Download, public QDBusContext {
 }  // DownloadManager
 
 }  // Ubuntu
-
-#endif  // DOWNLOADER_LIB_SINGLE_DOWNLOAD_H

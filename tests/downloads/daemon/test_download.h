@@ -186,6 +186,15 @@ class TestDownload: public BaseTestCase {
     void testDeflateConstructorNoError();
     void testDeflateOnRequest();
 
+    // void data uri tests
+    void testDataUriIsValid();
+    void testDataUriIsValidWithHttpPrefix();
+    void testDataUriMissingMimeType();
+    void testDataUriMimeType_data();
+    void testDataUriMimeType();
+    void testDataUriPostProcessing_data();
+    void testDataUriPostProcessing();
+
  private:
     QString _id;
     QString _appId;
