@@ -1,3 +1,10 @@
+ubuntu-download-manager (0.9+15.04.20150123~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Manuel de la Peña ]
+  * Add support for data uris. (LP: #1407745)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 23 Jan 2015 16:00:00 +0000
+
 ubuntu-download-manager (0.9+15.04.20141202-0ubuntu1) vivid; urgency=low
 
   [ Manuel de la Peña ]
