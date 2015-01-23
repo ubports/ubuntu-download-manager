@@ -627,9 +627,14 @@ FileDownload::writeDataUri() {
     // An example uri is:
     //
     // data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+
+    // HACK:
     // it can also be seen with the url prefixed as it happens in google images:
     //
     // http://images.google.com/data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==
+    //
+    // this is due to a bug found in oxide:  https://bugs.launchpad.net/oxide/+bug/1413964 and should be removed
+    // whenever asap
     QString urlString = QString::null;
     auto urlStringParts = _url.toString().split(DATA_URI_PREFIX);
     if (urlStringParts.count() > 1) {
