@@ -97,16 +97,16 @@ class Transfer : public QObject {
  private:
     bool _isValid = true;
     bool _addToQueue = true;
-    QString _lastError = "";
-    QString _id;
-    QString _appId;
-    qulonglong _throttle;
-    bool _allowMobileData;
-    Transfer::State _state;
-    QString _dbusPath;
-    bool _isConfined;
-    QString _rootPath;
-    System::NetworkSession* _networkSession;
+    QString _lastError = QString::null;
+    QString _id = QString::null;
+    QString _appId = QString::null;
+    qulonglong _throttle = 0;
+    bool _allowMobileData = true;
+    Transfer::State _state = State::IDLE;
+    QString _dbusPath = QString::null;
+    bool _isConfined = true;
+    QString _rootPath = QString::null;
+    System::NetworkSession* _networkSession = nullptr;
 };
 
 }  // Transfers

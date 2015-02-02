@@ -123,6 +123,7 @@ TestDownload::testNoHashConstructor() {
     QCOMPARE(download->state(), Download::IDLE);
     QCOMPARE(download->progress(), 0ULL);
     QCOMPARE(download->totalSize(), 0ULL);
+    QVERIFY(download->isGSMDataAllowed());
     verifyMocks();
 }
 
@@ -173,6 +174,7 @@ TestDownload::testHashConstructor() {
     QCOMPARE(download->state(), Download::IDLE);
     QCOMPARE(download->progress(), 0ULL);
     QCOMPARE(download->totalSize(), 0ULL);
+    QVERIFY(download->isGSMDataAllowed());
     verifyMocks();
 }
 
