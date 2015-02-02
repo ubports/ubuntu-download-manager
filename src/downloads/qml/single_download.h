@@ -158,13 +158,13 @@ private:
     }
 
 private:
-    bool m_autoStart;
-    bool m_completed;
-    bool m_downloading;
+    bool m_autoStart = false;
+    bool m_completed = false;
+    bool m_downloading = false;
     bool m_dirty = false;
-    bool m_downloadInProgress;
+    bool m_downloadInProgress = false;
     int m_progress;
-    bool m_mobile = false;
+    bool m_mobile = true;
     qulonglong m_throttle = 0;
     QVariantMap m_headers;
     Metadata* m_metadata = nullptr;
