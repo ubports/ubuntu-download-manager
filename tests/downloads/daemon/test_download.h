@@ -196,20 +196,20 @@ class TestDownload: public BaseTestCase {
     void testDataUriPostProcessing();
 
  private:
-    QString _id;
-    QString _appId;
-    bool _isConfined;
-    QString _rootPath;
+    QString _id = QString::null;
+    QString _appId = QString::null;
+    bool _isConfined = false;
+    QString _rootPath = QString::null;
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    QString _path;
+    QString _path = QString::null;
     QUrl _url;
-    QString _algo;
-    MockNetworkSession* _networkSession;
-    MockRequestFactory* _reqFactory;
-    MockProcessFactory* _processFactory;
-    MockFileManager* _fileManager;
-    MockCryptographicHashFactory* _cryptoFactory;
+    QString _algo = QString::null;
+    MockNetworkSession* _networkSession = nullptr;
+    MockRequestFactory* _reqFactory = nullptr;
+    MockProcessFactory* _processFactory = nullptr;
+    MockFileManager* _fileManager = nullptr;
+    MockCryptographicHashFactory* _cryptoFactory = nullptr;
 };
 
 Q_DECLARE_METATYPE(QNetworkConfiguration::BearerType)
