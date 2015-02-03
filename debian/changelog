@@ -1,3 +1,11 @@
+ubuntu-download-manager (0.9+15.04.20150203-0ubuntu1) vivid; urgency=medium
+
+  [ Manuel de la Pena ]
+  * Set the defaults to allow modile data usage so that we ensure that
+    client applications dot no have to set it per download.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 03 Feb 2015 09:29:42 +0000
+
 ubuntu-download-manager (0.9+15.04.20150123~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Manuel de la Peña ]
