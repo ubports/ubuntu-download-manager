@@ -1,4 +1,4 @@
-# Copyright © 2014 Canonical Ltd.
+# Copyright © 2014-2015 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -17,9 +17,10 @@
 
 set(CLIENT_TESTS
         test_client_download
-	#        test_download_manager_watch
-	#        test_download_watch
-	#        test_client_manager
+	test_download_manager_watch
+	test_download_watch
+	test_client_manager
+	test_group_manager_watch
 )
 
 foreach(test ${CLIENT_TESTS})

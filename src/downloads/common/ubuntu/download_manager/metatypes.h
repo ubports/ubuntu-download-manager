@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,12 +16,12 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_APP_METATYPES_H
-#define DOWNLOADER_LIB_APP_METATYPES_H
+#pragma once
 
 #include <QMap>
 #include <QList>
 #include <ubuntu/transfers/errors/auth_error_struct.h>
+#include <ubuntu/transfers/errors/hash_error_struct.h>
 #include <ubuntu/transfers/errors/http_error_struct.h>
 #include <ubuntu/transfers/errors/network_error_struct.h>
 #include <ubuntu/transfers/errors/process_error_struct.h>
@@ -35,6 +35,7 @@ typedef QMap<QString, QString> StringMap;
 typedef QList<GroupDownloadStruct> StructList;
 
 Q_DECLARE_METATYPE(AuthErrorStruct)
+Q_DECLARE_METATYPE(HashErrorStruct)
 Q_DECLARE_METATYPE(HttpErrorStruct)
 Q_DECLARE_METATYPE(NetworkErrorStruct)
 Q_DECLARE_METATYPE(ProcessErrorStruct)
@@ -42,4 +43,3 @@ Q_DECLARE_METATYPE(DownloadStruct)
 Q_DECLARE_METATYPE(StringMap)
 Q_DECLARE_METATYPE(StructList)
 
-#endif  // DOWNLOADER_LIB_APP_METATYPES_H

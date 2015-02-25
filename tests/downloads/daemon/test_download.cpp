@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -1374,6 +1374,7 @@ TestDownload::testOnSuccessHashError() {
         _isConfined, _rootPath, _url, "imposible-hash-is-not-hex",
         _algo, _metadata, _headers);
 
+    SignalBarrier hashSpy(download, SIGNAL(hashError(HashErrorStruct)));
     SignalBarrier errorSpy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
     SignalBarrier processingSpy(download, SIGNAL(processing(QString)));
@@ -1386,6 +1387,7 @@ TestDownload::testOnSuccessHashError() {
 
     // the has is a random string so we should get an error signal
 
+    QVERIFY(hashSpy.ensureSignalEmitted());
     QVERIFY(errorSpy.ensureSignalEmitted());
     QTRY_COMPARE(errorSpy.count(), 1);
     QTRY_COMPARE(processingSpy.count(), 1);

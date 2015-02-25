@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TESTING_DAEMON_H
-#define TESTING_DAEMON_H
+#pragma once
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
@@ -36,6 +35,7 @@ class TestingDaemon : public Ubuntu::Transfers::BaseDaemon {
     // let the client test to tell the manager to return dbus errors
     void returnDBusErrors(bool errors);
     void returnAuthError(const QString &download, AuthErrorStruct error);
+    void returnHashError(const QString &download, HashErrorStruct error);
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);
@@ -52,4 +52,3 @@ class TestingDaemon : public Ubuntu::Transfers::BaseDaemon {
 
 };
 
-#endif // TESTING_DAEMON_H

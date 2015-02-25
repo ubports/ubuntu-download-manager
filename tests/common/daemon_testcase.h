@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DAEMON_TESTCASE_H
-#define DAEMON_TESTCASE_H
+#pragma once
 
 #include <QDebug>
 #include <QObject>
@@ -46,6 +45,7 @@ class DaemonTestCase : public BaseTestCase {
     void returnHttpError(const QString &download, HttpErrorStruct error);
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);
+    void returnHashError(const QString &download, HashErrorStruct error);
 
  private:
     void startUDMDaemon();
@@ -73,4 +73,3 @@ class DaemonTestCase : public BaseTestCase {
 
 };
 
-#endif // DAEMON_TESTCASE_H

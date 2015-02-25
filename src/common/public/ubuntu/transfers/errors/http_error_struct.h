@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_HTTP_ERROR_STRUCT_H
+#pragma once
 
 #include <QString>
 
@@ -50,7 +49,7 @@ class HttpErrorStruct {
     /*!
         Creates a new structure with the given error types and message.
     */
-    HttpErrorStruct(int code, QString phrase);
+    HttpErrorStruct(int code, const QString& phrase);
 
     /*!
         Copy constructor.
@@ -107,4 +106,3 @@ class HttpErrorStruct {
 }  // Transfers
 
 }  // Ubuntu
-#endif // HTTP_ERROR_STRUCT_H

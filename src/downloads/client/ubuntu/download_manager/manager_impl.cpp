@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -69,6 +69,7 @@ ManagerImpl::init() {
     qRegisterMetaType<HttpError*>("HttpError*");
     qRegisterMetaType<NetworkError*>("NetworkError*");
     qRegisterMetaType<AuthError*>("AuthError*");
+    qRegisterMetaType<HashError*>("HashError*");
     qRegisterMetaType<ProcessError*>("ProcessError*");
     qRegisterMetaType<DownloadsList*>("DownloadsList*");
     qDBusRegisterMetaType<StringMap>();
@@ -76,6 +77,7 @@ ManagerImpl::init() {
     qDBusRegisterMetaType<GroupDownloadStruct>();
     qDBusRegisterMetaType<StructList>();
     qDBusRegisterMetaType<AuthErrorStruct>();
+    qDBusRegisterMetaType<HashErrorStruct>();
     qDBusRegisterMetaType<HttpErrorStruct>();
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();

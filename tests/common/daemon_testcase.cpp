@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -21,8 +21,10 @@
 #include <QDBusMessage>
 #include <QFile>
 #include <QFileInfo>
-#include <QScopedPointer>
 #include <QProcessEnvironment>
+#include <QScopedPointer>
+#include <QThread>
+
 #include "testing_interface.h"
 #include "daemon_testcase.h"
 #define TEST_DAEMON "ubuntu-download-manager-test-daemon"
@@ -105,7 +107,7 @@ DaemonTestCase::returnAuthError(const QString &download, AuthErrorStruct error) 
             QSKIP(msg.toUtf8(), SkipSingle);
         }
     } else {
-        QFAIL("returnHttpError must be used after init has been executed.");
+        QFAIL("returnAuthError must be used after init has been executed.");
     }
 }
 
@@ -171,6 +173,27 @@ DaemonTestCase::returnProcessError(const QString &download,
         }
     } else {
         QFAIL("returnProcessError must be used after init has been executed.");
+    }
+}
+
+void
+DaemonTestCase::returnHashError(const QString &download, HashErrorStruct error) {
+    if (_daemonProcess != nullptr) {
+        auto conn = QDBusConnection::sessionBus();
+        QScopedPointer<TestingInterface> testingInterface(new TestingInterface(
+                _daemonPath, "/", conn));
+        QDBusPendingReply<> reply =
+                testingInterface->returnHashError(download, error);
+        reply.waitForFinished();
+
+        if (reply.isError()) {
+            auto error = reply.error();
+            QString msg = "Could not tell the daemon to return Hash errors: "
+                    + error.name() + ":" +  error.message();
+            QSKIP(msg.toUtf8(), SkipSingle);
+        }
+    } else {
+        QFAIL("returnHashError must be used after init has been executed.");
     }
 }
 

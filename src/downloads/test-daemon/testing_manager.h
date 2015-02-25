@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TESTING_MANAGER_H
-#define TESTING_MANAGER_H
+#pragma once
 
 #include <QObject>
 #include <ubuntu/download_manager/metatypes.h>
@@ -60,6 +59,7 @@ class TestingManager : public DownloadManager {
     void returnNetworkError(const QString &download, NetworkErrorStruct error);
     void returnProcessError(const QString &download, ProcessErrorStruct error);
     void returnAuthError(const QString &download, AuthErrorStruct error);
+    void returnHashError(const QString &download, HashErrorStruct error);
 
  protected:
     QDBusObjectPath registerDownload(Download* download) override;
@@ -67,4 +67,3 @@ class TestingManager : public DownloadManager {
     bool _returnErrors = false;
 };
 
-#endif // TESTING_MANAGER_H

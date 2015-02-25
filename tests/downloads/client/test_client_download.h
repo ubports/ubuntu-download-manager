@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_DOWNLOAD_H
-#define TEST_DOWNLOAD_H
+#pragma once
 
 #include <QObject>
 #include <ubuntu/download_manager/manager.h>
@@ -61,6 +60,8 @@ class TestDownload : public LocalTreeTestCase {
     void testNetworkErroRaised();
     void testProcessErrorRaised_data();
     void testProcessErrorRaised();
+    void testHashErrorRaised_data();
+    void testHashErrorRaised();
 
     // set local dir tests
     void testSetLocalDirectory();
@@ -77,4 +78,3 @@ class TestDownload : public LocalTreeTestCase {
     Download* _down = nullptr;
 };
 
-#endif // TEST_DOWNLOAD_H

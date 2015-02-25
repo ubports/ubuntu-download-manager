@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -103,6 +103,7 @@ class FileDownload : public Download, public QDBusContext {
     void httpError(HttpErrorStruct error);
     void networkError(NetworkErrorStruct error);
     void processError(ProcessErrorStruct error);
+    void hashError(HashErrorStruct error);
     void propertiesChanged(const QVariantMap& changes);
 
  protected:

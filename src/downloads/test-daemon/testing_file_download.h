@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TESTING_FILE_DOWNLOAD_H
-#define TESTING_FILE_DOWNLOAD_H
+#pragma once
 
 #include <QDBusContext>
 #include <QObject>
@@ -38,6 +37,7 @@ class TestingFileDownload : public FileDownload {
     void returnNetworkError(NetworkErrorStruct error);
     void returnProcessError(ProcessErrorStruct error);
     void returnAuthError(AuthErrorStruct error);
+    void returnHashError(HashErrorStruct error);
 
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
@@ -73,11 +73,12 @@ class TestingFileDownload : public FileDownload {
     bool _returnHttpError = false;
     bool _returnNetworkError = false;
     bool _returnProcessError = false;
+    bool _returnHashError = false;
     AuthErrorStruct _authErr;
     HttpErrorStruct _httpErr;
     NetworkErrorStruct _networkErr;
     ProcessErrorStruct _processErr;
+    HashErrorStruct _hashErr;
     FileDownload* _down = nullptr;
 };
 
-#endif // TESTING_FILE_DOWNLOAD_H
