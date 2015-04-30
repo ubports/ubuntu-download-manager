@@ -1,40 +1,24 @@
 libudm-common.so.0 libudm-common0 #MINVER#
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getType()@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::getPhrase()@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct::Type, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct()@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct::Type, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::operator=(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::HttpErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::operator=(Ubuntu::Transfers::Errors::HttpErrorStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct(int)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::NetworkErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::operator=(Ubuntu::Transfers::Errors::NetworkErrorStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString, int, QString, QString)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, int, QString, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, QString, int, QString, QString)@Base" 0.4+14.10.20140618
-#MISSING: 0replaceme (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct(int, int, QString, QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::ProcessErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::ProcessErrorStruct::operator=(Ubuntu::Transfers::Errors::ProcessErrorStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::operator<<(QDBusArgument&, Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618
