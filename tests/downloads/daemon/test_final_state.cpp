@@ -43,10 +43,6 @@ TestFinalState::cleanup() {
     BaseTestCase::cleanup();
     _stateMachine.removeState(_s1);
     _stateMachine.removeState(_s2);
-    delete _obj;
-    delete _transition;
-    delete _s1;
-    delete _s2;
 }
 
 void
