@@ -60,14 +60,14 @@ find_program(DBUS_RUNNER dbus-test-runner)
 set(CLIENT_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
-        ${Qt5Network_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 	ubuntu-download-manager-priv
-        ubuntu-download-manager-test-lib
+    ubuntu-download-manager-test-lib
 )
 
 if(DBUS_RUNNER)

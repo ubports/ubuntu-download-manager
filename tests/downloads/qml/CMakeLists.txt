@@ -20,18 +20,18 @@ set(QML_TESTS
 )
 
 foreach(test ${QML_TESTS})
-        # set the sources per test
-        set(${test}_QML_SOURCES
-                ${test}.cpp
-        )
+    # set the sources per test
+    set(${test}_QML_SOURCES
+            ${test}.cpp
+    )
 
-        set(${test}_QML_HEADERS
-		download.h
-		error.h
-		manager.h
-		testable_single_download.h
-                ${test}.h
-        )
+    set(${test}_QML_HEADERS
+        wnload.h
+        error.h
+	    manager.h
+	    testable_single_download.h
+        ${test}.h
+    )
 
 endforeach(test)
 
@@ -57,30 +57,36 @@ link_directories(${GLOG_DBUS_LIBDIR})
 set(QML_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
-        ${Qt5Core_LIBRARIES}
-        ${Qt5Sql_LIBRARIES}
-        ${Qt5DBus_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5DBus_LIBRARIES}
 	${Qt5Test_LIBRARIES}
-        ${GMOCK_LIBRARY}
-        ${GTEST_BOTH_LIBRARIES}
+    ${GMOCK_LIBRARY}
+    ${GTEST_BOTH_LIBRARIES}
 	udm-common
 	ubuntu-download-manager-common
-        ubuntu-download-manager-test-lib
-        UbuntuDownloadManager
+    ubuntu-download-manager-test-lib
+    UbuntuDownloadManager
 )
 
-foreach(test ${QML_TESTS})
+find_program(XVFB xvfb)
+
+if(XVFB)
+    foreach(test ${QML_TESTS})
         # set targets, linked libs and test
         add_executable(${test}_qml
-                ${${test}_QML_SOURCES}
-                ${${test}_QML_HEADERS}
+            ${${test}_QML_SOURCES}
+            ${${test}_QML_HEADERS}
         )
 
         target_link_libraries(${test}_qml
-                ${QML_TESTS_LIBS}
+            ${QML_TESTS_LIBS}
         )
 
 
-        ADD_TEST(NAME qml_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_qml)
-endforeach(test)
+    ADD_TEST(NAME qml_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_qml)
+    endforeach(test)
+else(XVFB)
+        message(WARNING "dbus-test-runner binary not found tests will be disabled")
+endif(XVFB)
 

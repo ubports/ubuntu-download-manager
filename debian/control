@@ -19,6 +19,7 @@ Build-Depends: cmake,
                qtdeclarative5-dev-tools,
                qtdeclarative5-test-plugin,
                network-manager
+               xvfb
 Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
