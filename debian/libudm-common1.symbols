@@ -1,4 +1,4 @@
-libudm-common.so.0 libudm-common0 #MINVER#
+libudm-common.so.1 libudm-common1 #MINVER#
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::AuthErrorStruct::AuthErrorStruct(Ubuntu::Transfers::Errors::AuthErrorStruct const&)@Base" 0.4+14.10.20140618

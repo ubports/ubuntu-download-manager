@@ -1,4 +1,4 @@
-libubuntu-upload-manager-common.so.0 libubuntu-upload-manager-common0 #MINVER#
+libubuntu-upload-manager-common.so.1 libubuntu-upload-manager-common1 #MINVER#
  (c++)"Ubuntu::UploadManager::UploadStruct::getHeaders()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::UploadManager::UploadStruct::getFilePath()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::UploadManager::UploadStruct::getMetadata()@Base" 0.4+14.10.20140618

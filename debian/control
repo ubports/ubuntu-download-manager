@@ -27,7 +27,7 @@ Homepage: https://launchpad.net/ubuntu-system-image
 # upstream branch
 Vcs-Bzr: lp:ubuntu-download-manager
 
-Package: libudm-common0
+Package: libudm-common1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
@@ -42,7 +42,7 @@ Description: Upload Download Manager - shared common library
 Package: libudm-common-dev
 Section: libdevel
 Architecture: any
-Depends: libudm-common0 (= ${binary:Version}),
+Depends: libudm-common1 (= ${binary:Version}),
          qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -50,12 +50,12 @@ Description: QT library for Ubuntu Download Manager - development files
  This package contains the common headers shared between the client library and
  the daemon library.
 
-Package: libudm-priv-common0
+Package: libudm-priv-common1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
+         libudm-common1 (= ${binary:Version}),
 Breaks: libubuntu-download-manager-priv1
 Replaces: libubuntu-download-manager-priv1
 Description: Upload Download Manager - shared private library
@@ -63,10 +63,10 @@ Description: Upload Download Manager - shared private library
  .
  This package includes the private shared library.
 
-Package: libubuntu-download-manager-common0
+Package: libubuntu-download-manager-common1
 Section: libs
 Architecture: any
-Depends: libudm-common0 (= ${binary:Version}),
+Depends: libudm-common1 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Breaks: ubuntu-download-manager-common1
@@ -81,7 +81,7 @@ Package: libubuntu-download-manager-common-dev
 Section: libdevel
 Architecture: any
 Depends: libudm-common-dev (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
+         libubuntu-download-manager-common1 (= ${binary:Version}),
          qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -91,13 +91,13 @@ Description: QT library for Ubuntu Download Manager - development files
  This package contains the common headers shared between the client library and
  the daemon library.
 
-Package: libubuntu-download-manager-client0
+Package: libubuntu-download-manager-client1
 Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
+         libudm-common1 (= ${binary:Version}),
+         libubuntu-download-manager-common1 (= ${binary:Version}),
 Breaks: ubuntu-download-manager-client1
 Replaces: ubuntu-download-manager-client1
 Description: Ubuntu Download Manager - shared public library
@@ -110,7 +110,7 @@ Section: libdevel
 Architecture: any
 Depends: libudm-common-dev (= ${binary:Version}),
          libubuntu-download-manager-common-dev (= ${binary:Version}),
-         libubuntu-download-manager-client0 (= ${binary:Version}),
+         libubuntu-download-manager-client1 (= ${binary:Version}),
          qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -128,10 +128,10 @@ Depends: libubuntu-download-manager-client-dev (>= ${source:Version}),
 Description: Documentation files for libcontent-hub-dev 
  Documentation files for the libcontent-hub development
 
-Package: libubuntu-upload-manager-common0
+Package: libubuntu-upload-manager-common1
 Section: libs
 Architecture: any
-Depends: libudm-common0 (= ${binary:Version}),
+Depends: libudm-common1 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends},
 Description: Ubuntu Upload Manager - shared common library
@@ -144,7 +144,7 @@ Package: libubuntu-upload-manager-common-dev
 Section: libdevel
 Architecture: any
 Depends: libudm-common-dev (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
+         libubuntu-download-manager-common1 (= ${binary:Version}),
          qtbase5-dev,
          ${shlibs:Depends},
          ${misc:Depends}
@@ -157,9 +157,9 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libudm-priv-common0 (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
+         libudm-common1 (= ${binary:Version}),
+         libudm-priv-common1 (= ${binary:Version}),
+         libubuntu-download-manager-common1 (= ${binary:Version}),
          unzip
 Suggests: apparmor
 Description: Ubuntu Download Manager - daemon
@@ -172,9 +172,9 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libudm-priv-common0 (= ${binary:Version}),
-         libubuntu-upload-manager-common0 (= ${binary:Version}),
+         libudm-common1 (= ${binary:Version}),
+         libudm-priv-common1 (= ${binary:Version}),
+         libubuntu-upload-manager-common1 (= ${binary:Version}),
 Description: Ubuntu Upload Manager - daemon
  Ubuntu Upload Manager performs uploads from a centralized location.
  .
@@ -185,9 +185,9 @@ Section: net
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libudm-common0 (= ${binary:Version}),
-         libubuntu-download-manager-common0 (= ${binary:Version}),
-         libubuntu-download-manager-client0 (= ${binary:Version})
+         libudm-common1 (= ${binary:Version}),
+         libubuntu-download-manager-common1 (= ${binary:Version}),
+         libubuntu-download-manager-client1 (= ${binary:Version})
 Description: Ubuntu Download Manager Plugin
  This package contains a QML Plugin to handle downloads from a pure QML
  application, without the need to write any C++ code.
