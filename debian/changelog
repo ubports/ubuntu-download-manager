@@ -1,8 +1,15 @@
-ubuntu-download-manager (1.0-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-download-manager (1.0+15.10.20150724-0ubuntu1) wily; urgency=medium
 
+  [ Manuel de la Pena ]
   * Bump version number due to the new ABI provided by the client lib. 
 
- -- Manuel de la Pena <manuel.delapena@canonical.com>  Fri, 24 Jul 2015 18:41:02 +0200
+  [ CI Train Bot ]
+  * debian/libubuntu-download-manager-client1.symbols: update to
+    released version.
+  * debian/libudm-common1.symbols: update to released version.
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Fri, 24 Jul 2015 16:44:28 +0000
 
 ubuntu-download-manager (0.9+15.04.20150203-0ubuntu1) vivid; urgency=medium
 
