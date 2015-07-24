@@ -165,7 +165,7 @@ TestManager::testGetAllDownloadsSignalsEmitted() {
 
     // ensure that all of the are created
     QVERIFY(managerSpy.ensureSignalEmitted());
-    QTRY_COMPARE(count, managerSpy.count());
+    QTRY_COMPARE_WITH_TIMEOUT(count, managerSpy.count(), 20000);
     _man->getAllDownloads();
 
     QVERIFY(listSpy.ensureSignalEmitted());

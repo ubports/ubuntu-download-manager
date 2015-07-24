@@ -1,4 +1,4 @@
-# Copyright © 2014 Canonical Ltd.
+# Copyright © 2014-2015 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -53,6 +53,7 @@ foreach(test ${DAEMON_TESTS})
                 download.h
                 factory.h
                 filename_mutex.h
+                group_download.h
                 manager.h
                 pending_reply.h
                 queue.h

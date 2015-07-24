@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -86,12 +86,22 @@ TestingManager::returnAuthError(const QString &download,
     }
 }
 
+void
+TestingManager::returnHashError(const QString &download, HashErrorStruct error) {
+    auto q = queue();
+    foreach(auto transfer, q->transfers().values()) {
+        auto testDown = qobject_cast<TestingFileDownload*>(transfer);
+        if (testDown != nullptr && testDown->url() == download) {
+            testDown->returnHashError(error);
+        }
+    }
+}
+
 QDBusObjectPath
 TestingManager::registerDownload(Download* download) {
     QDBusObjectPath path;
     auto fileDown = qobject_cast<FileDownload*>(download);
     if (fileDown != nullptr) {
-    qDebug() << "Register testing file";
     auto testDown = new TestingFileDownload(fileDown);
         auto downAdaptor = new DownloadAdaptor(testDown);
     Q_UNUSED(downAdaptor);
@@ -101,7 +111,6 @@ TestingManager::registerDownload(Download* download) {
         path = DownloadManager::registerDownload(download);
     }
     // create an adaptor so that we can be exposed to Dbus
-    qDebug() << "Path" << path.path();
     return path;
 }
 

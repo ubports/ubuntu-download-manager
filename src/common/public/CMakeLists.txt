@@ -5,6 +5,7 @@ set(TARGET udm-common)
 set(SOURCES
 	ubuntu/transfers/metadata.cpp
 	ubuntu/transfers/errors/auth_error_struct.cpp
+	ubuntu/transfers/errors/hash_error_struct.cpp
 	ubuntu/transfers/errors/http_error_struct.cpp
 	ubuntu/transfers/errors/network_error_struct.cpp
 	ubuntu/transfers/errors/process_error_struct.cpp
@@ -20,6 +21,7 @@ set(TRANSFERS_PUBLIC_HEADERS
 
 set(ERRORS_PUBLIC_HEADERS
 	ubuntu/transfers/errors/auth_error_struct.h
+	ubuntu/transfers/errors/hash_error_struct.h
 	ubuntu/transfers/errors/http_error_struct.h
 	ubuntu/transfers/errors/network_error_struct.h
 	ubuntu/transfers/errors/process_error_struct.h

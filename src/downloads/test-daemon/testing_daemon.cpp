@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -62,6 +62,17 @@ TestingDaemon::returnAuthError(const QString &download,
                                AuthErrorStruct error) {
     auto man = qobject_cast<TestingManager*>(manager());
     man->returnAuthError(download, error);
+}
+
+void
+TestingDaemon::returnHashError(const QString &download,
+                               HashErrorStruct error) {
+    qDebug() << "############################################";
+    qDebug() << "returnHashError from error";
+    qDebug() << "############################################";
+
+    auto man = qobject_cast<TestingManager*>(manager());
+    man->returnHashError(download, error);
 }
 
 void

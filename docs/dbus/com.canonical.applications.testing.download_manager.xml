@@ -28,5 +28,12 @@
         <arg name="download" type="s" direction="in"/>
         <arg name="error" type="(is)" direction="in"/>
     </method>
+
+    <method name="returnHashError">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="HashErrorStruct"/>
+        <arg name="download" type="s" direction="in"/>
+        <arg name="error" type="(sss)" direction="in"/>
+    </method>
+
  </interface>
 </node>

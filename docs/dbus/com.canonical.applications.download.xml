@@ -98,6 +98,11 @@
         <arg name="error" type="(isiss)" direction="out"/>
     </signal>
 
+     <signal name="hashError">
+         <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="HashErrorStruct"/>
+         <arg name="error" type="(sss)" direction="out"/>
+     </signal>
+
     <signal name="progress">
         <arg name="received" type="t" direction="out"/>
         <arg name="total" type="t" direction="out"/>

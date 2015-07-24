@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -94,7 +94,18 @@ TestingFileDownload::returnAuthError(AuthErrorStruct error) {
     _returnHttpError = false;
     _returnNetworkError = false;
     _returnProcessError = false;
+    _returnHashError = false;
     _authErr = error;
+}
+
+void
+TestingFileDownload::returnHashError(HashErrorStruct error) {
+    _returnAuthError = false;
+    _returnHttpError = false;
+    _returnNetworkError = false;
+    _returnProcessError = false;
+    _returnHashError = true;
+    _hashErr = error;
 }
 
 qulonglong
@@ -244,6 +255,11 @@ TestingFileDownload::start() {
     if (_returnProcessError) {
         emit processError(_processErr);
         emitError("Forced processerror");
+    }
+
+    if (_returnHashError) {
+        emit hashError(_hashErr);
+        emitError("Forced hash error");
     }
 
 }

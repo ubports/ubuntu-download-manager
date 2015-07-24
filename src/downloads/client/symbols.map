@@ -9,6 +9,7 @@ global:
         Ubuntu::DownloadManager::HttpError::*;
         Ubuntu::DownloadManager::NetworkError::*;
         Ubuntu::DownloadManager::ProcessError::*;
+        Ubuntu::DownloadManager::HashError::*;
         Ubuntu::DownloadManager::GroupDownload::*;
         Ubuntu::DownloadManager::Manager::*;
         Ubuntu::DownloadManager::Logging::Logger::init*;
@@ -20,6 +21,7 @@ global:
         typeinfo?for?Ubuntu::DownloadManager::HttpError;
         typeinfo?for?Ubuntu::DownloadManager::NetworkError;
         typeinfo?for?Ubuntu::DownloadManager::ProcessError;
+        typeinfo?for?Ubuntu::DownloadManager::HashError;
         typeinfo?for?Ubuntu::DownloadManager::GroupDownload;
         typeinfo?for?Ubuntu::DownloadManager::Manager;
         typeinfo?for?Ubuntu::DownloadManager::Logging::Logger;
@@ -31,6 +33,7 @@ global:
         typeinfo?name?for?Ubuntu::DownloadManager::HttpError;
         typeinfo?name?for?Ubuntu::DownloadManager::NetworkError;
         typeinfo?name?for?Ubuntu::DownloadManager::ProcessError;
+        typeinfo?name?for?Ubuntu::DownloadManager::HashError;
         typeinfo?name?for?Ubuntu::DownloadManager::GroupDownload;
         typeinfo?name?for?Ubuntu::DownloadManager::Manager;
         typeinfo?name?for?Ubuntu::DownloadManager::Logging::Logger;
@@ -42,6 +45,7 @@ global:
         VTT?for?Ubuntu::DownloadManager::HttpError;
         VTT?for?Ubuntu::DownloadManager::NetworkError;
         VTT?for?Ubuntu::DownloadManager::ProcessError;
+        VTT?for?Ubuntu::DownloadManager::HashError;
         VTT?for?Ubuntu::DownloadManager::GroupDownload;
         VTT?for?Ubuntu::DownloadManager::Manager;
         VTT?for?Ubuntu::DownloadManager::Logging::Logger;
@@ -53,6 +57,7 @@ global:
         virtual?thunk?to?Ubuntu::DownloadManager::HttpError;
         virtual?thunk?to?Ubuntu::DownloadManager::NetworkError;
         virtual?thunk?to?Ubuntu::DownloadManager::ProcessError;
+        virtual?thunk?to?Ubuntu::DownloadManager::HashError;
         virtual?thunk?to?Ubuntu::DownloadManager::GroupDownload;
         virtual?thunk?to?Ubuntu::DownloadManager::Manager;
         virtual?thunk?to?Ubuntu::DownloadManager::Logging::Logger;
@@ -64,6 +69,7 @@ global:
         vtable?for?Ubuntu::DownloadManager::HttpError;
         vtable?for?Ubuntu::DownloadManager::NetworkError;
         vtable?for?Ubuntu::DownloadManager::ProcessError;
+        vtable?for?Ubuntu::DownloadManager::HashError;
         vtable?for?Ubuntu::DownloadManager::GroupDownload;
         vtable?for?Ubuntu::DownloadManager::Manager;
         vtable?for?Ubuntu::DownloadManager::Logging::Logger;

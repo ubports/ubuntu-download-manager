@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,15 +16,14 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_GROUP_WATCH_H
-#define TEST_GROUP_WATCH_H
+#pragma once
 
 #include <functional>
 #include <ubuntu/download_manager/group_download.h>
 #include <ubuntu/download_manager/error.h>
 #include <ubuntu/download_manager/manager.h>
+
 #include <QObject>
-#include <ubuntu/transfers/tests/test_runner.h>
 #include "local_tree_testcase.h"
 
 using namespace Ubuntu::DownloadManager;
@@ -55,4 +54,3 @@ class TestGroupManagerWatch : public LocalTreeTestCase {
     Manager* _manager = nullptr;
 };
 
-#endif // TEST_GROUP_WATCH_H

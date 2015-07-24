@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -34,7 +34,7 @@ ProcessErrorStruct::ProcessErrorStruct()
       _stderr("") {
 }
 
-ProcessErrorStruct::ProcessErrorStruct(int code, QString phrase)
+ProcessErrorStruct::ProcessErrorStruct(int code, const QString& phrase)
     : _code(code),
       _exitCode(0),
       _phrase(phrase),
@@ -44,8 +44,8 @@ ProcessErrorStruct::ProcessErrorStruct(int code, QString phrase)
 
 ProcessErrorStruct::ProcessErrorStruct(int code,
                                        int exitCode,
-                                       QString standardOutput,
-                                       QString standardError)
+                                       const QString& standardOutput,
+                                       const QString& standardError)
     : _code(code),
       _exitCode(exitCode),
       _stdout(standardOutput),
@@ -73,10 +73,10 @@ ProcessErrorStruct::ProcessErrorStruct(int code,
 }
 
 ProcessErrorStruct::ProcessErrorStruct(int code,
-                                       QString phrase,
+                                       const QString& phrase,
                                        int exitCode,
-                                       QString standardOutput,
-                                       QString standardError)
+                                       const QString& standardOutput,
+                                       const QString& standardError)
     : _code(code),
       _exitCode(exitCode),
       _phrase(phrase),

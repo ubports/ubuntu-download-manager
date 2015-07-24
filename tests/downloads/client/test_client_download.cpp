@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -438,6 +438,42 @@ TestDownload::testSetLocalDirectoryStarted() {
     QVERIFY(_down->isError());
     QVERIFY(_down->error() != nullptr);
     QCOMPARE(Error::DBus, _down->error()->type());
+}
+
+void
+TestDownload::testHashErrorRaised_data() {
+    QTest::addColumn<QString>("method");
+    QTest::addColumn<QString>("expected");
+    QTest::addColumn<QString>("found");
+
+    QTest::newRow("MD5") << "MD5" << "2323nlkmwe" << "sdscopw";
+    QTest::newRow("SHA524") << "Sha524" << "eww23sds" << "dscbnnt32";
+    QTest::newRow("Ransom") << "Sha245" << "ew23fv4t" << "2edbg92";
+}
+
+void
+TestDownload::testHashErrorRaised() {
+    QFETCH(QString, method);
+    QFETCH(QString, expected);
+    QFETCH(QString, found);
+
+    HashErrorStruct err(method, expected, found);
+    returnHashError(_url, err);
+
+    SignalBarrier spy(_down, SIGNAL(error(Error*)));
+    _down->start();
+
+    QVERIFY(spy.ensureSignalEmitted());
+    QTRY_COMPARE(1, spy.count());
+    auto error = spy.takeFirst().at(0).value<Error*>();
+    QVERIFY(_down->isError());
+    QVERIFY(_down->error() != nullptr);
+    QCOMPARE(Error::Hash, error->type());
+
+    auto hashError = qobject_cast<HashError*>(error);
+    QCOMPARE(method, hashError->method());
+    QCOMPARE(expected, hashError->expected());
+    QCOMPARE(found, hashError->checksum());
 }
 
 QTEST_MAIN(TestDownload)

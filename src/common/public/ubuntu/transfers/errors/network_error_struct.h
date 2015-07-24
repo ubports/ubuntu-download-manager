@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_NETWORK_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_NETWORK_ERROR_STRUCT_H
+#pragma once
 
 #include <QString>
 
@@ -56,7 +55,7 @@ class NetworkErrorStruct {
         Creates a network error with the given type and a human readable
         message.
     */
-    NetworkErrorStruct(int code, QString phrase);
+    NetworkErrorStruct(int code, const QString& phrase);
 
     /*!
         Copy constructor.
@@ -112,5 +111,3 @@ class NetworkErrorStruct {
 }  // Transfers
 
 }  // Ubuntu
-
-#endif // NETWORK_ERROR_STRUCT_H

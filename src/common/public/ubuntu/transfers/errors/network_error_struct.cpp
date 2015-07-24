@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -115,7 +115,7 @@ NetworkErrorStruct::NetworkErrorStruct(int error)
         }
 }
 
-NetworkErrorStruct::NetworkErrorStruct(int code, QString phrase)
+NetworkErrorStruct::NetworkErrorStruct(int code, const QString& phrase)
     : _code(code),
       _phrase(phrase) {
 }

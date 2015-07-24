@@ -1,4 +1,4 @@
-libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVER#
+libubuntu-download-manager-client.so.1 libubuntu-download-manager-client1 #MINVER#
  (c++)"Ubuntu::DownloadManager::NetworkError::errorString()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::NetworkError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
@@ -135,3 +135,19 @@ libubuntu-download-manager-client.so.0 libubuntu-download-manager-client0 #MINVE
  (c++)"vtable for Ubuntu::DownloadManager::AuthError@Base" 0.4+14.10.20140618
  (c++)"vtable for Ubuntu::DownloadManager::DBusError@Base" 0.4+14.10.20140618
  (c++)"vtable for Ubuntu::DownloadManager::HttpError@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::DownloadManager::HashError::errorString()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme 
+ (c++)"Ubuntu::DownloadManager::HashError::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::staticMetaObject@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::method()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::checksum()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::expected()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::HashError(Ubuntu::Transfers::Errors::HashErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::HashError(Ubuntu::Transfers::Errors::HashErrorStruct, QObject*)@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::~HashError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::~HashError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::~HashError()@Base" 0replaceme
+ (c++)"Ubuntu::DownloadManager::HashError::metaObject() const@Base" 0replaceme
+ (c++)"typeinfo for Ubuntu::DownloadManager::HashError@Base" 0replaceme
+ (c++)"typeinfo name for Ubuntu::DownloadManager::HashError@Base" 0replaceme
+ (c++)"vtable for Ubuntu::DownloadManager::HashError@Base" 0replaceme

@@ -78,6 +78,7 @@ DownloadManager::init() {
     qDBusRegisterMetaType<StructList>();
     qDBusRegisterMetaType<AuthErrorStruct>();
     qDBusRegisterMetaType<HttpErrorStruct>();
+    qDBusRegisterMetaType<HashErrorStruct>();
     qDBusRegisterMetaType<NetworkErrorStruct>();
     qDBusRegisterMetaType<ProcessErrorStruct>();
 

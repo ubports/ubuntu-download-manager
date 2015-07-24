@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H
+#pragma once
 
 #include <QDBusConnection>
 #include <QDBusObjectPath>
@@ -97,6 +96,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void onNetworkError(NetworkErrorStruct);
     void onProcessError(ProcessErrorStruct);
     void onAuthError(AuthErrorStruct);
+    void onHashError(HashErrorStruct);
     void onPropertiesChanged(const QString& interfaceName,
                              const QVariantMap& changedProperties,
                              const QStringList& invalidatedProperties);
@@ -116,4 +116,3 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
 
 }  // DownloadManager
 
-#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_IMPL_H

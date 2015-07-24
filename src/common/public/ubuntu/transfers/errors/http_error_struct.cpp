@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -30,7 +30,7 @@ HttpErrorStruct::HttpErrorStruct()
       _phrase("OK"){
 }
 
-HttpErrorStruct::HttpErrorStruct(int code, QString phrase)
+HttpErrorStruct::HttpErrorStruct(int code, const QString& phrase)
     : _code(code),
       _phrase(phrase) {
 }

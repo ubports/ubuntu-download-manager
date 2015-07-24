@@ -1,4 +1,4 @@
-# Copyright © 2014 Canonical Ltd.
+# Copyright © 2014-2015 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -17,9 +17,10 @@
 
 set(CLIENT_TESTS
         test_client_download
-	#        test_download_manager_watch
-	#        test_download_watch
-	#        test_client_manager
+	test_download_manager_watch
+	test_download_watch
+	test_client_manager
+	test_group_manager_watch
 )
 
 foreach(test ${CLIENT_TESTS})
@@ -59,14 +60,14 @@ find_program(DBUS_RUNNER dbus-test-runner)
 set(CLIENT_TESTS_LIBS
 	${NIH_DBUS_LIBRARIES}
 	${GLOG_LIBRARIES}
-        ${Qt5Network_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
 	${Qt5Test_LIBRARIES}
 	udm-common
 	udm-priv-common
 	ubuntu-download-manager-common
 	ubuntu-download-manager-client
 	ubuntu-download-manager-priv
-        ubuntu-download-manager-test-lib
+    ubuntu-download-manager-test-lib
 )
 
 if(DBUS_RUNNER)

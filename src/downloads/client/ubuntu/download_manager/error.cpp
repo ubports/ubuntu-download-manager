@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -26,6 +26,7 @@ namespace {
     const QString HTTP_ERROR_STRING = "HttpError: %1 - %2";
     const QString NETWORK_ERROR_STRING = "NetworkError: %1 - %2";
     const QString PROCESS_ERROR_STRING = "ProcessError: %1 - %2\nExit code: %3\nStdout: %4\nStderr:%5";
+    const QString HASH_ERROR_STRING = "Hash validation error using %1: Expected result is %2 but result was %3.";
 }
 
 namespace Ubuntu {
@@ -45,11 +46,11 @@ class ErrorPrivate {
           q_ptr(parent) {
     }
 
-    Error::Type type() {
+    Error::Type type() const {
         return _type;
     }
 
-    QString errorString() {
+    QString errorString() const {
         switch(_type) {
             case Error::DBus:
                 return "DBusError";
@@ -59,6 +60,8 @@ class ErrorPrivate {
                 return "NetworkError";
             case Error::Process:
                 return "ProcessError";
+            case Error::Hash:
+                return "HashError";
             default:
                 return "";
         }
@@ -78,15 +81,15 @@ class DBusErrorPrivate {
           q_ptr(parent) {
     }
 
-    inline QString message() {
+    inline QString message() const {
         return _err.message();
     }
 
-    inline QString name() {
+    inline QString name() const {
         return _err.name();
     }
 
-    inline QString errorString() {
+    inline QString errorString() const {
         return DBUS_ERROR_STRING.arg(_err.name(), _err.message());
     }
 
@@ -104,7 +107,7 @@ class AuthErrorPrivate {
           q_ptr(parent) {
     }
 
-    inline AuthError::Type type() {
+    inline AuthError::Type type() const {
         switch(_err.getType()) {
             case Transfers::Errors::AuthErrorStruct::Proxy:
                 return AuthError::Proxy;
@@ -113,7 +116,7 @@ class AuthErrorPrivate {
         }
     }
 
-    inline QString getTypeString() {
+    inline QString getTypeString() const {
         switch(_err.getType()) {
             case Transfers::Errors::AuthErrorStruct::Proxy:
                 return "Proxy";
@@ -122,11 +125,11 @@ class AuthErrorPrivate {
         }
     }
 
-    inline QString phrase() {
+    inline QString phrase() const {
         return _err.getPhrase();
     }
 
-    inline QString errorString() {
+    inline QString errorString() const {
         return AUTH_ERROR_STRING.arg(getTypeString(), _err.getPhrase());
     }
 
@@ -144,15 +147,15 @@ class HttpErrorPrivate {
           q_ptr(parent) {
     }
 
-    inline int code() {
+    inline int code() const {
         return _err.getCode();
     }
 
-    inline QString phrase() {
+    inline QString phrase() const {
         return _err.getPhrase();
     }
 
-    inline QString errorString() {
+    inline QString errorString() const {
         return HTTP_ERROR_STRING.arg(QString::number(_err.getCode()),
             _err.getPhrase());
     }
@@ -172,16 +175,16 @@ class NetworkErrorPrivate {
           q_ptr(parent) {
     }
 
-    inline NetworkError::ErrorCode code() {
+    inline NetworkError::ErrorCode code() const {
         auto intCode = static_cast<NetworkError::ErrorCode>(_err.getCode());
         return intCode;
     }
 
-    inline QString phrase() {
+    inline QString phrase() const {
         return _err.getPhrase();
     }
 
-    inline QString errorString() {
+    inline QString errorString() const {
         return NETWORK_ERROR_STRING.arg(QString::number(_err.getCode()),
             _err.getPhrase());
     }
@@ -201,28 +204,28 @@ class ProcessErrorPrivate {
           q_ptr(parent) {
     }
 
-    QProcess::ProcessError code() {
+    QProcess::ProcessError code() const {
         auto code = static_cast<QProcess::ProcessError>(_err.getCode());
         return code;
     }
 
-    QString phrase() {
+    QString phrase() const {
         return _err.getPhrase();
     }
 
-    inline int exitCode() {
+    inline int exitCode() const {
         return _err.getExitCode();
     }
 
-    inline QString standardOut() {
+    inline QString standardOut() const {
         return _err.getStandardOutput();
     }
 
-    inline QString standardError() {
+    inline QString standardError() const {
         return _err.getStandardError();
     }
 
-    inline QString errorString() {
+    inline QString errorString() const {
         return PROCESS_ERROR_STRING.arg(QString::number(_err.getCode()),
             _err.getPhrase(), QString::number(_err.getExitCode()),
             _err.getStandardOutput(), _err.getStandardError());
@@ -231,6 +234,36 @@ class ProcessErrorPrivate {
  private:
     Transfers::Errors::ProcessErrorStruct _err;
     ProcessError* q_ptr;
+};
+
+class HashErrorPrivate {
+    Q_DECLARE_PUBLIC(HashError)
+
+ public:
+    HashErrorPrivate (Transfers::Errors::HashErrorStruct err, HashError* parent)
+        : _err(err),
+          q_ptr(parent) {
+    }
+
+    inline QString method() const {
+        return _err.getMethod();
+    }
+
+    inline QString expected() const {
+        return _err.getExpected();
+    }
+
+    inline QString checksum() const {
+        return _err.getChecksum();
+    }
+
+    inline QString errorString() const {
+        return HASH_ERROR_STRING.arg(_err.getMethod()).arg(_err.getExpected()).arg(_err.getChecksum());
+    }
+
+ private:
+    Transfers::Errors::HashErrorStruct _err;
+    HashError* q_ptr;
 };
 
 /*
@@ -410,6 +443,39 @@ ProcessError::standardError() {
 QString
 ProcessError::errorString() {
     Q_D(ProcessError);
+    return d->errorString();
+}
+
+HashError::HashError(Transfers::Errors::HashErrorStruct errStruct, QObject* parent)
+        : Error(Error::Hash, parent),
+          d_ptr(new HashErrorPrivate(errStruct, this)) {
+}
+
+HashError::~HashError() {
+    delete d_ptr;
+}
+
+QString
+HashError::method() {
+    Q_D(HashError);
+    return d->method();
+}
+
+QString
+HashError::expected() {
+    Q_D(HashError);
+    return d->expected();
+}
+
+QString
+HashError::checksum() {
+    Q_D(HashError);
+    return d->checksum();
+}
+
+QString
+HashError::errorString() {
+    Q_D(HashError);
     return d->errorString();
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_ERROR_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_ERROR_H
+#pragma once
 
 #include <QObject>
 #include <QProcess>
@@ -33,6 +32,7 @@ namespace Errors {
     class HttpErrorStruct;
     class NetworkErrorStruct;
     class ProcessErrorStruct;
+    class HashErrorStruct;
 }
 
 }
@@ -66,7 +66,8 @@ class Error : public QObject {
         DBus,    /*! The error was due to some problem when communicating with the dbus API.*/
         Http,    /*! The error was due to a http error, for example a 404.*/
         Network, /*! The error was due to network problems such as a missing network interface.*/
-        Process  /*! The error was due to a problem when executing the post download command.*/
+        Process, /*! The error was due to a problem when executing the post download command.*/
+        Hash     /*! The error was due to a problem when verifying the checksum of the download.*/
     };
 
     /*!
@@ -468,8 +469,72 @@ class ProcessError : public Error {
     ProcessErrorPrivate* d_ptr;
 };
 
+class HashErrorPrivate;
+
+/*!
+    \class HashError 
+    \brief The HashError represents an error that occurred during the
+           hash validation after the download.
+    \since 0.3
+*/
+class HashError : public Error {
+    Q_OBJECT
+    Q_DECLARE_PRIVATE(HashError)
+
+    friend class DownloadImpl;
+
+ public:
+
+    /*!
+        Disposes of this error and frees any resources associated with it.
+    */
+    virtual ~HashError();
+
+    /*!
+        /fn QString method()
+
+        Returns the method that was used to verify the checksum of the download.
+     */
+    QString method();
+
+    /*!
+        /fn QString expected()
+
+        Returns the checksum that passed to the download manager to check against once the download
+        was completed.
+     */
+    QString expected();
+
+    /*!
+        /fn QString checksum()
+
+        Returns the checksum of the download on disk after the download was completed.
+     */
+    QString checksum();
+
+    /*!
+        /fn QString errorString() override
+
+        Returns a string representation of the error.
+    */
+    QString errorString() override;
+
+ protected:
+
+    /*!
+        Creates a new error from the provided process error struct.
+        \internal
+    */
+    HashError(Transfers::Errors::HashErrorStruct err, QObject* parent);
+
+ private:
+    /*!
+        Use pimpl pattern so that users do not have to be recompiled
+        \internal
+    */
+    HashErrorPrivate* d_ptr;
+};
+
 }  // DownloadManager
 
 }  // Ubuntu
-
-#endif // ERROR_H

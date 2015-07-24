@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_PROCESS_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_PROCESS_ERROR_STRUCT_H
+#pragma once
 
 #include <QString>
 
@@ -54,7 +53,7 @@ class ProcessErrorStruct {
         Create a new structure with the given error \a code and
         a given human readable message.
     */
-    ProcessErrorStruct(int code, QString phrase);
+    ProcessErrorStruct(int code, const QString& phrase);
 
     /*!
         Creates a new structure with the given error \a code and with
@@ -64,8 +63,8 @@ class ProcessErrorStruct {
     */
     ProcessErrorStruct(int code,
                        int exitCode,
-                       QString standardOutput,
-                       QString standardError);
+                       const QString& standardOutput,
+                       const QString& standardError);
 
     /*!
         Creates a new structure with the given error \a code , a human
@@ -74,10 +73,10 @@ class ProcessErrorStruct {
         out via \a standardOut and standard error via \a standarError
     */
     ProcessErrorStruct(int code,
-                       QString phrase,
+                       const QString& phrase,
                        int exitCode,
-                       QString standardOutput,
-                       QString standardError);
+                       const QString& standardOutput,
+                       const QString& standardError);
 
     /*!
         Copy constructor.
@@ -169,5 +168,3 @@ class ProcessErrorStruct {
 }  // Transfers
 
 }  // Ubuntu
-
-#endif // PROCESS_ERROR_STRUCT_H

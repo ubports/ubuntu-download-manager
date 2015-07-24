@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_AUTH_ERROR_STRUCT_H
-#define DOWNLOADER_LIB_AUTH_ERROR_STRUCT_H
+#pragma once
 
 class QDBusArgument;
 
@@ -55,12 +54,12 @@ class AuthErrorStruct {
     /*!
         Creates a new structure with the given error types and message.
     */
-    AuthErrorStruct(AuthErrorStruct::Type type, QString phrase);
+    AuthErrorStruct(AuthErrorStruct::Type type, const QString& phrase);
 
     /*!
         Creates a new structure with the given error types and message.
     */
-    AuthErrorStruct(int type, QString phrase);
+    AuthErrorStruct(int type, const QString& phrase);
 
     /*!
         Copy constructor.
@@ -87,18 +86,18 @@ class AuthErrorStruct {
     // properties getters
 
     /*!
-        \fn AuthErrorStruct::Type getType()
+        \fn AuthErrorStruct::Type getType() const
 
         Returns the type of the error.
     */
-    AuthErrorStruct::Type getType();
+    AuthErrorStruct::Type getType() const;
 
     /*!
-        \fn QString getPhrase()
+        \fn QString getPhrase() const
 
         Returns the message of the error.
     */
-    QString getPhrase();
+    QString getPhrase() const;
 
  private:
 
@@ -110,7 +109,7 @@ class AuthErrorStruct {
     /*!
         \internal
     */
-    QString _phrase;
+    QString _phrase = QString::null;
 };
 
 }  // Errors
@@ -118,5 +117,3 @@ class AuthErrorStruct {
 }  // Transfers
 
 }  // Ubuntu
-
-#endif // AUTH_ERROR_STRUCT_H

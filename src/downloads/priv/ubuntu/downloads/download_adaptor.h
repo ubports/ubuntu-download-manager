@@ -109,6 +109,10 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "      <annotation value=\"ProcessErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
 "      <arg direction=\"out\" type=\"(isiss)\" name=\"error\"/>\n"
 "    </signal>\n"
+"    <signal name=\"hashError\">\n"
+"      <annotation value=\"HashErrorStruct\" name=\"org.qtproject.QtDBus.QtTypeName.In0\"/>\n"
+"      <arg direction=\"out\" type=\"(sss)\" name=\"error\"/>\n"
+"    </signal>\n"
 "    <signal name=\"progress\">\n"
 "      <arg direction=\"out\" type=\"t\" name=\"received\"/>\n"
 "      <arg direction=\"out\" type=\"t\" name=\"total\"/>\n"
@@ -156,6 +160,7 @@ Q_SIGNALS: // SIGNALS
     void canceled(bool success);
     void error(const QString &error);
     void finished(const QString &path);
+    void hashError(HashErrorStruct error);
     void httpError(HttpErrorStruct error);
     void networkError(NetworkErrorStruct error);
     void paused(bool success);

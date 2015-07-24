@@ -1,4 +1,4 @@
-libubuntu-download-manager-common.so.0 libubuntu-download-manager-common0 #MINVER#
+libubuntu-download-manager-common.so.1 libubuntu-download-manager-common1 #MINVER#
  (c++)"Ubuntu::DownloadManager::DownloadStruct::getHeaders()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::DownloadStruct::getMetadata()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::DownloadStruct::getAlgorithm()@Base" 0.4+14.10.20140618

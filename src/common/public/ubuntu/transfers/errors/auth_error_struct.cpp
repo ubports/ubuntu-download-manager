@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -30,12 +30,12 @@ AuthErrorStruct::AuthErrorStruct()
       _phrase("") {
 }
 
-AuthErrorStruct::AuthErrorStruct(AuthErrorStruct::Type type, QString phrase)
+AuthErrorStruct::AuthErrorStruct(AuthErrorStruct::Type type, const QString& phrase)
     : _type(type),
       _phrase(phrase) {
 }
 
-AuthErrorStruct::AuthErrorStruct(int type, QString phrase)
+AuthErrorStruct::AuthErrorStruct(int type, const QString& phrase)
     : _type(static_cast<AuthErrorStruct::Type>(type)),
       _phrase(phrase) {
 }
@@ -80,16 +80,17 @@ operator>>(const QDBusArgument &argument,
 
 
 AuthErrorStruct::Type
-AuthErrorStruct::getType() {
+AuthErrorStruct::getType() const {
     return _type;
 }
 
 QString
-AuthErrorStruct::getPhrase() {
+AuthErrorStruct::getPhrase() const {
     return _phrase;
 }
 
 }  // Errors
 
 }  // Transfers
+
 }  // Ubuntu

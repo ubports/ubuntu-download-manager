@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of version 3 of the GNU Lesser General Public
@@ -124,6 +124,13 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
 
     connected = connect(_dbusInterface, &DownloadInterface::authError,
         this, &DownloadImpl::onAuthError);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadInterface::authError");
+    }
+
+    connected = connect(_dbusInterface, &DownloadInterface::hashError,
+        this, &DownloadImpl::onHashError);
     if (!connected) {
         Logger::log(Logger::Critical,
             "Could not connect to signal &DownloadInterface::authError");
@@ -439,6 +446,12 @@ DownloadImpl::onProcessError(ProcessErrorStruct errStruct) {
 void
 DownloadImpl::onAuthError(AuthErrorStruct errStruct) {
     auto err = new AuthError(errStruct, this);
+    setLastError(err);
+}
+
+void
+DownloadImpl::onHashError(HashErrorStruct errStruct) {
+    auto err = new HashError(errStruct, this);
     setLastError(err);
 }
 
