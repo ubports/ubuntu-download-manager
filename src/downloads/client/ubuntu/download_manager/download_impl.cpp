@@ -425,6 +425,11 @@ DownloadImpl::title() const {
     return _dbusInterface->title();
 }
 
+QString
+DownloadImpl::downloadOwner() const {
+    return _dbusInterface->downloadOwner();
+}
+
 void
 DownloadImpl::onHttpError(HttpErrorStruct errStruct) {
     auto err = new HttpError(errStruct, this);

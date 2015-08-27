@@ -16,6 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <stdlib.h>
+
+#include <QProcessEnvironment>
+
 #include "test_metadata.h"
 
 using namespace Ubuntu::Transfers;
@@ -346,6 +350,92 @@ void
 TestMetadata::testHasDeflateFalse() {
     Metadata metadata;
     QVERIFY(!metadata.hasDeflate());
+}
+
+void
+TestMetadata::testDownloadOwner_data() {
+    QTest::addColumn<QString>("owner");
+
+    QTest::newRow("First app") << "First app";
+    QTest::newRow("Browser") << "Browser";
+    QTest::newRow("Test") << "Test";
+}
+
+void
+TestMetadata::testDownloadOwner() {
+    QFETCH(QString, owner);
+
+    Metadata metadata;
+    metadata[Metadata::APP_ID] = owner;
+    QCOMPARE(owner, metadata.owner());
+}
+
+void
+TestMetadata::testSetDownloadOwner_data() {
+    QTest::addColumn<QString>("owner");
+
+    QTest::newRow("First app") << "First app";
+    QTest::newRow("Browser") << "Browser";
+    QTest::newRow("Test") << "Test";
+}
+
+void
+TestMetadata::testSetDownloadOwner() {
+    QFETCH(QString, owner);
+
+    Metadata metadata;
+    metadata.setOwner(owner);
+    QCOMPARE(metadata[Metadata::APP_ID].toString(), owner);
+}
+
+void
+TestMetadata::testHasDownloadOwnerTrue() {
+    Metadata metadata;
+    metadata.setOwner("pedro");
+
+    QVERIFY(metadata.hasOwner());
+}
+
+void
+TestMetadata::testHasDoenloadOwnerFalse() {
+    Metadata metadata;
+    metadata.clear();
+
+    QVERIFY(!metadata.hasOwner());
+}
+
+void
+TestMetadata::testOWnerIsPickedFromEnv_data() {
+    QTest::addColumn<QString>("appid");
+
+    QTest::newRow("First app") << "Chanco";
+    QTest::newRow("Browser") << "Browser";
+    QTest::newRow("Test") << "Test";
+}
+
+
+void
+TestMetadata::testOWnerIsPickedFromEnv() {
+    QFETCH(QString, appid);
+
+    // set the used envar
+    setenv("APP_ID", appid.toStdString().c_str(), 1);
+
+    Metadata metadata;
+    QVERIFY(metadata.hasOwner());
+    QCOMPARE(metadata.owner(), appid);
+}
+
+void
+TestMetadata::testOwnerIsAlreadyPresent() {
+    QString appid("Test");
+    QVariantMap map;
+
+    // set the used envar
+    setenv("APP_ID", appid.toStdString().c_str(), 1);
+    Metadata metadata(map);
+    QVERIFY(metadata.hasOwner());
+    QCOMPARE(metadata.owner(), appid);
 }
 
 QTEST_MAIN(TestMetadata)

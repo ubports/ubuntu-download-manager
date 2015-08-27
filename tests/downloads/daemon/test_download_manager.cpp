@@ -145,6 +145,27 @@ TestDownloadManager::testCreateDownload() {
     SignalBarrier spy(_man, SIGNAL(downloadCreated(QDBusObjectPath)));
     DownloadStruct downStruct(url, metadata, headers);
 
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
+            .Times(1)
+            .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+            .Times(1)
+            .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+            .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+            .Times(1)
+            .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+            .Times(1)
+            .WillOnce(Return("TEST_APP_ID"));
+
     // set the expectations of the factory since is the one that
     // creates the downloads. The matchers will ensure that the
     // correct value is used.
@@ -157,9 +178,17 @@ TestDownloadManager::testCreateDownload() {
     EXPECT_CALL(*down.data(), setThrottle(_man->defaultThrottle()))
         .Times(1);
 
+    EXPECT_CALL(*down.data(), allowGSMDownload(_))
+            .Times(1);
+
+
     EXPECT_CALL(*down.data(), path())
         .Times(1)
         .WillRepeatedly(Return(dbusPath));
+
+    EXPECT_CALL(*down.data(), metadata())
+        .Times(1)
+        .WillRepeatedly(Return(QVariantMap()));
 
     // expected actions performed by the db
     EXPECT_CALL(*_database, store(down.data()))
@@ -248,6 +277,27 @@ TestDownloadManager::testCreateDownloadWithHash() {
             .Times(1)
             .WillRepeatedly(Return(down.data()));
 
+    auto dbusProxy = new MockDBusProxy();
+    auto reply = new MockPendingReply<QString>();
+    EXPECT_CALL(*_dbusProxyFactory, createDBusProxy(_conn, _))
+            .Times(1)
+            .WillOnce(Return(dbusProxy));
+
+    EXPECT_CALL(*dbusProxy, GetConnectionAppArmorSecurityContext(_))
+            .Times(1)
+            .WillOnce(Return(reply));
+
+    EXPECT_CALL(*reply, waitForFinished())
+            .Times(1);
+
+    EXPECT_CALL(*reply, isError())
+            .Times(1)
+            .WillOnce(Return(false));
+
+    EXPECT_CALL(*reply, value())
+            .Times(1)
+            .WillOnce(Return("TEST_APP_ID"));
+
     // expected actions to be performed on the download
     EXPECT_CALL(*down.data(), setThrottle(_man->defaultThrottle()))
         .Times(1);
@@ -258,6 +308,10 @@ TestDownloadManager::testCreateDownloadWithHash() {
     EXPECT_CALL(*down.data(), path())
         .Times(1)
         .WillRepeatedly(Return(dbusPath));
+
+    EXPECT_CALL(*down.data(), metadata())
+            .Times(1)
+            .WillRepeatedly(Return(QVariantMap()));
 
     // expected actions performed by the db
     EXPECT_CALL(*_database, store(down.data()))

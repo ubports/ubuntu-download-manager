@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_METADATA_H
-#define DOWNLOADER_LIB_METADATA_H
+#pragma once
 
 #include <QMap>
 #include <QVariant>
@@ -41,6 +40,7 @@ class Metadata : public QVariantMap {
     static const QString CLICK_PACKAGE_KEY;
     static const QString DEFLATE_KEY;
     static const QString EXTRACT_KEY;
+    static const QString APP_ID;
 
     // accessors to simplify the use of the metadata
     QString command() const;
@@ -74,10 +74,12 @@ class Metadata : public QVariantMap {
     bool extract() const;
     void setExtract(bool extract);
     bool hasExtract() const;
+
+    QString owner() const;
+    void setOwner(const QString &id);
+    bool hasOwner() const;
 };
 
 }  // DownloadManager
 
 }  // Ubuntu
-
-#endif // METADATA_H

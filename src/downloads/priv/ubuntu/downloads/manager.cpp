@@ -133,8 +133,31 @@ DownloadManager::getCaller() {
     return caller;
 }
 
+QString
+DownloadManager::getDownloadOwner(const QVariantMap& metadata) {
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
+    auto owner = getCaller();
+    auto appId = appArmor->appId(owner);
+    if(appArmor->isConfined(appId)) {
+        qDebug() << "Apparmor";
+        return appId;
+    } else {
+        if (metadata.contains(Metadata::APP_ID)){
+            qDebug() << "Metadata";
+            return metadata[Metadata::APP_ID].toString();
+        } else {
+            qDebug() << "Empty";
+            return "";
+        }
+    }
+    qDebug() << "WTF";
+    return "";
+}
+
 QDBusObjectPath
 DownloadManager::registerDownload(Download* download) {
+    download->setDownloadOwner(getDownloadOwner(download->metadata()));
+
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
     if (!_db->store(download)) {

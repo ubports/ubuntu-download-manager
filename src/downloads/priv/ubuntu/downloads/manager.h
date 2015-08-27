@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOADER_H
-#define DOWNLOADER_LIB_DOWNLOADER_H
+#pragma once
 
 #include <QObject>
 #include <QByteArray>
@@ -95,7 +94,6 @@ class DownloadManager : public BaseManager {
     virtual QDBusObjectPath registerDownload(Download* download);
 
  private:
-
     typedef std::function<Download*(QString)> DownloadCreationFunc;
 
     void init();
@@ -109,6 +107,7 @@ class DownloadManager : public BaseManager {
                                    StringMap headers);
     void onDownloadsChanged(QString);
     QString getCaller();
+    QString getDownloadOwner(const QVariantMap& metadata);
 
  private:
     Application* _app = nullptr;
@@ -126,4 +125,3 @@ class DownloadManager : public BaseManager {
 }  // DownloadManager
 
 }  // Manager
-#endif  // DOWNLOADER_LIB_DOWNLOADER_H

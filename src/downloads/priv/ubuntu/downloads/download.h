@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef DOWNLOADER_LIB_DOWNLOAD_H
-#define DOWNLOADER_LIB_DOWNLOAD_H
+#pragma once
 
 #include <QNetworkAccessManager>
 #include <QObject>
@@ -43,6 +42,7 @@ class Download : public Transfer {
     Q_PROPERTY(QString ClickPackage READ clickPackage)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
     Q_PROPERTY(QString Title READ title)
+    Q_PROPERTY(QString DownloadOwner READ downloadOwner)
 
  public:
     Download(const QString& id,
@@ -77,18 +77,29 @@ class Download : public Transfer {
         // rename the transfer method
         Transfer::allowGSMData(allowed);
     }
+
     virtual bool isGSMDownloadAllowed() {
         return Transfer::isGSMDataAllowed();
     }
+
     virtual StringMap headers() const {
         return _headers;
     }
+
     virtual void setHeaders(StringMap headers) {
         _headers = headers;
     }
 
     virtual void setMetadata(const QVariantMap& data) {
         _metadata = data;
+    }
+
+    virtual QString downloadOwner() {
+        return _owner;
+    }
+
+    virtual void setDownloadOwner(const QString& owner) {
+        _owner = owner;
     }
 
     // slots to be implemented by the children
@@ -110,6 +121,7 @@ class Download : public Transfer {
     QVariantMap _metadata;
 
  private:
+    QString _owner = QString::null;
     QMap<QString, QString> _headers;
     QMap<QString, QObject*> _adaptors;
 };
@@ -120,4 +132,3 @@ class Download : public Transfer {
 
 }  // Ubuntu
 
-#endif  // DOWNLOADER_LIB_APP_DOWNLOAD_H

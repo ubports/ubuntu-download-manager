@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef TEST_METADATA_H
-#define TEST_METADATA_H
+#pragma once
 
 #include <QObject>
 #include <ubuntu/transfers/metadata.h>
@@ -71,6 +70,14 @@ class TestMetadata : public BaseTestCase {
     void testSetDeflate();
     void testHasDeflateTrue();
     void testHasDeflateFalse();
+    void testDownloadOwner_data();
+    void testDownloadOwner();
+    void testSetDownloadOwner_data();
+    void testSetDownloadOwner();
+    void testHasDownloadOwnerTrue();
+    void testHasDoenloadOwnerFalse();
+    void testOWnerIsPickedFromEnv_data();
+    void testOWnerIsPickedFromEnv();
+    void testOwnerIsAlreadyPresent();
 };
 
-#endif // TEST_METADATA_H

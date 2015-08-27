@@ -16,8 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
-#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
+#pragma once
 
 #include <QObject>
 #include <QVariantMap>
@@ -51,6 +50,7 @@ class Download : public QObject {
     Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showInIndicatorChanged)
     Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
+    Q_PROPERTY(QString DownloadOwner READ downloadOwner NOTIFY downloadOwnerChanged)
 
  public:
     explicit Download(QObject* parent = 0)
@@ -244,6 +244,14 @@ class Download : public QObject {
     */
     virtual QString title() const = 0;
 
+    /*!
+        \fn QString title()
+
+        Returns the value of the downloadOwner property of the download. The owner of the
+        download is the application that created the download in the system.
+    */
+    virtual QString downloadOwner() const = 0;
+
  signals:
 
     /*!
@@ -346,10 +354,16 @@ class Download : public QObject {
     */
     void titleChanged();
 
+    /*!
+        \fn void Download::downloadOwnerChanged();
+
+        This signal is emitted whenever the download owner property of the download
+        has been updated.
+    */
+    void downloadOwnerChanged();
+
 };
 
 }  // Ubuntu
 
 }  // DownloadManager
-
-#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
