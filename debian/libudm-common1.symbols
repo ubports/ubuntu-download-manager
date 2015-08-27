@@ -56,7 +56,7 @@ libudm-common.so.1 libudm-common1 #MINVER#
  (c++)"Ubuntu::Transfers::System::Logger::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::qt_metacast(char const*)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::setLogLevel(QtMsgType)@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::Transfers::System::Logger::toStdString(QString const&)@Base" 0.4+14.10.20140618
+ (c++)"Ubuntu::Transfers::System::Logger::toStdString[abi:cxx11](QString const&)@Base" 0replaceme
  (c++)"Ubuntu::Transfers::System::Logger::setupLogging(QString)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::staticMetaObject@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::System::Logger::getLogDir()@Base" 0.4+14.10.20140618
