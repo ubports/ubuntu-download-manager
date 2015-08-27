@@ -60,6 +60,7 @@ libubuntu-download-manager-client.so.1 libubuntu-download-manager-client1 #MINVE
  (c++)"Ubuntu::DownloadManager::Download::titleChanged()@Base" 0.9+14.10.20141014.1
  (c++)"Ubuntu::DownloadManager::Download::clickPackagedChanged()@Base" 0.9+14.10.20141014.1
  (c++)"Ubuntu::DownloadManager::Download::showInIndicatorChanged()@Base" 0.9+14.10.20141014.1
+ (c++)"Ubuntu::DownloadManager::Download::downloadOwnerChanged()@Base" 0replaceme
  (c++)"Ubuntu::DownloadManager::AuthError::errorString()@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::AuthError::qt_metacall(QMetaObject::Call, int, void**)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::AuthError::qt_metacast(char const*)@Base" 0.4+14.10.20140618
