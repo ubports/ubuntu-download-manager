@@ -1,10 +1,10 @@
-ubuntu-download-manager (1.1) UNRELEASED; urgency=medium
+ubuntu-download-manager (1.1ubuntu1) UNRELEASED; urgency=medium
 
   * Ensure that the app id of the application that created the download is
     present in the metadata and can be accessed via dbus.
   * Update the symbol files.
 
- -- Manuel de la Pena <mandel@mark-II>  Thu, 27 Aug 2015 14:28:19 +0100
+ -- Manuel de la Pena <manuel.delapena@canonical.com>  Tue, 01 Sep 2015 17:07:58 +0100
 
 ubuntu-download-manager (1.0+15.10.20150724-0ubuntu1) wily; urgency=medium
 
