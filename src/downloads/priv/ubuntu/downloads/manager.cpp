@@ -139,18 +139,14 @@ DownloadManager::getDownloadOwner(const QVariantMap& metadata) {
     auto owner = getCaller();
     auto appId = appArmor->appId(owner);
     if(appArmor->isConfined(appId)) {
-        qDebug() << "Apparmor";
         return appId;
     } else {
         if (metadata.contains(Metadata::APP_ID)){
-            qDebug() << "Metadata";
             return metadata[Metadata::APP_ID].toString();
         } else {
-            qDebug() << "Empty";
             return "";
         }
     }
-    qDebug() << "WTF";
     return "";
 }
 
