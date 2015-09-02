@@ -1,4 +1,4 @@
-ubuntu-download-manager (1.1ubuntu1) UNRELEASED; urgency=medium
+ubuntu-download-manager (1.1) UNRELEASED; urgency=medium
 
   * Ensure that the app id of the application that created the download is
     present in the metadata and can be accessed via dbus.
