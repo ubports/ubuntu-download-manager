@@ -12,7 +12,7 @@ set(SOURCES
 	ubuntu/downloads/file_download.cpp
 	ubuntu/downloads/group_download.cpp
 	ubuntu/downloads/group_download_adaptor.cpp
-        ubuntu/downloads/header_parser.cpp
+    ubuntu/downloads/header_parser.cpp
 	ubuntu/downloads/manager.cpp
 	ubuntu/downloads/mms_file_download.cpp
 	ubuntu/downloads/sm_file_download.cpp
