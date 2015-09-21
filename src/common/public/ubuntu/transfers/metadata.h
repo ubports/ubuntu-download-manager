@@ -75,7 +75,7 @@ class Metadata : public QVariantMap {
     void setExtract(bool extract);
     bool hasExtract() const;
 
-    QString owner() const;
+    QString destinationApp() const;
     void setOwner(const QString &id);
     bool hasOwner() const;
 };

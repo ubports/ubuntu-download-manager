@@ -185,7 +185,7 @@ Metadata::hasExtract() const {
 }
 
 QString
-Metadata::owner() const {
+Metadata::destinationApp() const {
     return (contains(Metadata::APP_ID))?
            value(Metadata::APP_ID).toString():"";
 }
