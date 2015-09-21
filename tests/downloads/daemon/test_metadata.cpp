@@ -367,11 +367,11 @@ TestMetadata::testDownloadOwner() {
 
     Metadata metadata;
     metadata[Metadata::APP_ID] = owner;
-    QCOMPARE(owner, metadata.owner());
+    QCOMPARE(owner, metadata.destinationApp());
 }
 
 void
-TestMetadata::testSetDownloadOwner_data() {
+TestMetadata::testSetDownloadDestinationApp_data() {
     QTest::addColumn<QString>("owner");
 
     QTest::newRow("First app") << "First app";
@@ -380,7 +380,7 @@ TestMetadata::testSetDownloadOwner_data() {
 }
 
 void
-TestMetadata::testSetDownloadOwner() {
+TestMetadata::testSetDownloadDestinationApp() {
     QFETCH(QString, owner);
 
     Metadata metadata;
@@ -389,7 +389,7 @@ TestMetadata::testSetDownloadOwner() {
 }
 
 void
-TestMetadata::testHasDownloadOwnerTrue() {
+TestMetadata::testHasDownloadDestinationAppTrue() {
     Metadata metadata;
     metadata.setOwner("pedro");
 
@@ -397,7 +397,7 @@ TestMetadata::testHasDownloadOwnerTrue() {
 }
 
 void
-TestMetadata::testHasDoenloadOwnerFalse() {
+TestMetadata::testHasDownloadDestinationAppFalse() {
     Metadata metadata;
     metadata.clear();
 
@@ -405,7 +405,7 @@ TestMetadata::testHasDoenloadOwnerFalse() {
 }
 
 void
-TestMetadata::testOWnerIsPickedFromEnv_data() {
+TestMetadata::testDestinationAppIsPickedFromEnv_data() {
     QTest::addColumn<QString>("appid");
 
     QTest::newRow("First app") << "Chanco";
@@ -415,7 +415,7 @@ TestMetadata::testOWnerIsPickedFromEnv_data() {
 
 
 void
-TestMetadata::testOWnerIsPickedFromEnv() {
+TestMetadata::testDestinationAppIsPickedFromEnv() {
     QFETCH(QString, appid);
 
     // set the used envar
@@ -423,11 +423,11 @@ TestMetadata::testOWnerIsPickedFromEnv() {
 
     Metadata metadata;
     QVERIFY(metadata.hasOwner());
-    QCOMPARE(metadata.owner(), appid);
+    QCOMPARE(metadata.destinationApp(), appid);
 }
 
 void
-TestMetadata::testOwnerIsAlreadyPresent() {
+TestMetadata::testDestinationAppIsAlreadyPresent() {
     QString appid("Test");
     QVariantMap map;
 
@@ -435,7 +435,7 @@ TestMetadata::testOwnerIsAlreadyPresent() {
     setenv("APP_ID", appid.toStdString().c_str(), 1);
     Metadata metadata(map);
     QVERIFY(metadata.hasOwner());
-    QCOMPARE(metadata.owner(), appid);
+    QCOMPARE(metadata.destinationApp(), appid);
 }
 
 QTEST_MAIN(TestMetadata)
