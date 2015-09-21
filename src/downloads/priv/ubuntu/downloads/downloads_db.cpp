@@ -75,6 +75,9 @@ namespace {
         "throttle=:throttle, metadata=:metadata, headers=:headers "\
         "WHERE uuid=:uuid";
 
+    const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "\
+        "WHERE uuid=:uuid";
+
     const QString IDLE_STRING = "idle";
     const QString START_STRING = "start";
     const QString PAUSE_STRING = "pause";
@@ -233,6 +236,40 @@ DownloadsDb::store(Download* down) {
         return storeSingleDownload(fileDown);
     }
     return false;
+}
+
+DownloadStateStruct
+DownloadsDb::getDownloadState(const QString &downloadId) {
+    bool opened = _db.open();
+
+    if (!opened) {
+        LOG(ERROR) << _db.lastError().text();
+        return DownloadStateStruct();
+    }
+
+    QSqlQuery query;
+    // QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "
+    //     "WHERE uuid=:uuid";
+    query.prepare(GET_SINGLE_DOWNLOAD_STATE);
+    query.bindValue(":uuid", downloadId);
+
+    bool success = query.exec();
+    if (success && query.next()) {
+        // grab the data and create the state structure
+        auto state = stringToState(query.value(0).toString());
+        auto url = query.value(1).toString();
+        auto localPath = query.value(2).toString();
+        auto hash = query.value(3).isValid()?query.value(3).toString():"";
+
+        DownloadStateStruct result(state, url, localPath, hash);
+        _db.close();
+
+        return result;
+    }
+    if (!success) {
+        LOG(ERROR) << query.lastError().text();
+    }
+    return DownloadStateStruct();
 }
 
 bool

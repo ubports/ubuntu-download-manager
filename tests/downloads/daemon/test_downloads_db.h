@@ -15,8 +15,7 @@
  * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  */
-#ifndef TEST_DOWNLOADS_DB_H
-#define TEST_DOWNLOADS_DB_H
+#pragma once
 
 #include <QDir>
 #include <QObject>
@@ -65,9 +64,10 @@ class TestDownloadsDb : public BaseTestCase {
     void testStoreSingleDownloadPresent();
     void testConnectedToDownload();
     void testDisconnectedFromDownload();
+    void testGetStateMissingDownload();
+    void testGetStateDownload_data();
+    void testGetStateDownload();
 
  private:
     DownloadsDb* _db;
 };
-
-#endif  // TEST_DOWNLOADS_DB_H

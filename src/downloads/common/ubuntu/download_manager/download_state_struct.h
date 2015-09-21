@@ -25,6 +25,10 @@ namespace Ubuntu {
 
 namespace DownloadManager {
 
+namespace Daemon {
+class DownloadsDb;
+}
+
 /*!
     \class DownloadStateStruct
     \brief The DownloadStateStruct represents the dbus structure that is used
@@ -40,6 +44,8 @@ class DownloadStateStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString filePath READ getFilePath)
     Q_PROPERTY(QString hash READ getHash)
+
+    friend class Ubuntu::DownloadManager::Daemon::DownloadsDb;
 
  public:
 
@@ -95,6 +101,13 @@ class DownloadStateStruct {
        Returns the url that points to the file that will be downloaded.
     */
     QString getHash() const;
+
+    /*
+       \fn bool isValid();
+
+       Returns if the download state if valid.
+    */
+    bool isValid();
 
  protected:
 

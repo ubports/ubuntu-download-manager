@@ -108,6 +108,11 @@ DownloadStateStruct::getHash() const {
     return _hash;
 }
 
+bool
+DownloadStateStruct::isValid() {
+    return _url != QString::null;
+}
+
 }  // DownloadManager
 
 }  // Ubuntu

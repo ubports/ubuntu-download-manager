@@ -336,9 +336,7 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
 
 DownloadStateStruct
 DownloadManager::getDownloadState(const QString &downloadId) {
-    Q_UNUSED(downloadId);
-    DownloadStateStruct state;
-    return state;
+    return _db->getDownloadState(downloadId);
 }
 
 }  // Daemon
