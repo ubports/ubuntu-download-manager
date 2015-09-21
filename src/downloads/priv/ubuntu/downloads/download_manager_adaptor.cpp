@@ -17,6 +17,12 @@
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
 
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace Daemon {
+
 /*
  * Implementation of adaptor class DownloadManagerAdaptor
  */
@@ -93,11 +99,11 @@ QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloadsWithMetadata(const
     return downloads;
 }
 
-DownloadState DownloadManagerAdaptor::getDownloadState(const QString &downloadId)
+DownloadStateStruct DownloadManagerAdaptor::getDownloadState(const QString &downloadId)
 {
     // handle method call com.canonical.applications.DownloadManager.getDownloadState
-    DownloadState state;
-    QMetaObject::invokeMethod(parent(), "getDownloadState", Q_RETURN_ARG(DownloadState, state), Q_ARG(QString, downloadId));
+    DownloadStateStruct state;
+    QMetaObject::invokeMethod(parent(), "getDownloadState", Q_RETURN_ARG(DownloadStateStruct, state), Q_ARG(QString, downloadId));
     return state;
 }
 
@@ -115,3 +121,8 @@ void DownloadManagerAdaptor::setDefaultThrottle(qulonglong speed)
     QMetaObject::invokeMethod(parent(), "setDefaultThrottle", Q_ARG(qulonglong, speed));
 }
 
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubuntu

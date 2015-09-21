@@ -9,12 +9,12 @@
  * before re-generating it.
  */
 
-#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1442494855
-#define DOWNLOAD_MANAGER_ADAPTOR_H_1442494855
+#ifndef DOWNLOAD_MANAGER_ADAPTOR_H_1390996214
+#define DOWNLOAD_MANAGER_ADAPTOR_H_1390996214
 
 #include <QtCore/QObject>
 #include <QtDBus/QtDBus>
-#include "metatypes.h"
+#include <ubuntu/download_manager/metatypes.h>
 QT_BEGIN_NAMESPACE
 class QByteArray;
 template<class T> class QList;
@@ -23,6 +23,13 @@ class QString;
 class QStringList;
 class QVariant;
 QT_END_NAMESPACE
+
+
+namespace Ubuntu {
+
+namespace DownloadManager {
+
+namespace Daemon {
 
 /*
  * Adaptor class for interface com.canonical.applications.DownloadManager
@@ -64,7 +71,7 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
 "    <method name=\"getDownloadState\">\n"
-"      <annotation value=\"DownloadState\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
+"      <annotation value=\"DownloadStateStruct\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"downloadId\"/>\n"
 "      <arg direction=\"out\" type=\"(issss)\" name=\"state\"/>\n"
 "    </method>\n"
@@ -100,11 +107,16 @@ public Q_SLOTS: // METHODS
     void exit();
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
-    DownloadState getDownloadState(const QString &downloadId);
+    DownloadStateStruct getDownloadState(const QString &downloadId);
     bool isGSMDownloadAllowed();
     void setDefaultThrottle(qulonglong speed);
 Q_SIGNALS: // SIGNALS
     void downloadCreated(const QDBusObjectPath &path);
 };
 
+}  // Daemon
+
+}  // DownloadManager
+
+}  // Ubuntu
 #endif

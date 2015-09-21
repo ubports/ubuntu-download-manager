@@ -334,6 +334,13 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
     return paths;
 }
 
+DownloadStateStruct
+DownloadManager::getDownloadState(const QString &downloadId) {
+    Q_UNUSED(downloadId);
+    DownloadStateStruct state;
+    return state;
+}
+
 }  // Daemon
 
 }  // DownloadManager

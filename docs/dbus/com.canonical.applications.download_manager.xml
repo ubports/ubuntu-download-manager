@@ -36,7 +36,7 @@
     </method>
 
     <method name="getDownloadState">
-        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="DownloadState"/>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="DownloadStateStruct"/>
         <arg name="downloadId" type="s" direction="in"/>
         <arg name="state" type="(issss)" direction="out"/>
     </method>

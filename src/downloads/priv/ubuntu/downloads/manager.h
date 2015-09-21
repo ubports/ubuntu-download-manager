@@ -18,14 +18,17 @@
 
 #pragma once
 
-#include <QObject>
+#include <functional>
+
 #include <QByteArray>
-#include <QtDBus/QDBusObjectPath>
+#include <QDBusObjectPath>
+#include <QObject>
 #include <QSslCertificate>
+
 #include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include <functional>
+
 #include "ubuntu/transfers/base_manager.h"
 #include "ubuntu/transfers/system/application.h"
 #include "download.h"
@@ -83,6 +86,7 @@ class DownloadManager : public BaseManager {
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
                                                       const QString& value);
+    DownloadStateStruct getDownloadState(const QString &downloadId);
  signals:
     void downloadCreated(const QDBusObjectPath& path);
 
