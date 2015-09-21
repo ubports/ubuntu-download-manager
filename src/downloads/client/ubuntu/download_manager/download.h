@@ -50,7 +50,9 @@ class Download : public QObject {
     Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showInIndicatorChanged)
     Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
-    Q_PROPERTY(QString DownloadOwner READ downloadOwner NOTIFY downloadOwnerChanged)
+    Q_PROPERTY(QString DownloadOwner READ
+                       destinationApp
+                       NOTIFY downloadOwnerChanged)
 
  public:
     explicit Download(QObject* parent = 0)
@@ -245,12 +247,12 @@ class Download : public QObject {
     virtual QString title() const = 0;
 
     /*!
-        \fn QString title()
+        \fn QString destinationApp() const = 0;
 
-        Returns the value of the downloadOwner property of the download. The owner of the
+        Returns the value of the destinationApp property of the download. The owner of the
         download is the application that created the download in the system.
     */
-    virtual QString downloadOwner() const = 0;
+    virtual QString destinationApp() const = 0;
 
  signals:
 

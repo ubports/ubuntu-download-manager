@@ -72,12 +72,12 @@ class TestMetadata : public BaseTestCase {
     void testHasDeflateFalse();
     void testDownloadOwner_data();
     void testDownloadOwner();
-    void testSetDownloadOwner_data();
-    void testSetDownloadOwner();
-    void testHasDownloadOwnerTrue();
-    void testHasDoenloadOwnerFalse();
-    void testOWnerIsPickedFromEnv_data();
-    void testOWnerIsPickedFromEnv();
-    void testOwnerIsAlreadyPresent();
+    void testSetDownloadDestinationApp_data();
+    void testSetDownloadDestinationApp();
+    void testHasDownloadDestinationAppTrue();
+    void testHasDownloadDestinationAppFalse();
+    void testDestinationAppIsPickedFromEnv_data();
+    void testDestinationAppIsPickedFromEnv();
+    void testDestinationAppIsAlreadyPresent();
 };
 
