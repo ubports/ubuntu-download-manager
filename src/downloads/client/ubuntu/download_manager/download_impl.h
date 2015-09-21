@@ -81,7 +81,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     QString clickPackage() const;
     bool showInIndicator() const;
     QString title() const;
-    QString downloadOwner() const;
+    QString destinationApp() const;
 
  protected:
     DownloadImpl(const QDBusConnection& conn, Error* err, QObject* parent = 0);
