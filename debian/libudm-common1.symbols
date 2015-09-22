@@ -122,9 +122,9 @@ libudm-common.so.1 libudm-common1 #MINVER#
  (c++)"Ubuntu::Transfers::Metadata::hasExtract() const@Base" 0.9+14.10.20141014.1
  (c++)"Ubuntu::Transfers::Metadata::extract() const@Base" 0.9+14.10.20141014.1
  (c++)"Ubuntu::Transfers::Metadata::APP_ID@Base" 0replaceme
- (c++)"Ubuntu::Transfers::Metadata::setOwner(QString const&)@Base" 0replaceme 
+ (c++)"Ubuntu::Transfers::Metadata::setDestinationApp(QString const&)@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Metadata::destinationApp() const@Base" 0replaceme
- (c++)"Ubuntu::Transfers::Metadata::hasOwner() const@Base" 0replaceme
+ (c++)"Ubuntu::Transfers::Metadata::hasDestinationApp() const@Base" 0replaceme
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getCode() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::HttpErrorStruct::getPhrase() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::Transfers::Errors::NetworkErrorStruct::getCode() const@Base" 0.4+14.10.20140618
