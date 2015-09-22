@@ -8,8 +8,8 @@
  * Do not edit! All changes made to it will be lost.
  */
 
-#ifndef DOWNLOAD_INTERFACE_H_1440512846
-#define DOWNLOAD_INTERFACE_H_1440512846
+#ifndef DOWNLOAD_INTERFACE_H_1442932929
+#define DOWNLOAD_INTERFACE_H_1442932929
 
 #include <QtCore/QObject>
 #include <QtCore/QByteArray>
@@ -40,9 +40,9 @@ public:
     inline QString clickPackage() const
     { return qvariant_cast< QString >(property("ClickPackage")); }
 
-    Q_PROPERTY(QString DownloadOwner READ downloadOwner)
-    inline QString downloadOwner() const
-    { return qvariant_cast< QString >(property("DownloadOwner")); }
+    Q_PROPERTY(QString DestinationApp READ destinationApp)
+    inline QString destinationApp() const
+    { return qvariant_cast< QString >(property("DestinationApp")); }
 
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
     inline bool showInIndicator() const

@@ -50,9 +50,7 @@ class Download : public QObject {
     Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showInIndicatorChanged)
     Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
-    Q_PROPERTY(QString DownloadOwner READ
-                       destinationApp
-                       NOTIFY downloadOwnerChanged)
+    Q_PROPERTY(QString DownloadOwner READ destinationApp NOTIFY destinationAppChanged)
 
  public:
     explicit Download(QObject* parent = 0)
@@ -357,12 +355,12 @@ class Download : public QObject {
     void titleChanged();
 
     /*!
-        \fn void Download::downloadOwnerChanged();
+        \fn void Download::destinationAppChanged();
 
         This signal is emitted whenever the download owner property of the download
         has been updated.
     */
-    void downloadOwnerChanged();
+    void destinationAppChanged();
 
 };
 

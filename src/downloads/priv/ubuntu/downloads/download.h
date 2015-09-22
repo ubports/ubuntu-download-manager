@@ -42,7 +42,7 @@ class Download : public Transfer {
     Q_PROPERTY(QString ClickPackage READ clickPackage)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
     Q_PROPERTY(QString Title READ title)
-    Q_PROPERTY(QString DownloadOwner READ downloadOwner)
+    Q_PROPERTY(QString DownloadOwner READ destinationApp)
 
  public:
     Download(const QString& id,
@@ -94,12 +94,12 @@ class Download : public Transfer {
         _metadata = data;
     }
 
-    virtual QString downloadOwner() {
-        return _owner;
+    virtual QString destinationApp() {
+        return _destinationApp;
     }
 
     virtual void setDownloadOwner(const QString& owner) {
-        _owner = owner;
+        _destinationApp = owner;
     }
 
     // slots to be implemented by the children
@@ -121,7 +121,7 @@ class Download : public Transfer {
     QVariantMap _metadata;
 
  private:
-    QString _owner = QString::null;
+    QString _destinationApp = QString::null;
     QMap<QString, QString> _headers;
     QMap<QString, QObject*> _adaptors;
 };

@@ -118,7 +118,7 @@
 
     <property access="read" type="s" name="ClickPackage" />
 
-    <property access="read" type="s" name="DownloadOwner" />
+    <property access="read" type="s" name="DestinationApp" />
 
  </interface>
 </node>

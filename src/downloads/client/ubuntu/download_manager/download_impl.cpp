@@ -427,7 +427,7 @@ DownloadImpl::title() const {
 
 QString
 DownloadImpl::destinationApp() const {
-    return _dbusInterface->downloadOwner();
+    return _dbusInterface->destinationApp();
 }
 
 void

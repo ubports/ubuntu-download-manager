@@ -26,7 +26,6 @@ libubuntu-download-manager-common.so.1 libubuntu-download-manager-common1 #MINVE
  (c++)"Ubuntu::DownloadManager::operator<<(QDBusArgument&, Ubuntu::DownloadManager::GroupDownloadStruct const&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::operator>>(QDBusArgument const&, Ubuntu::DownloadManager::DownloadStruct&)@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::operator>>(QDBusArgument const&, Ubuntu::DownloadManager::GroupDownloadStruct&)@Base" 0.4+14.10.20140618
- (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::~GroupDownloadStruct()@Base" 0replaceme
  (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::getLocalFile() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::getUrl() const@Base" 0.4+14.10.20140618
  (c++)"Ubuntu::DownloadManager::GroupDownloadStruct::getHash() const@Base" 0.4+14.10.20140618
