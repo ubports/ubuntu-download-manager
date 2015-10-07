@@ -1,6 +1,7 @@
 #include "ubuntu_download_manager.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
+#include <QDebug>
 
 namespace Ubuntu {
 
@@ -86,8 +87,14 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
 {
     m_manager = Manager::createSessionManager("", this);
 
+    // Get previous downloads for this app
+    m_manager->getAllDownloads();
+
     CHECK(connect(m_manager, &Manager::downloadCreated,
         this, &UbuntuDownloadManager::downloadFileCreated))
+            << "Could not connect to signal";
+    CHECK(connect(m_manager, &Manager::downloadsFound,
+        this, &UbuntuDownloadManager::downloadsFound))
             << "Could not connect to signal";
 }
 
@@ -167,6 +174,22 @@ void UbuntuDownloadManager::downloadCompleted()
             download->deleteLater();
         }
     }
+}
+
+void UbuntuDownloadManager::downloadsFound(DownloadsList* downloadsList)
+{
+    foreach(QSharedPointer<Download> download, downloadsList->downloads()) {
+        SingleDownload* singleDownload = new SingleDownload(this);
+        CHECK(connect(singleDownload, &SingleDownload::errorFound,
+            this, &UbuntuDownloadManager::registerError))
+                << "Could not connect to signal";
+        CHECK(connect(singleDownload, &SingleDownload::finished,
+            this, &UbuntuDownloadManager::downloadCompleted))
+                << "Could not connect to signal";
+        singleDownload->bindDownload(download.data());
+        m_downloads.append(QVariant::fromValue(singleDownload));
+    }
+    emit downloadsChanged();
 }
 
 /*!

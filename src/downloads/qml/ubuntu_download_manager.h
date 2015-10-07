@@ -23,6 +23,7 @@
 #include <QVariant>
 #include <QVariantList>
 #include <ubuntu/download_manager/manager.h>
+#include <ubuntu/download_manager/downloads_list.h>
 
 #include "download_error.h"
 #include "single_download.h"
@@ -61,6 +62,7 @@ private slots:
     void downloadFileCreated(Download* download);
     void downloadGroupCreated(GroupDownload* group);
     void downloadCompleted();
+    void downloadsFound(DownloadsList* downloads);
 
 private:
     bool m_autoStart;
