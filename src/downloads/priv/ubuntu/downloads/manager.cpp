@@ -334,6 +334,30 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
     return paths;
 }
 
+QList<QDBusObjectPath>
+DownloadManager::getUncollectedDownloads(const QString &appId) {
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
+    auto owner = getCaller();
+    auto callerAppId = appArmor->appId(owner);
+    QList<QDBusObjectPath> paths;
+    QString testAppId = appId;
+    if (appArmor->isConfined(callerAppId)) {
+        // Confined apps always get their own downloads returned
+        testAppId = callerAppId;
+    }
+
+    LOG(INFO) << "Returning uncollected downloads for api with id" << testAppId;
+
+    auto transfers = _queue->transfers();
+    foreach(const QString& path, transfers.keys()) {
+        auto t = transfers[path];
+        if (t->transferAppId() == testAppId && t->state() == Transfer::UNCOLLECTED)
+            paths << QDBusObjectPath(path);
+    }
+    
+    return paths;
+}
+
 DownloadStateStruct
 DownloadManager::getDownloadState(const QString &downloadId) {
     return _db->getDownloadState(downloadId);

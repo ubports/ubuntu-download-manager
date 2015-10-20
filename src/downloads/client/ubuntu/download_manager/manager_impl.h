@@ -81,6 +81,10 @@ class UBUNTU_TRANSFERS_PRIVATE ManagerImpl : public Manager {
                                              const QString &value,
                                              MetadataDownloadsListCb cb,
                                              MetadataDownloadsListCb errCb);
+    virtual void getUncollectedDownloads(const QString &appId);
+    virtual void getUncollectedDownloads(const QString &appId,
+                                         DownloadsListCb cb,
+                                         DownloadsListCb errCb);
 
     bool isError() const;
     Error* lastError() const;

@@ -86,6 +86,8 @@ class DownloadManager : public BaseManager {
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
                                                       const QString& value);
+    virtual QList<QDBusObjectPath> getUncollectedDownloads(
+                                                      const QString& appId);
     virtual DownloadStateStruct getDownloadState(const QString &downloadId);
  signals:
     void downloadCreated(const QDBusObjectPath& path);

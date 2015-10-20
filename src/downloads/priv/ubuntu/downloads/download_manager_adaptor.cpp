@@ -99,6 +99,14 @@ QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloadsWithMetadata(const
     return downloads;
 }
 
+QList<QDBusObjectPath> DownloadManagerAdaptor::getUncollectedDownloads(const QString &appId)
+{
+    // handle method call com.canonical.applications.DownloadManager.getUncollectedDownloads
+    QList<QDBusObjectPath> downloads;
+    QMetaObject::invokeMethod(parent(), "getUncollectedDownloads", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, appId));
+    return downloads;
+}
+
 DownloadStateStruct DownloadManagerAdaptor::getDownloadState(const QString &downloadId)
 {
     // handle method call com.canonical.applications.DownloadManager.getDownloadState

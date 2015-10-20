@@ -70,6 +70,10 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"in\" type=\"s\" name=\"value\"/>\n"
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
+"    <method name=\"getUncollectedDownloads\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"appId\"/>\n"
+"      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
+"    </method>\n"
 "    <method name=\"getDownloadState\">\n"
 "      <annotation value=\"DownloadStateStruct\" name=\"org.qtproject.QtDBus.QtTypeName.Out0\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"downloadId\"/>\n"
@@ -108,6 +112,7 @@ public Q_SLOTS: // METHODS
     QList<QDBusObjectPath> getAllDownloads();
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
     DownloadStateStruct getDownloadState(const QString &downloadId);
+    QList<QDBusObjectPath> getUncollectedDownloads(const QString &appId);
     bool isGSMDownloadAllowed();
     void setDefaultThrottle(qulonglong speed);
 Q_SIGNALS: // SIGNALS

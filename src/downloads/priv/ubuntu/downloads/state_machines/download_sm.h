@@ -157,6 +157,7 @@ class DownloadSM : public QObject {
     static QString POST_PROCESSING;
     static QString ERROR;
     static QString CANCELED;
+    static QString UNCOLLECTED;
     static QString FINISHED;
 
  signals:

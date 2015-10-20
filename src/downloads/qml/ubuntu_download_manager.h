@@ -23,7 +23,6 @@
 #include <QVariant>
 #include <QVariantList>
 #include <ubuntu/download_manager/manager.h>
-#include <ubuntu/download_manager/downloads_list.h>
 
 #include "download_error.h"
 #include "single_download.h"
@@ -46,10 +45,10 @@ public:
 
     Q_INVOKABLE void download(QString url);
 
-    QVariantList downloads() { return m_downloads; }
+    QVariantList downloads();
     QString errorMessage() const { return m_errorMessage; }
     bool autoStart() const { return m_autoStart; }
-    bool cleanDownloads() const { return m_cleanDownloads; }
+    bool cleanDownloads() const;
     void setCleanDownloads(bool value);
     void setAutoStart(bool value) { m_autoStart = value; }
 
@@ -61,13 +60,11 @@ private slots:
     void registerError(DownloadError& error);
     void downloadFileCreated(Download* download);
     void downloadGroupCreated(GroupDownload* group);
-    void downloadCompleted();
     void downloadsFound(DownloadsList* downloads);
 
 private:
     bool m_autoStart;
     bool m_cleanDownloads;
-    QVariantList m_downloads;
     QString m_errorMessage;
     Manager* m_manager;
 };

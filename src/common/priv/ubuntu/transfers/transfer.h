@@ -35,6 +35,7 @@ class Transfer : public QObject {
         PAUSE,
         RESUME,
         CANCEL,
+        UNCOLLECTED,
         FINISH,
         ERROR
     };

@@ -35,6 +35,11 @@
         <arg name="downloads" type="ao" direction="out" />
     </method>
 
+    <method name="getUncollectedDownloads">
+        <arg name="appId" type="s" direction="in"/>
+        <arg name="downloads" type="ao" direction="out"/>
+    </method>
+
     <method name="getDownloadState">
         <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="DownloadStateStruct"/>
         <arg name="downloadId" type="s" direction="in"/>

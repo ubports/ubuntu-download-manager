@@ -80,7 +80,13 @@ Factory::createDownload(const QString& dbusOwner,
     QScopedPointer<SecurityDetails> details(
         getSecurityDetails(dbusOwner, metadata));
     auto dbusPath = details->dbusPath.arg("download");
-    auto down = new FileDownload(details->id, details->appId,
+    QString appId = details->appId;
+    if (!details->isConfined && metadata.contains(Metadata::APP_ID)) {
+        // If we're unconfined use the metadata app id to
+        // distinguish between different unconfined apps
+        appId = metadata[Metadata::APP_ID].toString();
+    }
+    auto down = new FileDownload(details->id, appId,
         dbusPath, details->isConfined, details->localPath, url, metadata, headers);
     auto downAdaptor = new DownloadAdaptor(down);
     down->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);

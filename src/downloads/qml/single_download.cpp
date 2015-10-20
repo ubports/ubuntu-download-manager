@@ -20,6 +20,7 @@
 #include <ubuntu/download_manager/download_struct.h>
 
 #include "single_download.h"
+#include "download_history.h"
 
 namespace Ubuntu {
 
@@ -169,6 +170,8 @@ SingleDownload::bindDownload(Download* download)
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
     }
+
+    DownloadHistory::instance()->addDownload(this);
 }
 
 void
@@ -222,7 +225,9 @@ SingleDownload::download(QString url)
                 &SingleDownload::bindDownload))
                     << "Could not connect to signal";
         }
-        DownloadStruct dstruct(url);
+        Metadata metadata;
+        QMap<QString, QString> headers;
+        DownloadStruct dstruct(url, metadata.map(), headers);
         m_manager->createDownload(dstruct);
     } else {
         m_error.setMessage("Current download still in progress.");

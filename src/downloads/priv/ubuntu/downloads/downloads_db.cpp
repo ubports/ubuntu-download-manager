@@ -78,11 +78,16 @@ namespace {
     const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "\
         "WHERE uuid=:uuid";
 
+    const QString GET_UNCOLLECTED_DOWNLOADS = "SELECT uuid, appId, url, dbus_path, "\
+        "local_path, hash, state FROM SingleDownload "\
+        "WHERE appId=:appId AND state='uncoll'";
+
     const QString IDLE_STRING = "idle";
     const QString START_STRING = "start";
     const QString PAUSE_STRING = "pause";
     const QString RESUME_STRING = "resume";
     const QString CANCEL_STRING = "cancel";
+    const QString UNCOLLECTED_STRING = "uncoll";
     const QString FINISH_STRING = "finish";
     const QString ERROR_STRING = "error";
 
@@ -181,6 +186,8 @@ DownloadsDb::stateToString(Download::State state) {
             return RESUME_STRING;
         case Download::CANCEL:
             return CANCEL_STRING;
+        case Download::UNCOLLECTED:
+            return UNCOLLECTED_STRING;
         case Download::FINISH:
             return FINISH_STRING;
         case Download::ERROR:
@@ -203,6 +210,8 @@ DownloadsDb::stringToState(QString state) {
         return Download::RESUME;
     if (lowerState == CANCEL_STRING)
         return Download::CANCEL;
+    if (lowerState == UNCOLLECTED_STRING)
+        return Download::UNCOLLECTED;
     if (lowerState == FINISH_STRING)
         return Download::FINISH;
     if (lowerState == ERROR_STRING)

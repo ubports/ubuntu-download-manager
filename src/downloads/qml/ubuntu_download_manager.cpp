@@ -1,4 +1,5 @@
 #include "ubuntu_download_manager.h"
+#include "download_history.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <QDebug>
@@ -87,14 +88,11 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
 {
     m_manager = Manager::createSessionManager("", this);
 
-    // Get previous downloads for this app
-    m_manager->getAllDownloads();
-
     CHECK(connect(m_manager, &Manager::downloadCreated,
         this, &UbuntuDownloadManager::downloadFileCreated))
             << "Could not connect to signal";
-    CHECK(connect(m_manager, &Manager::downloadsFound,
-        this, &UbuntuDownloadManager::downloadsFound))
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadsChanged,
+        this, &UbuntuDownloadManager::downloadsChanged))
             << "Could not connect to signal";
 }
 
@@ -103,7 +101,6 @@ UbuntuDownloadManager::~UbuntuDownloadManager()
     if (m_manager != nullptr) {
         m_manager->deleteLater();
     }
-    m_downloads.clear();
 }
 
 /*!
@@ -113,7 +110,9 @@ UbuntuDownloadManager::~UbuntuDownloadManager()
 */
 void UbuntuDownloadManager::download(QString url)
 {
-    DownloadStruct dstruct(url);
+    Metadata metadata;
+    QMap<QString, QString> headers;
+    DownloadStruct dstruct(url, metadata.map(), headers);
     m_manager->createDownload(dstruct);
 }
 
@@ -123,12 +122,7 @@ void UbuntuDownloadManager::downloadFileCreated(Download* download)
     CHECK(connect(singleDownload, &SingleDownload::errorFound,
         this, &UbuntuDownloadManager::registerError))
             << "Could not connect to signal";
-    CHECK(connect(singleDownload, &SingleDownload::finished,
-        this, &UbuntuDownloadManager::downloadCompleted))
-            << "Could not connect to signal";
     singleDownload->bindDownload(download);
-    m_downloads.append(QVariant::fromValue(singleDownload));
-    emit downloadsChanged();
     if (m_autoStart) {
         singleDownload->startDownload();
     }
@@ -145,51 +139,19 @@ void UbuntuDownloadManager::registerError(DownloadError& error)
     emit errorChanged();
 }
 
+bool UbuntuDownloadManager::cleanDownloads() const
+{
+    return DownloadHistory::instance()->cleanDownloads();
+}
+
 void UbuntuDownloadManager::setCleanDownloads(bool value)
 {
-    m_cleanDownloads = value;
-    if (m_cleanDownloads) {
-        QVariantList newList;
-        foreach(QVariant var, m_downloads) {
-            SingleDownload *download = qobject_cast<SingleDownload*>(var.value<SingleDownload*>());
-            if (download != nullptr && !download->isCompleted()) {
-                newList.append(QVariant::fromValue(download));
-            } else {
-                download->deleteLater();
-            }
-        }
-        m_downloads = newList;
-        emit downloadsChanged();
-    }
+    DownloadHistory::instance()->setCleanDownloads(value);
 }
 
-void UbuntuDownloadManager::downloadCompleted()
+QVariantList UbuntuDownloadManager::downloads()
 {
-    if (m_cleanDownloads) {
-        SingleDownload* download = qobject_cast<SingleDownload*>(sender());
-        if (download != nullptr) {
-            int index = m_downloads.indexOf(QVariant::fromValue(download));
-            m_downloads.removeAt(index);
-            emit downloadsChanged();
-            download->deleteLater();
-        }
-    }
-}
-
-void UbuntuDownloadManager::downloadsFound(DownloadsList* downloadsList)
-{
-    foreach(QSharedPointer<Download> download, downloadsList->downloads()) {
-        SingleDownload* singleDownload = new SingleDownload(this);
-        CHECK(connect(singleDownload, &SingleDownload::errorFound,
-            this, &UbuntuDownloadManager::registerError))
-                << "Could not connect to signal";
-        CHECK(connect(singleDownload, &SingleDownload::finished,
-            this, &UbuntuDownloadManager::downloadCompleted))
-                << "Could not connect to signal";
-        singleDownload->bindDownload(download.data());
-        m_downloads.append(QVariant::fromValue(singleDownload));
-    }
-    emit downloadsChanged();
+    return DownloadHistory::instance()->downloads();
 }
 
 /*!

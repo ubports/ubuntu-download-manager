@@ -193,6 +193,29 @@ ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
     }
 }
 
+void
+ManagerImpl::getUncollectedDownloads(const QString &appId) {
+    Logger::log(Logger::Debug, "Manager getUncollectedDownloads()");
+    DownloadsListCb cb = [](DownloadsList*){};
+    getUncollectedDownloads(appId, cb, cb);
+}
+
+void
+ManagerImpl::getUncollectedDownloads(const QString &appId,
+                                     DownloadsListCb cb,
+                                     DownloadsListCb errCb) {
+    Logger::log(Logger::Debug, "Manager getUncollectedDownloads()");
+    QDBusPendingCall call = _dbusInterface->getUncollectedDownloads(appId);
+    auto watcher = new DownloadsListManagerPCW(
+        _conn, _servicePath, call, cb, errCb, this);
+    auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
+        this, &ManagerImpl::onWatcherDone);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal");
+    }
+}
+
 bool
 ManagerImpl::isError() const {
     return _isError;

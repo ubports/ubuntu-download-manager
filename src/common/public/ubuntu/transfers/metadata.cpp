@@ -17,6 +17,8 @@
  */
 
 #include <QProcessEnvironment>
+#include <QCoreApplication>
+#include <QDebug>
 
 #include "metadata.h"
 
@@ -43,6 +45,8 @@ Metadata::Metadata() {
     auto environment = QProcessEnvironment::systemEnvironment();
     if (environment.contains(APP_ID_ENV)) {
         setOwner(environment.value(APP_ID_ENV));
+    } else {
+        setOwner(QCoreApplication::applicationFilePath());
     }
 }
 
@@ -51,8 +55,11 @@ Metadata::Metadata(const QVariantMap map)
     // check if the app id is present, if not, do it
     if (!hasOwner()) {
         auto environment = QProcessEnvironment::systemEnvironment();
-        environment.contains(APP_ID_ENV);
-        setOwner(environment.value(APP_ID_ENV));
+        if (environment.contains(APP_ID_ENV)) {
+            setOwner(environment.value(APP_ID_ENV));
+        } else {
+            setOwner(QCoreApplication::applicationFilePath());
+        }
     }
 }
 

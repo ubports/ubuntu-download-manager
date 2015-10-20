@@ -89,6 +89,13 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QLatin1String("getAllDownloadsWithMetadata"), argumentList);
     }
 
+    inline QDBusPendingReply<QList<QDBusObjectPath> > getUncollectedDownloads(const QString &appId)
+    {   
+        QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(appId);
+        return asyncCallWithArgumentList(QLatin1String("getUncollectedDownloads"), argumentList);
+    }
+
     inline QDBusPendingReply<bool> isGSMDownloadAllowed()
     {
         QList<QVariant> argumentList;
