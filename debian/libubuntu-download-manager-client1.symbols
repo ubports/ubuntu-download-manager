@@ -103,6 +103,9 @@ libubuntu-download-manager-client.so.1 libubuntu-download-manager-client1 #MINVE
  (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::function(std::function<void (Ubuntu::DownloadManager::Download*)> const&)@Base" 0.4+14.10.20140618
  (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
  (c++)"std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)>::function(std::function<void (QString const&, QString const&, Ubuntu::DownloadManager::DownloadsList*)> const&)@Base" 0.4+14.10.20140618
+ (c++)"std::function<void (Ubuntu::DownloadManager::DownloadsList*)>::operator()(Ubuntu::DownloadManager::DownloadsList*) const@Base" 1.2
+ (c++)"std::function<void (Ubuntu::DownloadManager::GroupDownload*)>::operator()(Ubuntu::DownloadManager::GroupDownload*) const@Base" 1.2
+ (c++)"std::function<void (Ubuntu::DownloadManager::Download*)>::operator()(Ubuntu::DownloadManager::Download*) const@Base" 1.2
  (c++)"typeinfo for Ubuntu::DownloadManager::NetworkError@Base" 0.4+14.10.20140618
  (c++)"typeinfo for Ubuntu::DownloadManager::ProcessError@Base" 0.4+14.10.20140618
  (c++)"typeinfo for Ubuntu::DownloadManager::DownloadsList@Base" 0.4+14.10.20140618

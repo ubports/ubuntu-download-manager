@@ -1,3 +1,11 @@
+ubuntu-download-manager (1.2) UNRELEASED; urgency=medium
+
+  * Provide a shared download history for the downloads model that presents
+    all uncollected downloads from previous app launches.
+  * Update symbol files
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Wed, 21 Oct 2015 10:03:21 +0100
+
 ubuntu-download-manager (1.1) UNRELEASED; urgency=medium
 
   * Ensure that the app id of the application that created the download is
