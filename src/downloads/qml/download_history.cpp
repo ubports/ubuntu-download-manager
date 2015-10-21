@@ -2,7 +2,6 @@
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
 #include <QCoreApplication>
-#include <QDebug>
 
 namespace Ubuntu {
 
@@ -54,9 +53,7 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
         singleDownload->bindDownload(download.data());
         m_downloads.append(QVariant::fromValue(singleDownload));
     }
-    qDebug() << "Got downloads: " << m_downloads;
     emit downloadsChanged();
-    qDebug() << "Huh?";
 }
 
 bool DownloadHistory::cleanDownloads() const
