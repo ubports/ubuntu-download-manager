@@ -13,6 +13,10 @@ DownloadHistory::DownloadHistory(QObject *parent) :
 {
     m_manager = Manager::createSessionManager("", this);
 
+    CHECK(connect(m_manager, &Manager::downloadsFound,
+        this, &DownloadHistory::downloadsFound))
+            << "Could not connect to signal";
+
     // Get previous downloads for this app
     auto environment = QProcessEnvironment::systemEnvironment();
     if (environment.contains("APP_ID")) {
@@ -20,10 +24,6 @@ DownloadHistory::DownloadHistory(QObject *parent) :
     } else {
         m_manager->getUncollectedDownloads(QCoreApplication::applicationFilePath());
     }
-
-    CHECK(connect(m_manager, &Manager::downloadsFound,
-        this, &DownloadHistory::downloadsFound))
-            << "Could not connect to signal";
 }
 
 DownloadHistory *DownloadHistory::instance()

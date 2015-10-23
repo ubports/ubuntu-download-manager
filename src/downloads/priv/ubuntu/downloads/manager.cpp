@@ -351,7 +351,9 @@ DownloadManager::getUncollectedDownloads(const QString &appId) {
     auto transfers = _queue->transfers();
     foreach(const QString& path, transfers.keys()) {
         auto t = transfers[path];
-        if (t->transferAppId() == testAppId && t->state() == Transfer::UNCOLLECTED)
+        if (t->transferAppId() == testAppId && t->state() != Transfer::FINISH
+                                            && t->state() != Transfer::CANCEL
+                                            && t->state() != Transfer::ERROR)
             paths << QDBusObjectPath(path);
     }
     
