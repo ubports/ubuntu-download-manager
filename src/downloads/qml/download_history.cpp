@@ -79,15 +79,15 @@ void DownloadHistory::setCleanDownloads(bool value)
     }
 }
 
-void DownloadHistory::downloadCompleted()
+void DownloadHistory::downloadCompleted(const QString& path)
 {
-    if (m_cleanDownloads) {
-        SingleDownload* download = qobject_cast<SingleDownload*>(sender());
-        if (download != nullptr) {
+    SingleDownload* download = qobject_cast<SingleDownload*>(sender());
+    if (download != nullptr) {
+        emit downloadFinished(download, path);
+        if (m_cleanDownloads) {
             int index = m_downloads.indexOf(QVariant::fromValue(download));
             m_downloads.removeAt(index);
             emit downloadsChanged();
-            download->deleteLater();
         }
     }
 }

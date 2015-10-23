@@ -55,6 +55,7 @@ public:
 signals:
     void errorChanged();
     void downloadsChanged();
+    void downloadFinished(SingleDownload *download, const QString& path);
 
 private slots:
     void registerError(DownloadError& error);

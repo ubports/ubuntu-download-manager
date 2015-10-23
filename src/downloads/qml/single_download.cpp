@@ -306,6 +306,9 @@ SingleDownload::onFinished(const QString& path)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
+    // Keep a record of the downloadId so clients can still access the property
+    // after a download has finished
+    m_downloadId = m_download->id();
     m_download->deleteLater();
     m_download = nullptr;
     emit finished(path);
@@ -417,7 +420,7 @@ SingleDownload::setThrottle(qulonglong value) {
 QString
 SingleDownload::downloadId() const {
     if (m_download == nullptr) {
-        return "";
+        return m_downloadId;
     } else {
         return m_download->id();
     }

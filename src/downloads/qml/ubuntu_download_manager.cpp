@@ -94,6 +94,9 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
     CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadsChanged,
         this, &UbuntuDownloadManager::downloadsChanged))
             << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadFinished,
+        this, &UbuntuDownloadManager::downloadFinished))
+            << "Could not connect to signal";
 }
 
 UbuntuDownloadManager::~UbuntuDownloadManager()

@@ -171,6 +171,7 @@ private:
     DownloadError m_error;
     Download* m_download = nullptr;
     Manager* m_manager = nullptr;
+    QString m_downloadId;
 
 };
 

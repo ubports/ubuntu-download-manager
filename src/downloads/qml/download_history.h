@@ -43,9 +43,10 @@ class DownloadHistory : public QObject {
 
  signals:
     void downloadsChanged();
+    void downloadFinished(SingleDownload *singleDownload, const QString& path);
 
  private slots:
-    void downloadCompleted();
+    void downloadCompleted(const QString& path);
 
  private:
     Manager* m_manager;
