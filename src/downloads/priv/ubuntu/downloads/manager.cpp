@@ -346,7 +346,7 @@ DownloadManager::getUncollectedDownloads(const QString &appId) {
         testAppId = callerAppId;
     }
 
-    LOG(INFO) << "Returning uncollected downloads for api with id" << testAppId;
+    LOG(INFO) << "Returning uncollected downloads for app with id" << testAppId;
 
     auto transfers = _queue->transfers();
     foreach(const QString& path, transfers.keys()) {
