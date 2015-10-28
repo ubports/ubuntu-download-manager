@@ -103,6 +103,7 @@ void DownloadHistory::downloadCompleted(const QString& path)
 
 void DownloadHistory::onError(DownloadError& downloadError)
 {
+    Q_UNUSED(downloadError);
     SingleDownload* download = qobject_cast<SingleDownload*>(sender());
     if (download != nullptr) {
         emit errorFound(download);
