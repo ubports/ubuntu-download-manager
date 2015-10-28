@@ -263,7 +263,9 @@ SingleDownload::startDownload()
 void
 SingleDownload::pause()
 {
-    m_download->pause();
+    if (m_download != nullptr) {
+        m_download->pause();
+    }
 }
 
 /*!
@@ -275,7 +277,9 @@ SingleDownload::pause()
 void
 SingleDownload::resume()
 {
-    m_download->resume();
+    if (m_download != nullptr) {
+        m_download->resume();
+    }
 }
 
 /*!
@@ -286,7 +290,9 @@ SingleDownload::resume()
 void
 SingleDownload::cancel()
 {
-    m_download->cancel();
+    if (m_download != nullptr) {
+        m_download->cancel();
+    }
 }
 
 void
