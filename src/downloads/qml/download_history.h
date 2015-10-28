@@ -44,9 +44,11 @@ class DownloadHistory : public QObject {
  signals:
     void downloadsChanged();
     void downloadFinished(SingleDownload *singleDownload, const QString& path);
+    void errorFound(SingleDownload *download);
 
  private slots:
     void downloadCompleted(const QString& path);
+    void onError(DownloadError& error);
 
  private:
     Manager* m_manager;

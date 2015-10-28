@@ -40,6 +40,12 @@ QVariantList DownloadHistory::downloads() const
 void DownloadHistory::addDownload(SingleDownload *singleDownload)
 {
     m_downloads.append(QVariant::fromValue(singleDownload));
+    CHECK(connect(singleDownload, &SingleDownload::finished,
+        this, &DownloadHistory::downloadCompleted))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &SingleDownload::errorFound,
+        this, &DownloadHistory::onError))
+            << "Could not connect to signal";
     emit downloadsChanged();
 }
 
@@ -49,6 +55,9 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
         SingleDownload* singleDownload = new SingleDownload(this);
         CHECK(connect(singleDownload, &SingleDownload::finished,
             this, &DownloadHistory::downloadCompleted))
+                << "Could not connect to signal";
+        CHECK(connect(singleDownload, &SingleDownload::errorFound,
+            this, &DownloadHistory::onError))
                 << "Could not connect to signal";
         singleDownload->bindDownload(download.data());
         m_downloads.append(QVariant::fromValue(singleDownload));
@@ -89,6 +98,14 @@ void DownloadHistory::downloadCompleted(const QString& path)
             m_downloads.removeAt(index);
             emit downloadsChanged();
         }
+    }
+}
+
+void DownloadHistory::onError(DownloadError& downloadError)
+{
+    SingleDownload* download = qobject_cast<SingleDownload*>(sender());
+    if (download != nullptr) {
+        emit errorFound(download);
     }
 }
 

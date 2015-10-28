@@ -97,6 +97,9 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
     CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadFinished,
         this, &UbuntuDownloadManager::downloadFinished))
             << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::errorFound,
+        this, &UbuntuDownloadManager::errorFound))
+            << "Could not connect to signal";
 }
 
 UbuntuDownloadManager::~UbuntuDownloadManager()
@@ -136,9 +139,9 @@ void UbuntuDownloadManager::downloadGroupCreated(GroupDownload* group)
     Q_UNUSED(group);
 }
 
-void UbuntuDownloadManager::registerError(DownloadError& error)
+void UbuntuDownloadManager::registerError(DownloadError& downloadError)
 {
-    m_errorMessage = error.message();
+    m_errorMessage = downloadError.message();
     emit errorChanged();
 }
 
