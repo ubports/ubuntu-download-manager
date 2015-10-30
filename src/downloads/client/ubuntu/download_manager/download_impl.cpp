@@ -62,6 +62,13 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
             "Could not connect to signal &DownloadInterface::finished");
     }
 
+    connected = connect(_dbusInterface, &DownloadInterface::finished,
+        this, &DownloadImpl::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadInterface::finished");
+    }
+
     connected = connect(_dbusInterface, &DownloadInterface::paused,
         this, &Download::paused);
     if (!connected) {
@@ -213,6 +220,19 @@ DownloadImpl::cancel() {
     auto watcher = new DownloadPCW(_conn, _servicePath,
         call, this);
     Q_UNUSED(watcher);
+}
+
+void
+DownloadImpl::collected() {
+    Logger::log(Logger::Debug, QString("Download{%1} collected()").arg(_id));
+    QDBusPendingReply<> reply =
+        _dbusInterface->collected();
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error when setting download collected");
+        setLastError(reply.error());
+    }
 }
 
 void
@@ -479,6 +499,13 @@ DownloadImpl::onPropertiesChanged(const QString& interfaceName,
             emit titleChanged();
         }
     }
+}
+
+void DownloadImpl::onFinished(const QString &path) {
+    Q_UNUSED(path);
+    // Inform UDM that we've received the finished signal, so the download
+    // can be considered completely finished.
+    collected();
 }
 
 }  // DownloadManager

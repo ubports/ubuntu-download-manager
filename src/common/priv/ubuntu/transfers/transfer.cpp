@@ -194,6 +194,13 @@ Transfer::start() {
         startTransfer();
 }
 
+void
+Transfer::collected() {
+    if (state() == Transfer::UNCOLLECTED) {
+        setState(Transfer::FINISH);
+    }
+}
+
 }  // General
 
 }  // Ubuntu

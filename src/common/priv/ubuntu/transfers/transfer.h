@@ -78,6 +78,7 @@ class Transfer : public QObject {
     virtual void pause();
     virtual void resume();
     virtual void start();
+    virtual void collected();
 
  signals:
     void canceled(bool success);

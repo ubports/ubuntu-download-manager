@@ -53,6 +53,7 @@
     <method name="pause" />
     <method name="resume" />
     <method name="cancel" />
+    <method name="collected" />
 
     <signal name="started">
         <arg name="success" type="b" direction="out"/>

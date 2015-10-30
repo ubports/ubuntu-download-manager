@@ -99,6 +99,15 @@ class Download : public QObject {
     virtual void cancel() = 0;
 
     /*!
+        \fn void Download::collected()
+
+        Notifies the download manager that the finished signal for this
+        download object has been received by the client. This allows UDM
+        to report downloads that have finished while a client isn't running.
+    */
+    virtual void collected() = 0;
+
+    /*!
         \fn void Download::allowMobileDownload(bool allowed)
 
         Notifies the download manager that the download represented by this

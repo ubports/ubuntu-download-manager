@@ -59,6 +59,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void pause();
     void resume();
     void cancel();
+    void collected();
 
     void allowMobileDownload(bool allowed);
     bool isMobileDownloadAllowed();
@@ -101,6 +102,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void onPropertiesChanged(const QString& interfaceName,
                              const QVariantMap& changedProperties,
                              const QStringList& invalidatedProperties);
+    void onFinished(const QString& path);
 
  private:
     QString _id;

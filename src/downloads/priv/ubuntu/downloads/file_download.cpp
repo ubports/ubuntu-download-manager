@@ -1095,7 +1095,7 @@ FileDownload::emitFinished() {
         }
     }
 
-    setState(Download::FINISH);
+    setState(Download::UNCOLLECTED);
     unlockFilePath();
 
     DOWN_LOG(INFO) << "EMIT finished" << filePath();

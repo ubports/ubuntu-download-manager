@@ -69,6 +69,12 @@ void DownloadAdaptor::cancel()
     QMetaObject::invokeMethod(parent(), "cancel");
 }
 
+void DownloadAdaptor::collected()
+{
+    // handle method call com.canonical.applications.Download.collected
+    QMetaObject::invokeMethod(parent(), "collected");
+}
+
 StringMap DownloadAdaptor::headers()
 {
     // handle method call com.canonical.applications.Download.headers

@@ -66,6 +66,12 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QStringLiteral("cancel"), argumentList);
     }
 
+    inline QDBusPendingReply<> collected()
+    {
+        QList<QVariant> argumentList;
+        return asyncCallWithArgumentList(QStringLiteral("collected"), argumentList);
+    }
+
     inline QDBusPendingReply<StringMap> headers()
     {
         QList<QVariant> argumentList;
