@@ -127,6 +127,7 @@ Queue::onManagedTransferStateChanged() {
             break;
         case Transfer::ERROR:
         case Transfer::FINISH:
+        case Transfer::UNCOLLECTED:
             // remove the registered object in dbus, remove the transfer
             // and the adapter from the list
             if (!_current.isEmpty() && _current == transfer->path())
@@ -176,6 +177,9 @@ Queue::updateCurrentTransfer() {
             || state == Transfer::ERROR) {
             LOG(INFO) << "State is CANCEL || FINISH || ERROR";
             remove(_current);
+            _current = "";
+        } else if (state == Transfer::UNCOLLECTED) {
+            LOG(INFO) << "State is UNCOLLECTED";
             _current = "";
         } else if (!currentTransfer->canTransfer()
                 || state == Transfer::PAUSE) {
