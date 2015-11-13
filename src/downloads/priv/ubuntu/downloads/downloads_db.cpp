@@ -83,6 +83,9 @@ namespace {
         "local_path, hash, hash_algo, state FROM SingleDownload "\
         "WHERE appId=:appId AND state='uncoll'";
 
+    const QString UPDATE_UNCOLLECTED_DOWNLOADS = "UPDATE SingleDownload SET state='finish' "\
+        "WHERE state='uncoll' AND appId=:appId";
+
     const QString IDLE_STRING = "idle";
     const QString START_STRING = "start";
     const QString PAUSE_STRING = "pause";
@@ -300,6 +303,7 @@ DownloadsDb::getUncollectedDownloads(const QString &appId) {
     bool success = query.exec();
     if (!success) {
         LOG(ERROR) << query.lastError().text();
+        _db.close();
         return downloadList;
     }
     while (query.next()) {
@@ -321,7 +325,17 @@ DownloadsDb::getUncollectedDownloads(const QString &appId) {
         download->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
 
         downloadList << download;
+
     }
+
+    QSqlQuery updateQuery;
+    updateQuery.prepare(UPDATE_UNCOLLECTED_DOWNLOADS);
+    updateQuery.bindValue(":appId", appId);
+    success = updateQuery.exec();
+    if (!success) {
+        LOG(ERROR) << updateQuery.lastError().text();
+    }
+
     _db.close();
     return downloadList;
 }
