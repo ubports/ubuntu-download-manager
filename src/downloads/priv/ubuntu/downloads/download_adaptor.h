@@ -71,6 +71,9 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"isGSMDownloadAllowed\">\n"
 "      <arg direction=\"out\" type=\"b\" name=\"allowed\"/>\n"
 "    </method>\n"
+"    <method name=\"filePath\">\n"
+"      <arg direction=\"out\" type=\"s\" name=\"filepath\"/>\n"
+"    </method>\n"
 "    <method name=\"start\"/>\n"
 "    <method name=\"pause\"/>\n"
 "    <method name=\"resume\"/>\n"
@@ -148,6 +151,7 @@ public Q_SLOTS: // METHODS
     void allowGSMDownload(bool allowed);
     void cancel();
     void collected();
+    QString filePath();
     StringMap headers();
     bool isGSMDownloadAllowed();
     QVariantMap metadata();

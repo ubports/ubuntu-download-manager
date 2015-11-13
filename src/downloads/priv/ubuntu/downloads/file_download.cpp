@@ -1211,6 +1211,18 @@ FileDownload::emitError(const QString& error) {
     Download::emitError(error);
 }
 
+void
+FileDownload::setFilePath(const QString& filePath) {
+    // Used to recreate downloads from the database with the correct path
+    _fileNameMutex->unlockFileName(_filePath);
+    _filePath = filePath;
+}
+
+QString
+FileDownload::filePath() {
+    return _filePath;
+}
+
 }  // Daemon
 
 }  // DownloadManager

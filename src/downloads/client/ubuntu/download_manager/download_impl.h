@@ -71,6 +71,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void setMetadata(QVariantMap map);
     void setThrottle(qulonglong speed);
     qulonglong throttle();
+    QString filePath();
 
     QString id() const;
     qulonglong progress();

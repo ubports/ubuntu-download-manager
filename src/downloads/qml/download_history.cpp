@@ -60,7 +60,9 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
             this, &DownloadHistory::onError))
                 << "Could not connect to signal";
         singleDownload->bindDownload(download.data());
-        m_downloads.append(QVariant::fromValue(singleDownload));
+        if (!download->filePath().isEmpty()) {
+            emit singleDownload->finished(download.data()->filePath());
+        }
     }
     emit downloadsChanged();
 }

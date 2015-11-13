@@ -75,6 +75,14 @@ void DownloadAdaptor::collected()
     QMetaObject::invokeMethod(parent(), "collected");
 }
 
+QString DownloadAdaptor::filePath()
+{
+    // handle method call com.canonical.applications.Download.filePath
+    QString filePath;
+    QMetaObject::invokeMethod(parent(), "filePath", Q_RETURN_ARG(QString, filePath));
+    return filePath;    
+}
+
 StringMap DownloadAdaptor::headers()
 {
     // handle method call com.canonical.applications.Download.headers

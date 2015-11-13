@@ -348,6 +348,7 @@ DownloadManager::getUncollectedDownloads(const QString &appId) {
 
     LOG(INFO) << "Returning uncollected downloads for app with id" << testAppId;
 
+    // Fetch uncollected downloads that are still in memory
     auto transfers = _queue->transfers();
     foreach(const QString& path, transfers.keys()) {
         auto t = transfers[path];
@@ -356,7 +357,14 @@ DownloadManager::getUncollectedDownloads(const QString &appId) {
                                             && t->state() != Transfer::ERROR)
             paths << QDBusObjectPath(path);
     }
-    
+
+    // Fetch uncollected downloads from previous UDM sessions that are
+    // in the database
+    foreach(Download *download, _db->getUncollectedDownloads(testAppId)) {
+        _conn->registerObject(download->path(), download);
+        paths << QDBusObjectPath(download->path());
+    }
+
     return paths;
 }
 

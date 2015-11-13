@@ -212,6 +212,14 @@ class Download : public QObject {
     virtual qulonglong totalSize() = 0;
 
     /*!
+        \fn QString filePath()
+
+        Returns the value of the downloaded file's location. This is only set once
+        the download is complete.
+    */
+    virtual QString filePath() = 0;
+
+    /*!
         \fn bool isError() const
 
         Returns if the download represented by the object has had an error.

@@ -49,6 +49,10 @@
         <arg name="allowed" type="b" direction="out"/>
     </method>
 
+    <method name="filePath">
+        <arg name="filepath" type="s" direction="out"/>
+    </method>
+
     <method name="start" />
     <method name="pause" />
     <method name="resume" />

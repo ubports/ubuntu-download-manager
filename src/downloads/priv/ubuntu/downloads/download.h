@@ -105,6 +105,7 @@ class Download : public Transfer {
     // slots to be implemented by the children
     virtual qulonglong progress() = 0;
     virtual qulonglong totalSize() = 0;
+    virtual QString filePath() = 0;
 
  signals:
     // signals that are exposed via dbus

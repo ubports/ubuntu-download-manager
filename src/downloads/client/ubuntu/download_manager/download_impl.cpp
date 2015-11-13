@@ -324,9 +324,7 @@ DownloadImpl::setMetadata(QVariantMap map) {
     // block, the call should be fast enough
     reply.waitForFinished();
     if (reply.isError()) {
-        qDebug() << "Error setting metadata";
         Logger::log(Logger::Error, "Error setting the download metadata");
-        qDebug() << reply.error();
         setLastError(reply.error());
     }
 }
@@ -375,6 +373,23 @@ DownloadImpl::throttle() {
         Logger::log(Logger::Error, "Error querying the download throttle");
         setLastError(reply.error());
         return 0;
+    } else {
+        auto result = reply.value();
+        return result;
+    }
+}
+
+QString
+DownloadImpl::filePath() {
+    Logger::log(Logger::Debug, QString("Download{%1} filePath()").arg(_id));
+    QDBusPendingReply<QString> reply =
+        _dbusInterface->filePath();
+    // block, the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download file path");
+        setLastError(reply.error());
+        return "";
     } else {
         auto result = reply.value();
         return result;

@@ -153,8 +153,6 @@ SingleDownload::bindDownload(Download* download)
          &SingleDownload::onStarted))
             << "Could not connect to signal";
 
-    emit downloadIdChanged();
-
     // is the current in memory setting dirty, if they are, we do set the before we
     // start
     if (m_dirty) {
@@ -172,6 +170,8 @@ SingleDownload::bindDownload(Download* download)
     }
 
     DownloadHistory::instance()->addDownload(this);
+
+    emit downloadIdChanged();
 }
 
 void
@@ -368,7 +368,7 @@ SingleDownload::onCanceled(bool wasCanceled)
 bool
 SingleDownload::allowMobileDownload() const {
     if (m_download == nullptr) {
-            return m_mobile;
+        return m_mobile;
     } else {
         return m_download->isMobileDownloadAllowed();
     }
@@ -591,7 +591,7 @@ SingleDownload::setMetadata(Metadata* metadata) {
 */
 
 /*!
-    \qmlproperty QVariantMap SingleDownload:metadata:
+    \qmlproperty QVariantMap SingleDownload::metadata
 
     This property allows to get and set the metadata that will be linked to 
     the download request. 

@@ -72,6 +72,12 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QStringLiteral("collected"), argumentList);
     }
 
+    inline QDBusPendingReply<QString> filePath()
+    {
+        QList<QVariant> argumentList;
+        return asyncCallWithArgumentList(QStringLiteral("filePath"), argumentList);
+    }
+
     inline QDBusPendingReply<StringMap> headers()
     {
         QList<QVariant> argumentList;

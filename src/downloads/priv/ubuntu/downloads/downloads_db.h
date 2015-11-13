@@ -50,6 +50,7 @@ class DownloadsDb : public QObject {
 
     virtual bool store(Download* down);
     virtual DownloadStateStruct getDownloadState(const QString &downloadId);
+    virtual QList<Download*> getUncollectedDownloads(const QString &appId);
 
     bool storeSingleDownload(FileDownload* download);
     void connectToDownload(Download* download);

@@ -63,6 +63,7 @@ class GroupDownload : public Download {
     virtual qulonglong progress(qulonglong &started, qulonglong &paused,
         qulonglong &finished);
     virtual qulonglong totalSize() override;
+    virtual QString filePath() override;
 
  signals:
     void finished(const QStringList &path);
