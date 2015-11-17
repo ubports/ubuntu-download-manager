@@ -11,7 +11,7 @@ namespace DownloadManager {
 /*!
     \qmltype DownloadManager
     \instantiates DownloadManager
-    \inqmlmodule Ubuntu.DownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 1.2
     \ingroup download
     \brief Manage downloads for several files.
 
@@ -25,8 +25,8 @@ namespace DownloadManager {
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.DownloadManager 0.1
+    import Ubuntu.Components 1.2
+    import Ubuntu.DownloadManager 1.2
 
     Rectangle {
         width: units.gu(100)
@@ -187,6 +187,24 @@ QVariantList UbuntuDownloadManager::downloads()
     This property provides a model that can be used for Lists, Repeaters, etc. To handle
     those downloads in a UI component that changes automatically when a new download is
     started, and let a custom delegate how to represent the UI for each download.
+*/
+
+/*!
+    \qmlsignal DownloadManager::errorFound(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when an error occurs in a download. The download in which the
+    error occurred is provided via the 'download' parameter, from which the error message
+    can be accessed via download.errorMessage. The corresponding handler is \c onErrorFound
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadFinished(SingleDownload download, QString path)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has finished. The finished download is provided
+    via the 'download' parameter and the downloaded file path is provided via the 'path' 
+    paremeter. The corresponding handler is \c onDownloadFinished
 */
 
 }

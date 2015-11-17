@@ -15,6 +15,10 @@ void BackendPlugin::registerTypes(const char *uri)
     qmlRegisterType<Ubuntu::DownloadManager::Metadata>(uri, 0, 1, "Metadata");
     qmlRegisterType<Ubuntu::DownloadManager::SingleDownload>(uri, 0, 1, "SingleDownload");
     qmlRegisterType<Ubuntu::DownloadManager::UbuntuDownloadManager>(uri, 0, 1, "DownloadManager");
+    qmlRegisterType<Ubuntu::DownloadManager::DownloadError>(uri, 1, 2, "Error");
+    qmlRegisterType<Ubuntu::DownloadManager::Metadata>(uri, 1, 2, "Metadata");
+    qmlRegisterType<Ubuntu::DownloadManager::SingleDownload>(uri, 1, 2, "SingleDownload");
+    qmlRegisterType<Ubuntu::DownloadManager::UbuntuDownloadManager>(uri, 1, 2, "DownloadManager");
 }
 
 void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

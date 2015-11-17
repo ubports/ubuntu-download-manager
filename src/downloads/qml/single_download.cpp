@@ -29,7 +29,7 @@ namespace DownloadManager {
 /*!
     \qmltype SingleDownload
     \instantiates SingleDownload
-    \inqmlmodule Ubuntu.DownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 1.2
     \ingroup download
     \brief Manage file downloads and tracking the progress.
 
@@ -40,8 +40,8 @@ namespace DownloadManager {
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.DownloadManager 0.1
+    import Ubuntu.Components 1.2
+    import Ubuntu.DownloadManager 1.2
 
     Rectangle {
         width: units.gu(100)
@@ -596,6 +596,15 @@ SingleDownload::setMetadata(Metadata* metadata) {
     This property allows to get and set the metadata that will be linked to 
     the download request. 
 */
+
+/*!
+    \qmlsignal SingleDownload::downloadFinished(QString path)
+
+    This signal is emitted when a download has finished. The downloaded file 
+    path is provided via the 'path' paremeter. The corresponding handler is 
+    \c onDownloadFinished
+*/
+
 
 }
 }
