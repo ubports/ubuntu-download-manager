@@ -83,9 +83,7 @@ class BaseDaemon : public QObject {
 
  private:
     QString _path = "";
-    // FIXME: Temporarily disabled while uncollected downloads are only
-    // available from memory
-    bool _isTimeoutEnabled = false;
+    bool _isTimeoutEnabled = true;
     bool _stoppable = false;
     QList<QSslCertificate> _certs;
     System::Application* _app = nullptr;
