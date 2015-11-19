@@ -157,6 +157,14 @@ void DownloadAdaptor::start()
     QMetaObject::invokeMethod(parent(), "start");
 }
 
+int DownloadAdaptor::state()
+{
+    // handle method call com.canonical.applications.Download.state
+    int state;
+    QMetaObject::invokeMethod(parent(), "state", Q_RETURN_ARG(int, state));
+    return state;
+}
+
 qulonglong DownloadAdaptor::throttle()
 {
     // handle method call com.canonical.applications.Download.throttle

@@ -60,7 +60,7 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
             this, &DownloadHistory::onError))
                 << "Could not connect to signal";
         singleDownload->bindDownload(download.data());
-        if (!download->filePath().isEmpty()) {
+        if (download->state() == Download::UNCOLLECTED && !download->filePath().isEmpty()) {
             emit singleDownload->finished(download.data()->filePath());
         }
     }

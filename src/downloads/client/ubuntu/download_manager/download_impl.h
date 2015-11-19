@@ -72,6 +72,7 @@ class UBUNTU_TRANSFERS_PRIVATE DownloadImpl : public Download {
     void setThrottle(qulonglong speed);
     qulonglong throttle();
     QString filePath();
+    Download::State state();
 
     QString id() const;
     qulonglong progress();

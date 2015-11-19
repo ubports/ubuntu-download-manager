@@ -53,6 +53,10 @@
         <arg name="filepath" type="s" direction="out"/>
     </method>
 
+    <method name="state">
+        <arg name="state" type="i" direction="out"/>
+    </method>
+
     <method name="start" />
     <method name="pause" />
     <method name="resume" />

@@ -74,6 +74,9 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"filePath\">\n"
 "      <arg direction=\"out\" type=\"s\" name=\"filepath\"/>\n"
 "    </method>\n"
+"    <method name=\"state\">\n"
+"      <arg direction=\"out\" type=\"i\" name=\"state\"/>\n"
+"    </method\n"
 "    <method name=\"start\"/>\n"
 "    <method name=\"pause\"/>\n"
 "    <method name=\"resume\"/>\n"
@@ -163,6 +166,7 @@ public Q_SLOTS: // METHODS
     void setMetadata(const QVariantMap &data);
     void setThrottle(qulonglong speed);
     void start();
+    int state();
     qulonglong throttle();
     qulonglong totalSize();
 Q_SIGNALS: // SIGNALS

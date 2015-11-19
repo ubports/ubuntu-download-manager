@@ -58,6 +58,17 @@ class Download : public QObject {
     explicit Download(QObject* parent = 0)
         : QObject(parent) {}
 
+    enum State {
+        IDLE,
+        START,
+        PAUSE,
+        RESUME,
+        CANCEL,
+        UNCOLLECTED,
+        FINISH,
+        ERROR
+    };
+
     /*!
         \fn void Download::start()
 
@@ -218,6 +229,13 @@ class Download : public QObject {
         the download is complete.
     */
     virtual QString filePath() = 0;
+
+    /*!
+        \fn State state()
+
+        Returns the current state of the download.
+    */
+    virtual State state() = 0;
 
     /*!
         \fn bool isError() const

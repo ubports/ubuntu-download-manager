@@ -148,6 +148,12 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QStringLiteral("start"), argumentList);
     }
 
+    inline QDBusPendingReply<int> state()
+    {
+        QList<QVariant> argumentList;
+        return asyncCallWithArgumentList(QStringLiteral("state"), argumentList);
+    }
+
     inline QDBusPendingReply<qulonglong> throttle()
     {
         QList<QVariant> argumentList;

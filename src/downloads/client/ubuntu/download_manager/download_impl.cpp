@@ -396,6 +396,23 @@ DownloadImpl::filePath() {
     }
 }
 
+Download::State
+DownloadImpl::state() {
+    Logger::log(Logger::Debug, QString("Download{%1} state()").arg(_id));
+    QDBusPendingReply<int> reply =
+        _dbusInterface->state();
+    // block, the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download state");
+        setLastError(reply.error());
+        return Download::ERROR;
+    } else {
+        auto result = static_cast<Download::State>(reply.value());
+        return result;
+    }
+}
+
 QString
 DownloadImpl::id() const {
     return _id;
