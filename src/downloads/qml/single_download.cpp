@@ -171,6 +171,10 @@ SingleDownload::bindDownload(Download* download)
 
     DownloadHistory::instance()->addDownload(this);
 
+    // Keep a record of the downloadId so clients can still access the property
+    // after a download has finished
+    m_downloadId = m_download->id();
+
     emit downloadIdChanged();
 }
 
@@ -312,9 +316,6 @@ SingleDownload::onFinished(const QString& path)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
-    // Keep a record of the downloadId so clients can still access the property
-    // after a download has finished
-    m_downloadId = m_download->id();
     m_download->deleteLater();
     m_download = nullptr;
     emit finished(path);

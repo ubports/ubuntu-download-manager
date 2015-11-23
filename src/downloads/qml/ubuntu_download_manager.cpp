@@ -97,6 +97,15 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
     CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadFinished,
         this, &UbuntuDownloadManager::downloadFinished))
             << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadPaused,
+        this, &UbuntuDownloadManager::downloadPaused))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadResumed,
+        this, &UbuntuDownloadManager::downloadResumed))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadCanceled,
+        this, &UbuntuDownloadManager::downloadCanceled))
+            << "Could not connect to signal";
     CHECK(connect(DownloadHistory::instance(), &DownloadHistory::errorFound,
         this, &UbuntuDownloadManager::errorFound))
             << "Could not connect to signal";
@@ -207,5 +216,29 @@ QVariantList UbuntuDownloadManager::downloads()
     paremeter. The corresponding handler is \c onDownloadFinished
 */
 
+/*!
+    \qmlsignal DownloadManager::downloadPaused(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been paused. The paused download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadPaused
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadResumed(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been resumed. The resumed download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadResumed
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadCanceled(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been canceled. The canceled download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadCanceled
+*/
 }
+
 }

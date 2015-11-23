@@ -46,6 +46,15 @@ void DownloadHistory::addDownload(SingleDownload *singleDownload)
     CHECK(connect(singleDownload, &SingleDownload::errorFound,
         this, &DownloadHistory::onError))
             << "Could not connect to signal";
+    CHECK(connect(singleDownload, &SingleDownload::paused,
+        this, &DownloadHistory::onPaused))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &SingleDownload::resumed,
+        this, &DownloadHistory::onResumed))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &SingleDownload::canceled,
+        this, &DownloadHistory::onCanceled))
+            << "Could not connect to signal";
     emit downloadsChanged();
 }
 
@@ -53,12 +62,6 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
 {
     foreach(QSharedPointer<Download> download, downloadsList->downloads()) {
         SingleDownload* singleDownload = new SingleDownload(this);
-        CHECK(connect(singleDownload, &SingleDownload::finished,
-            this, &DownloadHistory::downloadCompleted))
-                << "Could not connect to signal";
-        CHECK(connect(singleDownload, &SingleDownload::errorFound,
-            this, &DownloadHistory::onError))
-                << "Could not connect to signal";
         singleDownload->bindDownload(download.data());
         if (download->state() == Download::UNCOLLECTED && !download->filePath().isEmpty()) {
             emit singleDownload->finished(download.data()->filePath());
@@ -109,6 +112,30 @@ void DownloadHistory::onError(DownloadError& downloadError)
     SingleDownload* download = qobject_cast<SingleDownload*>(sender());
     if (download != nullptr) {
         emit errorFound(download);
+    }
+}
+
+void DownloadHistory::onPaused()
+{
+    SingleDownload* download = qobject_cast<SingleDownload*>(sender());
+    if (download != nullptr) {
+        emit downloadPaused(download);
+    }
+}
+
+void DownloadHistory::onResumed()
+{
+    SingleDownload* download = qobject_cast<SingleDownload*>(sender());
+    if (download != nullptr) {
+        emit downloadResumed(download);
+    }
+}
+
+void DownloadHistory::onCanceled()
+{
+    SingleDownload* download = qobject_cast<SingleDownload*>(sender());
+    if (download != nullptr) {
+        emit downloadCanceled(download);
     }
 }
 

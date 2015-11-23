@@ -57,6 +57,9 @@ signals:
     void downloadsChanged();
     void downloadFinished(SingleDownload *download, const QString& path);
     void errorFound(SingleDownload *download);
+    void downloadPaused(SingleDownload *download);
+    void downloadResumed(SingleDownload *download);
+    void downloadCanceled(SingleDownload *download);
 
 private slots:
     void registerError(DownloadError& error);

@@ -45,10 +45,16 @@ class DownloadHistory : public QObject {
     void downloadsChanged();
     void downloadFinished(SingleDownload *singleDownload, const QString& path);
     void errorFound(SingleDownload *download);
+    void downloadPaused(SingleDownload *singleDownload);
+    void downloadResumed(SingleDownload *singleDownload);
+    void downloadCanceled(SingleDownload *singleDownload);
 
  private slots:
     void downloadCompleted(const QString& path);
     void onError(DownloadError& error);
+    void onPaused();
+    void onResumed();
+    void onCanceled();
 
  private:
     Manager* m_manager;
