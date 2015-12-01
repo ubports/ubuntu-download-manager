@@ -130,7 +130,7 @@ class DownloadAdaptor: public QDBusAbstractAdaptor
 "    <property access=\"read\" type=\"b\" name=\"ShowInIndicator\"/>\n"
 "    <property access=\"read\" type=\"s\" name=\"Title\"/>\n"
 "    <property access=\"read\" type=\"s\" name=\"ClickPackage\"/>\n"
-"    <property access=\"read\" type=\"s\" name=\"DownloadOwner\"/>\n"
+"    <property access=\"read\" type=\"s\" name=\"DestinationApp\"/>\n"
 "  </interface>\n"
         "")
 public:
@@ -141,8 +141,8 @@ public: // PROPERTIES
     Q_PROPERTY(QString ClickPackage READ clickPackage)
     QString clickPackage() const;
 
-    Q_PROPERTY(QString DownloadOwner READ downloadOwner)
-    QString downloadOwner() const;
+    Q_PROPERTY(QString DestinationApp READ destinationApp)
+    QString destinationApp() const;
 
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator)
     bool showInIndicator() const;

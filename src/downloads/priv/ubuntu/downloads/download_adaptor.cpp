@@ -39,7 +39,7 @@ QString DownloadAdaptor::clickPackage() const
     return qvariant_cast< QString >(parent()->property("ClickPackage"));
 }
 
-QString DownloadAdaptor::downloadOwner() const
+QString DownloadAdaptor::destinationApp() const
 {
     // get the value of property DownloadOwner
     return qvariant_cast< QString >(parent()->property("DownloadOwner"));
