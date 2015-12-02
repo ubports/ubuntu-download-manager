@@ -1,0 +1,18 @@
+<version>
+@UDM_VERSION_MAJOR@.@UDM_VERSION_MINOR@.@UDM_VERSION_PATCH@
+</version>
+
+<headers>
+@CMAKE_SOURCE_DIR@/src
+</headers>
+
+<libs>
+@CMAKE_BINARY_DIR@/src/downloads/client/libubuntu-download-manager-client.so
+@CMAKE_BINARY_DIR@/src/downloads/common/libubuntu-download-manager-common.so
+@CMAKE_BINARY_DIR@/src/uploads/common/libubuntu-upload-manager-common.so
+@CMAKE_BINARY_DIR@/src/common/public/libudm-common.so
+</libs>
+
+<gcc_options>
+-std=c++11 -fPIC
+</gcc_options>
