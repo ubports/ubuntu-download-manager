@@ -145,16 +145,16 @@ ManagerImpl::createDownload(StructList downs,
 }
 
 void
-ManagerImpl::getAllDownloads() {
-    Logger::log(Logger::Debug, "Manager getAllDownloads()");
+ManagerImpl::getAllDownloads(const QString &appId, bool uncollected) {
+    Logger::log(Logger::Debug, QString("Manager getAllDownloads(%1, %2)").arg(appId).arg(uncollected));
     DownloadsListCb cb = [](DownloadsList*){};
-    getAllDownloads(cb, cb);
+    getAllDownloads(appId, uncollected, cb, cb);
 }
 
 void
-ManagerImpl::getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb) {
-    Logger::log(Logger::Debug, "Manager getAllDownloads()");
-    QDBusPendingCall call = _dbusInterface->getAllDownloads();
+ManagerImpl::getAllDownloads(const QString &appId, bool uncollected, DownloadsListCb cb, DownloadsListCb errCb) {
+    Logger::log(Logger::Debug, QString("Manager getAllDownloads(%1, %2)").arg(appId).arg(uncollected));
+    QDBusPendingCall call = _dbusInterface->getAllDownloads(appId, uncollected);
     auto watcher = new DownloadsListManagerPCW(
         _conn, _servicePath, call, cb, errCb, this);
     auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
@@ -190,29 +190,6 @@ ManagerImpl::getAllDownloadsWithMetadata(const QString &name,
         this, &ManagerImpl::onWatcherDone);
     if (!connected) {
         Logger::log(Logger::Critical, "Could not connect to signal");
-    }
-}
-
-void
-ManagerImpl::getUncollectedDownloads(const QString &appId) {
-    Logger::log(Logger::Debug, "Manager getUncollectedDownloads()");
-    DownloadsListCb cb = [](DownloadsList*){};
-    getUncollectedDownloads(appId, cb, cb);
-}
-
-void
-ManagerImpl::getUncollectedDownloads(const QString &appId,
-                                     DownloadsListCb cb,
-                                     DownloadsListCb errCb) {
-    Logger::log(Logger::Debug, "Manager getUncollectedDownloads()");
-    QDBusPendingCall call = _dbusInterface->getUncollectedDownloads(appId);
-    auto watcher = new DownloadsListManagerPCW(
-        _conn, _servicePath, call, cb, errCb, this);
-    auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,
-        this, &ManagerImpl::onWatcherDone);
-    if (!connected) {
-        Logger::log(Logger::Critical,
-            "Could not connect to signal");
     }
 }
 

@@ -72,8 +72,10 @@ class UBUNTU_TRANSFERS_PRIVATE ManagerImpl : public Manager {
                                 StringMap headers,
                                 GroupCb cb,
                                 GroupCb errCb);
-    virtual void getAllDownloads();
-    virtual void getAllDownloads(DownloadsListCb cb,
+    virtual void getAllDownloads(const QString &appId, bool uncollected);
+    virtual void getAllDownloads(const QString &appId,
+                                 bool uncollected,
+                                 DownloadsListCb cb,
                                  DownloadsListCb errCb);
     virtual void getAllDownloadsWithMetadata(const QString &name,
                                              const QString &value);
@@ -81,10 +83,6 @@ class UBUNTU_TRANSFERS_PRIVATE ManagerImpl : public Manager {
                                              const QString &value,
                                              MetadataDownloadsListCb cb,
                                              MetadataDownloadsListCb errCb);
-    virtual void getUncollectedDownloads(const QString &appId);
-    virtual void getUncollectedDownloads(const QString &appId,
-                                         DownloadsListCb cb,
-                                         DownloadsListCb errCb);
 
     bool isError() const;
     Error* lastError() const;

@@ -48,7 +48,8 @@ class TestingManager : public DownloadManager {
     void setDefaultThrottle(qulonglong speed) override;
     void allowGSMDownload(bool allowed) override;
     bool isGSMDownloadAllowed() override;
-    QList<QDBusObjectPath> getAllDownloads() override;
+    QList<QDBusObjectPath> getAllDownloads(const QString& appId,
+                                           bool uncollected) override;
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                               const QString& name,
                                               const QString& value) override;

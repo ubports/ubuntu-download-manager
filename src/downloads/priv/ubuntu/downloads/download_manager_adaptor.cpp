@@ -83,11 +83,11 @@ void DownloadManagerAdaptor::exit()
     QMetaObject::invokeMethod(parent(), "exit");
 }
 
-QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloads()
+QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloads(const QString &appId, bool uncollected)
 {
     // handle method call com.canonical.applications.DownloadManager.getAllDownloads
     QList<QDBusObjectPath> downloads;
-    QMetaObject::invokeMethod(parent(), "getAllDownloads", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads));
+    QMetaObject::invokeMethod(parent(), "getAllDownloads", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, appId), Q_ARG(bool, uncollected));
     return downloads;
 }
 
@@ -96,14 +96,6 @@ QList<QDBusObjectPath> DownloadManagerAdaptor::getAllDownloadsWithMetadata(const
     // handle method call com.canonical.applications.DownloadManager.getAllDownloadsWithMetadata
     QList<QDBusObjectPath> downloads;
     QMetaObject::invokeMethod(parent(), "getAllDownloadsWithMetadata", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, name), Q_ARG(QString, value));
-    return downloads;
-}
-
-QList<QDBusObjectPath> DownloadManagerAdaptor::getUncollectedDownloads(const QString &appId)
-{
-    // handle method call com.canonical.applications.DownloadManager.getUncollectedDownloads
-    QList<QDBusObjectPath> downloads;
-    QMetaObject::invokeMethod(parent(), "getUncollectedDownloads", Q_RETURN_ARG(QList<QDBusObjectPath>, downloads), Q_ARG(QString, appId));
     return downloads;
 }
 

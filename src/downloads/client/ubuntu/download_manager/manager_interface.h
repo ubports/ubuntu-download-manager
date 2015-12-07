@@ -76,9 +76,11 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QLatin1String("exit"), argumentList);
     }
 
-    inline QDBusPendingReply<QList<QDBusObjectPath> > getAllDownloads()
+    inline QDBusPendingReply<QList<QDBusObjectPath> > getAllDownloads(const QString &appId, bool uncollected)
     {
         QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(appId);
+        argumentList << QVariant::fromValue(uncollected);
         return asyncCallWithArgumentList(QLatin1String("getAllDownloads"), argumentList);
     }
 
@@ -87,13 +89,6 @@ public Q_SLOTS: // METHODS
         QList<QVariant> argumentList;
         argumentList << QVariant::fromValue(name) << QVariant::fromValue(value);
         return asyncCallWithArgumentList(QLatin1String("getAllDownloadsWithMetadata"), argumentList);
-    }
-
-    inline QDBusPendingReply<QList<QDBusObjectPath> > getUncollectedDownloads(const QString &appId)
-    {   
-        QList<QVariant> argumentList;
-        argumentList << QVariant::fromValue(appId);
-        return asyncCallWithArgumentList(QLatin1String("getUncollectedDownloads"), argumentList);
     }
 
     inline QDBusPendingReply<bool> isGSMDownloadAllowed()

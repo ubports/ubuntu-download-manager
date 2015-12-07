@@ -539,7 +539,7 @@ TestDownloadManager::testGetAllDownloadsUnconfined() {
         .Times(1)
         .WillRepeatedly(Return(expectedPaths));
 
-    auto result = _man->getAllDownloads();
+    auto result = _man->getAllDownloads("", false);
     QCOMPARE(3, result.count());
     foreach(auto path, result) {
         QVERIFY(expectedPaths.contains(path.path()));

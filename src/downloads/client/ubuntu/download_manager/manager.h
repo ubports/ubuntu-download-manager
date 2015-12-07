@@ -165,26 +165,38 @@ class Manager : public QObject {
                                 GroupCb cb,
                                 GroupCb errCb) = 0;
     /*!
-        \fn void getAllDownloads()
+        \fn void getAllDownloads(const QString& appId, bool uncollected)
 
         Returns all the downloads in the download manager that can be accessed
         by the calling client. If the client is not confined all downloads are
         returned, on the other hand if the client is confined the result will 
         be only those downloads created by the client. The result of the method
         is returned via the downloadsFound signal.
+
+        If appId is specified only downloads from that appId will be returned.
+
+        If uncollected is true then only downloads that haven't yet been
+        collected by a client will be returned.
     */
-    virtual void getAllDownloads() = 0;
+    virtual void getAllDownloads(const QString& appId, bool uncollected) = 0;
 
     /*!
-        \fn void getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb)
+        \fn void getAllDownloads(QString& appId, bool uncollected, DownloadsListCb cb, DownloadsListCb errCb)
 
         Returns all the downloads in the download manager that can be accessed
         by the calling client. If the client is not confined all downloads are
         returned, on the other hand if the client is confined the result will 
         be only those downloads created by the client. If the method is a
         success the \a cb is executed else \a errCb is executed.
+
+        If appId is specified only downloads from that appId will be returned.
+
+        If uncollected is true then only downloads that haven't yet been
+        collected by a client will be returned.
     */
-    virtual void getAllDownloads(DownloadsListCb cb,
+    virtual void getAllDownloads(const QString& appId,
+                                 bool uncollected,
+                                 DownloadsListCb cb,
                                  DownloadsListCb errCb) = 0;
     /*!
         \fn void getAllDownloadsWithMetadata(const QString &name, const QString &value)
@@ -214,33 +226,6 @@ class Manager : public QObject {
                                              const QString &value,
                                              MetadataDownloadsListCb cb,
                                              MetadataDownloadsListCb errCb) = 0;
-
-    /*!
-        \fn void getUncollectedDownloads(const QString &appId)
-
-        Returns uncollected downloads in the download manager that can be accessed
-        by the calling client. If the client is not confined then the downloads
-        returned will be those belonging to the app specified via the appId 
-        parameter, on the other hand if the client is confined the result will 
-        be only those downloads created by the client. The result of the method
-        is returned via the downloadsFound signal.
-    */
-    virtual void getUncollectedDownloads(const QString &appId) = 0;
-
-    /*!
-        \fn void getUncollectedDownloads(const QString &appId)
-
-        Returns uncollected downloads in the download manager that can be accessed
-        by the calling client. If the client is not confined then the downloads
-        returned will be those belonging to the app specified via the appId 
-        parameter, on the other hand if the client is confined the result will 
-        be only those downloads created by the client. . If the method is a
-        success the \a cb is executed else \a errCb is executed.
-    */
-
-    virtual void getUncollectedDownloads(const QString &appId,
-                                         DownloadsListCb cb,
-                                         DownloadsListCb errCb) = 0;
 
     /*!
         \fn bool isError() const

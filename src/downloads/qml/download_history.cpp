@@ -20,9 +20,9 @@ DownloadHistory::DownloadHistory(QObject *parent) :
     // Get previous downloads for this app
     auto environment = QProcessEnvironment::systemEnvironment();
     if (environment.contains("APP_ID")) {
-        m_manager->getUncollectedDownloads(environment.value("APP_ID"));
+        m_manager->getAllDownloads(environment.value("APP_ID"), true);
     } else {
-        m_manager->getUncollectedDownloads(QCoreApplication::applicationFilePath());
+        m_manager->getAllDownloads(QCoreApplication::applicationFilePath(), true);
     }
 }
 

@@ -63,15 +63,13 @@ class DownloadManagerAdaptor: public QDBusAbstractAdaptor
 "      <arg direction=\"out\" type=\"o\" name=\"download\"/>\n"
 "    </method>\n"
 "    <method name=\"getAllDownloads\">\n"
+"      <arg direction=\"in\" type=\"s\" name=\"appId\"/>\n"
+"      <arg direction=\"in\" type=\"b\" name=\"uncollected\"/>\n"
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
 "    <method name=\"getAllDownloadsWithMetadata\">\n"
 "      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
 "      <arg direction=\"in\" type=\"s\" name=\"value\"/>\n"
-"      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
-"    </method>\n"
-"    <method name=\"getUncollectedDownloads\">\n"
-"      <arg direction=\"in\" type=\"s\" name=\"appId\"/>\n"
 "      <arg direction=\"out\" type=\"ao\" name=\"downloads\"/>\n"
 "    </method>\n"
 "    <method name=\"getDownloadState\">\n"
@@ -109,10 +107,9 @@ public Q_SLOTS: // METHODS
     QDBusObjectPath createMmsDownload(const QString &url, const QString &hostname, int port);
     qulonglong defaultThrottle();
     void exit();
-    QList<QDBusObjectPath> getAllDownloads();
+    QList<QDBusObjectPath> getAllDownloads(const QString &appId, bool uncollected);
     QList<QDBusObjectPath> getAllDownloadsWithMetadata(const QString &name, const QString &value);
     DownloadStateStruct getDownloadState(const QString &downloadId);
-    QList<QDBusObjectPath> getUncollectedDownloads(const QString &appId);
     bool isGSMDownloadAllowed();
     void setDefaultThrottle(qulonglong speed);
 Q_SIGNALS: // SIGNALS

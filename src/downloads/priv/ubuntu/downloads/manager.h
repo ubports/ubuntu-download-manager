@@ -82,7 +82,7 @@ class DownloadManager : public BaseManager {
     virtual void setDefaultThrottle(qulonglong speed);
     virtual void allowGSMDownload(bool allowed);
     virtual bool isGSMDownloadAllowed();
-    virtual QList<QDBusObjectPath> getAllDownloads();
+    virtual QList<QDBusObjectPath> getAllDownloads(const QString& appId = "", bool uncollected = false);
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
                                                       const QString& value);
