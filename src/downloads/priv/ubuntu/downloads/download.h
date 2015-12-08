@@ -102,6 +102,10 @@ class Download : public Transfer {
         _destinationApp = owner;
     }
 
+    virtual int stateInt() const {
+        return Transfer::state();
+    }
+
     // slots to be implemented by the children
     virtual qulonglong progress() = 0;
     virtual qulonglong totalSize() = 0;

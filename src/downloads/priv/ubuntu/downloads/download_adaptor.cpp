@@ -4,8 +4,7 @@
  *
  * qdbusxml2cpp is Copyright (C) 2015 Digia Plc and/or its subsidiary(-ies).
  *
- * This is an auto-generated file.
- * Do not edit! All changes made to it will be lost.
+ * This file has been manually edited to wrap the state -> stateInt methods
  */
 
 #include "download_adaptor.h"
@@ -161,7 +160,8 @@ int DownloadAdaptor::state()
 {
     // handle method call com.canonical.applications.Download.state
     int state;
-    QMetaObject::invokeMethod(parent(), "state", Q_RETURN_ARG(int, state));
+    QMetaObject::invokeMethod(parent(), "stateInt", Q_RETURN_ARG(int, state));
+   
     return state;
 }
 

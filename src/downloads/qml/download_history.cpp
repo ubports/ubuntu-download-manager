@@ -63,7 +63,7 @@ void DownloadHistory::downloadsFound(DownloadsList* downloadsList)
     foreach(QSharedPointer<Download> download, downloadsList->downloads()) {
         SingleDownload* singleDownload = new SingleDownload(this);
         singleDownload->bindDownload(download.data());
-        if (download->state() == Download::UNCOLLECTED && !download->filePath().isEmpty()) {
+        if (download.data()->state() == Download::UNCOLLECTED && !download.data()->filePath().isEmpty()) {
             emit singleDownload->finished(download.data()->filePath());
         }
     }
