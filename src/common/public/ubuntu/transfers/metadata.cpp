@@ -130,7 +130,7 @@ Metadata::hasTitle() const {
 bool
 Metadata::showInIndicator() const {
     return (contains(Metadata::SHOW_IN_INDICATOR_KEY))?
-        value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():true;
+        value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():false;
 }
 
 void
