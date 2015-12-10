@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef DOWNLOADER_LIB_METADATA_H
+#define DOWNLOADER_LIB_METADATA_H
 
 #include <QMap>
 #include <QVariant>
@@ -83,3 +84,5 @@ class Metadata : public QVariantMap {
 }  // DownloadManager
 
 }  // Ubuntu
+
+#endif

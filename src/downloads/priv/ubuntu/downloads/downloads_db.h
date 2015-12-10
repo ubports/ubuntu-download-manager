@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
+#define DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
 
 #include <QSqlDatabase>
 #include <QObject>
@@ -84,3 +85,5 @@ class DownloadsDb : public QObject {
 }  // DownloadManager
 
 }  // Ubuntu
+
+#endif

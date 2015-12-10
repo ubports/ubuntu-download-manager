@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef TEST_METADATA_H
+#define TEST_METADATA_H
 
 #include <QObject>
 #include <ubuntu/transfers/metadata.h>
@@ -81,3 +82,4 @@ class TestMetadata : public BaseTestCase {
     void testDestinationAppIsAlreadyPresent();
 };
 
+#endif

@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
+#define UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
 
 #include <QObject>
 #include <QVariantMap>
@@ -402,3 +403,5 @@ class Download : public QObject {
 }  // Ubuntu
 
 }  // DownloadManager
+
+#endif

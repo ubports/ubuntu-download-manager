@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef DOWNLOADER_LIB_DOWNLOADER_H
+#define DOWNLOADER_LIB_DOWNLOADER_H
 
 #include <functional>
 
@@ -131,3 +132,5 @@ class DownloadManager : public BaseManager {
 }  // DownloadManager
 
 }  // Manager
+
+#endif

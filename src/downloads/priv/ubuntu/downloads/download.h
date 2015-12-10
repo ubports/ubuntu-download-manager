@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef DOWNLOADER_LIB_DOWNLOAD_H
+#define DOWNLOADER_LIB_DOWNLOAD_H
 
 #include <QNetworkAccessManager>
 #include <QObject>
@@ -137,3 +138,4 @@ class Download : public Transfer {
 
 }  // Ubuntu
 
+#endif

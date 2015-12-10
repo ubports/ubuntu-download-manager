@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef UBUNTU_GENERAL_LIB_TRANSFER_H
+#define UBUNTU_GENERAL_LIB_TRANSFER_H
 
 #include <QObject>
 #include "ubuntu/transfers/system/network_session.h"
@@ -113,3 +114,5 @@ class Transfer : public QObject {
 }  // Transfers
 
 }  // Ubuntu
+
+#endif

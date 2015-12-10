@@ -16,7 +16,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#pragma once
+#ifndef DOWNLOAD_STATE_STRUCT_H
+#define DOWNLOAD_STATE_STRUCT_H
 
 #include <QString>
 
@@ -147,3 +148,5 @@ class DownloadStateStruct {
 }
 
 }
+
+#endif
