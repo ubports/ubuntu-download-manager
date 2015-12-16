@@ -145,16 +145,16 @@ ManagerImpl::createDownload(StructList downs,
 }
 
 void
-ManagerImpl::getAllDownloads() {
-    Logger::log(Logger::Debug, "Manager getAllDownloads()");
+ManagerImpl::getAllDownloads(const QString &appId, bool uncollected) {
+    Logger::log(Logger::Debug, QString("Manager getAllDownloads(%1, %2)").arg(appId).arg(uncollected));
     DownloadsListCb cb = [](DownloadsList*){};
-    getAllDownloads(cb, cb);
+    getAllDownloads(appId, uncollected, cb, cb);
 }
 
 void
-ManagerImpl::getAllDownloads(DownloadsListCb cb, DownloadsListCb errCb) {
-    Logger::log(Logger::Debug, "Manager getAllDownloads()");
-    QDBusPendingCall call = _dbusInterface->getAllDownloads();
+ManagerImpl::getAllDownloads(const QString &appId, bool uncollected, DownloadsListCb cb, DownloadsListCb errCb) {
+    Logger::log(Logger::Debug, QString("Manager getAllDownloads(%1, %2)").arg(appId).arg(uncollected));
+    QDBusPendingCall call = _dbusInterface->getAllDownloads(appId, uncollected);
     auto watcher = new DownloadsListManagerPCW(
         _conn, _servicePath, call, cb, errCb, this);
     auto connected = connect(watcher, &GroupManagerPCW::callbackExecuted,

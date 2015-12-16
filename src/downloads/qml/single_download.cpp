@@ -20,6 +20,7 @@
 #include <ubuntu/download_manager/download_struct.h>
 
 #include "single_download.h"
+#include "download_history.h"
 
 namespace Ubuntu {
 
@@ -28,7 +29,7 @@ namespace DownloadManager {
 /*!
     \qmltype SingleDownload
     \instantiates SingleDownload
-    \inqmlmodule Ubuntu.DownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 1.2
     \ingroup download
     \brief Manage file downloads and tracking the progress.
 
@@ -39,8 +40,8 @@ namespace DownloadManager {
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.DownloadManager 0.1
+    import Ubuntu.Components 1.2
+    import Ubuntu.DownloadManager 1.2
 
     Rectangle {
         width: units.gu(100)
@@ -152,8 +153,6 @@ SingleDownload::bindDownload(Download* download)
          &SingleDownload::onStarted))
             << "Could not connect to signal";
 
-    emit downloadIdChanged();
-
     // is the current in memory setting dirty, if they are, we do set the before we
     // start
     if (m_dirty) {
@@ -169,6 +168,14 @@ SingleDownload::bindDownload(Download* download)
     if (m_manager != nullptr && m_autoStart) {
         startDownload();
     }
+
+    DownloadHistory::instance()->addDownload(this);
+
+    // Keep a record of the downloadId so clients can still access the property
+    // after a download has finished
+    m_downloadId = m_download->id();
+
+    emit downloadIdChanged();
 }
 
 void
@@ -222,7 +229,9 @@ SingleDownload::download(QString url)
                 &SingleDownload::bindDownload))
                     << "Could not connect to signal";
         }
-        DownloadStruct dstruct(url);
+        Metadata metadata;
+        QMap<QString, QString> headers;
+        DownloadStruct dstruct(url, metadata.map(), headers);
         m_manager->createDownload(dstruct);
     } else {
         m_error.setMessage("Current download still in progress.");
@@ -258,7 +267,9 @@ SingleDownload::startDownload()
 void
 SingleDownload::pause()
 {
-    m_download->pause();
+    if (m_download != nullptr) {
+        m_download->pause();
+    }
 }
 
 /*!
@@ -270,7 +281,9 @@ SingleDownload::pause()
 void
 SingleDownload::resume()
 {
-    m_download->resume();
+    if (m_download != nullptr) {
+        m_download->resume();
+    }
 }
 
 /*!
@@ -281,7 +294,9 @@ SingleDownload::resume()
 void
 SingleDownload::cancel()
 {
-    m_download->cancel();
+    if (m_download != nullptr) {
+        m_download->cancel();
+    }
 }
 
 void
@@ -301,8 +316,6 @@ SingleDownload::onFinished(const QString& path)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
-    m_download->deleteLater();
-    m_download = nullptr;
     emit finished(path);
 }
 
@@ -346,15 +359,13 @@ SingleDownload::onCanceled(bool wasCanceled)
 
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
-    m_download->deleteLater();
-    m_download = nullptr;
     emit canceled(wasCanceled);
 }
 
 bool
 SingleDownload::allowMobileDownload() const {
     if (m_download == nullptr) {
-            return m_mobile;
+        return m_mobile;
     } else {
         return m_download->isMobileDownloadAllowed();
     }
@@ -412,7 +423,7 @@ SingleDownload::setThrottle(qulonglong value) {
 QString
 SingleDownload::downloadId() const {
     if (m_download == nullptr) {
-        return "";
+        return m_downloadId;
     } else {
         return m_download->id();
     }
@@ -577,11 +588,20 @@ SingleDownload::setMetadata(Metadata* metadata) {
 */
 
 /*!
-    \qmlproperty QVariantMap SingleDownload:metadata:
+    \qmlproperty QVariantMap SingleDownload::metadata
 
     This property allows to get and set the metadata that will be linked to 
     the download request. 
 */
+
+/*!
+    \qmlsignal SingleDownload::downloadFinished(QString path)
+
+    This signal is emitted when a download has finished. The downloaded file 
+    path is provided via the 'path' paremeter. The corresponding handler is 
+    \c onDownloadFinished
+*/
+
 
 }
 }

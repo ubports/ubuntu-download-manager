@@ -16,6 +16,10 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QProcessEnvironment>
+#include <QCoreApplication>
+#include <QDebug>
+
 #include "metadata.h"
 
 namespace Ubuntu {
@@ -31,12 +35,32 @@ const QString Metadata::SHOW_IN_INDICATOR_KEY = "indicator-shown";
 const QString Metadata::CLICK_PACKAGE_KEY = "click-package";
 const QString Metadata::DEFLATE_KEY = "deflate";
 const QString Metadata::EXTRACT_KEY = "extract";
+const QString Metadata::APP_ID = "app-id";
+
+namespace {
+    const QString APP_ID_ENV = "APP_ID";
+}
 
 Metadata::Metadata() {
+    auto environment = QProcessEnvironment::systemEnvironment();
+    if (environment.contains(APP_ID_ENV)) {
+        setOwner(environment.value(APP_ID_ENV));
+    } else {
+        setOwner(QCoreApplication::applicationFilePath());
+    }
 }
 
 Metadata::Metadata(const QVariantMap map)
     : QVariantMap(map) {
+    // check if the app id is present, if not, do it
+    if (!hasOwner()) {
+        auto environment = QProcessEnvironment::systemEnvironment();
+        if (environment.contains(APP_ID_ENV)) {
+            setOwner(environment.value(APP_ID_ENV));
+        } else {
+            setOwner(QCoreApplication::applicationFilePath());
+        }
+    }
 }
 
 QString
@@ -106,7 +130,7 @@ Metadata::hasTitle() const {
 bool
 Metadata::showInIndicator() const {
     return (contains(Metadata::SHOW_IN_INDICATOR_KEY))?
-        value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():true;
+        value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():false;
 }
 
 void
@@ -165,6 +189,22 @@ Metadata::setExtract(bool extract) {
 bool
 Metadata::hasExtract() const {
     return contains(Metadata::EXTRACT_KEY);
+}
+
+QString
+Metadata::destinationApp() const {
+    return (contains(Metadata::APP_ID))?
+           value(Metadata::APP_ID).toString():"";
+}
+
+void
+Metadata::setOwner(const QString &id) {
+    insert(Metadata::APP_ID, id);
+}
+
+bool
+Metadata::hasOwner() const {
+    return contains(Metadata::APP_ID);
 }
 
 }  // DownloadManager

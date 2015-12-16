@@ -351,4 +351,77 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     QTRY_COMPARE(1, spy.count()); 
 }
 
+void
+TestDownloadsDb::testGetStateMissingDownload() {
+    _db->init();
+    auto result = _db->getDownloadState("random uuid");
+    QVERIFY(!result.isValid());
+}
+
+void
+TestDownloadsDb::testGetStateDownload_data() {
+    QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
+    QTest::addColumn<QString>("path");
+    QTest::addColumn<QUrl>("url");
+    QTest::addColumn<QString>("hash");
+    QTest::addColumn<QString>("hashAlgoString");
+    QTest::addColumn<QVariantMap>("metadata");
+    QTest::addColumn<QMap<QString, QString> >("headers");
+
+    QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "FIRST APP" << "first path" << QUrl("http://ubuntu.com") << ""
+    << "md5" << QVariantMap() << QMap<QString, QString>();
+
+    QVariantMap secondMetadata;
+    secondMetadata["test"] = 1;
+    secondMetadata["command"] = "cd";
+    secondMetadata["hello"] = 23;
+
+    QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone")
+    << "" << "sha512" << secondMetadata << QMap<QString, QString>();
+
+    QVariantMap thirdMetadata;
+    secondMetadata["test"] = 3;
+    secondMetadata["command"] = "return";
+    secondMetadata["hello"] = 500;
+
+    QMap<QString, QString> thirdHeaders;
+    thirdHeaders["my-header"] = "I do something cool";
+
+    QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "THIRD APP" << "third path" << QUrl("http://ubuntu.com/tablet")
+    << "" << "sha384" << thirdMetadata << thirdHeaders;
+}
+
+void
+TestDownloadsDb::testGetStateDownload() {
+    _db->init();
+    QFETCH(QString, id);
+    QFETCH(QString, appId);
+    QFETCH(QString, path);
+    QFETCH(QUrl, url);
+    QFETCH(QString, hash);
+    QFETCH(QString, hashAlgoString);
+    QFETCH(QVariantMap, metadata);
+    QFETCH(StringMap, headers);
+
+    QScopedPointer<FileDownload> download(new FileDownload(id, appId, path, true, "", url, hash,
+                                                           hashAlgoString, metadata, headers));
+
+    _db->storeSingleDownload(download.data());
+
+    // create a second download with same id but a diff path to test is update
+    QString newPath = path + path;
+    QScopedPointer<FileDownload> secondDownload(new FileDownload(id, appId,
+                                                                 newPath, true, "", url, hash, hashAlgoString, metadata, headers));
+
+    _db->storeSingleDownload(secondDownload.data());
+    auto state = _db->getDownloadState(id);
+    QVERIFY(state.isValid());
+    QCOMPARE(state.getUrl(), url.toString());
+    QCOMPARE(state.getHash(), state.getHash());
+}
+
 QTEST_MAIN(TestDownloadsDb)

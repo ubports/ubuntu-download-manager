@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include "ubuntu/transfers/system/logger.h"
 #include "downloads_db.h"
+#include "download_adaptor.h"
 
 namespace {
     const QString SINGLE_DOWNLOAD_TABLE = "CREATE TABLE IF NOT EXISTS SingleDownload("\
@@ -75,14 +76,26 @@ namespace {
         "throttle=:throttle, metadata=:metadata, headers=:headers "\
         "WHERE uuid=:uuid";
 
+    const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "\
+        "WHERE uuid=:uuid";
+
+    const QString GET_UNCOLLECTED_DOWNLOADS = "SELECT uuid, appId, url, dbus_path, "\
+        "local_path, hash, hash_algo, state FROM SingleDownload "\
+        "WHERE appId=:appId AND state='uncoll'";
+
+    const QString UPDATE_UNCOLLECTED_DOWNLOADS = "UPDATE SingleDownload SET state='finish' "\
+        "WHERE state='uncoll' AND appId=:appId";
+
     const QString IDLE_STRING = "idle";
     const QString START_STRING = "start";
     const QString PAUSE_STRING = "pause";
     const QString RESUME_STRING = "resume";
     const QString CANCEL_STRING = "cancel";
+    const QString UNCOLLECTED_STRING = "uncoll";
     const QString FINISH_STRING = "finish";
     const QString ERROR_STRING = "error";
 
+    const QString DOWNLOAD_INTERFACE = "com.canonical.applications.Download";
 }
 
 namespace Ubuntu {
@@ -178,6 +191,8 @@ DownloadsDb::stateToString(Download::State state) {
             return RESUME_STRING;
         case Download::CANCEL:
             return CANCEL_STRING;
+        case Download::UNCOLLECTED:
+            return UNCOLLECTED_STRING;
         case Download::FINISH:
             return FINISH_STRING;
         case Download::ERROR:
@@ -200,6 +215,8 @@ DownloadsDb::stringToState(QString state) {
         return Download::RESUME;
     if (lowerState == CANCEL_STRING)
         return Download::CANCEL;
+    if (lowerState == UNCOLLECTED_STRING)
+        return Download::UNCOLLECTED;
     if (lowerState == FINISH_STRING)
         return Download::FINISH;
     if (lowerState == ERROR_STRING)
@@ -233,6 +250,94 @@ DownloadsDb::store(Download* down) {
         return storeSingleDownload(fileDown);
     }
     return false;
+}
+
+DownloadStateStruct
+DownloadsDb::getDownloadState(const QString &downloadId) {
+    bool opened = _db.open();
+
+    if (!opened) {
+        LOG(ERROR) << _db.lastError().text();
+        return DownloadStateStruct();
+    }
+
+    QSqlQuery query;
+    // QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "
+    //     "WHERE uuid=:uuid";
+    query.prepare(GET_SINGLE_DOWNLOAD_STATE);
+    query.bindValue(":uuid", downloadId);
+
+    bool success = query.exec();
+    if (success && query.next()) {
+        // grab the data and create the state structure
+        auto state = stringToState(query.value(0).toString());
+        auto url = query.value(1).toString();
+        auto localPath = query.value(2).toString();
+        auto hash = query.value(3).isValid()?query.value(3).toString():"";
+
+        DownloadStateStruct result(state, url, localPath, hash);
+        _db.close();
+
+        return result;
+    }
+    if (!success) {
+        LOG(ERROR) << query.lastError().text();
+    }
+    return DownloadStateStruct();
+}
+
+QList<Download*>
+DownloadsDb::getUncollectedDownloads(const QString &appId) {
+    bool opened = _db.open();
+    QList<Download*> downloadList;
+
+    if (!opened) {
+        LOG(ERROR) << _db.lastError().text();
+        return downloadList;
+    }
+
+    QSqlQuery query;
+    query.prepare(GET_UNCOLLECTED_DOWNLOADS);
+    query.bindValue(":appId", appId);
+
+    bool success = query.exec();
+    if (!success) {
+        LOG(ERROR) << query.lastError().text();
+        _db.close();
+        return downloadList;
+    }
+    while (query.next()) {
+        auto uuid = query.value(0).toString();
+        auto appId = query.value(1).toString();
+        auto url = query.value(2).toString();
+        auto dbusPath = query.value(3).toString();
+        auto filePath = query.value(4).toString();
+        auto basePath = QFileInfo(filePath).absolutePath();
+        auto hash = query.value(5).isValid() ? query.value(5).toString() : "";
+        auto algo = query.value(6).isValid() ? query.value(6).toString() : "";
+        auto state = stringToState(query.value(7).toString());
+        QVariantMap metadata;
+        QMap<QString, QString> headers;
+        FileDownload *download = new FileDownload(uuid, appId, dbusPath, 1, basePath, url, hash, algo, metadata, headers);
+        download->setState(state);
+        download->setFilePath(filePath);
+        auto downAdaptor = new DownloadAdaptor(download);
+        download->setAdaptor(DOWNLOAD_INTERFACE, downAdaptor);
+
+        downloadList << download;
+
+    }
+
+    QSqlQuery updateQuery;
+    updateQuery.prepare(UPDATE_UNCOLLECTED_DOWNLOADS);
+    updateQuery.bindValue(":appId", appId);
+    success = updateQuery.exec();
+    if (!success) {
+        LOG(ERROR) << updateQuery.lastError().text();
+    }
+
+    _db.close();
+    return downloadList;
 }
 
 bool

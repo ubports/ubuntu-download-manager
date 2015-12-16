@@ -19,14 +19,17 @@
 #ifndef DOWNLOADER_LIB_DOWNLOADER_H
 #define DOWNLOADER_LIB_DOWNLOADER_H
 
-#include <QObject>
+#include <functional>
+
 #include <QByteArray>
-#include <QtDBus/QDBusObjectPath>
+#include <QDBusObjectPath>
+#include <QObject>
 #include <QSslCertificate>
+
 #include <ubuntu/transfers/queue.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/download_manager/metatypes.h>
-#include <functional>
+
 #include "ubuntu/transfers/base_manager.h"
 #include "ubuntu/transfers/system/application.h"
 #include "download.h"
@@ -80,10 +83,13 @@ class DownloadManager : public BaseManager {
     virtual void setDefaultThrottle(qulonglong speed);
     virtual void allowGSMDownload(bool allowed);
     virtual bool isGSMDownloadAllowed();
-    virtual QList<QDBusObjectPath> getAllDownloads();
+    virtual QList<QDBusObjectPath> getAllDownloads(const QString& appId = "", bool uncollected = false);
     virtual QList<QDBusObjectPath> getAllDownloadsWithMetadata(
                                                       const QString& name,
                                                       const QString& value);
+    virtual QList<QDBusObjectPath> getUncollectedDownloads(
+                                                      const QString& appId);
+    virtual DownloadStateStruct getDownloadState(const QString &downloadId);
  signals:
     void downloadCreated(const QDBusObjectPath& path);
 
@@ -95,7 +101,6 @@ class DownloadManager : public BaseManager {
     virtual QDBusObjectPath registerDownload(Download* download);
 
  private:
-
     typedef std::function<Download*(QString)> DownloadCreationFunc;
 
     void init();
@@ -109,6 +114,7 @@ class DownloadManager : public BaseManager {
                                    StringMap headers);
     void onDownloadsChanged(QString);
     QString getCaller();
+    QString getDownloadOwner(const QVariantMap& metadata);
 
  private:
     Application* _app = nullptr;
@@ -126,4 +132,5 @@ class DownloadManager : public BaseManager {
 }  // DownloadManager
 
 }  // Manager
-#endif  // DOWNLOADER_LIB_DOWNLOADER_H
+
+#endif

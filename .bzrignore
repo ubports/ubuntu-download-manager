@@ -12,3 +12,5 @@ libubuntudownloadmanager-common/libubuntudownloadmanager-common.so
 libubuntudownloadmanager-common/libubuntudownloadmanager-common.so.1
 libubuntudownloadmanager-common/libubuntudownloadmanager-common.so.1.0
 libubuntudownloadmanager-common/libubuntudownloadmanager-common.so.1.0.0
+.idea
+build

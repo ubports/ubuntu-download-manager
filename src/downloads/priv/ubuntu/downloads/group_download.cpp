@@ -275,6 +275,13 @@ GroupDownload::totalSize() {
     return total;
 }
 
+QString
+GroupDownload::filePath() {
+    // A group download never has a file path of its own, each individual
+    // download within the group has its own path
+    return "";
+}
+
 void
 GroupDownload::onError(const QString& error) {
     TRACE;

@@ -26,6 +26,8 @@
     </method>
 
     <method name="getAllDownloads">
+        <arg name="appId" type="s" direction="in"/>
+        <arg name="uncollected" type="b" direction="in"/>
         <arg name="downloads" type="ao" direction="out" />
     </method>
 
@@ -33,6 +35,12 @@
         <arg name="name" type="s" direction="in"/>
         <arg name="value" type="s" direction="in"/>
         <arg name="downloads" type="ao" direction="out" />
+    </method>
+
+    <method name="getDownloadState">
+        <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="DownloadStateStruct"/>
+        <arg name="downloadId" type="s" direction="in"/>
+        <arg name="state" type="(issss)" direction="out"/>
     </method>
 
     <method name="setDefaultThrottle">

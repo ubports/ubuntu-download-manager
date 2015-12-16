@@ -25,6 +25,7 @@
 #include <ubuntu/transfers/errors/http_error_struct.h>
 #include <ubuntu/transfers/errors/network_error_struct.h>
 #include <ubuntu/transfers/errors/process_error_struct.h>
+#include "download_state_struct.h"
 #include "download_struct.h"
 #include "group_download_struct.h"
 
@@ -40,6 +41,7 @@ Q_DECLARE_METATYPE(HttpErrorStruct)
 Q_DECLARE_METATYPE(NetworkErrorStruct)
 Q_DECLARE_METATYPE(ProcessErrorStruct)
 Q_DECLARE_METATYPE(DownloadStruct)
+Q_DECLARE_METATYPE(DownloadStateStruct)
 Q_DECLARE_METATYPE(StringMap)
 Q_DECLARE_METATYPE(StructList)
 

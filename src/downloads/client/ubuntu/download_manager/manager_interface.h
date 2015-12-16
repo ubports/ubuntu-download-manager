@@ -76,9 +76,11 @@ public Q_SLOTS: // METHODS
         return asyncCallWithArgumentList(QLatin1String("exit"), argumentList);
     }
 
-    inline QDBusPendingReply<QList<QDBusObjectPath> > getAllDownloads()
+    inline QDBusPendingReply<QList<QDBusObjectPath> > getAllDownloads(const QString &appId, bool uncollected)
     {
         QList<QVariant> argumentList;
+        argumentList << QVariant::fromValue(appId);
+        argumentList << QVariant::fromValue(uncollected);
         return asyncCallWithArgumentList(QLatin1String("getAllDownloads"), argumentList);
     }
 

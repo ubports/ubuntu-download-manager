@@ -1,6 +1,8 @@
 #include "ubuntu_download_manager.h"
+#include "download_history.h"
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
+#include <QDebug>
 
 namespace Ubuntu {
 
@@ -9,7 +11,7 @@ namespace DownloadManager {
 /*!
     \qmltype DownloadManager
     \instantiates DownloadManager
-    \inqmlmodule Ubuntu.DownloadManager 0.1
+    \inqmlmodule Ubuntu.DownloadManager 1.2
     \ingroup download
     \brief Manage downloads for several files.
 
@@ -23,8 +25,8 @@ namespace DownloadManager {
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.DownloadManager 0.1
+    import Ubuntu.Components 1.2
+    import Ubuntu.DownloadManager 1.2
 
     Rectangle {
         width: units.gu(100)
@@ -89,6 +91,24 @@ UbuntuDownloadManager::UbuntuDownloadManager(QObject *parent) :
     CHECK(connect(m_manager, &Manager::downloadCreated,
         this, &UbuntuDownloadManager::downloadFileCreated))
             << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadsChanged,
+        this, &UbuntuDownloadManager::downloadsChanged))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadFinished,
+        this, &UbuntuDownloadManager::downloadFinished))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadPaused,
+        this, &UbuntuDownloadManager::downloadPaused))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadResumed,
+        this, &UbuntuDownloadManager::downloadResumed))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::downloadCanceled,
+        this, &UbuntuDownloadManager::downloadCanceled))
+            << "Could not connect to signal";
+    CHECK(connect(DownloadHistory::instance(), &DownloadHistory::errorFound,
+        this, &UbuntuDownloadManager::errorFound))
+            << "Could not connect to signal";
 }
 
 UbuntuDownloadManager::~UbuntuDownloadManager()
@@ -96,7 +116,6 @@ UbuntuDownloadManager::~UbuntuDownloadManager()
     if (m_manager != nullptr) {
         m_manager->deleteLater();
     }
-    m_downloads.clear();
 }
 
 /*!
@@ -106,7 +125,9 @@ UbuntuDownloadManager::~UbuntuDownloadManager()
 */
 void UbuntuDownloadManager::download(QString url)
 {
-    DownloadStruct dstruct(url);
+    Metadata metadata;
+    QMap<QString, QString> headers;
+    DownloadStruct dstruct(url, metadata.map(), headers);
     m_manager->createDownload(dstruct);
 }
 
@@ -116,12 +137,7 @@ void UbuntuDownloadManager::downloadFileCreated(Download* download)
     CHECK(connect(singleDownload, &SingleDownload::errorFound,
         this, &UbuntuDownloadManager::registerError))
             << "Could not connect to signal";
-    CHECK(connect(singleDownload, &SingleDownload::finished,
-        this, &UbuntuDownloadManager::downloadCompleted))
-            << "Could not connect to signal";
     singleDownload->bindDownload(download);
-    m_downloads.append(QVariant::fromValue(singleDownload));
-    emit downloadsChanged();
     if (m_autoStart) {
         singleDownload->startDownload();
     }
@@ -132,41 +148,25 @@ void UbuntuDownloadManager::downloadGroupCreated(GroupDownload* group)
     Q_UNUSED(group);
 }
 
-void UbuntuDownloadManager::registerError(DownloadError& error)
+void UbuntuDownloadManager::registerError(DownloadError& downloadError)
 {
-    m_errorMessage = error.message();
+    m_errorMessage = downloadError.message();
     emit errorChanged();
+}
+
+bool UbuntuDownloadManager::cleanDownloads() const
+{
+    return DownloadHistory::instance()->cleanDownloads();
 }
 
 void UbuntuDownloadManager::setCleanDownloads(bool value)
 {
-    m_cleanDownloads = value;
-    if (m_cleanDownloads) {
-        QVariantList newList;
-        foreach(QVariant var, m_downloads) {
-            SingleDownload *download = qobject_cast<SingleDownload*>(var.value<SingleDownload*>());
-            if (download != nullptr && !download->isCompleted()) {
-                newList.append(QVariant::fromValue(download));
-            } else {
-                download->deleteLater();
-            }
-        }
-        m_downloads = newList;
-        emit downloadsChanged();
-    }
+    DownloadHistory::instance()->setCleanDownloads(value);
 }
 
-void UbuntuDownloadManager::downloadCompleted()
+QVariantList UbuntuDownloadManager::downloads()
 {
-    if (m_cleanDownloads) {
-        SingleDownload* download = qobject_cast<SingleDownload*>(sender());
-        if (download != nullptr) {
-            int index = m_downloads.indexOf(QVariant::fromValue(download));
-            m_downloads.removeAt(index);
-            emit downloadsChanged();
-            download->deleteLater();
-        }
-    }
+    return DownloadHistory::instance()->downloads();
 }
 
 /*!
@@ -198,5 +198,47 @@ void UbuntuDownloadManager::downloadCompleted()
     started, and let a custom delegate how to represent the UI for each download.
 */
 
+/*!
+    \qmlsignal DownloadManager::errorFound(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when an error occurs in a download. The download in which the
+    error occurred is provided via the 'download' parameter, from which the error message
+    can be accessed via download.errorMessage. The corresponding handler is \c onErrorFound
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadFinished(SingleDownload download, QString path)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has finished. The finished download is provided
+    via the 'download' parameter and the downloaded file path is provided via the 'path' 
+    paremeter. The corresponding handler is \c onDownloadFinished
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadPaused(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been paused. The paused download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadPaused
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadResumed(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been resumed. The resumed download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadResumed
+*/
+
+/*!
+    \qmlsignal DownloadManager::downloadCanceled(SingleDownload download)
+    \since Ubuntu.DownloadManager 1.2
+
+    This signal is emitted when a download has been canceled. The canceled download is provided
+    via the 'download' parameter. The corresponding handler is \c onDownloadCanceled
+*/
 }
+
 }

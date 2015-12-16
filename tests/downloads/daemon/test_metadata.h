@@ -71,6 +71,15 @@ class TestMetadata : public BaseTestCase {
     void testSetDeflate();
     void testHasDeflateTrue();
     void testHasDeflateFalse();
+    void testDownloadOwner_data();
+    void testDownloadOwner();
+    void testSetDownloadDestinationApp_data();
+    void testSetDownloadDestinationApp();
+    void testHasDownloadDestinationAppTrue();
+    void testHasDownloadDestinationAppFalse();
+    void testDestinationAppIsPickedFromEnv_data();
+    void testDestinationAppIsPickedFromEnv();
+    void testDestinationAppIsAlreadyPresent();
 };
 
-#endif // TEST_METADATA_H
+#endif

@@ -21,7 +21,10 @@
 
 #include <QSqlDatabase>
 #include <QObject>
-#include "ubuntu/transfers/system/file_manager.h"
+
+#include <ubuntu/transfers/system/file_manager.h>
+#include <ubuntu/download_manager/download_state_struct.h>
+
 #include "file_download.h"
 
 namespace Ubuntu {
@@ -45,7 +48,11 @@ class DownloadsDb : public QObject {
     QString filename();
     bool dbExists();  // return if the db is present and valid
     bool init();  // init or update the db
+
     virtual bool store(Download* down);
+    virtual DownloadStateStruct getDownloadState(const QString &downloadId);
+    virtual QList<Download*> getUncollectedDownloads(const QString &appId);
+
     bool storeSingleDownload(FileDownload* download);
     void connectToDownload(Download* download);
     void disconnectFromDownload(Download* download);
@@ -79,4 +86,4 @@ class DownloadsDb : public QObject {
 
 }  // Ubuntu
 
-#endif  // DOWNLOADER_LIB_DOWNLOADS_DATABASE_H
+#endif

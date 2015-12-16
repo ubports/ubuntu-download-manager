@@ -5,6 +5,7 @@ set(plugin_SRCS
     backend.cpp
     metadata.cpp
     download_error.cpp
+    download_history.cpp
     single_download.cpp
     ubuntu_download_manager.cpp
 )
@@ -13,6 +14,7 @@ set(plugin_HDRS
     backend.h
     metadata.h
     download_error.h
+    download_history.h
     single_download.h
     ubuntu_download_manager.h
 )

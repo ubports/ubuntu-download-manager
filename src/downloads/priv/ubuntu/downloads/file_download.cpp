@@ -1095,7 +1095,7 @@ FileDownload::emitFinished() {
         }
     }
 
-    setState(Download::FINISH);
+    setState(Download::UNCOLLECTED);
     unlockFilePath();
 
     DOWN_LOG(INFO) << "EMIT finished" << filePath();
@@ -1209,6 +1209,18 @@ FileDownload::emitError(const QString& error) {
     // let other downloads use the same file name
     unlockFilePath();
     Download::emitError(error);
+}
+
+void
+FileDownload::setFilePath(const QString& filePath) {
+    // Used to recreate downloads from the database with the correct path
+    _fileNameMutex->unlockFileName(_filePath);
+    _filePath = filePath;
+}
+
+QString
+FileDownload::filePath() {
+    return _filePath;
 }
 
 }  // Daemon

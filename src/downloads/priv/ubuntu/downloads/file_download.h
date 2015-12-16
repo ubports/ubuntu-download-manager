@@ -71,10 +71,6 @@ class FileDownload : public Download, public QDBusContext {
         return _url;
     }
 
-    virtual QString filePath() const {
-        return _filePath;
-    }
-
     virtual QString hash() const {
         return _hash;
     }
@@ -89,6 +85,8 @@ class FileDownload : public Download, public QDBusContext {
     virtual void resumeTransfer() override;
     virtual void startTransfer() override;
 
+    void setFilePath(const QString& path);
+
  public slots:  // NOLINT(whitespace/indent)
     qulonglong progress() override;
     qulonglong totalSize() override;
@@ -96,6 +94,7 @@ class FileDownload : public Download, public QDBusContext {
     virtual void setDestinationDir(const QString& path);
     virtual void setHeaders(StringMap headers) override;
     virtual void setMetadata(const QVariantMap& metadata) override;
+    virtual QString filePath() override;
 
  signals:
     void finished(const QString& path);

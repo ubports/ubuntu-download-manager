@@ -51,10 +51,22 @@ class Download : public QObject {
     Q_PROPERTY(QString ClickPackage READ clickPackage NOTIFY clickPackagedChanged)
     Q_PROPERTY(bool ShowInIndicator READ showInIndicator NOTIFY showInIndicatorChanged)
     Q_PROPERTY(QString Title READ title NOTIFY titleChanged)
+    Q_PROPERTY(QString DownloadOwner READ destinationApp NOTIFY destinationAppChanged)
 
  public:
     explicit Download(QObject* parent = 0)
         : QObject(parent) {}
+
+    enum State {
+        IDLE,
+        START,
+        PAUSE,
+        RESUME,
+        CANCEL,
+        UNCOLLECTED,
+        FINISH,
+        ERROR
+    };
 
     /*!
         \fn void Download::start()
@@ -95,6 +107,15 @@ class Download : public QObject {
         download object must be canceled and all it resources must be cleaned.
     */
     virtual void cancel() = 0;
+
+    /*!
+        \fn void Download::collected()
+
+        Notifies the download manager that the finished signal for this
+        download object has been received by the client. This allows UDM
+        to report downloads that have finished while a client isn't running.
+    */
+    virtual void collected() = 0;
 
     /*!
         \fn void Download::allowMobileDownload(bool allowed)
@@ -201,6 +222,21 @@ class Download : public QObject {
     virtual qulonglong totalSize() = 0;
 
     /*!
+        \fn QString filePath()
+
+        Returns the value of the downloaded file's location. This is only set once
+        the download is complete.
+    */
+    virtual QString filePath() = 0;
+
+    /*!
+        \fn State state()
+
+        Returns the current state of the download.
+    */
+    virtual State state() = 0;
+
+    /*!
         \fn bool isError() const
 
         Returns if the download represented by the object has had an error.
@@ -243,6 +279,14 @@ class Download : public QObject {
         properties value via the metadata.
     */
     virtual QString title() const = 0;
+
+    /*!
+        \fn QString destinationApp() const = 0;
+
+        Returns the value of the destinationApp property of the download. The owner of the
+        download is the application that created the download in the system.
+    */
+    virtual QString destinationApp() const = 0;
 
  signals:
 
@@ -346,10 +390,18 @@ class Download : public QObject {
     */
     void titleChanged();
 
+    /*!
+        \fn void Download::destinationAppChanged();
+
+        This signal is emitted whenever the download owner property of the download
+        has been updated.
+    */
+    void destinationAppChanged();
+
 };
 
 }  // Ubuntu
 
 }  // DownloadManager
 
-#endif  // UBUNTU_DOWNLOADMANAGER_CLIENT_DOWNLOAD_H
+#endif

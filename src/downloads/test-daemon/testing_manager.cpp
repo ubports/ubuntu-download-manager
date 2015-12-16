@@ -176,12 +176,12 @@ TestingManager::isGSMDownloadAllowed() {
 }
 
 QList<QDBusObjectPath>
-TestingManager::getAllDownloads() {
+TestingManager::getAllDownloads(const QString& appId, bool uncollected) {
     if (calledFromDBus() && _returnErrors) {
         sendErrorReply(QDBusError::InvalidMember,
         "getAllDownloads");
     }
-    return DownloadManager::getAllDownloads();
+    return DownloadManager::getAllDownloads(appId, uncollected);
 }
 
 QList<QDBusObjectPath>

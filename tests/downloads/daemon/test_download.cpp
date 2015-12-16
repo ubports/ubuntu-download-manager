@@ -1301,7 +1301,7 @@ TestDownload::testOnSuccessNoHash() {
     QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QTRY_COMPARE(processingSpy.count(), 0);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -1481,7 +1481,7 @@ TestDownload::testOnSuccessHash() {
     QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE(spy.count(), 1);
     QTRY_COMPARE(processingSpy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -2196,7 +2196,7 @@ TestDownload::testProcessExecutedNoParams() {
 
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -2309,7 +2309,7 @@ TestDownload::testProcessExecutedWithParams() {
 
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -2431,7 +2431,7 @@ TestDownload::testProcessExecutedWithParamsFile() {
     QVERIFY(spy.ensureSignalEmitted());
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -3735,7 +3735,7 @@ TestDownload::testProcessFinishUnlocksPath() {
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
     QCOMPARE(processingSpy.count(), 1);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 
@@ -4167,7 +4167,7 @@ TestDownload::testDataUriPostProcessing() {
 
     QTRY_COMPARE_WITH_TIMEOUT(spy.count(), 1, 20000);
     QTRY_COMPARE_WITH_TIMEOUT(processingSpy.count(), 1, 20000);
-    QCOMPARE(download->state(), Download::FINISH);
+    QCOMPARE(download->state(), Download::UNCOLLECTED);
 
     delete download;
 

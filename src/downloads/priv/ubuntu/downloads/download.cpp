@@ -68,7 +68,7 @@ Download::clickPackage() const {
 bool
 Download::showInIndicator() const {
     return (_metadata.contains(Metadata::SHOW_IN_INDICATOR_KEY))?
-        _metadata.value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():true;
+        _metadata.value(Metadata::SHOW_IN_INDICATOR_KEY).toBool():false;
 }
 
 QString

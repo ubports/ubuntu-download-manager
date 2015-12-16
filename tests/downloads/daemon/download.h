@@ -84,8 +84,8 @@ class MockDownload : public FileDownload {
     MOCK_METHOD0(pauseTransfer, void());
     MOCK_METHOD0(resumeTransfer, void());
     MOCK_METHOD0(startTransfer, void());
+    MOCK_METHOD0(filePath, QString());
     MOCK_CONST_METHOD0(isValid, bool());
-    MOCK_CONST_METHOD0(filePath, QString());
     MOCK_CONST_METHOD0(state, Transfer::State());
     MOCK_CONST_METHOD0(path, QString());
     MOCK_CONST_METHOD0(metadata, QVariantMap());

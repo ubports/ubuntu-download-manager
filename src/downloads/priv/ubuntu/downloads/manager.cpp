@@ -133,8 +133,27 @@ DownloadManager::getCaller() {
     return caller;
 }
 
+QString
+DownloadManager::getDownloadOwner(const QVariantMap& metadata) {
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
+    auto owner = getCaller();
+    auto appId = appArmor->appId(owner);
+    if(appArmor->isConfined(appId)) {
+        return appId;
+    } else {
+        if (metadata.contains(Metadata::APP_ID)){
+            return metadata[Metadata::APP_ID].toString();
+        } else {
+            return "";
+        }
+    }
+    return "";
+}
+
 QDBusObjectPath
 DownloadManager::registerDownload(Download* download) {
+    download->setDownloadOwner(getDownloadOwner(download->metadata()));
+
     download->setThrottle(_throttle);
     download->allowGSMDownload(_allowMobileData);
     if (!_db->store(download)) {
@@ -262,25 +281,35 @@ DownloadManager::isGSMDownloadAllowed() {
 }
 
 QList<QDBusObjectPath>
-DownloadManager::getAllDownloads() {
+DownloadManager::getAllDownloads(const QString& appId, bool uncollected) {
     // filter per app id if owner is not "" and the app is confined else
     // return all downloads
     QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
     auto owner = getCaller();
-    auto appId = appArmor->appId(owner);
+    auto ownerId = appArmor->appId(owner);
+    QString getId;
+    if (appArmor->isConfined(ownerId)) {
+        getId = ownerId;
+    } else {
+        getId = appId;
+    }
     QList<QDBusObjectPath> paths;
-    if (appArmor->isConfined(appId)) {
-        LOG(INFO) << "Returning downloads for api with id" << appId;
-        auto transfers = _queue->transfers();
-        foreach(const QString& path, transfers.keys()) {
-            auto t = transfers[path];
-            if (t->transferAppId() == appId)
+    if (uncollected) {
+        paths = getUncollectedDownloads(getId);
+    } else {
+        if (!getId.isEmpty()) {
+            LOG(INFO) << "Returning downloads for api with id" << getId;
+            auto transfers = _queue->transfers();
+            foreach(const QString& path, transfers.keys()) {
+                auto t = transfers[path];
+                if (t->transferAppId() == getId)
+                    paths << QDBusObjectPath(path);
+            }
+        } else {
+            LOG(INFO) << "Returning all downloads for unconfined app";
+            foreach(const QString& path, _queue->paths())
                 paths << QDBusObjectPath(path);
         }
-    } else {
-        LOG(INFO) << "Returning all downloads for unconfined app";
-        foreach(const QString& path, _queue->paths())
-            paths << QDBusObjectPath(path);
     }
     return paths;
 }
@@ -313,6 +342,45 @@ DownloadManager::getAllDownloadsWithMetadata(const QString &name,
         }
     }
     return paths;
+}
+
+QList<QDBusObjectPath>
+DownloadManager::getUncollectedDownloads(const QString &appId) {
+    QScopedPointer<System::AppArmor> appArmor(new System::AppArmor(_conn));
+    auto owner = getCaller();
+    auto callerAppId = appArmor->appId(owner);
+    QList<QDBusObjectPath> paths;
+    QString testAppId = appId;
+    if (appArmor->isConfined(callerAppId)) {
+        // Confined apps always get their own downloads returned
+        testAppId = callerAppId;
+    }
+
+    LOG(INFO) << "Returning uncollected downloads for app with id" << testAppId;
+
+    // Fetch uncollected downloads that are still in memory
+    auto transfers = _queue->transfers();
+    foreach(const QString& path, transfers.keys()) {
+        auto t = transfers[path];
+        if (t->transferAppId() == testAppId && t->state() != Transfer::FINISH
+                                            && t->state() != Transfer::CANCEL
+                                            && t->state() != Transfer::ERROR)
+            paths << QDBusObjectPath(path);
+    }
+
+    // Fetch uncollected downloads from previous UDM sessions that are
+    // in the database
+    foreach(Download *download, _db->getUncollectedDownloads(testAppId)) {
+        _conn->registerObject(download->path(), download);
+        paths << QDBusObjectPath(download->path());
+    }
+
+    return paths;
+}
+
+DownloadStateStruct
+DownloadManager::getDownloadState(const QString &downloadId) {
+    return _db->getDownloadState(downloadId);
 }
 
 }  // Daemon

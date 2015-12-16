@@ -62,6 +62,13 @@ DownloadImpl::DownloadImpl(const QDBusConnection& conn,
             "Could not connect to signal &DownloadInterface::finished");
     }
 
+    connected = connect(_dbusInterface, &DownloadInterface::finished,
+        this, &DownloadImpl::onFinished);
+    if (!connected) {
+        Logger::log(Logger::Critical,
+            "Could not connect to signal &DownloadInterface::finished");
+    }
+
     connected = connect(_dbusInterface, &DownloadInterface::paused,
         this, &Download::paused);
     if (!connected) {
@@ -216,6 +223,19 @@ DownloadImpl::cancel() {
 }
 
 void
+DownloadImpl::collected() {
+    Logger::log(Logger::Debug, QString("Download{%1} collected()").arg(_id));
+    QDBusPendingReply<> reply =
+        _dbusInterface->collected();
+    // block, the call should be fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error when setting download collected");
+        setLastError(reply.error());
+    }
+}
+
+void
 DownloadImpl::allowMobileDownload(bool allowed) {
     Logger::log(Logger::Debug,
         QString("Download{%1} allowMobileDownload%2())").arg(_id).arg(allowed));
@@ -304,9 +324,7 @@ DownloadImpl::setMetadata(QVariantMap map) {
     // block, the call should be fast enough
     reply.waitForFinished();
     if (reply.isError()) {
-        qDebug() << "Error setting metadata";
         Logger::log(Logger::Error, "Error setting the download metadata");
-        qDebug() << reply.error();
         setLastError(reply.error());
     }
 }
@@ -357,6 +375,40 @@ DownloadImpl::throttle() {
         return 0;
     } else {
         auto result = reply.value();
+        return result;
+    }
+}
+
+QString
+DownloadImpl::filePath() {
+    Logger::log(Logger::Debug, QString("Download{%1} filePath()").arg(_id));
+    QDBusPendingReply<QString> reply =
+        _dbusInterface->filePath();
+    // block, the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download file path");
+        setLastError(reply.error());
+        return "";
+    } else {
+        auto result = reply.value();
+        return result;
+    }
+}
+
+Download::State
+DownloadImpl::state() {
+    Logger::log(Logger::Debug, QString("Download{%1} state()").arg(_id));
+    QDBusPendingReply<int> reply =
+        _dbusInterface->state();
+    // block, the call is fast enough
+    reply.waitForFinished();
+    if (reply.isError()) {
+        Logger::log(Logger::Error, "Error querying the download state");
+        setLastError(reply.error());
+        return Download::ERROR;
+    } else {
+        auto result = static_cast<Download::State>(reply.value());
         return result;
     }
 }
@@ -425,6 +477,11 @@ DownloadImpl::title() const {
     return _dbusInterface->title();
 }
 
+QString
+DownloadImpl::destinationApp() const {
+    return _dbusInterface->destinationApp();
+}
+
 void
 DownloadImpl::onHttpError(HttpErrorStruct errStruct) {
     auto err = new HttpError(errStruct, this);
@@ -474,6 +531,13 @@ DownloadImpl::onPropertiesChanged(const QString& interfaceName,
             emit titleChanged();
         }
     }
+}
+
+void DownloadImpl::onFinished(const QString &path) {
+    Q_UNUSED(path);
+    // Inform UDM that we've received the finished signal, so the download
+    // can be considered completely finished.
+    collected();
 }
 
 }  // DownloadManager

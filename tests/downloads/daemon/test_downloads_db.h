@@ -65,9 +65,12 @@ class TestDownloadsDb : public BaseTestCase {
     void testStoreSingleDownloadPresent();
     void testConnectedToDownload();
     void testDisconnectedFromDownload();
+    void testGetStateMissingDownload();
+    void testGetStateDownload_data();
+    void testGetStateDownload();
 
  private:
     DownloadsDb* _db;
 };
 
-#endif  // TEST_DOWNLOADS_DB_H
+#endif

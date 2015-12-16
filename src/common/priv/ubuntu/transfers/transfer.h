@@ -36,6 +36,7 @@ class Transfer : public QObject {
         PAUSE,
         RESUME,
         CANCEL,
+        UNCOLLECTED,
         FINISH,
         ERROR
     };
@@ -78,6 +79,7 @@ class Transfer : public QObject {
     virtual void pause();
     virtual void resume();
     virtual void start();
+    virtual void collected();
 
  signals:
     void canceled(bool success);

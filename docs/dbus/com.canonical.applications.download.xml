@@ -49,10 +49,19 @@
         <arg name="allowed" type="b" direction="out"/>
     </method>
 
+    <method name="filePath">
+        <arg name="filepath" type="s" direction="out"/>
+    </method>
+
+    <method name="state">
+        <arg name="state" type="i" direction="out"/>
+    </method>
+
     <method name="start" />
     <method name="pause" />
     <method name="resume" />
     <method name="cancel" />
+    <method name="collected" />
 
     <signal name="started">
         <arg name="success" type="b" direction="out"/>
@@ -117,6 +126,8 @@
     <property access="read" type="s" name="Title" />
 
     <property access="read" type="s" name="ClickPackage" />
+
+    <property access="read" type="s" name="DestinationApp" />
 
  </interface>
 </node>

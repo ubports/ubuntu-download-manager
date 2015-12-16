@@ -41,6 +41,7 @@ class Metadata : public QVariantMap {
     static const QString CLICK_PACKAGE_KEY;
     static const QString DEFLATE_KEY;
     static const QString EXTRACT_KEY;
+    static const QString APP_ID;
 
     // accessors to simplify the use of the metadata
     QString command() const;
@@ -74,10 +75,14 @@ class Metadata : public QVariantMap {
     bool extract() const;
     void setExtract(bool extract);
     bool hasExtract() const;
+
+    QString destinationApp() const;
+    void setOwner(const QString &id);
+    bool hasOwner() const;
 };
 
 }  // DownloadManager
 
 }  // Ubuntu
 
-#endif // METADATA_H
+#endif

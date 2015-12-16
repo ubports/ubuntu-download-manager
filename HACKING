@@ -1,0 +1,36 @@
+ABI compliance test
+-------------------
+To use this, install abi-compliance-checker package from the archives.
+
+You can use abi-compliance-checker to test whether a particular build
+is ABI compatible with another build. The tool does some source-level
+analysis in addition to checking library symbols, so it catches things
+that are potentially dangerous, but won't be picked up by just looking
+at the symbol table.
+
+Assume you have built trunk in "devel", and you have a later build
+in "mybranch" and want to check that "mybranch" is still compatible.
+To run the compliance test (example directories assume an arm build,
+change obj-arm-linux-gnueabihf where appropriate for other platforms):
+
+$ abi-compliance-checker -lib libubuntu-download-manager-client.so -old devel/obj-arm-linux-gnueabihf/tests/abi-compliance/abi.xml -new mybranch/obj-arm-linux-gnueabihf/tests/abi-compliance/abi.xml
+
+This should be run on all the public UDM libraries:
+libubuntu-download-manager-client.so
+libubuntu-download-manager-common.so
+libubuntu-upload-manager-common.so
+libudm-common.so
+
+You will get a message about compilation errors. These are caused by a Qt macro and
+can be ignored. (The log file in src/logs/libubuntu-download-manager-client.so/[version]/log.txt
+contains the details.)
+
+Now point your browser at
+
+compat_reports/libubuntu-download-manager-client.so/[version]_to_[version]/compat_report.html
+
+The report provides a nicely laid out page with all the details.
+
+If ABI changes are detected (and are intended) then the version number
+should be incremented, and when landing all packages that rdepend on
+UDM should be rebuilt.

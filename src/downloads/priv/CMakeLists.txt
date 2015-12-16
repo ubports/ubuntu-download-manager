@@ -12,7 +12,7 @@ set(SOURCES
 	ubuntu/downloads/file_download.cpp
 	ubuntu/downloads/group_download.cpp
 	ubuntu/downloads/group_download_adaptor.cpp
-        ubuntu/downloads/header_parser.cpp
+	ubuntu/downloads/header_parser.cpp
 	ubuntu/downloads/manager.cpp
 	ubuntu/downloads/mms_file_download.cpp
 	ubuntu/downloads/sm_file_download.cpp
@@ -33,7 +33,7 @@ set(HEADERS
 	ubuntu/downloads/file_download.h
 	ubuntu/downloads/group_download.h
 	ubuntu/downloads/group_download_adaptor.h
-        ubuntu/downloads/header_parser.h
+	ubuntu/downloads/header_parser.h
 	ubuntu/downloads/manager.h
 	ubuntu/downloads/mms_file_download.h
 	ubuntu/downloads/sm_file_download.h
