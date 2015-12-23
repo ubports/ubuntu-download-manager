@@ -595,6 +595,7 @@ FileDownload::onRedirect(QUrl redirect) {
     }
     _reply = _requestFactory->get(buildRequest());
     _reply->setReadBufferSize(throttle());
+    _totalSize = 0;
 
     connectToReplySignals();
 }
