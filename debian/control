@@ -187,7 +187,8 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
          libudm-common1 (= ${binary:Version}),
          libubuntu-download-manager-common1 (= ${binary:Version}),
-         libubuntu-download-manager-client1 (= ${binary:Version})
+         libubuntu-download-manager-client1 (= ${binary:Version}),
+         ubuntu-download-manager (= ${binary:Version})
 Description: Ubuntu Download Manager Plugin
  This package contains a QML Plugin to handle downloads from a pure QML
  application, without the need to write any C++ code.
