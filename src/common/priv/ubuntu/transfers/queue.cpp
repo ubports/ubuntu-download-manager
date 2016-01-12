@@ -126,12 +126,21 @@ Queue::onManagedTransferStateChanged() {
                 remove(transfer->path());
             break;
         case Transfer::ERROR:
-        case Transfer::FINISH:
         case Transfer::UNCOLLECTED:
             // remove the registered object in dbus, remove the transfer
             // and the adapter from the list
             if (!_current.isEmpty() && _current == transfer->path())
                 updateCurrentTransfer();
+            break;
+        case Transfer::FINISH:
+            if (!_current.isEmpty() && _current == transfer->path()) {
+                updateCurrentTransfer();
+            } else {
+                // Remove from the queue even if it wasn't the current transfer
+                // (finished signals can be received for downloads that completed
+                // previously but were left in an uncollected state)
+                remove(transfer->path());
+            }
             break;
         default:
             // do nothing

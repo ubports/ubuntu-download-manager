@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QProcessEnvironment>
 #include <ubuntu/download_manager/logging/logger.h>
 #include "download_impl.h"
 
@@ -535,9 +536,22 @@ DownloadImpl::onPropertiesChanged(const QString& interfaceName,
 
 void DownloadImpl::onFinished(const QString &path) {
     Q_UNUSED(path);
-    // Inform UDM that we've received the finished signal, so the download
-    // can be considered completely finished.
-    collected();
+
+    // Only acknowledge collection automatically if we aren't sending 
+    // this download to another app via content-hub
+    auto environment = QProcessEnvironment::systemEnvironment();
+    QString appId;
+    if (environment.contains("APP_ID")) {
+        appId = environment.value("APP_ID");
+    } else {
+        appId = QCoreApplication::applicationFilePath();
+    }
+
+    if (appId == metadata().value("app-id", appId)) {
+        // Inform UDM that we've received the finished signal, so the download
+        // can be considered completely finished.
+        collected();
+    }
 }
 
 }  // DownloadManager
