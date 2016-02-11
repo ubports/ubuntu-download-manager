@@ -595,11 +595,11 @@ SingleDownload::setMetadata(Metadata* metadata) {
 */
 
 /*!
-    \qmlsignal SingleDownload::downloadFinished(QString path)
+    \qmlsignal SingleDownload::finished(QString path)
 
     This signal is emitted when a download has finished. The downloaded file 
     path is provided via the 'path' paremeter. The corresponding handler is 
-    \c onDownloadFinished
+    \c onFinished
 */
 
 
