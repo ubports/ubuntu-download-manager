@@ -769,22 +769,23 @@ void
 FileDownload::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     TRACE << exitCode << exitStatus;
     auto p = qobject_cast<Process*>(sender());
+    // remove the file since we are done with it
+    cleanUpCurrentData();
+    // remove the file because that is the contract that we have with
+    // the clients
+    auto fileMan = FileManager::instance();
+
+    if (fileMan->exists(_tempFilePath)) {
+        LOG(INFO) << "Removing '" << _tempFilePath << "'";
+        fileMan->remove(_tempFilePath);
+    }
+
+    if (fileMan->exists(_filePath)) {
+        LOG(INFO) << "Removing '" << _filePath << "'";
+        fileMan->remove(_filePath);
+    }
+
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
-        // remove the file since we are done with it
-        cleanUpCurrentData();
-        // remove the file because that is the contract that we have with
-        // the clients
-        auto fileMan = FileManager::instance();
-
-        if (fileMan->exists(_tempFilePath)) {
-            LOG(INFO) << "Removing '" << _tempFilePath << "'";
-            fileMan->remove(_tempFilePath);
-        }
-
-        if (fileMan->exists(_filePath)) {
-            LOG(INFO) << "Removing '" << _filePath << "'";
-            fileMan->remove(_filePath);
-        }
         emitFinished();
     } else {
         auto standardOut = p->readAllStandardOutput();
