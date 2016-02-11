@@ -1,3 +1,10 @@
+ubuntu-download-manager (1.2+16.04.20160211-0ubuntu1) xenial; urgency=medium
+
+  * Clean up processed files even when processing fails (LP: #1542853)
+  * Fix incorrect documentation for onFinished signal in QML
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Thu, 11 Feb 2016 14:23:10 +0000
+
 ubuntu-download-manager (1.2+16.04.20160112.2-0ubuntu1) xenial; urgency=medium
 
   * Add dependency on ubuntu-download-manager to qtdeclarative5-ubuntu-
