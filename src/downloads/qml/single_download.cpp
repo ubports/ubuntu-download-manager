@@ -18,6 +18,7 @@
 
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
+#include <QDebug>
 
 #include "single_download.h"
 #include "download_history.h"

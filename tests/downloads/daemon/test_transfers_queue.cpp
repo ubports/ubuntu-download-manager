@@ -100,18 +100,19 @@ TestTransferQueue::testStartTransferWithNoCurrent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
+
     verifyMocks();
 }
 
@@ -159,12 +160,12 @@ TestTransferQueue::testStartTransferWithCurrent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _first->stateChanged();
@@ -172,7 +173,7 @@ TestTransferQueue::testStartTransferWithCurrent() {
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     verifyMocks();
 }
 
@@ -200,18 +201,18 @@ TestTransferQueue::testStartTransferWithNoCurrentCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     QVERIFY(spy.ensureSignalEmitted());
     QCOMPARE(spy.count(), 1);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), QString(""));
+    QCOMPARE(arguments.at(1).toString(), QString(""));
     verifyMocks();
 }
 
@@ -246,11 +247,11 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _first->stateChanged();
@@ -258,9 +259,9 @@ TestTransferQueue::testPauseTransferNoOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), QString(""));
+    QCOMPARE(arguments.at(1).toString(), QString(""));
     verifyMocks();
 }
 
@@ -318,12 +319,12 @@ TestTransferQueue::testPauseTransferOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -332,9 +333,9 @@ TestTransferQueue::testPauseTransferOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
@@ -388,12 +389,12 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _first->stateChanged();
@@ -401,9 +402,9 @@ TestTransferQueue::testResumeTransferNoOtherPresent() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     verifyMocks();
 }
 
@@ -462,12 +463,12 @@ TestTransferQueue::testResumeTransferOtherPresent() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -476,9 +477,9 @@ TestTransferQueue::testResumeTransferOtherPresent() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
@@ -530,12 +531,12 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -544,9 +545,9 @@ TestTransferQueue::testResumeTransferNoOtherPresentCannotTransfer() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), QString());
+    QCOMPARE(arguments.at(1).toString(), QString());
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     verifyMocks();
 }
 
@@ -580,11 +581,11 @@ TestTransferQueue::testCancelTransferNoOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _first->stateChanged();
@@ -592,9 +593,9 @@ TestTransferQueue::testCancelTransferNoOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), QString());
+    QCOMPARE(arguments.at(1).toString(), QString());
     verifyMocks();
 }
 
@@ -652,12 +653,12 @@ TestTransferQueue::testCancelTransferOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -666,9 +667,9 @@ TestTransferQueue::testCancelTransferOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
@@ -726,12 +727,12 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    SignalBarrier spy(_q, SIGNAL(currentChanged(QString)));
+    SignalBarrier spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -740,9 +741,9 @@ TestTransferQueue::testCancelTransferOtherReadyCannotTransfer() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
@@ -771,11 +772,11 @@ TestTransferQueue::testCancelTransferNotStarted() {
     SignalBarrier removedSpy(_q, SIGNAL(transferRemoved(QString)));
     _q->add(_first);
 
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
 
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 }
 
 void
@@ -858,12 +859,12 @@ TestTransferQueue::testTransferFinishedOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    QSignalSpy spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -871,9 +872,9 @@ TestTransferQueue::testTransferFinishedOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
@@ -928,12 +929,12 @@ TestTransferQueue::testTransferErrorWithOtherReady() {
 
     // add a transfer, set the state to start and assert that it will
     // be started
-    QSignalSpy spy(_q, SIGNAL(currentChanged(QString)));
+    QSignalSpy spy(_q, SIGNAL(currentChanged(QString, QString)));
     _q->add(_first);
     _q->add(_second);
 
     // we do not transfer just yet
-    QVERIFY(_q->currentTransfer().isEmpty());
+    QVERIFY(_q->currentTransfer("").isEmpty());
 
     _first->stateChanged();
     _second->stateChanged();
@@ -941,9 +942,9 @@ TestTransferQueue::testTransferErrorWithOtherReady() {
     QCOMPARE(spy.count(), 2);
 
     QList<QVariant> arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), path);
+    QCOMPARE(arguments.at(1).toString(), path);
     arguments = spy.takeFirst();
-    QCOMPARE(arguments.at(0).toString(), secondPath);
+    QCOMPARE(arguments.at(1).toString(), secondPath);
     verifyMocks();
 }
 
