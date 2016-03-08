@@ -1,3 +1,10 @@
+ubuntu-download-manager (1.2+16.04.20160308-0ubuntu1) xenial; urgency=medium
+
+  * Implement per-app queueing instead of having one global queue for
+    all apps
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Tue, 08 Mar 2016 17:46:00 +0000
+
 ubuntu-download-manager (1.2+16.04.20160211-0ubuntu1) xenial; urgency=medium
 
   * Clean up processed files even when processing fails (LP: #1542853)
