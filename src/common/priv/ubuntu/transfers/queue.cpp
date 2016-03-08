@@ -28,8 +28,7 @@ namespace Ubuntu {
 namespace Transfers {
 
 Queue::Queue(QObject* parent)
-    : QObject(parent),
-      _current("") {
+    : QObject(parent) {
     CHECK(connect(NetworkSession::instance(),
         &NetworkSession::sessionTypeChanged,
         this, &Queue::onSessionTypeChanged))
@@ -42,7 +41,10 @@ Queue::add(Transfer* transfer) {
     auto path = transfer->path();
     TRACE << path;
 
-    _sortedPaths.append(path);
+    if (!_sortedPaths.contains(transfer->transferAppId())) {
+        _sortedPaths[transfer->transferAppId()] = new QStringList();
+    }
+    _sortedPaths[transfer->transferAppId()]->append(path);
     _transfers[path] = transfer;
 
     if (transfer->addToQueue()) {
@@ -63,7 +65,7 @@ Queue::remove(const QString& path) {
     TRACE << path;
 
     auto transfer = _transfers[path];
-    _sortedPaths.removeOne(path);
+    _sortedPaths[transfer->transferAppId()]->removeOne(path);
     _transfers.remove(path);
 
     transfer->deleteLater();
@@ -71,19 +73,27 @@ Queue::remove(const QString& path) {
 }
 
 QString
-Queue::currentTransfer() {
-    return _current;
+Queue::currentTransfer(const QString& appId) {
+    if(_current.contains(appId)) {
+        return _current[appId];
+    } else {
+        return "";
+    }
 }
 
 QStringList
 Queue::paths() {
-    return _sortedPaths;
+    QStringList allPaths;
+    foreach(QStringList* list, _sortedPaths.values()) {
+        allPaths += *list;
+    }
+    return allPaths;
 }
 
 QHash<QString, Transfer*>
 Queue::transfers() {
     QHash<QString, Transfer*> transfers;
-    foreach(const QString& path, _sortedPaths) {
+    foreach(const QString& path, paths()) {
         transfers[path] = _transfers[path];
     }
     return transfers;
@@ -101,27 +111,24 @@ Queue::onManagedTransferStateChanged() {
     // decide what to do with it
     auto transfer = qobject_cast<Transfer*>(sender());
     switch (transfer->state()) {
+        case Transfer::RESUME:
         case Transfer::START:
-            // only start the transfer in the update method
-            if (_current.isEmpty())
-                updateCurrentTransfer();
+            if (!_current.contains(transfer->transferAppId()) 
+                    || (_current.contains(transfer->transferAppId()) 
+                        && _current[transfer->transferAppId()].isEmpty())) {
+                // only start or resume the transfer in the update method
+                updateCurrentTransfer(transfer->transferAppId());
+            }
             break;
         case Transfer::PAUSE:
             transfer->pauseTransfer();
-            if (!_current.isEmpty()  && _current == transfer->path())
-                updateCurrentTransfer();
-            break;
-        case Transfer::RESUME:
-            // only resume the transfer in the update method
-            if (_current.isEmpty()) {
-                updateCurrentTransfer();
-            }
+            updateCurrentTransfer(transfer->transferAppId());
             break;
         case Transfer::CANCEL:
             // cancel and remove the transfer
             transfer->cancelTransfer();
-            if (!_current.isEmpty() && _current == transfer->path())
-                updateCurrentTransfer();
+            if (_current.contains(transfer->transferAppId()) && _current[transfer->transferAppId()] == transfer->path())
+                updateCurrentTransfer(transfer->transferAppId());
             else
                 remove(transfer->path());
             break;
@@ -129,12 +136,12 @@ Queue::onManagedTransferStateChanged() {
         case Transfer::UNCOLLECTED:
             // remove the registered object in dbus, remove the transfer
             // and the adapter from the list
-            if (!_current.isEmpty() && _current == transfer->path())
-                updateCurrentTransfer();
+            if (_current.contains(transfer->transferAppId()) && _current[transfer->transferAppId()] == transfer->path())
+                updateCurrentTransfer(transfer->transferAppId());
             break;
         case Transfer::FINISH:
-            if (!_current.isEmpty() && _current == transfer->path()) {
-                updateCurrentTransfer();
+            if (_current.contains(transfer->transferAppId()) && _current[transfer->transferAppId()] == transfer->path()) {
+                updateCurrentTransfer(transfer->transferAppId());
             } else {
                 // Remove from the queue even if it wasn't the current transfer
                 // (finished signals can be received for downloads that completed
@@ -176,47 +183,62 @@ Queue::onSessionTypeChanged(QNetworkConfiguration::BearerType type) {
 }
 
 void
-Queue::updateCurrentTransfer() {
+Queue::updateCurrentTransfer(const QString& appIdToUpdate) {
     TRACE;
-    if (!_current.isEmpty()) {
-        // check if it was canceled/finished
-        auto currentTransfer = _transfers[_current];
-        auto state = currentTransfer->state();
-        if (state == Transfer::CANCEL || state == Transfer::FINISH
-            || state == Transfer::ERROR) {
-            LOG(INFO) << "State is CANCEL || FINISH || ERROR";
-            remove(_current);
-            _current = "";
-        } else if (state == Transfer::UNCOLLECTED) {
-            LOG(INFO) << "State is UNCOLLECTED";
-            _current = "";
-        } else if (!currentTransfer->canTransfer()
-                || state == Transfer::PAUSE) {
-            LOG(INFO) << "States is Cannot Transfer || PAUSE";
-            _current = "";
+
+    // If we don't get given a specific appId to update transfers for
+    // we update all the transfers
+    QStringList appIds;
+    if (appIdToUpdate.isEmpty()) {
+        appIds = _sortedPaths.keys();
+    } else {
+        appIds.append(appIdToUpdate);
+    }
+
+    foreach(QString appId, appIds) {
+        if (_current.contains(appId)) {
+            // check if it was canceled/finished
+            auto currentTransfer = _transfers[_current[appId]];
+            auto state = currentTransfer->state();
+            if (state == Transfer::CANCEL || state == Transfer::FINISH
+                || state == Transfer::ERROR) {
+                LOG(INFO) << "State is CANCEL || FINISH || ERROR";
+                remove(_current[appId]);
+                _current.remove(appId);
+            } else if (state == Transfer::UNCOLLECTED) {
+                LOG(INFO) << "State is UNCOLLECTED";
+                _current.remove(appId);
+            } else if (!currentTransfer->canTransfer()
+                    || state == Transfer::PAUSE) {
+                LOG(INFO) << "States is Cannot Transfer || PAUSE";
+                _current.remove(appId);
+            } else {
+                break;
+            }
+        }
+
+        // loop via the transfers and choose the first that is
+        // started or resumed
+        foreach(const QString& path, *_sortedPaths[appId]) {
+            auto transfer = _transfers[path];
+            auto state = transfer->state();
+            if (transfer->canTransfer()
+                    && (state == Transfer::START
+                        || state == Transfer::RESUME)) {
+                _current[appId] = path;
+                if (state == Transfer::START) {
+                    transfer->startTransfer();
+                } else
+                    transfer->resumeTransfer();
+                break;
+            }
+        }
+        if (_current.contains(appId) && !_current[appId].isEmpty()) {
+            emit currentChanged(appId, _current[appId]);
         } else {
-            return;
+            emit currentChanged(appId, "");
         }
     }
-
-    // loop via the transfers and choose the first that is
-    // started or resumed
-    foreach(const QString& path, _sortedPaths) {
-        auto transfer = _transfers[path];
-        auto state = transfer->state();
-        if (transfer->canTransfer()
-                && (state == Transfer::START
-                    || state == Transfer::RESUME)) {
-            _current = path;
-            if (state == Transfer::START)
-                transfer->startTransfer();
-            else
-                transfer->resumeTransfer();
-            break;
-        }
-    }
-
-    emit currentChanged(_current);
 }
 
 }  // Transfers

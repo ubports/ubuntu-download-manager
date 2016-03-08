@@ -43,28 +43,28 @@ class Queue : public QObject {
     virtual void add(Transfer* transfer);
 
     // accessors for useful info
-    virtual QString currentTransfer();
+    virtual QString currentTransfer(const QString& appId);
     virtual QStringList paths();
     virtual QHash<QString, Transfer*> transfers();
     virtual int size();
 
  signals:
     // signals raised when things happens within the q
-    void currentChanged(QString path);
     void transferAdded(QString path);
     void transferRemoved(QString path);
+    void currentChanged(QString appId, QString path);
 
  private:
     void onManagedTransferStateChanged();
     void onUnmanagedTransferStateChanged();
     void onSessionTypeChanged(QNetworkConfiguration::BearerType type);
     void remove(const QString& path);
-    void updateCurrentTransfer();
+    void updateCurrentTransfer(const QString& appIdToUpdate = "");
 
  private:
-    QString _current;
+    QHash<QString, QString> _current;
     QHash<QString, Transfer*> _transfers;  // quick for access
-    QStringList _sortedPaths;  // keep the order
+    QHash<QString, QStringList*> _sortedPaths;  // keep the order
 };
 
 }  // Transfers

@@ -1277,6 +1277,10 @@ TestDownload::testOnSuccessNoHash() {
         .Times(1)
         .WillOnce(Return(true));
 
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
+
     EXPECT_CALL(*file, remove())
         .Times(0);
 
@@ -1358,6 +1362,9 @@ TestDownload::testOnSuccessHashError() {
         .Times(1)
         .WillOnce(Return(nullptr));
 
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
 
     EXPECT_CALL(*_cryptoFactory, createCryptographicHash(_, _))
         .Times(1)
@@ -1442,6 +1449,10 @@ TestDownload::testOnSuccessHash() {
 
     EXPECT_CALL(*file, reset())
         .Times(1);
+
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
 
     EXPECT_CALL(*file, remove())
         .Times(0);
@@ -2057,7 +2068,7 @@ TestDownload::testSetRawHeadersResume() {
     EXPECT_CALL(*file, open(QIODevice::ReadWrite | QFile::Append))
         .Times(1)
         .WillOnce(Return(true));
-
+    
     EXPECT_CALL(*file, remove())
         .Times(0);
 
@@ -2160,6 +2171,10 @@ TestDownload::testProcessExecutedNoParams() {
         .WillOnce(Return(file.data()));
 
     EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, flush())
         .Times(1)
         .WillOnce(Return(true));
 
@@ -2273,6 +2288,10 @@ TestDownload::testProcessExecutedWithParams() {
         .WillOnce(Return(file.data()));
 
     EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, flush())
         .Times(1)
         .WillOnce(Return(true));
 
@@ -2390,6 +2409,10 @@ TestDownload::testProcessExecutedWithParamsFile() {
         .Times(1)
         .WillOnce(Return(true));
 
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
+
     EXPECT_CALL(*file.data(), remove())
         .Times(1)
         .WillOnce(Return(true));
@@ -2483,6 +2506,10 @@ TestDownload::testProcessFinishedWithError() {
         .WillOnce(Return(file.data()));
 
     EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, flush())
         .Times(1)
         .WillOnce(Return(true));
 
@@ -2601,6 +2628,10 @@ TestDownload::testProcessError() {
         .Times(1)
         .WillOnce(Return(true));
 
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
+
     EXPECT_CALL(*file.data(), remove())
         .Times(1)
         .WillOnce(Return(true));
@@ -2704,6 +2735,10 @@ TestDownload::testProcessFinishedCrash() {
         .WillOnce(Return(file.data()));
 
     EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, flush())
         .Times(1)
         .WillOnce(Return(true));
 
@@ -3203,6 +3238,10 @@ TestDownload::testProcessingJustOnce() {
     EXPECT_CALL(*file, reset())
         .Times(1);
 
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(true));
+
     EXPECT_CALL(*file, remove())
         .Times(0);
 
@@ -3278,6 +3317,15 @@ TestDownload::testFileSystemErrorProgress() {
     EXPECT_CALL(*reply.data(), setReadBufferSize(_))
         .Times(1);
 
+    EXPECT_CALL(*reply, attribute(_))
+        .Times(1)
+        .WillOnce(Return(QVariant(200)));
+
+    EXPECT_CALL(*reply, hasRawHeader(_))
+        .Times(2)
+        .WillOnce(Return(false))
+        .WillOnce(Return(false));
+
     // file system expectations
     EXPECT_CALL(*_fileManager, createFile(_))
         .Times(1)
@@ -3290,10 +3338,14 @@ TestDownload::testFileSystemErrorProgress() {
     EXPECT_CALL(*file.data(), write(_))
         .Times(1)
         .WillOnce(Return(0));
-
+    
     EXPECT_CALL(*file.data(), flush())
         .Times(1)
         .WillOnce(Return(false));
+
+    EXPECT_CALL(*file.data(), size())
+        .Times(1)
+        .WillOnce(Return(0));
 
     EXPECT_CALL(*file.data(), error())
         .Times(1)
@@ -3307,12 +3359,15 @@ TestDownload::testFileSystemErrorProgress() {
         _isConfined, _rootPath, _url, _metadata, _headers);
     SignalBarrier spy(download, SIGNAL(error(QString)));
     SignalBarrier startedSpy(download, SIGNAL(started(bool)));
+    SignalBarrier progressSpy(download, SIGNAL(progress(qulonglong, qulonglong)));
 
     download->start();
     download->startTransfer();
     QVERIFY(startedSpy.ensureSignalEmitted());
 
-    reply->downloadProgress(0, 13);  // emit progress so that we try to write
+    reply->downloadProgress(0, 13);
+    QVERIFY(progressSpy.ensureSignalEmitted());
+    reply->finished(); // emit finished signal so that we try to write
 
     // assert that the error signal is emitted
     QVERIFY(spy.ensureSignalEmitted());
@@ -3367,13 +3422,13 @@ TestDownload::testFileSystemErrorPause() {
         .Times(1)
         .WillOnce(Return(0));
 
-    EXPECT_CALL(*file.data(), flush())
-        .Times(1)
-        .WillOnce(Return(false));
-
     EXPECT_CALL(*file.data(), error())
         .Times(1)
         .WillOnce(Return(QFile::WriteError));  // any error will do
+
+    EXPECT_CALL(*file, flush())
+        .Times(1)
+        .WillOnce(Return(false));
 
     EXPECT_CALL(*file.data(), remove())
         .Times(1)
@@ -3554,6 +3609,10 @@ TestDownload::testSingleRedirect() {
     EXPECT_CALL(*secondFile, remove())
         .Times(0);
 
+    EXPECT_CALL(*secondFile, flush())
+        .Times(1)
+        .WillOnce(Return(true));
+
     EXPECT_CALL(*secondFile, close())
         .Times(1);
 
@@ -3699,6 +3758,10 @@ TestDownload::testProcessFinishUnlocksPath() {
         .WillOnce(Return(file.data()));
 
     EXPECT_CALL(*file.data(), open(QIODevice::ReadWrite | QFile::Append))
+        .Times(1)
+        .WillOnce(Return(true));
+
+    EXPECT_CALL(*file, flush())
         .Times(1)
         .WillOnce(Return(true));
 

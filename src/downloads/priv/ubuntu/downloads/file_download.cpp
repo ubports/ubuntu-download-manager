@@ -493,12 +493,7 @@ void
 FileDownload::onDownloadProgress(qint64 currentProgress, qint64 bytesTotal) {
     TRACE << _url << currentProgress << bytesTotal;
 
-    // write the current info we have, just in case we are killed in the
-    // middle of the download
     _currentData->write(_reply->readAll());
-    if (!flushFile()) {
-        return;
-    }
     auto received = static_cast<qulonglong>(_currentData->size());
 
     if (bytesTotal == -1) {
@@ -609,6 +604,7 @@ FileDownload::onDownloadCompleted() {
     auto contentType = (_reply->hasRawHeader(CONTENT_TYPE))?
             QString(_reply->rawHeader(CONTENT_TYPE)) : QString();
 
+    flushFile();
     downloadPostProcessing(contentType);
 
     // clean the reply
