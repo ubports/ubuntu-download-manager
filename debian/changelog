@@ -1,3 +1,12 @@
+ubuntu-download-manager (1.2+16.04.20160317-0ubuntu1) xenial; urgency=medium
+
+  * Clean up old log files (LP: #1461444)
+  * Fix documentation of Metadata component (LP: #1557772)
+  * Report an error if the user attempts to create a download with an
+    empty URL (LP: #1557771)
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Thu, 17 Mar 2016 16:32:28 +0000
+
 ubuntu-download-manager (1.2+16.04.20160308-0ubuntu1) xenial; urgency=medium
 
   * Implement per-app queueing instead of having one global queue for
