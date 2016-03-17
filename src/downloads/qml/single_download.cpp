@@ -221,7 +221,7 @@ SingleDownload::unbindDownload(Download* download) {
 void
 SingleDownload::download(QString url)
 {
-    if (!m_downloadInProgress) {
+    if (!m_downloadInProgress && !url.isEmpty()) {
         if (m_manager == nullptr) {
             m_manager = Manager::createSessionManager("", this);
 
@@ -233,6 +233,9 @@ SingleDownload::download(QString url)
         QMap<QString, QString> headers;
         DownloadStruct dstruct(url, metadata.map(), headers);
         m_manager->createDownload(dstruct);
+    } else if (url.isEmpty()) {
+        m_error.setMessage("No URL specified");
+        emit errorChanged();
     } else {
         m_error.setMessage("Current download still in progress.");
         emit errorChanged();

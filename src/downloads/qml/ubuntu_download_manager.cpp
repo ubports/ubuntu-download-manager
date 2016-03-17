@@ -125,10 +125,15 @@ UbuntuDownloadManager::~UbuntuDownloadManager()
 */
 void UbuntuDownloadManager::download(QString url)
 {
-    Metadata metadata;
-    QMap<QString, QString> headers;
-    DownloadStruct dstruct(url, metadata.map(), headers);
-    m_manager->createDownload(dstruct);
+    if (!url.isEmpty()) {
+        Metadata metadata;
+        QMap<QString, QString> headers;
+        DownloadStruct dstruct(url, metadata.map(), headers);
+        m_manager->createDownload(dstruct);
+    } else {
+        m_errorMessage = "No URL specified";
+        emit errorChanged();
+    }
 }
 
 void UbuntuDownloadManager::downloadFileCreated(Download* download)
