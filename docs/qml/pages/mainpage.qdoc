@@ -41,6 +41,7 @@ Available through:
 \list
     \li \l {DownloadManager}
     \li \l {SingleDownload}
+    \li \l {Metadata}
 \endlist
 
 \section1 Example usage - Downloading a file

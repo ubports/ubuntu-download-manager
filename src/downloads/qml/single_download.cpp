@@ -588,7 +588,7 @@ SingleDownload::setMetadata(Metadata* metadata) {
 */
 
 /*!
-    \qmlproperty QVariantMap SingleDownload::metadata
+    \qmlproperty Metadata SingleDownload::metadata
 
     This property allows to get and set the metadata that will be linked to 
     the download request. 
