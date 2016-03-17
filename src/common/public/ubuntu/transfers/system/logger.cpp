@@ -105,16 +105,29 @@ static bool _init = false;
 void
 Logger::setupLogging(const QString logDir) {
     auto path = logDir;
+    QDir *dir;
     if (path == "" ){
         path = getLogDir() + QDir::separator() + LOG_NAME;
+        dir = new QDir(getLogDir());
     } else {
         bool wasCreated = QDir().mkpath(logDir);
         if (wasCreated) {
             path = QDir(logDir).absoluteFilePath(LOG_NAME);
+            dir = new QDir(logDir);
         } else {
             qCritical() << "Could not create the logging path" << logDir;
             path = getLogDir() + QDir::separator() + LOG_NAME;
+            dir = new QDir(getLogDir());
         }
+    }
+
+    // Only keep the last 100 most recent logs
+    QStringList nameFilter;
+    nameFilter << LOG_NAME + "*";
+    QStringList logFiles = dir->entryList(nameFilter, QDir::Files | QDir::Hidden | QDir::Writable, QDir::Time);
+    for (int i = 99; i < logFiles.count(); i++) {
+        QFile logFile(dir->absoluteFilePath(logFiles[i]));
+        logFile.remove();
     }
 
     auto appName = QCoreApplication::instance()->applicationName();
