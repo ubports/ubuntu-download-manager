@@ -1,3 +1,10 @@
+ubuntu-download-manager (1.2+16.04.20160322-0ubuntu1) xenial; urgency=medium
+
+  * Fix error reporting in download manager for network errors (LP:
+    #1555169)
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Tue, 22 Mar 2016 16:24:33 +0000
+
 ubuntu-download-manager (1.2+16.04.20160317-0ubuntu1) xenial; urgency=medium
 
   * Clean up old log files (LP: #1461444)
