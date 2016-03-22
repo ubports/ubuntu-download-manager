@@ -537,6 +537,9 @@ FileDownload::onError(QNetworkReply::NetworkError code) {
             HttpErrorStruct err(status, msg);
             emit httpError(err);
             errStr = NETWORK_ERROR;
+        } else {
+            NetworkErrorStruct err(code, _reply->errorString());
+            emit networkError(err);
         }
     } else {
         if (code == QNetworkReply::AuthenticationRequiredError) {
