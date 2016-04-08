@@ -44,8 +44,8 @@ class Metadata : public QVariantMap {
     static const QString APP_ID;
 
     // accessors to simplify the use of the metadata
-    QString command() const;
-    void setCommand(const QString& command);
+    QStringList command() const;
+    void setCommand(const QStringList& command);
     bool hasCommand() const;
 
     QString localPath() const;

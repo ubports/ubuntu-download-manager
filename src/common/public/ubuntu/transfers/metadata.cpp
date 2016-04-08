@@ -63,14 +63,14 @@ Metadata::Metadata(const QVariantMap map)
     }
 }
 
-QString
+QStringList
 Metadata::command() const {
     return (contains(Metadata::COMMAND_KEY))?
-        value(Metadata::COMMAND_KEY).toString():"";
+        value(Metadata::COMMAND_KEY).toStringList():QStringList();
 }
 
 void
-Metadata::setCommand(const QString& command) {
+Metadata::setCommand(const QStringList& command) {
     insert(Metadata::COMMAND_KEY, command);
 }
 

@@ -153,6 +153,19 @@ Metadata::setExtract(bool extract) {
     }
 }
 
+QStringList
+Metadata::command() const {
+    return _metadata.command();
+}
+
+void
+Metadata::setCommand(QStringList command) {
+    if (command != _metadata.command()) {
+        _metadata.setCommand(command);
+        emit commandChanged();
+    }
+}
+
 QVariantMap
 Metadata::map() const {
     return QVariantMap(_metadata);
@@ -180,6 +193,14 @@ Metadata::map() const {
     When set to True the download manager will attempt to automatically 
     extract zip files when the download finishes. This property defaults
     to False.
+*/
+
+/*!
+    \qmlproperty list Metadata::command
+    \internal
+
+    A command to run on the file immediately following completion of the
+    download.
 */
 
 }

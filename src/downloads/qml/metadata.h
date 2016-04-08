@@ -30,6 +30,7 @@ class Metadata : public QObject {
     Q_PROPERTY(bool showInIndicator READ showInIndicator WRITE setShowInIndicator NOTIFY showIndicatorChanged)
     Q_PROPERTY(bool deflate READ deflate WRITE setDeflate NOTIFY deflateChanged)
     Q_PROPERTY(bool extract READ extract WRITE setExtract NOTIFY extractChanged)
+    Q_PROPERTY(QStringList command READ command WRITE setCommand NOTIFY commandChanged)
 
  public:
     explicit Metadata(QObject* parent=0);
@@ -47,6 +48,9 @@ class Metadata : public QObject {
     bool extract() const;
     void setExtract(bool extract);
 
+    QStringList command() const;
+    void setCommand(QStringList command);
+
     QVariantMap map() const;
 
  signals:
@@ -54,6 +58,7 @@ class Metadata : public QObject {
     void showIndicatorChanged();
     void deflateChanged();
     void extractChanged();
+    void commandChanged();
 
  private:
     Transfers::Metadata _metadata;
