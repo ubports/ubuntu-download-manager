@@ -19,23 +19,24 @@
 #include <stdlib.h>
 
 #include <QProcessEnvironment>
+#include <QStringList>
 
 #include "test_metadata.h"
 
 using namespace Ubuntu::Transfers;
 
 void
-TestMetadata::testCommnad_data() {
-    QTest::addColumn<QString>("command");
+TestMetadata::testCommand_data() {
+    QTest::addColumn<QStringList>("command");
 
-    QTest::newRow("mkdir") << "mkdir test";
-    QTest::newRow("cd") << "cd test";
-    QTest::newRow("ls") << "ls -la";
+    QTest::newRow("mkdir") << (QStringList() << "mkdir" << "test");
+    QTest::newRow("cd") << (QStringList() << "cd" << "test");
+    QTest::newRow("ls") << (QStringList() << "ls" << "-la");
 }
 
 void
-TestMetadata::testCommnad() {
-    QFETCH(QString, command);
+TestMetadata::testCommand() {
+    QFETCH(QStringList, command);
 
     Metadata metadata;
     metadata[Metadata::COMMAND_KEY] = command;
@@ -43,33 +44,33 @@ TestMetadata::testCommnad() {
 }
 
 void
-TestMetadata::testSetCommnad_data() {
-    QTest::addColumn<QString>("command");
+TestMetadata::testSetCommand_data() {
+    QTest::addColumn<QStringList>("command");
 
-    QTest::newRow("mkdir") << "mkdir test";
-    QTest::newRow("cd") << "cd test";
-    QTest::newRow("ls") << "ls -la";
+    QTest::newRow("mkdir") << (QStringList() << "mkdir" << "test");
+    QTest::newRow("cd") << (QStringList() << "cd" << "test");
+    QTest::newRow("ls") << (QStringList() << "ls" << "-la");
 }
 
 void
-TestMetadata::testSetCommnad() {
-    QFETCH(QString, command);
+TestMetadata::testSetCommand() {
+    QFETCH(QStringList, command);
 
     Metadata metadata;
     metadata.setCommand(command);
-    QCOMPARE(metadata[Metadata::COMMAND_KEY].toString(), command);
+    QCOMPARE(metadata[Metadata::COMMAND_KEY].toStringList(), command);
 }
 
 void
-TestMetadata::testHasCommnadTrue() {
+TestMetadata::testHasCommandTrue() {
     Metadata metadata;
-    metadata.setCommand("command");
+    metadata.setCommand(QStringList("command"));
 
     QVERIFY(metadata.hasCommand());
 }
 
 void
-TestMetadata::testHasCommnadFalse() {
+TestMetadata::testHasCommandFalse() {
     Metadata metadata;
     QVERIFY(!metadata.hasCommand());
 }
