@@ -1023,6 +1023,11 @@ FileDownload::downloadPostProcessing(const QString& contentType) {
         postDownloadProcess->start(command, args);
         return;
     } else if (_metadata.contains(Metadata::COMMAND_KEY)) {
+        if (isConfined()) {
+            DOWN_LOG(ERROR) << "Post processing commands are unavailable to confined applications";
+            emitError(COMMAND_ERROR);
+            return;
+        }
         // just emit processing if we DO NOT have a hash because else we
         // already emitted it.
         if (_hash.isEmpty()) {
