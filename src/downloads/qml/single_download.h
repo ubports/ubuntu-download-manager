@@ -44,6 +44,8 @@ class SingleDownload : public QObject
     Q_PROPERTY(QString downloadId READ downloadId NOTIFY downloadIdChanged)
     Q_PROPERTY(QVariantMap headers READ headers WRITE setHeaders NOTIFY headersChanged)
     Q_PROPERTY(Ubuntu::DownloadManager::Metadata* metadata READ metadata WRITE setMetadata NOTIFY metadataChanged)
+    Q_PROPERTY(QString hash READ hash WRITE setHash NOTIFY hashChanged)
+    Q_PROPERTY(QString algorithm READ algorithm WRITE setAlgorithm NOTIFY algorithmChanged)
 
  public:
     explicit SingleDownload(QObject *parent = 0);
@@ -92,12 +94,16 @@ class SingleDownload : public QObject
     QString downloadId() const;
     QVariantMap headers() const;
     Metadata* metadata() const;
+    QString hash() const;
+    QString algorithm() const;
 
     // setters
     void setAllowMobileDownload(bool value);
     void setThrottle(qulonglong value);
     void setHeaders(QVariantMap headers);
     void setMetadata(Metadata* metadata);
+    void setHash(QString hash);
+    void setAlgorithm(QString algorithm);
 
     // only property that does not access the download obj
     void setAutoStart(bool value) {
@@ -127,6 +133,8 @@ class SingleDownload : public QObject
     void started(bool success);
     void errorFound(DownloadError& error);
     void errorChanged();
+    void hashChanged();
+    void algorithmChanged();
 
 public slots:
     void registerError(Error* error);
@@ -172,6 +180,8 @@ private:
     Download* m_download = nullptr;
     Manager* m_manager = nullptr;
     QString m_downloadId;
+    QString m_hash;
+    QString m_algorithm;
 
 };
 
