@@ -18,7 +18,6 @@
 
 #include <QProcessEnvironment>
 #include <QCoreApplication>
-#include <QDebug>
 
 #include "metadata.h"
 
@@ -35,6 +34,7 @@ const QString Metadata::SHOW_IN_INDICATOR_KEY = "indicator-shown";
 const QString Metadata::CLICK_PACKAGE_KEY = "click-package";
 const QString Metadata::DEFLATE_KEY = "deflate";
 const QString Metadata::EXTRACT_KEY = "extract";
+const QString Metadata::CUSTOM_PREFIX = "custom_";
 const QString Metadata::APP_ID = "app-id";
 
 namespace {
@@ -205,6 +205,37 @@ Metadata::setOwner(const QString &id) {
 bool
 Metadata::hasOwner() const {
     return contains(Metadata::APP_ID);
+}
+
+QVariantMap
+Metadata::custom() const {
+    QVariantMap custom;
+    foreach(QString key, keys()) {
+        if (key.startsWith(CUSTOM_PREFIX)) {
+            QString customKey = key;
+            customKey.replace(CUSTOM_PREFIX, "");
+            custom.insert(customKey, values(key)[0]);
+        }
+    }
+    return custom;
+}
+
+void
+Metadata::setCustom(QVariantMap custom) {
+    // We can't send nested QVariantMaps over dbus, so flatten to one map
+    foreach(QString key, custom.keys()) {
+        insert(Metadata::CUSTOM_PREFIX + key, custom[key]);
+    }
+}
+
+bool
+Metadata::hasCustom() const {
+    foreach(QString key, keys()) {
+        if (key.startsWith(CUSTOM_PREFIX)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 }  // DownloadManager

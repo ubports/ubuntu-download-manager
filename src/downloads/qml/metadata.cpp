@@ -167,6 +167,18 @@ Metadata::setCommand(QStringList command) {
 }
 
 QVariantMap
+Metadata::custom() const {
+    return _metadata.custom();
+}
+
+void Metadata::setCustom(QVariantMap custom) {
+    if (custom != _metadata.custom()) {
+        _metadata.setCustom(custom);
+        emit customChanged();
+    }
+}
+
+QVariantMap
 Metadata::map() const {
     return QVariantMap(_metadata);
 }
@@ -203,6 +215,12 @@ Metadata::map() const {
     download.
 */
 
+/*!
+    \qmlproperty array Metadata::custom
+
+    Metadata specific to your application that you wish to associate with
+    this download. This metadata will persist across application restarts.
+*/
 }
 
 }
