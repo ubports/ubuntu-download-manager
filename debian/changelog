@@ -1,3 +1,10 @@
+ubuntu-download-manager (1.2+16.04.20160408-0ubuntu1) xenial; urgency=medium
+
+  * Disallow post-processing commands from unconfined apps (Fixes CVE-
+    2016-1579)
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Fri, 08 Apr 2016 17:50:24 +0000
+
 ubuntu-download-manager (1.2+16.04.20160322-0ubuntu1) xenial; urgency=medium
 
   * Fix error reporting in download manager for network errors (LP:
