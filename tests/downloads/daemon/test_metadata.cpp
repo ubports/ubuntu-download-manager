@@ -439,5 +439,45 @@ TestMetadata::testDestinationAppIsAlreadyPresent() {
     QCOMPARE(metadata.destinationApp(), appid);
 }
 
+void
+TestMetadata::testCustom_data() {
+    QTest::addColumn<QVariantMap>("custom");
+
+    QVariantMap first;
+    QVariantMap second;
+    first.insert("test1", "Test");
+    second.insert("test2", "Testing");
+    second.insert("test3", "Further testing");
+
+    QTest::newRow("first") << first;
+    QTest::newRow("second") << second;
+}
+
+void
+TestMetadata::testCustom() {
+    QFETCH(QVariantMap, custom);
+
+    Metadata metadata;
+    metadata.setCustom(custom);
+    QCOMPARE(custom, metadata.custom());
+}
+
+void
+TestMetadata::testHasCustomTrue() {
+    Metadata metadata;
+    QVariantMap custom;
+    custom.insert("test1", "Test");
+    custom.insert("test2", "Test");
+    metadata.setCustom(custom);
+
+    QVERIFY(metadata.hasCustom());
+}
+
+void
+TestMetadata::testHasCustomFalse() {
+    Metadata metadata;
+    QVERIFY(!metadata.hasCustom());
+}
+
 QTEST_MAIN(TestMetadata)
 #include "moc_test_metadata.cpp"

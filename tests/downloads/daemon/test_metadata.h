@@ -80,6 +80,10 @@ class TestMetadata : public BaseTestCase {
     void testDestinationAppIsPickedFromEnv_data();
     void testDestinationAppIsPickedFromEnv();
     void testDestinationAppIsAlreadyPresent();
+    void testCustom_data();
+    void testCustom();
+    void testHasCustomTrue();
+    void testHasCustomFalse();
 };
 
 #endif
