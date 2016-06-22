@@ -76,11 +76,11 @@ namespace {
         "throttle=:throttle, metadata=:metadata, headers=:headers "\
         "WHERE uuid=:uuid";
 
-    const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "\
-        "WHERE uuid=:uuid";
+    const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash, "\
+        "metadata FROM SingleDownload WHERE uuid=:uuid";
 
     const QString GET_UNCOLLECTED_DOWNLOADS = "SELECT uuid, appId, url, dbus_path, "\
-        "local_path, hash, hash_algo, state FROM SingleDownload "\
+        "local_path, hash, hash_algo, state, metadata, headers FROM SingleDownload "\
         "WHERE appId=:appId AND state='uncoll'";
 
     const QString UPDATE_UNCOLLECTED_DOWNLOADS = "UPDATE SingleDownload SET state='finish' "\
@@ -130,14 +130,14 @@ DownloadsDb::dbExists() {
 
 void
 DownloadsDb::internalInit() {
-    QString path; 
+    QString path;
 
     if (getuid() == 0) {
         path = "/var/cache";
     } else {
         QString dataPath = QStandardPaths::writableLocation(
             QStandardPaths::DataLocation);
-        path = dataPath; 
+        path = dataPath;
     }
 
     path += QDir::separator() + QString("ubuntu-download-manager");
@@ -232,6 +232,25 @@ DownloadsDb::metadataToString(const QVariantMap& metadata) {
     return QString(jsonDoc.toJson());
 }
 
+QVariantMap DownloadsDb::stringToVariantMap(const QString &str) {
+    QJsonParseError err;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(str.toUtf8(), &err);
+    if (err.error != QJsonParseError::NoError || !jsonDoc.isObject()) {
+        return QVariantMap();
+    }
+
+    return jsonDoc.object().toVariantMap();
+}
+
+QMap<QString, QString> DownloadsDb::stringToStringMap(const QString &str) {
+    QVariantMap tmp = stringToVariantMap(str);
+    QMap<QString, QString> map;
+    foreach(const QString& key, tmp.keys()) {
+        map[key] = tmp[key].toString();
+    }
+    return map;
+}
+
 QString
 DownloadsDb::headersToString(const QMap<QString, QString>& headers) {
     QVariantMap headersVariant;
@@ -262,8 +281,8 @@ DownloadsDb::getDownloadState(const QString &downloadId) {
     }
 
     QSqlQuery query;
-    // QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash FROM SingleDownload "
-    //     "WHERE uuid=:uuid";
+    /* const QString GET_SINGLE_DOWNLOAD_STATE = "SELECT state, url, local_path, hash "\
+      "metadata FROM SingleDownload WHERE uuid=:uuid"; */
     query.prepare(GET_SINGLE_DOWNLOAD_STATE);
     query.bindValue(":uuid", downloadId);
 
@@ -274,8 +293,9 @@ DownloadsDb::getDownloadState(const QString &downloadId) {
         auto url = query.value(1).toString();
         auto localPath = query.value(2).toString();
         auto hash = query.value(3).isValid()?query.value(3).toString():"";
+        QVariantMap metadata = stringToVariantMap(query.value(4).toString());
 
-        DownloadStateStruct result(state, url, localPath, hash);
+        DownloadStateStruct result(state, url, localPath, hash, metadata);
         _db.close();
 
         return result;
@@ -316,8 +336,8 @@ DownloadsDb::getUncollectedDownloads(const QString &appId) {
         auto hash = query.value(5).isValid() ? query.value(5).toString() : "";
         auto algo = query.value(6).isValid() ? query.value(6).toString() : "";
         auto state = stringToState(query.value(7).toString());
-        QVariantMap metadata;
-        QMap<QString, QString> headers;
+        QVariantMap metadata = stringToVariantMap(query.value(8).toString());
+        QMap<QString, QString> headers = stringToStringMap(query.value(9).toString());
         FileDownload *download = new FileDownload(uuid, appId, dbusPath, 1, basePath, url, hash, algo, metadata, headers);
         download->setState(state);
         download->setFilePath(filePath);

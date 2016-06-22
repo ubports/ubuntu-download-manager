@@ -27,7 +27,8 @@ DownloadStateStruct::DownloadStateStruct()
     : _state(-1),
       _url(QString::null),
       _filePath(QString::null),
-      _hash(QString::null) {
+      _hash(QString::null),
+      _metadata(QVariantMap()) {
 
 }
 
@@ -35,7 +36,8 @@ DownloadStateStruct::DownloadStateStruct(int state, const QString& url, const QS
     : _state(state),
       _url(url),
       _filePath(QString::null),
-      _hash(hash) {
+      _hash(hash),
+      _metadata(QVariantMap()) {
 
 }
 
@@ -44,7 +46,18 @@ DownloadStateStruct::DownloadStateStruct(int state, const QString& url, const QS
         : _state(state),
           _url(url),
           _filePath(filePath),
-          _hash(hash) {
+          _hash(hash),
+          _metadata(QVariantMap()) {
+
+}
+
+DownloadStateStruct::DownloadStateStruct(int state, const QString& url, const QString& filePath,
+                                         const QString& hash, const QVariantMap& metadata)
+        : _state(state),
+          _url(url),
+          _filePath(filePath),
+          _hash(hash),
+          _metadata(metadata) {
 
 }
 
@@ -52,7 +65,8 @@ DownloadStateStruct::DownloadStateStruct(const DownloadStateStruct& other)
         : _state(other._state),
           _url(other._url),
           _filePath(other._filePath),
-          _hash(other._hash) {
+          _hash(other._hash),
+          _metadata(other._metadata) {
 }
 
 DownloadStateStruct& DownloadStateStruct::operator=(const DownloadStateStruct& other) {
@@ -60,6 +74,7 @@ DownloadStateStruct& DownloadStateStruct::operator=(const DownloadStateStruct& o
     _url = other._url;
     _filePath= other._filePath;
     _hash = other._hash;
+    _metadata = other._metadata;
 
     return *this;
 }
@@ -71,6 +86,7 @@ QDBusArgument &operator<<(QDBusArgument &argument,
     argument << download._url;
     argument << download._filePath;
     argument << download._hash;
+    argument << download._metadata;
     argument.endStructure();
 
     return argument;
@@ -83,6 +99,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument,
     argument >> download._url;
     argument >> download._filePath;
     argument >> download._hash;
+    argument >> download._metadata;
     argument.endStructure();
 
     return argument;
@@ -106,6 +123,11 @@ DownloadStateStruct::getFilePath() const {
 QString
 DownloadStateStruct::getHash() const {
     return _hash;
+}
+
+QVariantMap
+DownloadStateStruct::getMetadata() const {
+    return _metadata;
 }
 
 bool

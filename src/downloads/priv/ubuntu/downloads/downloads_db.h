@@ -67,6 +67,8 @@ class DownloadsDb : public QObject {
     QString headersToString(const QMap<QString, QString>& headers);
     void internalInit();
     QString metadataToString(const QVariantMap& metadata);
+    QVariantMap stringToVariantMap(const QString &str);
+    QMap<QString, QString> stringToStringMap(const QString &str);
     QString stateToString(Download::State state);
     Download::State stringToState(QString state);
 

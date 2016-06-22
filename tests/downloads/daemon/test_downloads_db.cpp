@@ -21,6 +21,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDebug>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
@@ -345,10 +346,10 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     // update the throttle and test that it is update
     download->setThrottle(90);
     QVERIFY(spy.ensureSignalEmitted());
-    QTRY_COMPARE(1, spy.count()); 
+    QTRY_COMPARE(1, spy.count());
     testingDb->disconnectFromDownload(download.data());
     download->setState(Download::PAUSE);
-    QTRY_COMPARE(1, spy.count()); 
+    QTRY_COMPARE(1, spy.count());
 }
 
 void
@@ -421,7 +422,13 @@ TestDownloadsDb::testGetStateDownload() {
     auto state = _db->getDownloadState(id);
     QVERIFY(state.isValid());
     QCOMPARE(state.getUrl(), url.toString());
-    QCOMPARE(state.getHash(), state.getHash());
+    QCOMPARE(state.getHash(), hash);
+    QCOMPARE(state.getMetadata(), metadata);
+}
+
+void
+TestDownloadsDb::testGetUncollectedDownloads() {
+
 }
 
 QTEST_MAIN(TestDownloadsDb)
