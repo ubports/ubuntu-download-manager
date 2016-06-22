@@ -229,9 +229,9 @@ SingleDownload::download(QString url)
                 &SingleDownload::bindDownload))
                     << "Could not connect to signal";
         }
-        Metadata metadata;
+        // Metadata metadata;
         QMap<QString, QString> headers;
-        DownloadStruct dstruct(url, m_hash, m_algorithm, metadata.map(), headers);
+        DownloadStruct dstruct(url, m_hash, m_algorithm, m_metadata->map(), headers);
         m_manager->createDownload(dstruct);
     } else if (url.isEmpty()) {
         m_error.setMessage("No URL specified");
@@ -613,8 +613,8 @@ SingleDownload::setAlgorithm(QString algorithm) {
 /*!
     \qmlproperty Metadata SingleDownload::metadata
 
-    This property allows to get and set the metadata that will be linked to 
-    the download request. 
+    This property allows to get and set the metadata that will be linked to
+    the download request.
 */
 
 /*!
@@ -646,8 +646,8 @@ SingleDownload::setAlgorithm(QString algorithm) {
 /*!
     \qmlsignal SingleDownload::finished(QString path)
 
-    This signal is emitted when a download has finished. The downloaded file 
-    path is provided via the 'path' paremeter. The corresponding handler is 
+    This signal is emitted when a download has finished. The downloaded file
+    path is provided via the 'path' paremeter. The corresponding handler is
     \c onFinished
 */
 
