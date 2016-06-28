@@ -16,6 +16,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include <QDebug>
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
 
@@ -229,9 +230,21 @@ SingleDownload::download(QString url)
                 &SingleDownload::bindDownload))
                     << "Could not connect to signal";
         }
-        // Metadata metadata;
-        QMap<QString, QString> headers;
-        DownloadStruct dstruct(url, m_hash, m_algorithm, m_metadata->map(), headers);
+
+        QMap<QString, QString> hdrs;
+        QVariantMap _hdrs = headers();
+        foreach(const QString& key, _hdrs.keys()) {
+            hdrs[key] = _hdrs[key].toString();
+        }
+
+        QVariantMap metadataMap;
+        Metadata *meta = metadata();
+        if (meta)
+            metadataMap = meta->map();
+        else
+            qWarning() << "singledownload for " << url << "had no metadata";
+
+        DownloadStruct dstruct(url, m_hash, m_algorithm, metadataMap, hdrs);
         m_manager->createDownload(dstruct);
     } else if (url.isEmpty()) {
         m_error.setMessage("No URL specified");
