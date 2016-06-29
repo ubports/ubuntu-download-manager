@@ -18,6 +18,11 @@ DownloadHistory::DownloadHistory(QObject *parent) :
             << "Could not connect to signal";
 
     // Get previous downloads for this app
+    refresh();
+}
+
+void DownloadHistory::refresh()
+{
     auto environment = QProcessEnvironment::systemEnvironment();
     if (environment.contains("APP_ID")) {
         m_manager->getAllDownloads(environment.value("APP_ID"), true);
@@ -54,6 +59,9 @@ void DownloadHistory::addDownload(SingleDownload *singleDownload)
             << "Could not connect to signal";
     CHECK(connect(singleDownload, &SingleDownload::canceled,
         this, &DownloadHistory::onCanceled))
+            << "Could not connect to signal";
+    CHECK(connect(singleDownload, &QObject::destroyed,
+        this, &DownloadHistory::onDestroyed))
             << "Could not connect to signal";
     emit downloadsChanged();
 }
@@ -139,5 +147,11 @@ void DownloadHistory::onCanceled()
     }
 }
 
+void DownloadHistory::onDestroyed(QObject *obj)
+{
+    Q_UNUSED(obj)
+    m_downloads.clear();
+    refresh();
+}
 }
 }
