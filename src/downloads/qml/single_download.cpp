@@ -306,6 +306,7 @@ void
 SingleDownload::registerError(Error* error)
 {
     m_error.setMessage(error->errorString());
+    m_download = nullptr;
     emit errorFound(m_error);
     emit errorChanged();
 }
@@ -514,9 +515,9 @@ SingleDownload::setMetadata(Metadata* metadata) {
         return;
     }
 
+    m_metadata = metadata;
     if (m_download == nullptr) {
         m_dirty = true;
-        m_metadata = metadata;
     } else {
         m_download->setMetadata(metadata->map());
         if (m_download->isError()) {
