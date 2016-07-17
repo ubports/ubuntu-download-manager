@@ -176,6 +176,11 @@ SingleDownload::bindDownload(Download* download)
     // after a download has finished
     m_downloadId = m_download->id();
 
+    // Allow metadata to be accessed after a download has failed or finished.
+    if (m_metadata == nullptr) {
+        setMetadata(new Metadata(download->metadata(), this));
+    }
+
     emit downloadIdChanged();
 }
 
