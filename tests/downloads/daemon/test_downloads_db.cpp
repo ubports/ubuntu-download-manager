@@ -21,7 +21,6 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
-#include <QDebug>
 #include <ubuntu/download_manager/metatypes.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include <ubuntu/transfers/system/uuid_utils.h>
