@@ -68,6 +68,7 @@ class TestDownloadsDb : public BaseTestCase {
     void testGetStateMissingDownload();
     void testGetStateDownload_data();
     void testGetStateDownload();
+    void testGetUncollectedDownloads_data();
     void testGetUncollectedDownloads();
 
  private:

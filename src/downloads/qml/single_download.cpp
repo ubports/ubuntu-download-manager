@@ -16,7 +16,6 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <QDebug>
 #include <glog/logging.h>
 #include <ubuntu/download_manager/download_struct.h>
 
@@ -244,10 +243,9 @@ SingleDownload::download(QString url)
 
         QVariantMap metadataMap;
         Metadata *meta = metadata();
-        if (meta)
+        if (meta) {
             metadataMap = meta->map();
-        else
-            qWarning() << "singledownload for " << url << "had no metadata";
+        }
 
         DownloadStruct dstruct(url, m_hash, m_algorithm, metadataMap, hdrs);
         m_manager->createDownload(dstruct);
