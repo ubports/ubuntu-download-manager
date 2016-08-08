@@ -1,10 +1,3 @@
-ubuntu-download-manager (1.3+16.04.20160622-0ubuntu1) UNRELEASED; urgency=medium
-
-  [Michael Sheldon, jonas-drange]
-  * Complete support for metadata, and allow addition of custom data (LP: 1566831).
-
- -- Jonas G. Drange <jonas.drange@canonical.com>  Wed, 22 June 2016 22:50:24 +0200
-
 ubuntu-download-manager (1.2+16.04.20160408-0ubuntu1) xenial; urgency=medium
 
   * Disallow post-processing commands from unconfined apps (Fixes CVE-
