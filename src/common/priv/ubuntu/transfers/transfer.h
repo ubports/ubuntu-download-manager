@@ -50,6 +50,7 @@ class Transfer : public QObject {
 
     virtual QString transferId() const;
     virtual QString transferAppId() const;
+    virtual void setTransferAppId(QString appId);
     virtual QString path() const;
     virtual bool isConfined() const;
     virtual QString rootPath() const;

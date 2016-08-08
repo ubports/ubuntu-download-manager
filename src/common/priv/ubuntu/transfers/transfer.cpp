@@ -55,6 +55,11 @@ Transfer::transferAppId() const {
     return _appId;
 }
 
+void
+Transfer::setTransferAppId(QString appId) {
+    _appId = appId;
+}
+
 QString
 Transfer::path() const {
     return _dbusPath;
