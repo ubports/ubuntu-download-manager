@@ -233,15 +233,19 @@ DaemonTestCase::httpServerDir() {
     if (_httpServerDir.isEmpty()) {
         _httpServerDir = testDirectory() + "/http_server";
         qDebug() << "Server dir:" << _httpServerDir;
-
-        if (!QDir().exists(_httpServerDir))
-            QDir().mkpath(_httpServerDir);
     }
+
+    if (!QDir().exists(_httpServerDir))
+        QDir().mkpath(_httpServerDir);
+
     return _httpServerDir;
 }
 
 void
 DaemonTestCase::startHttpServer() {
+    if (_httpServerRetry > 10) {
+        QFAIL("Could not start http server.");
+    }
     qDebug() << "Start http server";
     auto serverDir = httpServerDir();
     _httpServer = new QProcess();
