@@ -1,3 +1,10 @@
+ubuntu-download-manager (1.2+16.10.20160722.1-0ubuntu1) yakkety; urgency=medium
+
+  [ Olivier Tilloy ]
+  * Fix unit tests when run under an sbuild chroot. (LP: #1593170)
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Fri, 22 Jul 2016 11:15:14 +0000
+
 ubuntu-download-manager (1.2+16.04.20160408-0ubuntu1) xenial; urgency=medium
 
   * Disallow post-processing commands from unconfined apps (Fixes CVE-

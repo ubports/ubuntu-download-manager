@@ -23,8 +23,18 @@ ifneq (,$(findstring aarch64,$(DEB_HOST_GNU_TYPE)))
 export DEB_BUILD_MAINT_OPTIONS := hardening=+pie
 endif
 
+BUILDHOME=$(CURDIR)/debian/build
+
+override_dh_clean:
+	dh_clean
+	rm -rf $(BUILDHOME)
+
 override_dh_auto_configure:
 	dh_auto_configure -- -DCMAKE_INSTALL_LIBEXECDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+
+override_dh_auto_test:
+	mkdir -p $(BUILDHOME)
+	HOME=$(BUILDHOME) dh_auto_test
 
 dh_auto_install:
 	rm -f debian/tmp/usr/lib/*.so
