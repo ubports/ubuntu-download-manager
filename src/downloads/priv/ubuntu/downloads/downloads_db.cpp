@@ -451,9 +451,10 @@ DownloadsDb*
 DownloadsDb::instance() {
     if(_instance == nullptr) {
         _mutex.lock();
-        if(_instance == nullptr)
+        if(_instance == nullptr) {
             _instance = new DownloadsDb();
             _instance->init();
+        }
         _mutex.unlock();
     }
     return _instance;
