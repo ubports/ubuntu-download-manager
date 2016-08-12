@@ -100,6 +100,7 @@ class Download : public Transfer {
     }
 
     virtual void setDownloadOwner(const QString& owner) {
+        setTransferAppId(owner);
         _destinationApp = owner;
     }
 
