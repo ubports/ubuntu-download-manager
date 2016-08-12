@@ -153,6 +153,31 @@ Metadata::setExtract(bool extract) {
     }
 }
 
+QStringList
+Metadata::command() const {
+    return _metadata.command();
+}
+
+void
+Metadata::setCommand(QStringList command) {
+    if (command != _metadata.command()) {
+        _metadata.setCommand(command);
+        emit commandChanged();
+    }
+}
+
+QVariantMap
+Metadata::custom() const {
+    return _metadata.custom();
+}
+
+void Metadata::setCustom(QVariantMap custom) {
+    if (custom != _metadata.custom()) {
+        _metadata.setCustom(custom);
+        emit customChanged();
+    }
+}
+
 QVariantMap
 Metadata::map() const {
     return QVariantMap(_metadata);
@@ -182,6 +207,20 @@ Metadata::map() const {
     to False.
 */
 
+/*!
+    \qmlproperty list Metadata::command
+    \internal
+
+    A command to run on the file immediately following completion of the
+    download.
+*/
+
+/*!
+    \qmlproperty array Metadata::custom
+
+    Metadata specific to your application that you wish to associate with
+    this download. This metadata will persist across application restarts.
+*/
 }
 
 }

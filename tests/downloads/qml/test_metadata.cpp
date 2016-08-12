@@ -70,5 +70,56 @@ TestMetadata::testGetShowInIndicatorPresent() {
     QCOMPARE(metadata->showInIndicator(), show);
 }
 
+void
+TestMetadata::testGetCommandEmpty() {
+    QScopedPointer<Metadata> metadata(new Metadata());
+    QVERIFY(metadata->command());
+}
+
+void
+TestMetadata::testGetCommandPresent_data() {
+    QTest::addColumn<QStringList>("command");
+
+    QTest::newRow("First") << QStringList("/bin/ls", "/tmp/");
+    QTest::newRow("Second") << QStringList("/bin/true");
+}
+
+void
+TestMetadata::testGetCommandPresent() {
+    QFETCH(QStringList, command);
+    QScopedPointer<Metadata> metadata(new Metadata());
+    metadata->setCommand(command);
+    QCOMPARE(metadata->command(), command);
+}
+
+void
+TestMetadata::testGetCustomEmpty() {
+    QScopedPointer<Metadata> metadata(new Metadata());
+    QVERIFY(metadata->custom());
+}
+
+void
+TestMetadata::testGetCustomPresent_data() {
+    QTest::addColumn<QVariantMap>("custom");
+
+    QVariantMap first;
+    QVariantMap second;
+
+    first.insert("test1", "Testing");
+    first.insert("test2", "Testing2");
+    second.insert("test", "Test");
+
+    QTest::newRow("First") << first;
+    QTest::newRow("Second") << second;
+}
+
+void
+TestMetadata::testGetCustomPresent() {
+    QFETCH(QVariantMap, custom);
+    QScopedPointer<Metadata> metadata(new Metadata());
+    metadata->setCustom(custom);
+    QCOMPARE(metadata->custom(), custom);
+}
+
 QTEST_MAIN(TestMetadata)
 #include "moc_test_metadata.cpp"

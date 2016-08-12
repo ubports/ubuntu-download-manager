@@ -35,6 +35,12 @@ class TestMetadata : public BaseTestCase {
     void testGetShowInIndicatorEmpty();
     void testGetShowInIndicatorPresent_data();
     void testGetShowInIndicatorPresent();
+    void testGetCommandEmpty();
+    void testGetCommandPresent_data();
+    void testGetCommandPresent();
+    void testGetCustomEmpty();
+    void testGetCustomPresent_data();
+    void testGetCustomPresent();
 };
 
 #endif

@@ -231,7 +231,7 @@ SingleDownload::download(QString url)
         }
         Metadata metadata;
         QMap<QString, QString> headers;
-        DownloadStruct dstruct(url, metadata.map(), headers);
+        DownloadStruct dstruct(url, m_hash, m_algorithm, metadata.map(), headers);
         m_manager->createDownload(dstruct);
     } else if (url.isEmpty()) {
         m_error.setMessage("No URL specified");
@@ -306,6 +306,7 @@ void
 SingleDownload::registerError(Error* error)
 {
     m_error.setMessage(error->errorString());
+    m_download = nullptr;
     emit errorFound(m_error);
     emit errorChanged();
 }
@@ -459,6 +460,16 @@ SingleDownload::metadata() const {
     }
 }
 
+QString
+SingleDownload::hash() const {
+    return m_hash;
+}
+
+QString
+SingleDownload::algorithm() const {
+    return m_algorithm;
+}
+
 void
 SingleDownload::setHeaders(QVariantMap headers) {
     if (m_download == nullptr) {
@@ -504,9 +515,9 @@ SingleDownload::setMetadata(Metadata* metadata) {
         return;
     }
 
+    m_metadata = metadata;
     if (m_download == nullptr) {
         m_dirty = true;
-        m_metadata = metadata;
     } else {
         m_download->setMetadata(metadata->map());
         if (m_download->isError()) {
@@ -520,6 +531,16 @@ SingleDownload::setMetadata(Metadata* metadata) {
             emit metadataChanged();
         }
     }
+}
+
+void
+SingleDownload::setHash(QString hash) {
+    m_hash = hash;
+}
+
+void
+SingleDownload::setAlgorithm(QString algorithm) {
+    m_algorithm = algorithm;
 }
 
 /*!
@@ -598,13 +619,38 @@ SingleDownload::setMetadata(Metadata* metadata) {
 */
 
 /*!
+    \qmlproperty string SingleDownload::hash
+    \since Ubuntu.DownloadManager 1.3
+
+    This property specifies a hash to check against the downloaded file.
+    If used, this should be set prior to calling the download() method.
+*/
+
+/*!
+    \qmlproperty string SingleDownload::algorithm
+    \since Ubuntu.DownloadManager 1.3
+
+    This property indicates the algorithm to use when verifying a hash.
+    The algorithm can be of one of the following string values:
+
+         - "md5"
+         - "sha1"
+         - "sha224"
+         - "sha256"
+         - "sha384"
+         - "sha512"
+
+    If no value is specified md5 will be used.
+    If used, this should be set prior to calling the download() method.
+*/
+
+/*!
     \qmlsignal SingleDownload::finished(QString path)
 
     This signal is emitted when a download has finished. The downloaded file 
     path is provided via the 'path' paremeter. The corresponding handler is 
     \c onFinished
 */
-
 
 }
 }

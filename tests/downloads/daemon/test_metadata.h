@@ -31,12 +31,12 @@ class TestMetadata : public BaseTestCase {
         : BaseTestCase("TestMetadata", parent) { }
 
  private slots:  // NOLINT(whitespace/indent)
-    void testCommnad_data();
-    void testCommnad();
-    void testSetCommnad_data();
-    void testSetCommnad();
-    void testHasCommnadTrue();
-    void testHasCommnadFalse();
+    void testCommand_data();
+    void testCommand();
+    void testSetCommand_data();
+    void testSetCommand();
+    void testHasCommandTrue();
+    void testHasCommandFalse();
     void testLocalPath_data();
     void testLocalPath();
     void testSetLocalPath_data();
@@ -80,6 +80,10 @@ class TestMetadata : public BaseTestCase {
     void testDestinationAppIsPickedFromEnv_data();
     void testDestinationAppIsPickedFromEnv();
     void testDestinationAppIsAlreadyPresent();
+    void testCustom_data();
+    void testCustom();
+    void testHasCustomTrue();
+    void testHasCustomFalse();
 };
 
 #endif
