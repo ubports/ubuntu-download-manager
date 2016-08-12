@@ -175,6 +175,11 @@ SingleDownload::bindDownload(Download* download)
     // after a download has finished
     m_downloadId = m_download->id();
 
+    // Allow metadata to be accessed after a download has failed or finished.
+    if (m_metadata == nullptr) {
+        setMetadata(new Metadata(download->metadata(), this));
+    }
+
     emit downloadIdChanged();
 }
 
@@ -229,9 +234,20 @@ SingleDownload::download(QString url)
                 &SingleDownload::bindDownload))
                     << "Could not connect to signal";
         }
-        Metadata metadata;
-        QMap<QString, QString> headers;
-        DownloadStruct dstruct(url, m_hash, m_algorithm, metadata.map(), headers);
+
+        QMap<QString, QString> hdrs;
+        QVariantMap _hdrs = headers();
+        foreach(const QString& key, _hdrs.keys()) {
+            hdrs[key] = _hdrs[key].toString();
+        }
+
+        QVariantMap metadataMap;
+        Metadata *meta = metadata();
+        if (meta) {
+            metadataMap = meta->map();
+        }
+
+        DownloadStruct dstruct(url, m_hash, m_algorithm, metadataMap, hdrs);
         m_manager->createDownload(dstruct);
     } else if (url.isEmpty()) {
         m_error.setMessage("No URL specified");
@@ -614,8 +630,8 @@ SingleDownload::setAlgorithm(QString algorithm) {
 /*!
     \qmlproperty Metadata SingleDownload::metadata
 
-    This property allows to get and set the metadata that will be linked to 
-    the download request. 
+    This property allows to get and set the metadata that will be linked to
+    the download request.
 */
 
 /*!
@@ -647,8 +663,8 @@ SingleDownload::setAlgorithm(QString algorithm) {
 /*!
     \qmlsignal SingleDownload::finished(QString path)
 
-    This signal is emitted when a download has finished. The downloaded file 
-    path is provided via the 'path' paremeter. The corresponding handler is 
+    This signal is emitted when a download has finished. The downloaded file
+    path is provided via the 'path' paremeter. The corresponding handler is
     \c onFinished
 */
 

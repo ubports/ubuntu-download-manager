@@ -345,10 +345,10 @@ TestDownloadsDb::testDisconnectedFromDownload() {
     // update the throttle and test that it is update
     download->setThrottle(90);
     QVERIFY(spy.ensureSignalEmitted());
-    QTRY_COMPARE(1, spy.count()); 
+    QTRY_COMPARE(1, spy.count());
     testingDb->disconnectFromDownload(download.data());
     download->setState(Download::PAUSE);
-    QTRY_COMPARE(1, spy.count()); 
+    QTRY_COMPARE(1, spy.count());
 }
 
 void
@@ -421,7 +421,68 @@ TestDownloadsDb::testGetStateDownload() {
     auto state = _db->getDownloadState(id);
     QVERIFY(state.isValid());
     QCOMPARE(state.getUrl(), url.toString());
-    QCOMPARE(state.getHash(), state.getHash());
+    QCOMPARE(state.getHash(), hash);
+    QCOMPARE(state.getMetadata(), metadata);
+}
+
+void
+TestDownloadsDb::testGetUncollectedDownloads_data() {
+    QTest::addColumn<QString>("id");
+    QTest::addColumn<QString>("appId");
+    QTest::addColumn<QString>("path");
+    QTest::addColumn<QUrl>("url");
+    QTest::addColumn<QString>("hash");
+    QTest::addColumn<QString>("hashAlgoString");
+    QTest::addColumn<QVariantMap>("metadata");
+    QTest::addColumn<QMap<QString, QString> >("headers");
+
+    QTest::newRow("First Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "FIRST APP" << "first path" << QUrl("http://ubuntu.com") << ""
+    << "md5" << QVariantMap() << QMap<QString, QString>();
+
+    QVariantMap secondMetadata;
+    secondMetadata["test"] = 1;
+    secondMetadata["command"] = "cd";
+    secondMetadata["hello"] = 23;
+
+    QTest::newRow("Second Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "SECOND APP" << "second path" << QUrl("http://ubuntu.com/phone")
+    << "" << "sha512" << secondMetadata << QMap<QString, QString>();
+
+    QVariantMap thirdMetadata;
+    secondMetadata["test"] = 3;
+    secondMetadata["command"] = "return";
+    secondMetadata["hello"] = 500;
+
+    QMap<QString, QString> thirdHeaders;
+    thirdHeaders["my-header"] = "I do something cool";
+
+    QTest::newRow("Third Row") << UuidUtils::getDBusString(QUuid::createUuid())
+    << "THIRD APP" << "third path" << QUrl("http://ubuntu.com/tablet")
+    << "" << "sha384" << thirdMetadata << thirdHeaders;
+
+}
+
+void
+TestDownloadsDb::testGetUncollectedDownloads() {
+    _db->init();
+    QFETCH(QString, id);
+    QFETCH(QString, appId);
+    QFETCH(QString, path);
+    QFETCH(QUrl, url);
+    QFETCH(QString, hash);
+    QFETCH(QString, hashAlgoString);
+    QFETCH(QVariantMap, metadata);
+    QFETCH(StringMap, headers);
+
+    QScopedPointer<FileDownload> fileDownload(new FileDownload(id, appId, path, true, "", url, hash,
+                                                               hashAlgoString, metadata, headers));
+    fileDownload->setState(Download::UNCOLLECTED);
+    _db->storeSingleDownload(fileDownload.data());
+
+    auto uncollected = _db->getUncollectedDownloads(appId);
+    auto download = uncollected[0];
+    QCOMPARE(download->metadata(), metadata);
 }
 
 QTEST_MAIN(TestDownloadsDb)

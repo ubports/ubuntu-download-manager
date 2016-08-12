@@ -20,6 +20,7 @@
 #define DOWNLOAD_STATE_STRUCT_H
 
 #include <QString>
+#include <QVariantMap>
 
 class QDBusArgument;
 namespace Ubuntu {
@@ -45,6 +46,7 @@ class DownloadStateStruct {
     Q_PROPERTY(QString url READ getUrl)
     Q_PROPERTY(QString filePath READ getFilePath)
     Q_PROPERTY(QString hash READ getHash)
+    Q_PROPERTY(QVariantMap metadata READ metadata)
 
     friend class Ubuntu::DownloadManager::Daemon::DownloadsDb;
 
@@ -76,9 +78,9 @@ class DownloadStateStruct {
     friend const QDBusArgument &operator>>(const QDBusArgument &argument, DownloadStateStruct& download);
 
     /*
-       \fn QString getUrl()
+       \fn int getState()
 
-       Returns the url that points to the file that will be downloaded.
+       Returns the state in which this download currently is.
     */
     int getState() const;
 
@@ -90,18 +92,25 @@ class DownloadStateStruct {
     QString getUrl() const;
 
     /*
-       \fn QString getUrl()
+       \fn QString getFilePath()
 
-       Returns the url that points to the file that will be downloaded.
+       Returns the file path at which this download was downloaded.
     */
     QString getFilePath() const;
 
     /*
-       \fn QString getUrl()
+       \fn QString getHash()
 
-       Returns the url that points to the file that will be downloaded.
+       Returns the hash associated with this download.
     */
     QString getHash() const;
+
+    /*
+       \fn QVariantMap getMetadata()
+
+       Returns the metadata associated with this download.
+    */
+    QVariantMap getMetadata() const;
 
     /*
        \fn bool isValid();
@@ -121,6 +130,11 @@ class DownloadStateStruct {
         \internal
     */
     DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString::null);
+
+    /*
+        \internal
+    */
+    DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString::null, const QVariantMap& metadata=QVariantMap());
 
  private:
 
@@ -143,6 +157,11 @@ class DownloadStateStruct {
         \internal
     */
     QString _hash = QString::null;
+
+    /*
+        \internal
+    */
+    QVariantMap _metadata = QVariantMap();
 };
 
 }
