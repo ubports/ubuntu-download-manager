@@ -55,8 +55,10 @@ class DownloadHistory : public QObject {
     void onPaused();
     void onResumed();
     void onCanceled();
+    void onDestroyed(QObject *obj);
 
  private:
+    void refresh();
     Manager* m_manager;
     QVariantList m_downloads;
     bool m_cleanDownloads;
