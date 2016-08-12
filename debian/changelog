@@ -1,3 +1,20 @@
+ubuntu-download-manager (1.3+16.10.20160812.2-0ubuntu1) yakkety; urgency=medium
+
+  [ Michael Sheldon ]
+  * Expose post-processing command to unconfined clients via QML, expose
+    hashing support via QML and allow clients to set custom metadata.
+    (LP: #1566338, #1566831, #1566945)
+  * Set transfer app id when updating the download owner (LP: #1607382)
+  * Add build dependency on qttools5-dev-tools for qdoc
+
+  [ jonas-drange ]
+  * fix segfault when SingleDownload is garbage collected, but the
+    DownloadHistory lives on
+  * restore metadata from the database
+  * create test http directory if it does not exist
+
+ -- Jonas G. Drange <jonas.drange@canonical.com>  Fri, 12 Aug 2016 14:35:06 +0000
+
 ubuntu-download-manager (1.2+16.10.20160722.1-0ubuntu2) yakkety-proposed; urgency=medium
 
   * No-change rebuild for boost soname change.
