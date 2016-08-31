@@ -4,6 +4,7 @@ Priority: optional
 Build-Depends: cmake,
                debhelper (>= 9),
                dh-apparmor,
+               dh-translations,
                doxygen,
                dbus-test-runner,
                google-mock,

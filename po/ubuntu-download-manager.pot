@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Canonical Ltd.
+# This file is distributed under the same license as the ubuntu-download-manager package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: ubuntu-download-manager\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-31 12:57+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:139
+msgid "Network error "
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:210
+#: src/downloads/priv/ubuntu/downloads/group_download.cpp:123
+#, qt-format
+msgid "Invalid hash algorithm: '%1'"
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:863
+#, qt-format
+msgid "Invalid URL: '%1'"
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:873
+#, qt-format
+msgid "Downloads that are set to be deflated cannot have a hash: '%1'"
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:964
+#, qt-format
+msgid "File already exists at: '%2'"
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/group_download.cpp:139
+msgid "Duplicated local path passed: "
+msgstr ""
+
+#: src/uploads/priv/ubuntu/uploads/file_upload.cpp:160
+#, qt-format
+msgid "Path is not absolute: '%1'"
+msgstr ""
+
+#: src/uploads/priv/ubuntu/uploads/file_upload.cpp:166
+#, qt-format
+msgid "Path does not exist: '%1'"
+msgstr ""

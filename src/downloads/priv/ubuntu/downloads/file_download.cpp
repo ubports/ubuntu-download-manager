@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QSslError>
 
+#include <ubuntu/transfers/i18n.h>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/dbus_connection.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
@@ -207,7 +208,7 @@ FileDownload::FileDownload(const QString& id,
     // check that the algorithm is correct if the hash is not empty
     if (!_hash.isEmpty() && !HashAlgorithm::isValidAlgo(algo)) {
         setIsValid(false);
-        setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+        setLastError(QString(_("Invalid hash algorithm: '%1'")).arg(algo));
     }
 }
 
@@ -860,7 +861,7 @@ FileDownload::init() {
     // ensure that the download is valid
     if (!_url.isValid()) {
         setIsValid(false);
-        setLastError(QString("Invalid URL: '%1'").arg(_url.toString()));
+        setLastError(QString(_("Invalid URL: '%1'")).arg(_url.toString()));
     }
 
     // ensure that if we are going to deflate the download that the hash is set
@@ -870,7 +871,7 @@ FileDownload::init() {
             && _metadata[Metadata::DEFLATE_KEY].toBool()) {
         setIsValid(false);
         setLastError(QString(
-            "Downloads that are set to be deflated cannot have a hash: '%1'").arg(
+            _("Downloads that are set to be deflated cannot have a hash: '%1'")).arg(
                 _hash));
     }
 }
@@ -961,7 +962,7 @@ FileDownload::initFileNames() {
         // raise an error
         if (QFile::exists(_filePath)) {
             setIsValid(false);
-            setLastError(QString("File already exists at: '%1'").arg(
+            setLastError(QString(_("File already exists at: '%2'")).arg(
                 _filePath));
         }
     } else {

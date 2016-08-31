@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -pthread")
 
+# for dh_translations to extract the domain
+# (regarding syntax consistency, see http://pad.lv/1181187)
+set (GETTEXT_PACKAGE "ubuntu-download-manager")
+add_definitions(-DI18N_DOMAIN="${GETTEXT_PACKAGE}")
 
 # Standard install paths
 include(GNUInstallDirs)
@@ -36,6 +40,11 @@ set(UDM_VERSION_PATCH 0)
 
 find_package(Gtest REQUIRED)
 include_directories(${GMOCK_INCLUDE_DIR} ${GTEST_INCLUDE_DIR})
+
+file(GLOB_RECURSE I18N_CPP_SRC_FILES
+     RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+     src/**.cpp)
+list(SORT I18N_CPP_SRC_FILES)
 
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
@@ -72,3 +81,4 @@ endif()
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(docs)
+add_subdirectory(po)

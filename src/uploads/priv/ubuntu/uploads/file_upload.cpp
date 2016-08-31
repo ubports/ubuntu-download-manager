@@ -18,6 +18,7 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <ubuntu/transfers/i18n.h>
 #include <ubuntu/transfers/system/logger.h>
 #include <ubuntu/transfers/system/filename_mutex.h>
 
@@ -157,13 +158,13 @@ FileUpload::FileUpload(const QString& id,
     if (!info.isAbsolute()) {
         UP_LOG(INFO) << "Path is not absolute: " << filePath;
         setIsValid(false);
-        setLastError(QString("Path is not absolute: '%1'").arg(filePath));
+        setLastError(QString(_("Path is not absolute: '%1'")).arg(filePath));
     }
 
     if (isValid() && !info.exists()) {
         UP_LOG(INFO) << "Path does not exist: " << filePath;
         setIsValid(false);
-        setLastError(QString("Path does not exist: '%1'").arg(filePath));
+        setLastError(QString(_("Path does not exist: '%1'")).arg(filePath));
     }
 
     if (isValid()) {
