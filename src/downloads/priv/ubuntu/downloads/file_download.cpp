@@ -337,7 +337,15 @@ FileDownload::startTransfer() {
     bool canWrite = _currentData->open(QIODevice::ReadWrite | QFile::Append);
 
     if (!canWrite) {
+        DOWN_LOG(ERROR) << "Destination file path is not writable: " << _filePath;
+        setIsValid(false);
         emit started(false);
+        if (calledFromDBus()) {
+            sendErrorReply(QDBusError::AccessDenied, QString(_("Destination file path is not writable: '%2'")).arg(
+            _filePath));
+            errorCleanup();
+            setState(Transfer::ERROR);
+        }
         return;
     }
 
@@ -1206,15 +1214,20 @@ FileDownload::buildRequest() {
     return request;
 }
 
-void
-FileDownload::emitError(const QString& error) {
-    TRACE << error;
+void 
+FileDownload::errorCleanup() {
     disconnectFromReplySignals();
     _reply->deleteLater();
     _reply = nullptr;
     cleanUpCurrentData();
     // let other downloads use the same file name
     unlockFilePath();
+}
+
+void
+FileDownload::emitError(const QString& error) {
+    TRACE << error;
+    errorCleanup();
     Download::emitError(error);
 }
 

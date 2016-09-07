@@ -126,6 +126,7 @@ class FileDownload : public Download, public QDBusContext {
     void unlockFilePath();
     void updateFileNamePerContentDisposition();
     void writeDataUri();
+    void errorCleanup();
 
     // slots used to react to signals
     void onDownloadProgress(qint64 currentProgress, qint64);
