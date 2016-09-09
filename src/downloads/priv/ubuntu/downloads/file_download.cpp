@@ -339,7 +339,6 @@ FileDownload::startTransfer() {
     if (!canWrite) {
         DOWN_LOG(ERROR) << "Destination file path is not writable: " << _filePath;
         setIsValid(false);
-        emit started(false);
         if (calledFromDBus()) {
             sendErrorReply(QDBusError::AccessDenied, QString(_("Destination file path is not writable: '%2'")).arg(
             _filePath));
