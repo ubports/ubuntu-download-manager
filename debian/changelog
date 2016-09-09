@@ -1,3 +1,16 @@
+ubuntu-download-manager (1.3+16.10.20160909.1-0ubuntu1) yakkety; urgency=medium
+
+  [ Florian Boucault ]
+  * Fixes for crossbuilding.
+
+  [ Michael Sheldon ]
+  * Make user visible strings translatable (LP: #1618892)
+  * Fix queue blocking and error reporting when file path is unwritable
+    (LP: #1411866)
+  * Remove dependency on qt5-default metapackage
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Fri, 09 Sep 2016 11:49:03 +0000
+
 ubuntu-download-manager (1.3+16.10.20160812.2-0ubuntu1) yakkety; urgency=medium
 
   [ Michael Sheldon ]
