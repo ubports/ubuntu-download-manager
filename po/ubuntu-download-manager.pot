@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-download-manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-31 12:57+0100\n"
+"POT-Creation-Date: 2016-09-07 14:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,35 +23,48 @@ msgstr ""
 
 #: src/downloads/priv/ubuntu/downloads/file_download.cpp:210
 #: src/downloads/priv/ubuntu/downloads/group_download.cpp:123
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:211
+#: src/downloads/priv/ubuntu/downloads/group_download.cpp:124
 #, qt-format
 msgid "Invalid hash algorithm: '%1'"
 msgstr ""
 
 #: src/downloads/priv/ubuntu/downloads/file_download.cpp:863
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:872
 #, qt-format
 msgid "Invalid URL: '%1'"
 msgstr ""
 
 #: src/downloads/priv/ubuntu/downloads/file_download.cpp:873
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:882
 #, qt-format
 msgid "Downloads that are set to be deflated cannot have a hash: '%1'"
 msgstr ""
 
 #: src/downloads/priv/ubuntu/downloads/file_download.cpp:964
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:973
 #, qt-format
 msgid "File already exists at: '%2'"
 msgstr ""
 
 #: src/downloads/priv/ubuntu/downloads/group_download.cpp:139
+#: src/downloads/priv/ubuntu/downloads/group_download.cpp:140
 msgid "Duplicated local path passed: "
 msgstr ""
 
 #: src/uploads/priv/ubuntu/uploads/file_upload.cpp:160
+#: src/uploads/priv/ubuntu/uploads/file_upload.cpp:161
 #, qt-format
 msgid "Path is not absolute: '%1'"
 msgstr ""
 
 #: src/uploads/priv/ubuntu/uploads/file_upload.cpp:166
+#: src/uploads/priv/ubuntu/uploads/file_upload.cpp:167
 #, qt-format
 msgid "Path does not exist: '%1'"
+msgstr ""
+
+#: src/downloads/priv/ubuntu/downloads/file_download.cpp:344
+#, qt-format
+msgid "Destination file path is not writable: '%2'"
 msgstr ""
