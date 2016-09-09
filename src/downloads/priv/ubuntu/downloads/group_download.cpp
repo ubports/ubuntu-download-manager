@@ -19,6 +19,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <glog/logging.h>
+#include <ubuntu/transfers/i18n.h>
 #include <ubuntu/transfers/metadata.h>
 #include <ubuntu/transfers/system/hash_algorithm.h>
 #include "ubuntu/transfers/system/logger.h"
@@ -120,7 +121,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
         } else {
             if (!HashAlgorithm::isValidAlgo(algo)) {
                 setIsValid(false);
-                setLastError(QString("Invalid hash algorithm: '%1'").arg(algo));
+                setLastError(QString(_("Invalid hash algorithm: '%1'")).arg(algo));
                 break;
             }
 
@@ -136,7 +137,7 @@ GroupDownload::init(QList<GroupDownloadStruct> downloads,
         QString localFilePath = singleDownload->filePath();
         if (localPaths.contains(localFilePath)) {
             setIsValid(false);
-            setLastError("Duplicated local path passed: " + localFilePath);
+            setLastError(_("Duplicated local path passed: ") + localFilePath);
             break;
         } else {
             localPaths.append(localFilePath);

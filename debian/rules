@@ -41,8 +41,11 @@ dh_auto_install:
 	dh_install --fail-missing
 
 %:
-	dh  $@ --parallel
+	dh  $@ --parallel --with translations
 
 override_dh_installdeb:
 	dh_apparmor --profile-name=usr.lib.ubuntu-download-manager.udm-extractor -pubuntu-download-manager
 	dh_installdeb
+
+override_dh_translations:
+	make -C po ubuntu-download-manager.pot

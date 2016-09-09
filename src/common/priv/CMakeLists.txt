@@ -3,13 +3,14 @@ set(TARGET udm-priv-common)
 set(SOURCES
 	ubuntu/transfers/base_daemon.cpp
 	ubuntu/transfers/base_manager.cpp
+	ubuntu/transfers/i18n.cpp
 	ubuntu/transfers/queue.cpp
 	ubuntu/transfers/transfer.cpp
 	ubuntu/transfers/system/apn_proxy.cpp
 	ubuntu/transfers/system/apn_request_factory.cpp
 	ubuntu/transfers/system/apparmor.cpp
 	ubuntu/transfers/system/application.cpp
-        ubuntu/transfers/system/cryptographic_hash.cpp
+	ubuntu/transfers/system/cryptographic_hash.cpp
 	ubuntu/transfers/system/dbus_proxy.cpp
 	ubuntu/transfers/system/dbus_proxy_factory.cpp
 	ubuntu/transfers/system/file_manager.cpp
@@ -29,6 +30,7 @@ set(HEADERS
 	ubuntu/transfers/adaptor_factory.h
 	ubuntu/transfers/base_daemon.h
 	ubuntu/transfers/base_manager.h
+	ubuntu/transfers/i18n.h
 	ubuntu/transfers/manager_factory.h
 	ubuntu/transfers/queue.h
 	ubuntu/transfers/transfer.h
@@ -36,7 +38,7 @@ set(HEADERS
 	ubuntu/transfers/system/apn_request_factory.h
 	ubuntu/transfers/system/apparmor.h
 	ubuntu/transfers/system/application.h
-        ubuntu/transfers/system/cryptographic_hash.h
+	ubuntu/transfers/system/cryptographic_hash.h
 	ubuntu/transfers/system/dbus_proxy.h
 	ubuntu/transfers/system/dbus_proxy_factory.h
 	ubuntu/transfers/system/file_manager.h

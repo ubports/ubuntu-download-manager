@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <ubuntu/downloads/daemon.h>
+#include <ubuntu/transfers/i18n.h>
 
 using namespace Ubuntu::DownloadManager::Daemon;
 
@@ -28,6 +29,8 @@ int main(int argc, char *argv[]) {
     DownloadDaemon* daemon = new DownloadDaemon();
     // use a singleShot timer so that we start after exec so that exit works
     QTimer::singleShot(0, daemon, SLOT(start()));
+
+    Ubuntu::Transfers::initTr(I18N_DOMAIN, NULL);
 
     return a.exec();
 }
