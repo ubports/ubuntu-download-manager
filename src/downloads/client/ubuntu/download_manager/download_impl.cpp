@@ -185,9 +185,8 @@ DownloadImpl::setLastError(const QDBusError& err) {
 
 void
 DownloadImpl::start() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError); // We're in this state due to a previous error
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Download{%1} start())").arg(_id));
@@ -200,9 +199,8 @@ DownloadImpl::start() {
 
 void
 DownloadImpl::pause() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Download{%1} pause())").arg(_id));
@@ -215,9 +213,8 @@ DownloadImpl::pause() {
 
 void
 DownloadImpl::resume() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Download{%1} resume())").arg(_id));
@@ -230,9 +227,8 @@ DownloadImpl::resume() {
 
 void
 DownloadImpl::cancel() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Download{%1} cancel())").arg(_id));
@@ -245,9 +241,8 @@ DownloadImpl::cancel() {
 
 void
 DownloadImpl::collected() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Download{%1} collected()").arg(_id));
@@ -263,9 +258,8 @@ DownloadImpl::collected() {
 
 void
 DownloadImpl::allowMobileDownload(bool allowed) {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug,
@@ -282,9 +276,8 @@ DownloadImpl::allowMobileDownload(bool allowed) {
 
 bool
 DownloadImpl::isMobileDownloadAllowed() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return false;
     }
     Logger::log(Logger::Debug,
@@ -305,9 +298,8 @@ DownloadImpl::isMobileDownloadAllowed() {
 
 void
 DownloadImpl::setDestinationDir(const QString& path) {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug, QString("Dowmload{%1} setDestinationDir(%2)")
@@ -324,9 +316,8 @@ DownloadImpl::setDestinationDir(const QString& path) {
 
 void
 DownloadImpl::setHeaders(QMap<QString, QString> headers) {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug,
@@ -344,9 +335,8 @@ DownloadImpl::setHeaders(QMap<QString, QString> headers) {
 
 QVariantMap
 DownloadImpl::metadata() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         QVariantMap emptyResult;
         return emptyResult;
     }
@@ -368,9 +358,8 @@ DownloadImpl::metadata() {
 
 void
 DownloadImpl::setMetadata(QVariantMap map) {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug,
@@ -388,9 +377,8 @@ DownloadImpl::setMetadata(QVariantMap map) {
 
 QMap<QString, QString>
 DownloadImpl::headers() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         QMap<QString, QString> empty;
         return empty;
     }
@@ -413,9 +401,8 @@ DownloadImpl::headers() {
 
 void
 DownloadImpl::setThrottle(qulonglong speed) {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return;
     }
     Logger::log(Logger::Debug,
@@ -432,9 +419,8 @@ DownloadImpl::setThrottle(qulonglong speed) {
 
 qulonglong
 DownloadImpl::throttle() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return 0;
     }
     Logger::log(Logger::Debug, QString("Download{%1} throttle()").arg(_id));
@@ -454,9 +440,8 @@ DownloadImpl::throttle() {
 
 QString
 DownloadImpl::filePath() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return "";
     }
     Logger::log(Logger::Debug, QString("Download{%1} filePath()").arg(_id));
@@ -476,9 +461,8 @@ DownloadImpl::filePath() {
 
 Download::State
 DownloadImpl::state() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return Download::ERROR;
     }
     Logger::log(Logger::Debug, QString("Download{%1} state()").arg(_id));
@@ -503,9 +487,8 @@ DownloadImpl::id() const {
 
 qulonglong
 DownloadImpl::progress() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return 0;
     }
     Logger::log(Logger::Debug, QString("Download{%1} progress()").arg(_id));
@@ -525,9 +508,8 @@ DownloadImpl::progress() {
 
 qulonglong
 DownloadImpl::totalSize() {
-    if (_dbusInterface == nullptr) {
-        emit Download::error(_lastError);
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return 0;
     }
     Logger::log(Logger::Debug, QString("Download{%1} totalSize()").arg(_id));
@@ -557,8 +539,8 @@ DownloadImpl::error() const {
 
 QString
 DownloadImpl::clickPackage() const {
-    if (_dbusInterface == nullptr) {
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return "";
     }
     return _dbusInterface->clickPackage();
@@ -566,8 +548,8 @@ DownloadImpl::clickPackage() const {
 
 bool
 DownloadImpl::showInIndicator() const {
-    if (_dbusInterface == nullptr) {
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return false;
     }
     return _dbusInterface->showInIndicator();
@@ -575,8 +557,8 @@ DownloadImpl::showInIndicator() const {
 
 QString
 DownloadImpl::title() const {
-    if (_dbusInterface == nullptr) {
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return "";
     }
     return _dbusInterface->title();
@@ -584,8 +566,8 @@ DownloadImpl::title() const {
 
 QString
 DownloadImpl::destinationApp() const {
-    if (_dbusInterface == nullptr) {
-        Logger::log(Logger::Error, "Invalid dbus interface");
+    if (_dbusInterface == nullptr || !_dbusInterface->isValid()) {
+        Logger::log(Logger::Error, QString("Invalid dbus interface: %1").arg(_lastError->errorString()));
         return "";
     }
     return _dbusInterface->destinationApp();
