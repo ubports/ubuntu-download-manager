@@ -117,10 +117,10 @@ BaseDaemon::start(const QString& path) {
     TRACE;
     _path = path;
     _managerAdaptor = _adaptorFactory->createAdaptor(_manager);
-    bool ret = _conn->registerService(_path);
+    bool ret = _conn->registerObject("/", _manager);
     if (ret) {
         LOG(INFO) << "Service registered to" << _path;
-        ret = _conn->registerObject("/", _manager);
+        ret = _conn->registerService(_path);
         if (!ret) {
             LOG(ERROR) << "Could not register interface. DBus Error =>"
                 << _conn->connection().lastError();
