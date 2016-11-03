@@ -20,7 +20,8 @@ Build-Depends: cmake,
                qtdeclarative5-test-plugin,
                qttools5-dev-tools,
                network-manager,
-Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Manuel de la Peña <manuel.delapena@canonical.com>
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-system-image
 # if you don't have have commit access to this branch but would like to upload
