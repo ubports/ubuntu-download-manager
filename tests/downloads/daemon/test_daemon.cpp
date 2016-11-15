@@ -151,12 +151,13 @@ TestDaemon::testStartFailServiceRegister() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
+    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
+        .Times(1)
+        .WillRepeatedly(Return(false));
+
     EXPECT_CALL(*conn.data(),
         registerService(QString("com.canonical.applications.Downloader")))
-            .Times(1)
-            .WillRepeatedly(Return(false));
-    EXPECT_CALL(*conn.data(), registerObject(_, _, _))
-        .Times(0);
+            .Times(0);
 
     EXPECT_CALL(*factory, createManager(_, _, _, _))
         .Times(1)
@@ -196,14 +197,14 @@ TestDaemon::testStartFailObjectRegister() {
         .Times(1)
         .WillRepeatedly(Return(args));
 
-    EXPECT_CALL(*conn.data(),
-        registerService(QString("com.canonical.applications.Downloader")))
-            .Times(1)
-            .WillRepeatedly(Return(true));
     EXPECT_CALL(*conn.data(), registerObject(_, _, _))
         .Times(1)
         .WillRepeatedly(Return(false));
 
+    EXPECT_CALL(*conn.data(),
+        registerService(QString("com.canonical.applications.Downloader")))
+            .Times(0);
+    
     EXPECT_CALL(*factory, createManager(app, conn.data(), _, _))
         .Times(1)
         .WillRepeatedly(Return(man));
