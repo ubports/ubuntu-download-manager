@@ -1,0 +1,32 @@
+name: ubuntu-download-manager
+version: 0.100
+summary: Ubuntu Download Manager
+description: Provides a service for downloading files while an application is suspended.
+confinement: strict
+
+apps:
+    ubuntu-download-manager:
+        command: desktop-launch ubuntu-download-manager
+        plugs: [network, network-manager, network-observe, dbus]
+        slots: [download]
+
+parts:
+    ubuntu-download-manager:
+        source: .
+        plugin: cmake
+        build-packages:
+            - build-essential
+            - cmake
+            - dbus
+            - pkg-config
+            - qtdeclarative5-dev-tools
+            - qt5-default
+            - qtbase5-dev
+            - qtdeclarative5-dev
+            - doxygen
+            - libgl1-mesa-dev
+            - libgles2-mesa-dev
+            - libglib2.0-dev
+        stage-packages:
+            - libqt5sql5-sqlite
+        after: [desktop/qt5] 
