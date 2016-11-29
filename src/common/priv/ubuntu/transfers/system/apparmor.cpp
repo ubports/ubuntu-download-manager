@@ -165,12 +165,24 @@ AppArmor::getLocalPath(const QString& appId) {
         QString dataPath = QStandardPaths::writableLocation(
             QStandardPaths::DataLocation);
         QStringList pathComponents;
-        pathComponents << dataPath;
 
         if (!appId.isEmpty()) {
             QStringList appIdInfo = appId.split("_");
-            if (appIdInfo.count() > 0)
-                pathComponents << appIdInfo[0];
+            if (appIdInfo.count() > 0) {
+                if (appIdInfo[0].startsWith("snap.")) {
+                    // Snap path
+                    QStringList appComponents = appIdInfo[0].split(".");
+                    if (QDir::homePath().contains(QStringLiteral("snap/ubuntu-download-manager"))) {
+                        // We're running inside a snap so adjust the $HOME location accordingly
+                        pathComponents << QDir::homePath() << ".." << ".." << appComponents[1] << "common";
+                    } else {
+                        pathComponents << QDir::homePath() << "snap" << appComponents[1] << "common";
+                    }
+                } else {
+                    // Click path
+                    pathComponents << dataPath << appIdInfo[0];
+                }
+            }
         }
 
         pathComponents << "Downloads";

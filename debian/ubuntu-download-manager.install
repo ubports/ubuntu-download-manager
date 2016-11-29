@@ -4,3 +4,4 @@ usr/share/dbus-1/system-services/com.canonical.applications.Downloader.service
 debian/usr.lib.ubuntu-download-manager.udm-extractor etc/apparmor.d
 etc/dbus-1/system.d/com.canonical.applications.Downloader.conf
 usr/lib/*/ubuntu-download-manager/*
+usr/lib/systemd/user

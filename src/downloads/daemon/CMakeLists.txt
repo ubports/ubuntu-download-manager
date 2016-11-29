@@ -28,6 +28,12 @@ target_link_libraries(${TARGET}
 	ubuntu-download-manager-priv
 )
 
+set (SYSTEMD_USER_DIR "/usr/lib/systemd/user")
+install(
+  FILES ubuntu-download-manager-systemd.service
+  DESTINATION ${SYSTEMD_USER_DIR}
+)
+
 install(FILES ${TARGET}.service DESTINATION
    	${CMAKE_INSTALL_DATADIR}/dbus-1/services)
 install(FILES "com.canonical.applications.Downloader.service" DESTINATION
