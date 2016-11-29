@@ -1,0 +1,7 @@
+[Unit]
+Description=Ubuntu Download Manager Service
+
+[Service]
+Type=dbus
+BusName=com.canonical.applications.Downloader
+ExecStart=/usr/bin/ubuntu-download-manager
