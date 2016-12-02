@@ -183,6 +183,8 @@ AppArmor::getLocalPath(const QString& appId) {
                     pathComponents << dataPath << appIdInfo[0];
                 }
             }
+        } else {
+            pathComponents << dataPath;
         }
 
         pathComponents << "Downloads";
