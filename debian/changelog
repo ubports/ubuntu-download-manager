@@ -1,3 +1,9 @@
+ubuntu-download-manager (1.3+17.04.20161202-0ubuntu1) zesty; urgency=medium
+
+  * Fix data path for unconfined downloads (LP: #1646758)
+
+ -- Michael Sheldon <michael.sheldon@canonical.com>  Fri, 02 Dec 2016 15:05:43 +0000
+
 ubuntu-download-manager (1.3+17.04.20161129.1-0ubuntu1) zesty; urgency=medium
 
   * Add support for building as a snap
