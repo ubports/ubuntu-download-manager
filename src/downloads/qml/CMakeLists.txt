@@ -30,7 +30,10 @@ add_library(${TARGET} SHARED
 	${plugin_HDRS}
 )
 
-qt5_use_modules(${TARGET} Core Qml Quick)
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Qml REQUIRED)
+find_package(Qt5Quick REQUIRED)
+target_link_libraries(${TARGET} Qt5::Core Qt5::Qml Qt5::Quick)
 
 target_link_libraries(${TARGET}
 	${GLOG_LIBRARIES}
