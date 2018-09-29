@@ -14,6 +14,9 @@
 #
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
+find_package(Gtest REQUIRED)
+include_directories(${GMOCK_INCLUDE_DIR} ${GTEST_INCLUDE_DIR})
+
 if(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")
 add_custom_target(tests-data ALL
         COMMAND cp -r ${CMAKE_SOURCE_DIR}/tests/data ${CMAKE_CURRENT_BINARY_DIR}/data
