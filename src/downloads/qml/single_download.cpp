@@ -367,6 +367,7 @@ void
 SingleDownload::onStarted(bool wasStarted)
 {
     m_downloading = true;
+    m_downloadInProgress = true;
     emit started(wasStarted);
 }
 
