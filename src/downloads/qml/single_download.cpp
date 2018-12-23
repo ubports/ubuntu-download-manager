@@ -337,6 +337,8 @@ SingleDownload::onFinished(const QString& path)
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
     emit finished(path);
+    emit downloadingChanged();
+    emit downloadInProgressChanged();
 }
 
 void
@@ -355,12 +357,14 @@ SingleDownload::onPaused(bool wasPaused)
 {
     m_downloading = false;
     emit paused(wasPaused);
+    emit downloadingChanged();
 }
 
 void
 SingleDownload::onResumed(bool wasResumed) {
     m_downloading = true;
     emit resumed(wasResumed);
+    emit downloadingChanged();
 }
 
 void
@@ -369,6 +373,8 @@ SingleDownload::onStarted(bool wasStarted)
     m_downloading = true;
     m_downloadInProgress = true;
     emit started(wasStarted);
+    emit downloadingChanged();
+    emit downloadInProgressChanged();
 }
 
 void
@@ -381,6 +387,8 @@ SingleDownload::onCanceled(bool wasCanceled)
     // unbind the download so that we have no memory leaks due to the connections
     unbindDownload(m_download);
     emit canceled(wasCanceled);
+    emit downloadingChanged();
+    emit downloadInProgressChanged();
 }
 
 bool
