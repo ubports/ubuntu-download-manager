@@ -2,6 +2,7 @@ Source: ubuntu-download-manager
 Section: net
 Priority: optional
 Build-Depends: cmake,
+               cmake-extras,
                debhelper (>= 9),
                dh-apparmor,
                dh-translations,
