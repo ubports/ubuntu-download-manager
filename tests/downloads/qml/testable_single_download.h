@@ -17,6 +17,7 @@
  */
 
 #include <single_download.h>
+#include <gmock/gmock.h>
 
 
 class TestableSingleDownload : public SingleDownload {
@@ -25,4 +26,6 @@ class TestableSingleDownload : public SingleDownload {
         : SingleDownload(down, man, parent) {
     }
 
+    MOCK_METHOD1(setHash, void(QString));
+    MOCK_METHOD1(setAlgorithm, void(QString));
 };

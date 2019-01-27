@@ -434,7 +434,7 @@ TestSingleDownload::testSetHashNullptr() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(nullptr, _man));
 
-    singleDownload->setHash("c4e5f7fcbcef75924b2abde2b2e75f3f");
+    singleDownload->setHash(QString("c4e5f7fcbcef75924b2abde2b2e75f3f"));
     // ensure that the mocks are not called and we do not crash
     verifyMocks();
 }
@@ -445,7 +445,7 @@ TestSingleDownload::testSetHashError() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(_down, _man));
 
-    EXPECT_CALL(*_down, setHash("c4e5f7fcbcef75924b2abde2b2e75f3f"))
+    EXPECT_CALL(*singleDownload, setHash(QString("c4e5f7fcbcef75924b2abde2b2e75f3f")))
         .Times(1);
 
     EXPECT_CALL(*_down, isError())
@@ -474,7 +474,7 @@ TestSingleDownload::testSetHashSuccess() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(_down, _man));
 
-    EXPECT_CALL(*_down, setHash("c4e5f7fcbcef75924b2abde2b2e75f3f"))
+    EXPECT_CALL(*singleDownload, setHash(QString("c4e5f7fcbcef75924b2abde2b2e75f3f")))
         .Times(1);
 
     EXPECT_CALL(*_down, isError())
@@ -506,7 +506,7 @@ TestSingleDownload::testSetAlgorithmError() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(_down, _man));
 
-    EXPECT_CALL(*_down, setAlgorithm("sha1"))
+    EXPECT_CALL(*singleDownload, setAlgorithm(QString("sha1")))
         .Times(1);
 
     EXPECT_CALL(*_down, isError())
@@ -535,7 +535,7 @@ TestSingleDownload::testSetAlgorithmSuccess() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(_down, _man));
 
-    EXPECT_CALL(*_down, setAlgorithm("sha1"))
+    EXPECT_CALL(*singleDownload, setAlgorithm(QString("sha1")))
         .Times(1);
 
     EXPECT_CALL(*_down, isError())

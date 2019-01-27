@@ -73,15 +73,15 @@ TestMetadata::testGetShowInIndicatorPresent() {
 void
 TestMetadata::testGetCommandEmpty() {
     QScopedPointer<Metadata> metadata(new Metadata());
-    QVERIFY(metadata->command());
+    QVERIFY(metadata->command().isEmpty());
 }
 
 void
 TestMetadata::testGetCommandPresent_data() {
     QTest::addColumn<QStringList>("command");
 
-    QTest::newRow("First") << QStringList("/bin/ls", "/tmp/");
-    QTest::newRow("Second") << QStringList("/bin/true");
+    QTest::newRow("First") << QStringList({ "/bin/ls", "/tmp/" });
+    QTest::newRow("Second") << QStringList({ "/bin/true" });
 }
 
 void
@@ -95,7 +95,7 @@ TestMetadata::testGetCommandPresent() {
 void
 TestMetadata::testGetCustomEmpty() {
     QScopedPointer<Metadata> metadata(new Metadata());
-    QVERIFY(metadata->custom());
+    QVERIFY(metadata->custom().isEmpty());
 }
 
 void
