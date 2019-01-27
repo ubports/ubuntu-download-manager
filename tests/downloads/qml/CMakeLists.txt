@@ -26,7 +26,7 @@ foreach(test ${QML_TESTS})
     )
 
     set(${test}_QML_HEADERS
-        wnload.h
+        download.h
         error.h
 	    manager.h
 	    testable_single_download.h
@@ -69,9 +69,11 @@ set(QML_TESTS_LIBS
     UbuntuDownloadManager
 )
 
-find_program(XVFB xvfb)
+find_program(XVFB xvfb-run)
 
 if(XVFB)
+    set(XVFB_CMD xvfb-run -a -s "-screen 0 540x960x24")
+
     foreach(test ${QML_TESTS})
         # set targets, linked libs and test
         add_executable(${test}_qml
@@ -84,9 +86,9 @@ if(XVFB)
         )
 
 
-    ADD_TEST(NAME qml_${test} COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${test}_qml)
+    ADD_TEST(NAME qml_${test} COMMAND ${XVFB_CMD} ${CMAKE_CURRENT_BINARY_DIR}/${test}_qml)
     endforeach(test)
 else(XVFB)
-        message(WARNING "dbus-test-runner binary not found tests will be disabled")
+        message(WARNING "xvfb-run binary not found: qml tests will be disabled")
 endif(XVFB)
 

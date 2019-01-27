@@ -37,8 +37,8 @@ class MockManager : public Manager {
         const QVariantMap&, StringMap));
     MOCK_METHOD7(createDownload, void(StructList, const QString&, bool,
         const QVariantMap&, StringMap, GroupCb, GroupCb));
-    MOCK_METHOD0(getAllDownloads, void(const QString&, bool));
-    MOCK_METHOD2(getAllDownloads, void(const QString&, bool, DownloadsListCb, DownloadsListCb));
+    MOCK_METHOD2(getAllDownloads, void(const QString&, bool));
+    MOCK_METHOD4(getAllDownloads, void(const QString&, bool, DownloadsListCb, DownloadsListCb));
     MOCK_METHOD2(getAllDownloadsWithMetadata, void(const QString&,
         const QString&));
     MOCK_METHOD4(getAllDownloadsWithMetadata, void(const QString&,
