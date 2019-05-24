@@ -27,24 +27,24 @@ TestNetworkErrorTransition::init() {
     _down = new MockSMFileDownload();
     _s1 = new QState();
     _s2 = new QFinalState();
+    _stateMachine = new QStateMachine();
 
-    _stateMachine.addState(_s1);
-    _stateMachine.addState(_s2);
+    _stateMachine->addState(_s1);
+    _stateMachine->addState(_s2);
 
     _transition = new NetworkErrorTransition(_down, _s1, _s2);
     _s1->addTransition(_transition);
-    _stateMachine.setInitialState(_s1);
+    _stateMachine->setInitialState(_s1);
 }
 
 void
 TestNetworkErrorTransition::cleanup() {
     BaseTestCase::cleanup();
-    _stateMachine.removeState(_s1);
-    _stateMachine.removeState(_s2);
     delete _transition;
     delete _down;
     delete _s1;
     delete _s2;
+    delete _stateMachine;
 }
 
 void
@@ -104,14 +104,14 @@ TestNetworkErrorTransition::testOnTransition_data() {
 
 void
 TestNetworkErrorTransition::testOnTransition() {
-    SignalBarrier startedSpy(&_stateMachine, SIGNAL(started()));
-    SignalBarrier finishedSpy(&_stateMachine, SIGNAL(finished()));
+    SignalBarrier startedSpy(_stateMachine, SIGNAL(started()));
+    SignalBarrier finishedSpy(_stateMachine, SIGNAL(finished()));
     QFETCH(QNetworkReply::NetworkError, code);
 
     EXPECT_CALL(*_down, emitNetworkError(code))
         .Times(1);
 
-    _stateMachine.start();
+    _stateMachine->start();
 
     // ensure that we started
     QVERIFY(startedSpy.ensureSignalEmitted());
