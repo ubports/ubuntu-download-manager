@@ -251,8 +251,8 @@ DaemonTestCase::startHttpServer() {
     _httpServer = new QProcess();
     _httpServer->setWorkingDirectory(serverDir);
     QStringList args;
-    args << "-m" << "SimpleHTTPServer" << QString::number(_port);
-    _httpServer->start("python", args);
+    args << "-m" << "http.server" << QString::number(_port);
+    _httpServer->start("python3", args);
     _httpServer->waitForFinished(300);  // TODO: Find a better approach
 
     if (_httpServer->state() == QProcess::Running) {
