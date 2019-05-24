@@ -42,7 +42,7 @@ class TestNetworkErrorTransition : public BaseTestCase {
     void testOnTransition();
 
  private:
-    QStateMachine _stateMachine;
+    QStateMachine* _stateMachine;
     MockSMFileDownload* _down;
     NetworkErrorTransition* _transition;
     QState* _s1;
