@@ -14,7 +14,7 @@
 #
 # Authored by: Manuel de la Peña <manuel.delapena@canonical.com>
 
-find_package(Gtest REQUIRED)
+find_package(GMock REQUIRED)
 include_directories(${GMOCK_INCLUDE_DIR} ${GTEST_INCLUDE_DIR})
 
 if(NOT "${CMAKE_CURRENT_SOURCE_DIR}" STREQUAL "${CMAKE_CURRENT_BINARY_DIR}")

@@ -54,7 +54,7 @@ target_link_libraries(${TARGET}
     ${Qt5Sql_LIBRARIES}
     ${Qt5DBus_LIBRARIES}
     ${Qt5Test_LIBRARIES}
-    ${GMOCK_LIBRARY}
+    ${GMOCK_LIBRARIES}
     ${GTEST_BOTH_LIBRARIES}
     udm-common
     udm-priv-common

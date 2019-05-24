@@ -1,6 +1,5 @@
 project(ubuntu-download-manager)
 cmake_minimum_required(VERSION 2.8)
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC -pthread")
 
 # for dh_translations to extract the domain
@@ -11,7 +10,7 @@ add_definitions(-DI18N_DOMAIN="${GETTEXT_PACKAGE}")
 # Standard install paths
 include(GNUInstallDirs)
 
-include(EnableCoverageReport)
+find_package(CoverageReport)
 #####################################################################
 # Enable code coverage calculation with gcov/gcovr/lcov
 # Usage:
