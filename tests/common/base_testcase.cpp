@@ -92,7 +92,7 @@ BaseTestCase::removeDir(const QString& dirName) {
 void
 BaseTestCase::init() {
 //    qInstallMessageHandler(noMessageOutput);
-    QStandardPaths::enableTestMode(true);
+    QStandardPaths::setTestModeEnabled(true);
 }
 
 void

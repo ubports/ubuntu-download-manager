@@ -128,7 +128,7 @@ class Download : public Transfer {
     QVariantMap _metadata;
 
  private:
-    QString _destinationApp = QString::null;
+    QString _destinationApp = QString();
     QMap<QString, QString> _headers;
     QMap<QString, QObject*> _adaptors;
 };

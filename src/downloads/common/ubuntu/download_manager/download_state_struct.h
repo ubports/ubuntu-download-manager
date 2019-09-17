@@ -124,17 +124,17 @@ class DownloadStateStruct {
     /*
         \internal
     */
-    DownloadStateStruct(int state, const QString& url, const QString& hash=QString::null);
+    DownloadStateStruct(int state, const QString& url, const QString& hash=QString());
 
     /*
         \internal
     */
-    DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString::null);
+    DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString());
 
     /*
         \internal
     */
-    DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString::null, const QVariantMap& metadata=QVariantMap());
+    DownloadStateStruct(int state, const QString& url, const QString& filePath, const QString& hash=QString(), const QVariantMap& metadata=QVariantMap());
 
  private:
 
@@ -146,17 +146,17 @@ class DownloadStateStruct {
     /*
         \internal
     */
-    QString _url = QString::null;
+    QString _url = QString();
 
     /*
         \internal
     */
-    QString _filePath = QString::null;
+    QString _filePath = QString();
 
     /*
         \internal
     */
-    QString _hash = QString::null;
+    QString _hash = QString();
 
     /*
         \internal

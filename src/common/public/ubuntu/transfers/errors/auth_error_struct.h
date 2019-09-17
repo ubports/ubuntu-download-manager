@@ -109,7 +109,7 @@ class AuthErrorStruct {
     /*!
         \internal
     */
-    QString _phrase = QString::null;
+    QString _phrase = QString();
 };
 
 }  // Errors
