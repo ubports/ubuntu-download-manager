@@ -37,6 +37,156 @@ namespace {
     const QString& AUTH_FILE = "htpasswd";
 }
 
+namespace {
+    const QString& AUTH_PROCESS_KEY = "auth_process";
+    const QString& AUTH_FILE_KEY = "auth_file";
+    const QString& AUTH_PORT_NUMBER_KEY = "auth_port_number";
+    const QString& NO_AUTH_PORT_NUMBER_KEY = "noauth_port_number";
+    const QString& SPOOL_TEMP_KEY = "spool_temp";
+    const QString& SQUID_TEMP_KEY = "squid_temp";
+}
+
+SquidConfTemplate::SquidConfTemplate(const QString& inFile)
+        : _inFile(inFile) {
+}
+
+SquidConfTemplate::SquidConfTemplate(const QString& inFile, const QVariantMap& data)
+    : SquidConfTemplate(inFile) {
+    QStringList strProperties;
+    strProperties << AUTH_PROCESS_KEY << AUTH_FILE_KEY << SPOOL_TEMP_KEY
+        << SQUID_TEMP_KEY;
+
+    foreach(const QString& key, strProperties) {
+        if (data.contains(key)){
+            setProperty(key.toStdString().c_str(), data[key]);
+        }
+    }
+
+    QStringList intProperties;
+    intProperties << AUTH_PORT_NUMBER_KEY << NO_AUTH_PORT_NUMBER_KEY;
+
+    foreach(const QString& key, intProperties) {
+        if (data.contains(key)){
+            setProperty(key.toStdString().c_str(), data[key]);
+        }
+    }
+}
+
+//auth_process
+void SquidConfTemplate::setAuthProcess(const QString& authProcess) {
+    _authProcess = authProcess;
+}
+
+QString SquidConfTemplate::getAuthProcess() const {
+    return _authProcess;
+}
+
+//auth_file
+void SquidConfTemplate::setAuthFile(const QString& authFile) {
+    _authFile = authFile;
+}
+
+QString SquidConfTemplate::getAuthFile() const {
+    return _authFile;
+}
+
+// auth_port_number
+void SquidConfTemplate::setAuthPortNumber(int authPortNumber) {
+    _authPort = authPortNumber;
+}
+
+int SquidConfTemplate::getAuthPortNumber() const {
+    return _authPort;
+}
+
+//noauth_port_number
+void SquidConfTemplate::setNoAuthPortNumber(int noAuthPort) {
+    _noAuthPort = noAuthPort;
+}
+
+int SquidConfTemplate::getNoAuthPortNumber() const {
+    return _noAuthPort;
+}
+
+// spool_temp
+void SquidConfTemplate::setSpoolTemp(const QString& spoolTemp) {
+    _spoolTemp = spoolTemp;
+}
+
+QString SquidConfTemplate::getSpoolTemp() const {
+    return _spoolTemp;
+}
+
+// squid_temp
+void SquidConfTemplate::setSquidTemp(const QString& squidTemp) {
+    _squidTemp = squidTemp;
+}
+
+QString SquidConfTemplate::getSquidTemp() const {
+    return _squidTemp;
+}
+
+QString SquidConfTemplate::configure() {
+    // ensure that all properties are set
+    QStringList strProperties;
+    strProperties << AUTH_PROCESS_KEY << AUTH_FILE_KEY << SPOOL_TEMP_KEY
+        << SQUID_TEMP_KEY;
+
+    foreach(const QString& key, strProperties) {
+        auto value = property(key.toStdString().c_str()).toString();
+        if (value.isEmpty()) {
+            _isError = true;
+            _errorString = QString("Value '$1' cannot be empty.").arg(key);
+            return "";
+        }
+    }
+
+    QStringList intProperties;
+    intProperties << AUTH_PORT_NUMBER_KEY << NO_AUTH_PORT_NUMBER_KEY;
+
+    foreach(const QString& key, intProperties) {
+        auto value = property(key.toStdString().c_str()).toInt();
+        if (value < 0) {
+            _isError = true;
+            _errorString = QString("Value '$1' cannot be negative.").arg(key);
+            return "";
+        }
+    }
+
+    // read the entire in file to memory (it is not large) and replace each
+    // key for its value
+    QFile f(_inFile);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            _isError = true;
+            _errorString = "Could not open in configuration file.";
+            return "";
+    }
+
+    QString data = f.readAll();
+
+    foreach(const QString& key, strProperties) {
+        auto value = property(key.toStdString().c_str()).toString();
+        auto replaceKey = QString("${%1}").arg(key);
+        data = data.replace(replaceKey, value);
+    }
+
+    foreach(const QString& key, intProperties) {
+        auto value = property(key.toStdString().c_str()).toInt();
+        auto replaceKey = QString("${%1}").arg(key);
+        data = data.replace(replaceKey, QString::number(value));
+    }
+
+    return data;
+}
+
+bool SquidConfTemplate::isError() {
+    return _isError;
+}
+
+QString SquidConfTemplate::error() {
+    return _errorString;
+}
+
 SquidService::SquidService(const QString& tmpPath,
                            const QString& dataPath,
                            QObject* parent)
