@@ -68,7 +68,7 @@ class NetworkSession : public QObject {
     QNetworkConfiguration::BearerType _sessionType =
         QNetworkConfiguration::BearerUnknown;
     bool _error = false;
-    QString _errorMsg = QString::null;
+    QString _errorMsg = QString();
 };
 
 }

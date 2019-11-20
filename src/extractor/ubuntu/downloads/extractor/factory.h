@@ -40,7 +40,7 @@ class Factory : public QObject {
     QString lastError() const;
 
  private:
-    QString _error = QString::null;
+    QString _error = QString();
 };
 
 }
