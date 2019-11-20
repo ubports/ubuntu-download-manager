@@ -102,17 +102,17 @@ class HashErrorStruct {
     /*!
         \internal
     */
-    QString _method = QString::null;
+    QString _method = QString();
 
     /*!
         \internal
     */
-    QString _expected = QString::null;
+    QString _expected = QString();
 
     /*!
         \internal
     */
-    QString _found = QString::null;
+    QString _found = QString();
 };
 
 }
