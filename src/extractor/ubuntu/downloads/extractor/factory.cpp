@@ -45,7 +45,7 @@ Factory::deflator(const QString& id, const QString& path,
 
 bool
 Factory::isError() const {
-    return _error != QString::null;
+    return _error != QString();
 }
 
 QString

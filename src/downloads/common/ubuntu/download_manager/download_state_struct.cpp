@@ -25,9 +25,9 @@ namespace DownloadManager {
 
 DownloadStateStruct::DownloadStateStruct()
     : _state(-1),
-      _url(QString::null),
-      _filePath(QString::null),
-      _hash(QString::null),
+      _url(QString()),
+      _filePath(QString()),
+      _hash(QString()),
       _metadata(QVariantMap()) {
 
 }
@@ -35,7 +35,7 @@ DownloadStateStruct::DownloadStateStruct()
 DownloadStateStruct::DownloadStateStruct(int state, const QString& url, const QString& hash)
     : _state(state),
       _url(url),
-      _filePath(QString::null),
+      _filePath(QString()),
       _hash(hash),
       _metadata(QVariantMap()) {
 
@@ -132,7 +132,7 @@ DownloadStateStruct::getMetadata() const {
 
 bool
 DownloadStateStruct::isValid() {
-    return _url != QString::null;
+    return _url != QString();
 }
 
 }  // DownloadManager

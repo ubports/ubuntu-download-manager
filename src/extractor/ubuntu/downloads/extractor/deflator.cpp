@@ -60,7 +60,7 @@ Deflator::Deflator(const QString& path, const QString& destination,
 
 bool
 Deflator::isError() const {
-    return _error != QString::null;
+    return _error != QString();
 }
 
 QString

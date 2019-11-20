@@ -643,7 +643,7 @@ FileDownload::writeDataUri() {
     //
     // this is due to a bug found in oxide:  https://bugs.launchpad.net/oxide/+bug/1413964 and should be removed
     // whenever asap
-    QString urlString = QString::null;
+    QString urlString = QString();
     auto urlStringParts = _url.toString().split(DATA_URI_PREFIX);
     if (urlStringParts.count() > 1) {
         urlString = urlStringParts[1];
@@ -654,7 +654,7 @@ FileDownload::writeDataUri() {
     QByteArray data;
     QMimeDatabase db;
     QMimeType mimeType;  // init to an invalid type
-    QString extension = QString::null;
+    QString extension = QString();
     bool isBase64 = false;
 
     foreach(const QMimeType& type, db.allMimeTypes()) {
