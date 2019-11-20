@@ -26,7 +26,7 @@
 #define DAEMON_PATH "-daemon-path"
 
 int main(int argc, char *argv[]) {
-    QStandardPaths::enableTestMode(true);
+    QStandardPaths::setTestModeEnabled(true);
     QCoreApplication a(argc, argv);
 
     // similar to a real daemon but allows to force certain cases, for example,
