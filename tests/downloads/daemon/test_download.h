@@ -196,15 +196,15 @@ class TestDownload: public BaseTestCase {
     void testDataUriPostProcessing();
 
  private:
-    QString _id = QString::null;
-    QString _appId = QString::null;
+    QString _id = QString();
+    QString _appId = QString();
     bool _isConfined = false;
-    QString _rootPath = QString::null;
+    QString _rootPath = QString();
     QVariantMap _metadata;
     QMap<QString, QString> _headers;
-    QString _path = QString::null;
+    QString _path = QString();
     QUrl _url;
-    QString _algo = QString::null;
+    QString _algo = QString();
     MockNetworkSession* _networkSession = nullptr;
     MockRequestFactory* _reqFactory = nullptr;
     MockProcessFactory* _processFactory = nullptr;

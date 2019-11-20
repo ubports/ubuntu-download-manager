@@ -45,12 +45,12 @@ class Deflator : public QObject {
     void setLastError(const QString& error);
 
  protected:
-    QString _path = QString::null;
-    QString _destination = QString::null;
+    QString _path = QString();
+    QString _destination = QString();
 
  private:
     bool _isError = false;
-    QString _error = QString::null;
+    QString _error = QString();
 
 };
 
