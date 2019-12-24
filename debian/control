@@ -19,7 +19,7 @@ Build-Depends: cmake,
                python3,
                qtdeclarative5-dev,
                qtdeclarative5-dev-tools,
-               qtdeclarative5-test-plugin,
+               qml-module-qttest,
                qttools5-dev-tools,
                network-manager,
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
