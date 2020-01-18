@@ -202,7 +202,7 @@ DaemonTestCase::startUDMDaemon() {
     _daemonProcess = new QProcess();
 
     connect(_daemonProcess, static_cast<void(QProcess::*)
-        (QProcess::ProcessError)>(&QProcess::error), this,
+        (QProcess::ProcessError)>(&QProcess::errorOccurred), this,
         &DaemonTestCase::onProcessError);
     QStringList args;
     args << "-daemon-path" << _daemonPath << "-disable-timeout"

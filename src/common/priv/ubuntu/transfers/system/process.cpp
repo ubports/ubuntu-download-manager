@@ -39,7 +39,7 @@ Process::Process(QObject* parent)
                 << "Could not connect to signal";
     CHECK(connect(_process,
         static_cast<void(QProcess::*)(QProcess::ProcessError)>
-            (&QProcess::error), this, &Process::error))
+            (&QProcess::errorOccurred), this, &Process::error))
                 << "Could not connect to signal";
 
     // connect so that we can log the stdout and stderr of the process
