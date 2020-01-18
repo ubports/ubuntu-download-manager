@@ -49,7 +49,7 @@ UnZip::deflate() {
             (&QProcess::finished), this, &UnZip::onFinished);
     connect(_process,
         static_cast<void(QProcess::*)(QProcess::ProcessError)>
-            (&QProcess::error), this, &UnZip::onError);
+            (&QProcess::errorOccurred), this, &UnZip::onError);
 
      _process->start(program, arguments);
 }
