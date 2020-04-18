@@ -153,6 +153,11 @@ void UbuntuDownloadManager::downloadGroupCreated(GroupDownload* group)
     Q_UNUSED(group);
 }
 
+void UbuntuDownloadManager::downloadsFound(DownloadsList* downloads)
+{
+    Q_UNUSED(downloads);
+}
+
 void UbuntuDownloadManager::registerError(DownloadError& downloadError)
 {
     m_errorMessage = downloadError.message();
