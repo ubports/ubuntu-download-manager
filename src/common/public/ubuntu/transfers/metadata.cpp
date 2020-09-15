@@ -214,7 +214,7 @@ Metadata::custom() const {
         if (key.startsWith(CUSTOM_PREFIX)) {
             QString customKey = key;
             customKey.replace(CUSTOM_PREFIX, "");
-            custom.insert(customKey, values(key)[0]);
+            custom.insert(customKey, value(key));
         }
     }
     return custom;
