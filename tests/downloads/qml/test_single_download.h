@@ -78,8 +78,6 @@ class TestSingleDownload : public BaseTestCase {
     void testSetMetadataToNullptr();
     void testSetMetadataError();
     void testSetMetadataSuccess();
-    void testSetHashNullptr();
-    void testSetAlgorithmNullptr();
 
  private:
     void verifyMocks();

@@ -434,25 +434,5 @@ TestSingleDownload::testSetMetadataSuccess() {
     verifyMocks();
 }
 
-void
-TestSingleDownload::testSetHashNullptr() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(nullptr, _man));
-
-    singleDownload->setHash("c4e5f7fcbcef75924b2abde2b2e75f3f");
-    // ensure that the mocks are not called and we do not crash
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetAlgorithmNullptr() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(nullptr, _man));
-
-    singleDownload->setAlgorithm("sha1");
-    // ensure that the mocks are not called and we do not crash
-    verifyMocks();
-}
-
 QTEST_MAIN(TestSingleDownload)
 #include "moc_test_single_download.cpp"
