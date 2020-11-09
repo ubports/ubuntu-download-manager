@@ -25,6 +25,7 @@
 #include "test_single_download.h"
 
 using ::testing::_;
+using ::testing::DefaultValue;
 using ::testing::Mock;
 using ::testing::Return;
 
@@ -44,6 +45,10 @@ TestSingleDownload::init() {
 
     _down = new MockDownload();
     _man = new MockManager();
+
+    // Old gmock (< v1.8) needs these set explicitly
+    DefaultValue<QString>::Set(QString("My string"));
+    DefaultValue<QVariantMap>::Set(QVariantMap());
 }
 
 void
@@ -73,7 +78,7 @@ TestSingleDownload::testCanceledSignalFwd() {
 }
 
 void
-TestSingleDownload::testFinishedSingalFwd() {
+TestSingleDownload::testFinishedSignalFwd() {
     QScopedPointer<TestableSingleDownload> singleDownload(
         new TestableSingleDownload(_down, _man));
 
@@ -424,128 +429,6 @@ TestSingleDownload::testSetMetadataSuccess() {
     SignalBarrier spy(singleDownload.data(), SIGNAL(metadataChanged()));
 
     singleDownload->setMetadata(metadata);
-
-    QVERIFY(spy.ensureSignalEmitted());
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetHashNullptr() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(nullptr, _man));
-
-    singleDownload->setHash("c4e5f7fcbcef75924b2abde2b2e75f3f");
-    // ensure that the mocks are not called and we do not crash
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetHashError() {
-    QScopedPointer<MockError> err(new MockError(Error::DBus));
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(_down, _man));
-
-    EXPECT_CALL(*_down, setHash("c4e5f7fcbcef75924b2abde2b2e75f3f"))
-        .Times(1);
-
-    EXPECT_CALL(*_down, isError())
-        .Times(1)
-        .WillOnce(Return(true));
-
-    EXPECT_CALL(*_down, error())
-        .Times(1)
-        .WillOnce(Return(err.data()));
-
-    EXPECT_CALL(*err.data(), errorString())
-        .Times(1)
-        .WillOnce(Return(QString("My error")));
-
-    // ensure that the diff signals are emitted
-    SignalBarrier spy(singleDownload.data(), SIGNAL(errorChanged()));
-
-    singleDownload->setHash("c4e5f7fcbcef75924b2abde2b2e75f3f");
-
-    QVERIFY(spy.ensureSignalEmitted());
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetHashSuccess() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(_down, _man));
-
-    EXPECT_CALL(*_down, setHash("c4e5f7fcbcef75924b2abde2b2e75f3f"))
-        .Times(1);
-
-    EXPECT_CALL(*_down, isError())
-        .Times(1)
-        .WillOnce(Return(false));
-
-    // ensure that the diff signals are emitted
-    SignalBarrier spy(singleDownload.data(), SIGNAL(hashChanged()));
-
-    singleDownload->setHash("c4e5f7fcbcef75924b2abde2b2e75f3f");
-
-    QVERIFY(spy.ensureSignalEmitted());
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetAlgorithmNullptr() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(nullptr, _man));
-
-    singleDownload->setAlgorithm("sha1");
-    // ensure that the mocks are not called and we do not crash
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetAlgorithmError() {
-    QScopedPointer<MockError> err(new MockError(Error::DBus));
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(_down, _man));
-
-    EXPECT_CALL(*_down, setAlgorithm("sha1"))
-        .Times(1);
-
-    EXPECT_CALL(*_down, isError())
-        .Times(1)
-        .WillOnce(Return(true));
-
-    EXPECT_CALL(*_down, error())
-        .Times(1)
-        .WillOnce(Return(err.data()));
-
-    EXPECT_CALL(*err.data(), errorString())
-        .Times(1)
-        .WillOnce(Return(QString("My error")));
-
-    // ensure that the diff signals are emitted
-    SignalBarrier spy(singleDownload.data(), SIGNAL(errorChanged()));
-
-    singleDownload->setAlgorithm("sha1");
-
-    QVERIFY(spy.ensureSignalEmitted());
-    verifyMocks();
-}
-
-void
-TestSingleDownload::testSetAlgorithmSuccess() {
-    QScopedPointer<TestableSingleDownload> singleDownload(
-        new TestableSingleDownload(_down, _man));
-
-    EXPECT_CALL(*_down, setAlgorithm("sha1"))
-        .Times(1);
-
-    EXPECT_CALL(*_down, isError())
-        .Times(1)
-        .WillOnce(Return(false));
-
-    // ensure that the diff signals are emitted
-    SignalBarrier spy(singleDownload.data(), SIGNAL(algorithmChanged()));
-
-    singleDownload->setAlgorithm("sha1");
 
     QVERIFY(spy.ensureSignalEmitted());
     verifyMocks();

@@ -47,10 +47,10 @@ class SignalBarrier : public QSignalSpy {
           _obj(obj),
           _signal(aSignal) { }
 
-    bool ensureSignalEmitted() {
+    bool ensureSignalEmitted(int timeout = 5000) {
         bool result = count() > 0;
         if (!result) {
-            result = waitForSignal(_obj, _signal, -1);
+            result = waitForSignal(_obj, _signal, timeout);
         }
         return result;
     }

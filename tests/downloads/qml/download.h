@@ -35,23 +35,27 @@ class MockDownload : public Download {
     MOCK_METHOD0(pause, void());
     MOCK_METHOD0(resume, void());
     MOCK_METHOD0(cancel, void());
+    MOCK_METHOD0(collected, void());
     MOCK_METHOD1(allowMobileDownload, void(bool));
     MOCK_METHOD0(isMobileDownloadAllowed, bool());
     MOCK_METHOD1(setDestinationDir, void(const QString&));
     MOCK_METHOD1(setHeaders, void(QMap<QString, QString> headers));
+    MOCK_METHOD1(setMetadata, void(QVariantMap));
     MOCK_METHOD0(headers, QMap<QString, QString>());
     MOCK_METHOD1(setThrottle, void(qulonglong));
     MOCK_METHOD0(throttle, qulonglong());
     MOCK_CONST_METHOD0(id, QString());
     MOCK_METHOD0(metadata, QVariantMap());
-    MOCK_METHOD1(setMetadata, void(QVariantMap));
     MOCK_METHOD0(progress, qulonglong());
     MOCK_METHOD0(totalSize, qulonglong());
+    MOCK_METHOD0(filePath, QString());
+    MOCK_METHOD0(state, State());
     MOCK_CONST_METHOD0(isError, bool());
     MOCK_CONST_METHOD0(error, Error*());
     MOCK_CONST_METHOD0(clickPackage, QString());
     MOCK_CONST_METHOD0(showInIndicator, bool());
     MOCK_CONST_METHOD0(title, QString());
+    MOCK_CONST_METHOD0(destinationApp, QString());
 
     // expose the signals so that they can  emitted by external objects
 
@@ -66,6 +70,7 @@ class MockDownload : public Download {
     using Download::clickPackagedChanged;
     using Download::showInIndicatorChanged;
     using Download::titleChanged;
+    using Download::destinationAppChanged;
 };
 
 #endif

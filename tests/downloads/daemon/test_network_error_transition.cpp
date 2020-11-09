@@ -54,7 +54,7 @@ TestNetworkErrorTransition::testOnTransition_data() {
         << QNetworkReply::ConnectionRefusedError;
     QTest::newRow("RemoteHostClosedError")
         << QNetworkReply::RemoteHostClosedError;
-    QTest::newRow("RemoteHostClosedError")
+    QTest::newRow("HostNotFoundError")
         << QNetworkReply::HostNotFoundError;
     QTest::newRow("TimeoutError")
         << QNetworkReply::TimeoutError;

@@ -65,7 +65,6 @@ private slots:
     void registerError(DownloadError& error);
     void downloadFileCreated(Download* download);
     void downloadGroupCreated(GroupDownload* group);
-    void downloadsFound(DownloadsList* downloads);
 
 private:
     bool m_autoStart;

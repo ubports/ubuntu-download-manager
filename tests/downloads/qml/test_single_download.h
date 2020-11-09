@@ -59,7 +59,7 @@ class TestSingleDownload : public BaseTestCase {
 
  private slots:  // NOLINT(whitespace/indent)
     void testCanceledSignalFwd();
-    void testFinishedSingalFwd();
+    void testFinishedSignalFwd();
     void testPausedSignalFwd();
     void testProcessingSignalFwd();
     void testProgressSignalFwd();
@@ -78,12 +78,6 @@ class TestSingleDownload : public BaseTestCase {
     void testSetMetadataToNullptr();
     void testSetMetadataError();
     void testSetMetadataSuccess();
-    void testSetHashNullptr();
-    void testSetHashError();
-    void testSetHashSuccess();
-    void testSetAlgorithmNullptr();
-    void testSetAlgorithmError();
-    void testSetAlgorithmSuccess();
 
  private:
     void verifyMocks();
